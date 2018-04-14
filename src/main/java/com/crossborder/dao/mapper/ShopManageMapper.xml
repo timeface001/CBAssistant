@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.crossborder.dao.ShopManageDao">
+    <insert id="addShop" parameterType="java.util.Map">
+        INSERT INTO T_SHOP(
+        SHOP_ID,
+        SHOP_NAME,
+        AMAZON_ACCOUNT,
+        MERCHANT_ID,
+        ACCESSKEY_ID,
+        SECRET_KEY,
+        CREATE_USER,
+        SHOP_STATE,
+        COUNTRY_CODE,
+        EMAIL
+        )
+        VALUES (
+          seq_shop_id.nextval,
+        #{shopName,jdbcType=VARCHAR},
+        #{amazonAccount,jdbcType=VARCHAR},
+        #{merchantId,jdbcType=VARCHAR},
+        #{accesskeyId,jdbcType=VARCHAR},
+        #{secretKey,jdbcType=VARCHAR},
+        #{createUser,jdbcType=VARCHAR},
+        #{state,jdbcType=VARCHAR},
+        #{countryCode,jdbcType=VARCHAR},
+        #{email,jdbcType=VARCHAR}
+        )
+    </insert>
+    <select id="selectShops" parameterType="java.util.Map" resultType="java.util.Map">
+        select t1.*, t2.name country_Name,t2.MARKETPLACEID,t2.ENDPOINT from T_SHOP t1
+        left join T_COUNTRY t2
+        on t2.id = t1.country_code
+        WHERE 1=1
+        <if test="id !=null and id !=''">
+            AND t1.SHOP_ID = #{id,jdbcType=VARCHAR}
+        </if>
+        <if test="createUser !=null and createUser !=''">
+            AND t1.CREATE_USER = #{createUser,jdbcType=VARCHAR}
+        </if>
+        <if test="companyId !=null and companyId !=''">
+            AND t1.CREATE_USER IN (SELECT USER_ID FROM T_USER_INFO WHERE user_company=#{companyId,jdbcType=VARCHAR})
+        </if>
+        ORDER BY t1.create_time DESC
+    </select>
+    <update id="updateShopState" parameterType="java.util.Map">
+        UPDATE T_SHOP
+        set
+        SHOP_STATE =  #{state,jdbcType=VARCHAR}
+        WHERE
+        SHOP_ID = #{id,jdbcType=VARCHAR}
+    </update>
+    <delete id="deleteShop" parameterType="java.lang.String">
+        DELETE FROM T_SHOP
+        WHERE
+        SHOP_ID = #{id,jdbcType=VARCHAR}
+    </delete>
+    <update id="updateShop" parameterType="java.util.Map">
+        UPDATE T_SHOP
+        set
+        SHOP_NAME =  #{shopName,jdbcType=VARCHAR},
+        SHOP_STATE = #{state,jdbcType=VARCHAR},
+        AMAZON_ACCOUNT = #{amazonAccount,jdbcType=VARCHAR},
+        COUNTRY_CODE = #{countryCode,jdbcType=VARCHAR}
+        WHERE
+        SHOP_ID = #{id,jdbcType=VARCHAR}
+    </update>
+</mapper>

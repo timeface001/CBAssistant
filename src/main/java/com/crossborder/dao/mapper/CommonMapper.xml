@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.crossborder.dao.CommonDao">
+    <select id="login" parameterType="java.util.Map" resultType="java.util.Map">
+        select t1.*, t2.role_name, t3.company_name
+        from T_USER_INFO t1
+        left join T_ROLE t2
+        on t2.role_id = t1.role_id
+        left join T_USER_COMPANY t3
+        on t3.company_id = t1.user_company
+        WHERE t1.USER_ID = #{userId,jdbcType=VARCHAR}
+        AND t1.USER_PWD = #{password,jdbcType=VARCHAR}
+    </select>
+    <select id="selectRole" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT * FROM T_ROLE
+        WHERE ROLE_ID = #{roleId,jdbcType=VARCHAR}
+    </select>
+    <select id="selectMenus" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT t1.menu_id,
+        t1.menu_name,
+        t1.path,
+        t1.menu_pid,
+        t1.iconpath
+        FROM T_MENU t1, T_MENU_ROLE t2
+        where t1.menu_id = t2.menu_id
+        and t2.role_id = #{roleId,jdbcType=VARCHAR}
+    </select>
+    <select id="selectCountryByCode" parameterType="java.lang.String" resultType="java.util.Map">
+        SELECT t1.* FROM T_COUNTRY t1
+        LEFT JOIN T_COUNTRY t2
+        ON t2.COUNTRY_TYPE = t1.COUNTRY_TYPE
+        WHERE t2.ID = #{id,jdbcType=VARCHAR}
+    </select>
+    <select id="getSql" parameterType="java.lang.String" resultType="java.util.Map">
+        SELECT * FROM T_COMMON_SQL
+        WHERE CODE = #{code,jdbcType=VARCHAR}
+    </select>
+    <select id="getList" parameterType="java.lang.String" resultType="java.util.Map">
+        <![CDATA[
+
+			${sqlText}
+
+        ]]>
+    </select>
+    <select id="getTreeList" parameterType="java.lang.String" resultType="java.util.Map">
+        <![CDATA[
+
+			${sqlText}
+
+        ]]>
+    </select>
+</mapper>

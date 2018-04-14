@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.crossborder.dao.SystemManageDao">
+    <insert id="addCompany" parameterType="java.util.Map">
+        INSERT INTO T_USER_COMPANY(
+        COMPANY_ID,
+        COMPANY_NAME,
+        COMPANY_STATE,
+        COM_REFEREE,
+        COM_DESC
+        )
+        VALUES (
+        seq_company_id.nextval,
+        #{companyName,jdbcType=VARCHAR},
+        #{state,jdbcType=VARCHAR},
+        #{comReferee,jdbcType=VARCHAR},
+        #{comDesc,jdbcType=VARCHAR}
+        )
+    </insert>
+    <select id="selectCompanies" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT * FROM T_USER_COMPANY
+        WHERE 1=1
+        <if test="id !=null and id !=''">
+            AND COMPANY_ID = #{id,jdbcType=VARCHAR}
+        </if>
+    </select>
+    <update id="updateCompanyState" parameterType="java.util.Map">
+        UPDATE T_USER_COMPANY
+        set
+        COMPANY_STATE =  #{state,jdbcType=VARCHAR}
+        WHERE
+        COMPANY_ID = #{id,jdbcType=VARCHAR}
+    </update>
+    <delete id="deleteCompany" parameterType="java.lang.String">
+        DELETE FROM T_USER_COMPANY
+        WHERE
+        COMPANY_ID = #{id,jdbcType=VARCHAR}
+    </delete>
+    <update id="updateCompany" parameterType="java.util.Map">
+        UPDATE T_USER_COMPANY
+        set
+        COMPANY_STATE =  #{state,jdbcType=VARCHAR},
+        COMPANY_NAME =  #{companyName,jdbcType=VARCHAR},
+        COM_REFEREE =  #{comReferee,jdbcType=VARCHAR},
+        COM_DESC = #{comDesc,jdbcType=VARCHAR}
+        WHERE
+        COMPANY_ID = #{id,jdbcType=VARCHAR}
+    </update>
+    <select id="queryParentMenuSeq" resultType="java.lang.Integer" useCache="false" flushCache="true">
+        SELECT SEQ_PARENTMENU_ID.NEXTVAL FROM DUAL
+    </select>
+    <select id="queryChildMenuSeq" resultType="java.lang.Integer" useCache="false" flushCache="true">
+        SELECT SEQ_CHILDMENU_ID.NEXTVAL FROM DUAL
+    </select>
+    <insert id="addMenu" parameterType="java.util.Map">
+        INSERT INTO T_MENU(
+        MENU_ID,
+        MENU_NAME,
+        MENU_PID,
+        MENU_LEVEL,
+        MENU_LEAF,
+        MENU_STATE,
+        T_DESC,
+        PATH,
+        ICONPATH
+        )
+        VALUES (
+        #{menuId,jdbcType=VARCHAR},
+        #{menuName,jdbcType=VARCHAR},
+        #{menuPid,jdbcType=VARCHAR},
+        #{level,jdbcType=VARCHAR},
+        #{leaf,jdbcType=VARCHAR},
+        #{state,jdbcType=VARCHAR},
+        #{menuDesc,jdbcType=VARCHAR},
+        #{path,jdbcType=VARCHAR},
+        #{iconPath,jdbcType=VARCHAR}
+        )
+    </insert>
+    <select id="selectMenus" parameterType="java.util.Map" resultType="java.util.Map">
+        select t1.*,t2.MENU_NAME MENU_PNAME
+        from T_MENU t1,T_MENU t2
+        WHERE t2.menu_id = t1.menu_pid
+        <if test="id !=null and id !=''">
+            AND t1.MENU_ID = #{id,jdbcType=VARCHAR}
+        </if>
+        ORDER BY t1.MENU_ID
+    </select>
+    <update id="updateMenuState" parameterType="java.util.Map">
+        UPDATE T_MENU
+        set
+        MENU_STATE =  #{state,jdbcType=VARCHAR}
+        WHERE
+        MENU_ID = #{id,jdbcType=VARCHAR}
+    </update>
+    <delete id="deleteMenu" parameterType="java.lang.String">
+        DELETE FROM T_MENU
+        WHERE
+        MENU_ID = #{id,jdbcType=VARCHAR}
+    </delete>
+    <update id="updateMenu" parameterType="java.util.Map">
+        UPDATE T_MENU
+        set
+        MENU_STATE =  #{state,jdbcType=VARCHAR},
+        MENU_NAME =  #{menuName,jdbcType=VARCHAR},
+        MENU_PID = #{menuPid,jdbcType=VARCHAR},
+        PATH = #{path,jdbcType=VARCHAR},
+        ICONPATH = #{iconPath,jdbcType=VARCHAR},
+        T_DESC = #{menuDesc,jdbcType=VARCHAR}
+        WHERE
+        MENU_ID = #{id,jdbcType=VARCHAR}
+    </update>
+    <insert id="addUser" parameterType="java.util.Map">
+        INSERT INTO T_USER_INFO(
+        USER_ID,
+        USER_NAME,
+        USER_PWD,
+        ROLE_ID,
+        PHONE_NUM,
+        USER_COMPANY,
+        CREAT_USER,
+        USER_STATE,
+        T_DESC,
+        USER_REFEREE,
+        USER_EMAIL
+        )
+        VALUES (
+        #{userId,jdbcType=VARCHAR},
+        #{userName,jdbcType=VARCHAR},
+        #{userPwd,jdbcType=VARCHAR},
+        #{roleId,jdbcType=VARCHAR},
+        #{phoneNo,jdbcType=VARCHAR},
+        #{companyId,jdbcType=VARCHAR},
+        #{createUser,jdbcType=VARCHAR},
+        #{state,jdbcType=VARCHAR},
+        #{userDesc,jdbcType=VARCHAR},
+        #{userReferee,jdbcType=VARCHAR},
+        #{userEmail,jdbcType=VARCHAR}
+        )
+    </insert>
+    <select id="selectUsers" parameterType="java.util.Map" resultType="java.util.Map">
+        select t1.*, t2.role_name, t3.company_name
+        from T_USER_INFO t1
+        left join T_ROLE t2
+        on t2.role_id = t1.role_id
+        left join T_USER_COMPANY t3
+        on t3.company_id = t1.user_company
+        WHERE 1=1
+        <if test="id !=null and id !=''">
+            AND t1.USER_ID = #{id,jdbcType=VARCHAR}
+        </if>
+        <if test="companyId !=null and companyId !=''">
+            AND t1.USER_COMPANY = #{companyId,jdbcType=VARCHAR}
+        </if>
+    </select>
+    <update id="updateUserState" parameterType="java.util.Map">
+        UPDATE T_USER_INFO
+        set
+        USER_STATE =  #{state,jdbcType=VARCHAR}
+        WHERE
+        USER_ID = #{id,jdbcType=VARCHAR}
+    </update>
+    <delete id="deleteUser" parameterType="java.lang.String">
+        DELETE FROM T_USER_INFO
+        WHERE
+        USER_ID = #{id,jdbcType=VARCHAR}
+    </delete>
+    <update id="updateUser" parameterType="java.util.Map">
+        UPDATE T_USER_INFO
+        set
+        USER_NAME =  #{userName,jdbcType=VARCHAR},
+        USER_PWD =  #{userPwd,jdbcType=VARCHAR},
+        ROLE_ID = #{roleId,jdbcType=VARCHAR},
+        PHONE_NUM = #{phoneNo,jdbcType=VARCHAR},
+        USER_COMPANY = #{companyId,jdbcType=VARCHAR},
+        USER_STATE = #{state,jdbcType=VARCHAR},
+        T_DESC = #{userDesc,jdbcType=VARCHAR},
+        USER_REFEREE = #{userReferee,jdbcType=VARCHAR},
+        USER_EMAIL = #{userEmail,jdbcType=VARCHAR}
+        WHERE
+        USER_ID = #{id,jdbcType=VARCHAR}
+    </update>
+    <select id="queryRoleSeq" resultType="java.lang.Long" useCache="false" flushCache="true">
+        SELECT SEQ_ROLE_ID.NEXTVAL FROM DUAL
+    </select>
+    <insert id="addRole" parameterType="java.util.Map">
+        INSERT INTO T_ROLE(
+        ROLE_ID,
+        ROLE_NAME,
+        CREATE_USER,
+        ROLE_STATE,
+        T_DESC
+        )
+        VALUES (
+        #{roleId,jdbcType=VARCHAR},
+        #{roleName,jdbcType=VARCHAR},
+        #{createUser,jdbcType=VARCHAR},
+        #{state,jdbcType=VARCHAR},
+        #{roleDesc,jdbcType=VARCHAR}
+        )
+    </insert>
+    <select id="selectRoles" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT * FROM T_ROLE
+        WHERE 1=1
+        <if test="id !=null and id !=''">
+            AND ROLE_ID = #{id,jdbcType=VARCHAR}
+        </if>
+    </select>
+    <update id="updateRoleState" parameterType="java.util.Map">
+        UPDATE T_ROLE
+        set
+        ROLE_STATE =  #{state,jdbcType=VARCHAR}
+        WHERE
+        ROLE_ID = #{id,jdbcType=VARCHAR}
+    </update>
+    <delete id="deleteRole" parameterType="java.lang.String">
+        DELETE FROM T_ROLE
+        WHERE
+        ROLE_ID = #{id,jdbcType=VARCHAR}
+    </delete>
+    <update id="updateRole" parameterType="java.util.Map">
+        UPDATE T_ROLE
+        set
+        ROLE_NAME =  #{roleName,jdbcType=VARCHAR},
+        ROLE_STATE = #{state,jdbcType=VARCHAR},
+        T_DESC = #{roleDesc,jdbcType=VARCHAR}
+        WHERE
+        ROLE_ID = #{id,jdbcType=VARCHAR}
+    </update>
+    <delete id="deleteMenuRole" parameterType="java.lang.String">
+        DELETE FROM T_MENU_ROLE
+        WHERE role_id = #{roleId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="addMenuRole" parameterType="java.lang.String">
+        INSERT INTO T_MENU_ROLE(
+        MENU_ID,
+        ROLE_ID,
+        T_DESC,
+        CREATE_USER)
+        VALUES (
+        #{menuId,jdbcType=VARCHAR},
+        #{roleId,jdbcType=VARCHAR},
+        #{tDesc,jdbcType=VARCHAR},
+        #{createUser,jdbcType=VARCHAR}
+        )
+    </insert>
+    <select id="selectMenuRole" parameterType="java.lang.String" resultType="java.util.Map">
+        SELECT * FROM T_MENU_ROLE
+        WHERE ROLE_ID = #{id,jdbcType=VARCHAR}
+    </select>
+</mapper>

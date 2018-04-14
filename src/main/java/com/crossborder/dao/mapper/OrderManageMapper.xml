@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.crossborder.dao.OrderManageDao">
+    <insert id="insertOrders" parameterType="com.crossborder.entity.LocalOrder">
+        MERGE INTO T_ORDER t1
+        USING (SELECT #{amazonOrderId} orderId FROM dual) t2
+        ON (t1.AMAZONORDERID = t2.orderId)
+        WHEN matched THEN
+        UPDATE set t1.ORDERSTATUS= #{orderStatus,jdbcType=VARCHAR},
+        t1.LASTUPDATEDATE= #{lastUpdateDate,jdbcType=VARCHAR}
+        WHEN not matched THEN
+        INSERT
+        (ID,
+        AMAZONORDERID,
+        SELLERORDERID,
+        ORDERSTATUS,
+        PURCHASEDATE,
+        LASTUPDATEDATE,
+        FULFILLMENTCHANNEL,
+        ORDERTOTAL,
+        NUMBEROFITEMSSHIPPED,
+        NUMBEROFITEMSUNSHIPPED,
+        PAYMENTMETHOD,
+        MARKETPLACEID,
+        BUYERNAME,
+        ORDERTYPE,
+        RUNNINGTIME,
+        SALESMAN,
+        SALESCOMPANY,
+        SALESSOURCE,
+        BUYERCOUNTRY,
+        TRANSPORTCOMPANY,
+        INTLTRACKNUM,
+        CURRENCYCODE,
+        LOCALSTATUS)
+        VALUES
+        (seq_order_id.nextval,
+        #{amazonOrderId,jdbcType=VARCHAR},
+        #{sellerOrderId,jdbcType=VARCHAR},
+        #{orderStatus,jdbcType=VARCHAR},
+        #{purchaseDate,jdbcType=VARCHAR},
+        #{lastUpdateDate,jdbcType=VARCHAR},
+        #{fulfillmentChannel,jdbcType=VARCHAR},
+        #{orderTotal,jdbcType=DOUBLE},
+        #{numberOfItemsShipped,jdbcType=INTEGER},
+        #{numberOfItemsUnshipped,jdbcType=INTEGER},
+        #{paymentMethod,jdbcType=VARCHAR},
+        #{marketplaceId,jdbcType=VARCHAR},
+        #{buyerName,jdbcType=VARCHAR},
+        #{orderType,jdbcType=VARCHAR},
+        #{runningTime,jdbcType=VARCHAR},
+        #{salesMan,jdbcType=VARCHAR},
+        #{salesCompany,jdbcType=VARCHAR},
+        #{salesSource,jdbcType=VARCHAR},
+        #{buyerCounty,jdbcType=VARCHAR},
+        #{transportCompany,jdbcType=VARCHAR},
+        #{intlTrackNum,jdbcType=VARCHAR},
+        #{currencyCode,jdbcType=VARCHAR},
+        #{localStatus,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertOrderItem" parameterType="com.crossborder.entity.AddressInfo">
+        MERGE INTO T_ORDER_ITEM t1
+        USING (SELECT #{orderItemId} orderItemId FROM dual) t2
+        ON (t1.ORDERITEMID = t2.orderItemId)
+        WHEN matched THEN
+        UPDATE set
+        t1.ITEMPRICE = #{itemPrice,jdbcType=VARCHAR}
+        WHEN not matched THEN
+        INSERT (AMAZONORDERID,
+        COST,
+        SELLERSKU,
+        ORDERITEMID,
+        TITLE,
+        STATUS,
+        ASIN,
+        QUANTITYSHIPPED,
+        ITEMPRICE,
+        SHIPPINGPRICE,
+        REFUNDMENT,
+        PURCHASENUM,
+        TRACKNUM,
+        ACTUALWEIGHT,
+        PAYWEIGHT,
+        VOLUMEWEIGHT,
+        CURRENCYCODE,
+        SMALLIMAGE)
+        VALUES (#{amazonOrderId,jdbcType=VARCHAR},
+        #{cost,jdbcType=VARCHAR},
+        #{sellerSKU,jdbcType=VARCHAR},
+        #{orderItemId,jdbcType=VARCHAR},
+        #{title,jdbcType=VARCHAR},
+        #{status,jdbcType=VARCHAR},
+        #{asin,jdbcType=VARCHAR},
+        #{quantityShipped,jdbcType=INTEGER},
+        #{itemPrice,jdbcType=DOUBLE},
+        #{shippingPrice,jdbcType=DOUBLE},
+        #{refundment,jdbcType=DOUBLE},
+        #{purchaseNum,jdbcType=VARCHAR},
+        #{trackNum,jdbcType=VARCHAR},
+        #{actualWeight,jdbcType=DOUBLE},
+        #{payWeight,jdbcType=DOUBLE},
+        #{volumeWeight,jdbcType=DOUBLE},
+        #{currencyCode,jdbcType=VARCHAR},
+        #{smallImage,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertAddress" parameterType="com.crossborder.entity.AddressInfo">
+        MERGE INTO T_ADDRESS t1
+        USING (SELECT #{amazonOrderId} amazonOrderId FROM dual) t2
+        ON (t1.AMAZONORDERID = t2.amazonOrderId)
+        WHEN matched THEN
+        UPDATE set
+        t1.CREATE_USER = #{createUser,jdbcType=VARCHAR}
+        WHEN not matched THEN
+        INSERT(
+        AMAZONORDERID,
+        USERNAME,
+        COMPANY,
+        PHONE,
+        COUNTRYCODE,
+        POSTALCODE,
+        CITY,
+        STATEORREGION,
+        ADDRESSLINE1,
+        ADDRESSLINE2,
+        ADDRESSLINE3,
+        CREATE_USER)
+        VALUES (
+        #{amazonOrderId,jdbcType=VARCHAR},
+        #{name,jdbcType=VARCHAR},
+        #{company,jdbcType=VARCHAR},
+        #{phone,jdbcType=VARCHAR},
+        #{countryCode,jdbcType=VARCHAR},
+        #{postalCode,jdbcType=VARCHAR},
+        #{city,jdbcType=VARCHAR},
+        #{stateOrRegion,jdbcType=VARCHAR},
+        #{addressLine1,jdbcType=VARCHAR},
+        #{addressLine2,jdbcType=VARCHAR},
+        #{addressLine3,jdbcType=VARCHAR},
+        #{createUser,jdbcType=VARCHAR})
+    </insert>
+    <select id="selectAddress" parameterType="java.lang.String" resultType="java.util.Map">
+        SELECT * FROM T_ADDRESS
+        WHERE AMAZONORDERID = #{amazonOrderId,jdbcType=VARCHAR}
+    </select>
+    <select id="selectLocalOrder" resultType="java.util.Map" parameterType="java.util.Map">
+        select t1.id,
+        t1.amazonorderid,
+        t1.salesman,
+        t1.salessource,
+        t1.runningtime,
+        t1.intltracknum,
+        t1.purchaseDate,
+        t1.transportcompany,
+        t3.name buyercountry,
+        t2.smallImage,
+        t4.company_name,
+        wm_concat(t2.SELLERSKU) sku,
+        trunc(sum(t2.itemprice)*t3.exrate,2) itemprice,
+        trunc(sum(t2.cost),2) cost,
+        trunc(sum(t2.refundment),2) refundment,
+        trunc(sum(t2.shippingPrice)*t3.exrate,2) shippingPrice,
+        trunc(sum(t2.itemprice)*t3.exrate-sum(t2.cost)-sum(t2.refundment)-sum(t2.shippingPrice)*t3.exrate,2) profit
+        from T_ORDER t1
+        left join t_order_item t2
+        on t2.amazonorderid = t1.amazonorderid
+        left join t_country t3
+        on t3.id = t1.buyercountry and t3.currencycode = t1.currencycode
+        left join t_user_company t4
+        on t4.company_id = t1.salescompany
+        WHERE 1=1
+        <if test="amazonOrderId !=null and amazonOrderId !=''">
+            AND t1.AMAZONORDERID = #{amazonOrderId,jdbcType=VARCHAR}
+        </if>
+        <if test="salesMan !=null and salesMan !=''">
+            AND t1.SALESMAN = #{salesMan,jdbcType=VARCHAR}
+        </if>
+        <if test="salesCompany !=null and salesCompany !=''">
+            AND t1.SALESCOMPANY = #{salesCompany,jdbcType=VARCHAR}
+        </if>
+        <if test="salesSource !=null and salesSource !=''">
+            AND t1.SALESSOURCE = #{salesSource,jdbcType=VARCHAR}
+        </if>
+        <if test="buyerCounty !=null and buyerCounty !=''">
+            AND t1.BUYERCOUNTRY = #{buyerCounty,jdbcType=VARCHAR}
+        </if>
+        <if test="intlTrackNum !=null and intlTrackNum !=''">
+            AND t1.INTLTRACKNUM = #{intlTrackNum,jdbcType=VARCHAR}
+        </if>
+        <if test="transportCompany !=null and transportCompany !=''">
+            AND t1.TRANSPORTCOMPANY = #{transportCompany,jdbcType=VARCHAR}
+        </if>
+        <if test="localStatus !=null and localStatus !=''">
+            AND t1.LOCALSTATUS = #{localStatus,jdbcType=VARCHAR}
+        </if>
+        <if test="logmin !=null or logmax != null">
+            AND t1.PURCHASEDATE between #{logmin,jdbcType=VARCHAR} and #{logmax,jdbcType=VARCHAR}
+        </if>
+        group by t1.id,
+        t1.amazonorderid,
+        t1.salesman,
+        t1.salessource,
+        t1.runningtime,
+        t1.intltracknum,
+        t1.purchaseDate,
+        t1.transportcompany,
+        t3.name,
+        t2.smallImage,
+        t3.exrate,
+        t4.company_name
+        ORDER BY t1.id DESC
+    </select>
+
+    <select id="selectLocalOrderItem" resultType="java.util.Map" parameterType="java.lang.String">
+        SELECT  * from T_ORDER_ITEM
+        WHERE AMAZONORDERID =  #{amazonOrderId,jdbcType=VARCHAR}
+    </select>
+    <update id="updateOrder" parameterType="java.util.Map">
+        UPDATE T_ORDER
+        set LOCALSTATUS = #{status,jdbcType=VARCHAR}
+        WHERE AMAZONORDERID = #{amazonOrderId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateOrderItem">
+        UPDATE T_ORDER_ITEM
+        set STATUS = #{status,jdbcType=VARCHAR}
+        <if test="cost !=null and cost !=''">
+            ,COST = #{cost,jdbcType=VARCHAR}
+        </if>
+        <if test="refundment !=null and refundment !=''">
+            ,REFUNDMENT = #{refundment,jdbcType=VARCHAR}
+        </if>
+        <if test="trackNum !=null and trackNum !=''">
+            ,TRACKNUM = #{trackNum,jdbcType=VARCHAR}
+        </if>
+        <if test="purchaseNum !=null and purchaseNum !=''">
+            ,PURCHASENUM = #{purchaseNum,jdbcType=VARCHAR}
+        </if>
+        WHERE AMAZONORDERID = #{amazonOrderId,jdbcType=VARCHAR}
+        AND SELLERSKU = #{sku,jdbcType=VARCHAR}
+    </update>
+    <update id="updateOrderRemark" parameterType="java.util.Map">
+         UPDATE T_ORDER
+         set REMARK = #{remark,jdbcType=VARCHAR}
+         WHERE AMAZONORDERID = #{amazonOrderId,jdbcType=VARCHAR}
+    </update>
+    <insert id="inserOperationLog" parameterType="java.util.Map">
+        INSERT INTO T_OPERATION_LOG
+        (ID,
+        AMAZONORDERID,
+        OPERATION_TYPE,
+        OPERATION_INFO,
+        OPERATION_USER,
+        OPERATION_TIME)
+        VALUES
+        (seq_operation_id.nextval,
+        #{amazonOrderId,jdbcType=VARCHAR},
+        #{type,jdbcType=VARCHAR},
+        #{info,jdbcType=VARCHAR},
+        #{user,jdbcType=VARCHAR},
+        #{time,jdbcType=VARCHAR})
+    </insert>
+    <select id="selectOperationLog" parameterType="java.lang.String" resultType="java.util.Map">
+        SELECT * FROM T_OPERATION_LOG
+        WHERE AMAZONORDERID = #{amazonOrderId,jdbcType=VARCHAR}
+        ORDER BY OPERATION_TIME DESC
+    </select>
+</mapper>
