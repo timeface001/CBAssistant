@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.crossborder.dao.ProductManagerDao">
+    <insert id="insertProduct" parameterType="java.util.Map">
+        INSERT INTO T_PRODUCT_ITEM
+        (ID,
+        NAME,
+        IMAGE_PATH,
+        INFO,
+        TYPE_ID,
+        SKU,
+        SOURCE,
+        RELEASE_TIME,
+        ACCOUNT,
+        ORDERITEMID,
+        TYPE_PID,
+        CREATE_TIME,
+        UPDATE_TIME,
+        P_STATE,
+        PRICE,
+        CREATE_USER_ID
+        )
+        VALUES
+        (seq_product_id.nextval,
+        #{name,jdbcType=VARCHAR},
+        #{imagePath,jdbcType=VARCHAR},
+        #{info,jdbcType=VARCHAR},
+        #{typeId,jdbcType=VARCHAR},
+        #{sku,jdbcType=VARCHAR},
+        #{source,jdbcType=VARCHAR},
+        #{releaseTime,jdbcType=DATE},
+        #{account,jdbcType=VARCHAR},
+        #{orderItemId,jdbcType=VARCHAR},
+        #{typePid,jdbcType=VARCHAR},
+        CURRENT_DATE,
+        #{updateTime,jdbcType=DATE},
+        1,
+        #{price,jdbcType=DOUBLE},
+        #{createUserID,jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <select id="selectList" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT * FROM T_PRODUCT_ITEM a
+        where
+        a.STATUS=0
+        <if test="pState != null and pState!= ''">
+            AND a.P_STATE=#{pState}
+        </if>
+        <if test="source != null and source!=''">
+            AND a.source=#{source}
+        </if>
+
+        <if test="startTime != null and startTime !=''">
+            AND a.CREATE_TIME >= TO_DATE(#{startTime},'yyyy-MM-dd HH24:mi:ss')
+        </if>
+
+        <if test="source != null">
+            AND a.CREATE_TIME <![CDATA[<=]]>  TO_DATE(#{endTime},'yyyy-MM-dd HH24:mi:ss')
+        </if>
+
+        ORDER BY a.CREATE_TIME DESC
+    </select>
+
+    <update id="updateState" parameterType="java.util.Map">
+        UPDATE T_PRODUCT_ITEM a SET P_STATE=#{pState},UPDATE_TIME=CURRENT_DATE,STATE_TIME=CURRENT_DATE  WHERE ID=#{id}
+    </update>
+
+
+    <update id="delete" parameterType="java.util.Map">
+        UPDATE T_PRODUCT_ITEM a SET STATUS=1,UPDATE_TIME=CURRENT_DATE  WHERE ID=#{id}
+    </update>
+
+</mapper>

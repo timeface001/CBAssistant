@@ -30,7 +30,7 @@
 </head>
 <body>
 <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 产品管理 <span
-        class="c-gray en">&gt;</span> 产品列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px"
+        class="c-gray en">&gt;</span> 产品列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" id="refresh"
                                               href="javascript:location.replace(location.href);" title="刷新"><i
         class="Hui-iconfont">&#xe68f;</i></a></nav>
 <div class="page-container">
@@ -45,19 +45,19 @@
             <label class="form-label col-xs-2 col-sm-2">开始日期：</label>
             <div class="formControls col-xs-2 col-sm-2">
                 <input type="text" onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'logmax\')||\'%y-%M-%d\'}' })"
-                       name="logmin" class="input-text Wdate" id="logmin" readonly>
+                       name="startTime" class="input-text Wdate" id="logmin" readonly>
             </div>
             <label class="form-label col-xs-2 col-sm-2">结束日期：</label>
             <div class="formControls col-xs-2 col-sm-2">
                 <input type="text" onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'logmin\')}',maxDate:'%y-%M-%d' })"
-                       name="logmax" class="input-text Wdate" id="logmax" readonly>
+                       name="endTime" class="input-text Wdate" id="logmax" readonly>
             </div>
             <div class="formControls col-xs-1 col-sm-1">
                 <button id="search" class="btn btn-success" type="button"><i class="Hui-iconfont">&#xe665;</i>
                 </button>
             </div>
+            <input type="hidden" name="pState" id="pStatus" >
         </div>
-        <input id="orderStatus" type="hidden" name="orderStatus" placeholder=" " class="input-text" value="0">
     </form>
     <div class="mt-20">
         <div id="btn-div" class="row text-c">
@@ -66,17 +66,17 @@
             <a href="javascript:;" onclick="reloadTable(2)" class="btn btn-default radius">已认领</a>
         </div>
         <div class="cl pd-5 bg-1 bk-gray" id="count-div"><span class="l"> <a href="javascript:;"
-                                                                             onclick="deleteProduct()"
+                                                                             onclick="deleteProduct(null)"
                                                                              class="btn btn-danger radius"><i
                 class="Hui-iconfont">
             &#xe6e2;</i> 批量删除</a>
             <a href="javascript:;"
-               onclick="claimProduct()"
+               onclick="claimProduct(null)"
                class="btn btn-danger radius"><i
                     class="Hui-iconfont">
                 &#xe6e2;</i> 批量认领</a>
             <a class="btn btn-primary radius" href="javascript:;"
-               onclick="addProduct('添加产品','<%=request.getContextPath()%>/assistant/index/shop/product-add.jsp','800')"><i
+               onclick="addProduct('添加产品','<%=request.getContextPath()%>/assistant/index/product/product-add.jsp','800')"><i
                     class="Hui-iconfont">
                 &#xe600;</i> 添加产品</a> </span></div>
         <table id="productTable" class="table table-border table-bordered table-bg table-hover mt-10">
@@ -166,11 +166,12 @@
     }
     /*查询订单*/
     function reloadTable(id) {
-        if (id == 8) {
-            document.getElementById('orderStatus').value = 0;
+        if (id == 0) {
+            document.getElementById('pStatus').value = "";
         } else {
-            $("#orderStatus").val(id + 1);
+            $("#pStatus").val(id);
         }
+
         productTable.ajax.reload();
         var btnDiv = document.getElementById("btn-div");
         var btns = btnDiv.getElementsByTagName("a");
@@ -187,7 +188,7 @@
         var table = $("#productTable").DataTable({
             "serverSide": true,
             "ajax": {
-                "url": "<%=request.getContextPath()%>/order/selectLocalOrder",
+                "url": "<%=request.getContextPath()%>/product/list",
                 "type": "POST",
                 "data": function (d) {
                     return $.extend({}, d, {
@@ -198,32 +199,35 @@
             "columns": [
                 {"data": "ID"},
                 {"data": "ID"},
-                {"data": "AMAZONORDERID"},
-                {"data": "AMAZONORDERID"},
-                {"data": "SKU"},
-                {"data": "SALESMAN"},
-                {"data": "SALESCOMPANY"},
-                {"data": "RUNNINGTIME"},
-                {"data": "SALESSOURCE"},
-                {"data": "BUYERCOUNTRY"}
+                {"data": "IMAGE_PATH"},
+                {"data": "SOURCE"},
+                {"data": "NAME"},
+                {"data": "INFO"},
+                {"data": "PRICE"},
+                {"data": function (val) {
+                    return val.STATE_TIME==null?"":"在"+getMyDate(val.STATE_TIME)+"时被认领";
+                }},
+                {"data": function (val) {
+                    return getMyDate( val.CREATE_TIME);
+                }}
             ],
             "columnDefs": [
                 {
-                    "targets": [6],
+                    "targets": [0],
                     "data": "ID",
                     "render": function (data, type, full) {
-                        return ""
+                        return "<input type='checkbox' value=" + full.ID + ">"
                     }
                 },
                 {
-                    "targets": [8],
-                    "data": "ORDERSTATUS",
+                    "targets": [9],
+                    "data": "ID",
                     "render": function (data, type, full) {
-                        return "<a style='text-decoration:none' title='认领'  onClick=\"claimProduct('" + full.ID + "')\"')>认领</a>" +
-                                "&nbsp;&nbsp;" +
-                                "<a style='text-decoration:none' title='编辑'  onClick=\"editProduct('" + full.ID + "')\"')>编辑</a>" +
-                                "&nbsp;&nbsp;" +
-                                "<a style='text-decoration:none' title='删除'  onClick=\"deleteProduct('" + full.ID + "')\"')>删除</a>";
+                        return( full.P_STATE=="1"?"<a style='text-decoration:none' title='认领'  onClick=\"claimProduct('" + full.ID + "')\"')>认领</a>":"") +
+                            "&nbsp;&nbsp;" +
+                            "<a style='text-decoration:none' title='编辑'  onClick=\"editProduct('" + full.ID + "')\"')>编辑</a>" +
+                            "&nbsp;&nbsp;" +
+                            "<a style='text-decoration:none' title='删除'  onClick=\"deleteProduct('" + full.ID + "')\"')>删除</a>";
                     }
                 }
             ],
@@ -249,7 +253,7 @@
             },
             "pagingType": "full_numbers",
             "processing": true,
-            "ordering": false,
+            "ordering": false
         });
         return table;
     }
@@ -261,6 +265,95 @@
             content: 'order-Detail.jsp?amazonOrderId=' + amazonOrderId
         });
         layer.full(index);
+    }
+
+    /**
+     * 认领操作
+     * @param ids
+     */
+    function claimProduct(ids) {
+        if(ids==null){
+            ids=getIDs();
+        }
+
+        layer.confirm('产品删除须谨慎，确认要删除吗？', function (index) {
+        $.ajax({
+            type: 'POST',
+            url: '<%=request.getContextPath()%>/product/state',
+            dataType: 'json',
+            data: {
+                "data": ids,
+                "type": 2
+            },
+            success: function (data) {
+                if (data.success) {
+                    setTimeout(layer.msg(data.msg, {icon: 6, time: 1000}), 1000);
+                    document.getElementById("refresh").click();
+                }
+            },
+            error: function (data) {
+                layer.msg(data.msg, {icon: 2, time: 1000});
+            }
+        }); });
+    }
+
+    /*产品-删除*/
+    function deleteProduct(id) {
+        if(id==null||id==""){
+            id=getIDs();
+        }
+        layer.confirm('产品删除须谨慎，确认要删除吗？', function (index) {
+            $.ajax({
+                type: 'POST',
+                url: '<%=request.getContextPath()%>/product/delete',
+                dataType: 'json',
+                data: {"data": id},
+                success: function (data) {
+                    if (data.success) {
+                        setTimeout(layer.msg(data.msg, {icon: 6, time: 1000}), 1000);
+                        document.getElementById("refresh").click();
+                    } else {
+                        layer.msg('删除失败!', {icon: 5, time: 1000});
+                    }
+                },
+                error: function (data) {
+                    layer.msg('删除失败!', {icon: 5, time: 1000});
+                },
+            });
+        });
+    }
+
+    function getIDs() {
+        var ids=[];
+         $("#productTable td input:checkbox:checked").each(function (i,val) {
+            ids.push($(val).val());
+        });
+         return ids.join(",");
+    }
+
+    //将时间戳格式化
+    function getMyDate(time){
+        if(typeof(time)=="undefined"){
+            return "";
+        }
+        var oDate = new Date(time),
+            oYear = oDate.getFullYear(),
+            oMonth = oDate.getMonth()+1,
+            oDay = oDate.getDate(),
+            oHour = oDate.getHours(),
+            oMin = oDate.getMinutes(),
+            oSen = oDate.getSeconds(),
+            oTime = oYear +'-'+ getzf(oMonth) +'-'+ getzf(oDay) +' '+ getzf(oHour) +':'+ getzf(oMin) +':'+getzf(oSen);//最后拼接时间
+
+        return oTime;
+    };
+
+    //补0操作,当时间数据小于10的时候，给该数据前面加一个0
+    function getzf(num){
+        if(parseInt(num) < 10){
+            num = '0'+num;
+        }
+        return num;
     }
 </script>
 </body>
