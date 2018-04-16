@@ -43,7 +43,7 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-context</artifactId>
-      <version>4.2.1.Release</version>
+      <version>4.2.1.RELEASE</version>
     </dependency>
 
     <!-- https://mvnrepository.com/artifact/org.springframework/spring-context-support -->
@@ -146,7 +146,7 @@
     <dependency>
       <groupId>com.oracle</groupId>
       <artifactId>ojdbc14</artifactId>
-      <version>10.2.0.3.0</version>
+      <version>10.2.0.4.0</version>
     </dependency>
     <dependency>
       <groupId>net.sf.ehcache</groupId>

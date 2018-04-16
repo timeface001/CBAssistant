@@ -22,7 +22,8 @@
     <link rel="stylesheet" type="text/css"
           href="<%=request.getContextPath()%>/assistant/static/h-ui.admin/css/style.css"/>
     <link rel="stylesheet" type="text/css"
-          href="<%=request.getContextPath()%>/assistant/lib/layer/2.4/skin/layui.css"/>
+          href="<%=request.getContextPath()%>/assistant/lib/layui/css/layui.css"/>
+    <script type="text/javascript" src="<%=request.getContextPath()%>/assistant/lib/layui/layui.js"></script>
     <!--[if IE 6]>
     <script type="text/javascript"
             src="<%=request.getContextPath()%>/assistant/lib/DD_belatedPNG_0.0.8a-min.js"></script>
@@ -40,10 +41,10 @@
             </div>
         </div>
         <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>产品图片：</label>
-            <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="" placeholder="" id="pImage" name="imagePath">
-            </div>
+            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>产品主图：</label>
+            <button type="button" class="layui-btn" id="test1">
+                <i class="layui-icon">&#xe67c;</i>上传图片
+            </button>
         </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-3"><span class=""></span>产品分类：</label>
@@ -103,6 +104,22 @@
 <script type="text/javascript">
     var id = '';
     $(function () {
+        layui.use('upload', function(){
+            var upload = layui.upload;
+
+            //执行实例
+            var uploadInst = upload.render({
+                elem: '#test1' //绑定元素
+                ,url: '<%=request.getContextPath()%>/upload/image' //上传接口
+                ,done: function(res){
+                    console.log(res);
+                    //上传完毕回调
+                }
+                ,error: function(){
+                    //请求异常回调
+                }
+            });
+        });
 
     });
     function initProductInfo() {
