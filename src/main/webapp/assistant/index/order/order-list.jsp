@@ -131,11 +131,27 @@
                 </c:otherwise>
             </c:choose>
         </div>
-        <div class="cl pd-5 bg-1 bk-gray mt-10" id="count-div"><span class="l">
+        <c:if test="${sessionScope.user.ROLE_ID eq '100'}">
+            <div class="cl pd-5 bg-1 bk-gray mt-10" id="count-div"><span class="l">
+            <a class="btn btn-primary radius" href="javascript:;"
+               onclick="updateOrder('添加订单','<%=request.getContextPath()%>/assistant/index/order/order-add.jsp','800')"><i
+                    class="Hui-iconfont">
+                &#xe600;</i> 添加订单</a> </span></div>
+        </c:if>
+        <c:if test="${sessionScope.user.ROLE_ID eq '200'}">
+            <div class="cl pd-5 bg-1 bk-gray mt-10" id="count-div"><span class="l">
             <a class="btn btn-primary radius" href="javascript:;"
                onclick="addOrder('添加订单','<%=request.getContextPath()%>/assistant/index/order/order-add.jsp','800')"><i
                     class="Hui-iconfont">
                 &#xe600;</i> 添加订单</a> </span></div>
+        </c:if>
+        <c:if test="${sessionScope.user.ROLE_ID eq '300'}">
+            <div class="cl pd-5 bg-1 bk-gray mt-10" id="count-div"><span class="l">
+            <a class="btn btn-primary radius" href="javascript:;"
+               onclick="addOrder('批量修改','<%=request.getContextPath()%>/assistant/index/order/order-update.jsp','800')"><i
+                    class="Hui-iconfont">
+                &#xe600;</i> 批量修改</a> </span></div>
+        </c:if>
         <table id="orderTable" class="table table-border table-bordered table-bg table-hover">
             <thead>
             <tr class="text-c">
@@ -178,12 +194,6 @@
     var roleId = $("#roleId").val();
     var companyId = $("#companyId").val();
     $(function () {
-        $("#search").click(function () {
-            orderTable.ajax.reload();
-        });
-        $("#downloadOrder").click(function () {
-            downloadOrder();
-        });
         if (roleId == 100 || roleId == 200) {
             initSalesSelect("all");
         } else if (roleId == 400) {
@@ -203,6 +213,12 @@
         $("#logmax").val(new Date().format("yyyy-MM-dd"));
         orderTable = initializeTable();
         initSelect();
+        $("#downloadOrder").click(function () {
+            downloadOrder();
+        });
+        $("#search").click(function () {
+            orderTable.ajax.reload();
+        });
     });
     function initSelect() {
         $.ajax({
@@ -345,8 +361,17 @@
     }
     /*初始化table*/
     function initializeTable() {
+        var vis = true;
+        if (roleId == 400) {
+            vis = false;
+        }
         var table = $("#orderTable").DataTable({
+            "processing": true,
             "serverSide": true,
+            "pagingType": "full_numbers",
+            "ordering": false,
+            "searching": false,
+            "bLengthChange": false,
             "ajax": {
                 "url": "<%=request.getContextPath()%>/order/selectLocalOrder",
                 "type": "POST",
@@ -385,12 +410,41 @@
                     }
                 },
                 {
+                    "targets": [9],
+                    "data": "ITEMPRICE",
+                    "visible": vis
+                },
+                {
+                    "targets": [10],
+                    "data": "COST",
+                    "visible": vis
+                },
+                {
+                    "targets": [11],
+                    "data": "SHIPPINGPRICE",
+                    "visible": vis
+                },
+                {
+                    "targets": [12],
+                    "data": "REFUNDMENT",
+                    "visible": vis
+                },
+                {
+                    "targets": [13],
+                    "data": "PROFIT",
+                    "visible": vis
+                },
+                {
                     "targets": [17],
                     "data": "LOCALSTATUS",
                     "render": function (data, type, full) {
-                        return "<a style='text-decoration:none' title='获取佣金'  id='edit' data-id='" + data + "'  )>获取佣金</a>" +
-                                "&nbsp;&nbsp;" +
-                                "<a style='text-decoration:none' title='删除'  id='del' data-id='" + data + "')>删除</a>";
+                        if (roleId == 100) {
+                            return "<a style='text-decoration:none' title='获取佣金'  id='edit' data-id='" + data + "'  )>获取佣金</a>" +
+                                    "&nbsp;&nbsp;" +
+                                    "<a style='text-decoration:none' title='删除'  id='del' data-id='" + data + "')>删除</a>";
+                        } else {
+                            return "<a style='text-decoration:none' title='获取佣金'  id='edit' data-id='" + data + "'  )>获取佣金</a>";
+                        }
                     }
                 }
             ],
@@ -400,9 +454,9 @@
             "initComplete": function (settings, json) {
 
             },
-            "dom": "t<'dataTables_info'il>p",
+            /* "dom": "t<'dataTables_info'il>p",*/
             "language": {
-                "sProcessing": "正在加载中......",
+                "processing": "正在加载中......",
                 "lengthMenu": "每页 _MENU_ 条",
                 "zeroRecords": "没有找到记录",
                 "info": "当前显示 _START_ 到 _END_ 条，共 _TOTAL_条",
@@ -413,10 +467,7 @@
                     "next": "后一页",
                     "last": "末页"
                 }
-            },
-            "pagingType": "full_numbers",
-            "processing": true,
-            "ordering": false,
+            }
         });
         return table;
     }

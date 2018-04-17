@@ -1,4 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page isELIgnored="false" %>
 <%
     String amazonOrderId = request.getParameter("amazonOrderId");
 %>
@@ -24,6 +26,7 @@
 </head>
 <body>
 <div class="panel panel-success">
+    <input id="roleId" type="hidden" value="${sessionScope.user.ROLE_ID}">
     <div class="panel-header">业务来源</div>
     <div class="panel-body">
         <div class="row cl">
@@ -89,6 +92,12 @@
                 <input type="text" id="addressLine2" placeholder=" "
                        class="input-text" readonly></div>
         </div>
+        <div class="row cl mt-10">
+            <label class=" col-xs-1 col-sm-1 text-r">地址三：</label>
+            <div class=" col-xs-5 col-sm-5">
+                <input type="text" id="addressLine3" placeholder=" "
+                       class="input-text" readonly></div>
+        </div>
     </div>
 </div>
 <div class="panel panel-success">
@@ -113,17 +122,6 @@
         </div>
     </div>
 </div>
-<%--<div class="panel panel-success">
-    <div class="panel-header">亚马逊订单ID</div>
-    <div class="panel-body">
-        <div class="row cl">
-            <div class="col-xs-12 col-sm-12">
-                <input type="text" id="amazonOrderId" placeholder=" "
-                       class="input-text"></div>
-
-        </div>
-    </div>
-</div>--%>
 <div class="panel panel-success">
     <div class="panel-header">发货商品</div>
     <div class="panel-body">
@@ -142,6 +140,67 @@
                 <th width="100">采购编号</th>
                 <th width="100">状态</th>
                 <th width="100">操作</th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+<div class="panel panel-success">
+    <div class="panel-header">已生成快递商品</div>
+    <div class="panel-body">
+        <div class="row cl">
+            <label class=" col-xs-1 col-sm-1 text-r">运输公司：</label>
+            <div class=" col-xs-2 col-sm-2">
+                <select id="transportCompany" name="transportCompany" class="select" style="height: 32px">
+                    <option value="">请选择</option>
+                </select>
+            </div>
+            <label class=" col-xs-2 col-sm-2 text-r">运输方式：</label>
+            <div class=" col-xs-2 col-sm-2">
+                <select id="tranType" name="tranType" class="select" style="height: 32px">
+                    <option value="">请选择</option>
+                </select>
+            </div>
+            <label class=" col-xs-2 col-sm-2 text-r">客户单号：</label>
+            <div class=" col-xs-2 col-sm-2">
+                <input type="text" id="amazonId" placeholder=" "
+                       class="input-text" readonly></div>
+        </div>
+        <div class="row cl">
+            <label class=" col-xs-1 col-sm-1 text-r">货物重量：</label>
+            <div class=" col-xs-2 col-sm-2">
+                <input type="text" id="weight" placeholder=" "
+                       class="input-text"></div>
+            <label class=" col-xs-2 col-sm-2 text-r">包装件数：</label>
+            <div class=" col-xs-2 col-sm-2">
+                <input type="text" id="count" placeholder=" "
+                       class="input-text"></div>
+            <label class=" col-xs-2 col-sm-2 text-r">体积：</label>
+            <div class=" col-xs-2 col-sm-2">
+                <input type="text" id="volum" placeholder=" "
+                       class="input-text"></div>
+        </div>
+        <div class="cl pd-5 bg-1 bk-gray mt-10" id="count-div"><span class="l">
+            <a class="btn btn-primary radius" href="javascript:;"
+               onclick="addRow()"><i
+                    class="Hui-iconfont">
+                &#xe600;</i> 添加一行</a> </span></div>
+        <table id="customsTable" class="table table-border table-bordered table-bg table-hover">
+            <thead>
+            <tr class="text-c">
+                <th width="100">英文品名</th>
+                <th width="150">中文品名</th>
+                <th width="150">数量</th>
+                <th width="100">单位</th>
+                <th width="100">单价</th>
+                <th width="100">总价</th>
+                <th width="100">重量（kg）</th>
+                <th width="100">总重</th>
+                <th width="100">SKU</th>
+                <th width="100">海关协制编号</th>
+                <th width="100">配货信息</th>
+                <th width="100">销售地址</th>
+                <th width="50">操作</th>
             </tr>
             </thead>
         </table>
@@ -186,6 +245,7 @@
 <script type="text/javascript" src="<%=request.getContextPath()%>/assistant/lib/laypage/1.2/laypage.js"></script>
 <script type="text/javascript">
     var amazonOrderId = '<%=amazonOrderId%>';
+    var roleId = $("#roleId").val();
     $(function () {
         $.post("<%=request.getContextPath()%>/order/selectOrderInfo",
                 {
@@ -193,13 +253,14 @@
                 },
                 function (data) {
                     var map = JSON.parse(data);
-                    console.log(map.address);
                     initBusiness(map.localOrder);
                     initAddressInfo(map.address);
 
                 });
         initOrderItem();
         initOperationLog();
+        initCustomsTable();
+        initSelect();
     });
     function initBusiness(localOrder) {
         $("#salesCompany").val(localOrder.COMPANY_NAME);
@@ -215,10 +276,10 @@
                 "columns": [
                     {"data": "ID"},
                     {"data": "INTLTRACKNUM"},
-                    {"data": "INTLTRACKNUM"},
-                    {"data": "ORDERTOTAL"},
-                    {"data": "ORDERTOTAL"},
+                    {"data": "ASIN"},
                     {"data": "ITEMPRICE"},
+                    {"data": "PAYTYPE"},
+                    {"data": "SHIPPINGPRICE"},
                     {"data": "TRANSPORTCOMPANY"},
                     {"data": "LOCALSTATUS"}
                 ],
@@ -263,6 +324,19 @@
         $("#stateOrRegion").val(address.STATEORREGION);
         $("#addressLine1").val(address.ADDRESSLINE1);
         $("#addressLine2").val(address.ADDRESSLINE2);
+        $("#addressLine3").val(address.ADDRESSLINE3);
+        if (roleId == 400) {
+            $("#name").attr("readOnly", false);
+            $("#company").attr("readOnly", false);
+            $("#phone").attr("readOnly", false);
+            $("#countryCode").attr("readOnly", false);
+            $("#postalCode").attr("readOnly", false);
+            $("#city").attr("readOnly", false);
+            $("#stateOrRegion").attr("readOnly", false);
+            $("#addressLine1").attr("readOnly", false);
+            $("#addressLine2").attr("readOnly", false);
+            $("#addressLine3").attr("readOnly", false);
+        }
     }
     function initOrderItem() {
         $("#itemTable").DataTable({
@@ -316,22 +390,61 @@
                     "targets": [11],
                     "data": "STATUS",
                     "render": function (data, type, full) {
-                        if (data == 1 || data == 2 || data == 3) {
-                            return "<a style='text-decoration:none' title='备货'  onClick=\"updateOrder(2,'" + full.SELLERSKU + "')\"'>备货</a>" +
-                                    "&nbsp;&nbsp;&nbsp;&nbsp;" +
-                                    "<a style='text-decoration:none' title='缺货'  onClick=\"updateOrder(3,'" + full.SELLERSKU + "')\"'>缺货</a>" +
-                                    "&nbsp;&nbsp;&nbsp;&nbsp;" +
-                                    "<a style='text-decoration:none' title='退款'  onClick=\"updateOrder(6,'" + full.SELLERSKU + "')\"'>退款</a>" +
-                                    "&nbsp;&nbsp;&nbsp;&nbsp;" +
-                                    "<a style='text-decoration:none' title='问题'  onClick=\"updateOrder(5,'" + full.SELLERSKU + "')\"'>问题</a>" +
-                                    "&nbsp;&nbsp;&nbsp;&nbsp;";
-                        } else if (data == 4 || data == 5 || data == 6 || data == 7 || data == 8) {
-                            return "<a style='text-decoration:none' title='退款'  onClick=\"updateOrder(6,'" + full.SELLERSKU + "')\"'>退款</a>" +
-                                    "&nbsp;&nbsp;&nbsp;&nbsp;" +
-                                    "<a style='text-decoration:none' title='问题'  onClick=\"updateOrder(5,'" + full.SELLERSKU + "')\"'>问题</a>" +
-                                    "&nbsp;&nbsp;&nbsp;&nbsp;" +
-                                    "<a style='text-decoration:none' title='妥投'  onClick=\"updateOrder(7,'" + full.SELLERSKU + "')\"'>妥投</a>" +
-                                    "&nbsp;&nbsp;&nbsp;&nbsp;";
+                        if (data == 1 || data == 3) {
+                            if (roleId == 300) {
+                                return "";
+                            } else {
+                                return "<a style='text-decoration:none' title='备货'  onClick=\"updateOrder(2,'" + full.SELLERSKU + "')\"'>备货</a>" +
+                                        "&nbsp;&nbsp;&nbsp;&nbsp;" +
+                                        "<a style='text-decoration:none' title='缺货'  onClick=\"updateOrder(3,'" + full.SELLERSKU + "')\"'>缺货</a>" +
+                                        "&nbsp;&nbsp;&nbsp;&nbsp;" +
+                                        "<a style='text-decoration:none' title='退款'  onClick=\"updateOrder(6,'" + full.SELLERSKU + "')\"'>退款</a>" +
+                                        "&nbsp;&nbsp;&nbsp;&nbsp;" +
+                                        "<a style='text-decoration:none' title='问题'  onClick=\"updateOrder(5,'" + full.SELLERSKU + "')\"'>问题</a>" +
+                                        "&nbsp;&nbsp;&nbsp;&nbsp;";
+                            }
+                        } else if (data == 2) {
+                            if (roleId == 300) {
+                                return "";
+                            } else if (roleId == 400) {
+                                return "<a style='text-decoration:none' title='发货'  onClick=\"updateOrder(4,'" + full.SELLERSKU + "')\"'>发货</a>";
+                            } else if (roleId == 500) {
+                                return "<a style='text-decoration:none' title='缺货'  onClick=\"updateOrder(3,'" + full.SELLERSKU + "')\"'>缺货</a>" +
+                                        "&nbsp;&nbsp;&nbsp;&nbsp;" +
+                                        "<a style='text-decoration:none' title='退款'  onClick=\"updateOrder(6,'" + full.SELLERSKU + "')\"'>退款</a>" +
+                                        "&nbsp;&nbsp;&nbsp;&nbsp;" +
+                                        "<a style='text-decoration:none' title='问题'  onClick=\"updateOrder(5,'" + full.SELLERSKU + "')\"'>问题</a>" +
+                                        "&nbsp;&nbsp;&nbsp;&nbsp;";
+                            } else {
+                                return "<a style='text-decoration:none' title='备货'  onClick=\"updateOrder(2,'" + full.SELLERSKU + "')\"'>备货</a>" +
+                                        "&nbsp;&nbsp;&nbsp;&nbsp;" +
+                                        "<a style='text-decoration:none' title='缺货'  onClick=\"updateOrder(3,'" + full.SELLERSKU + "')\"'>缺货</a>" +
+                                        "&nbsp;&nbsp;&nbsp;&nbsp;" +
+                                        "<a style='text-decoration:none' title='退款'  onClick=\"updateOrder(6,'" + full.SELLERSKU + "')\"'>退款</a>" +
+                                        "&nbsp;&nbsp;&nbsp;&nbsp;" +
+                                        "<a style='text-decoration:none' title='问题'  onClick=\"updateOrder(5,'" + full.SELLERSKU + "')\"'>问题</a>" +
+                                        "&nbsp;&nbsp;&nbsp;&nbsp;";
+                            }
+                        } else if (data == 4) {
+                            if (roleId == 400 || roleId == 300) {
+                                return "";
+                            } else {
+                                return "<a style='text-decoration:none' title='退款'  onClick=\"updateOrder(6,'" + full.SELLERSKU + "')\"'>退款</a>" +
+                                        "&nbsp;&nbsp;&nbsp;&nbsp;" +
+                                        "<a style='text-decoration:none' title='妥投'  onClick=\"updateOrder(7,'" + full.SELLERSKU + "')\"'>妥投</a>" +
+                                        "&nbsp;&nbsp;&nbsp;&nbsp;";
+                            }
+                        } else if (data == 5 || data == 6 || data == 7 || data == 8) {
+                            if (roleId == 300) {
+                                return "";
+                            } else {
+                                return "<a style='text-decoration:none' title='退款'  onClick=\"updateOrder(6,'" + full.SELLERSKU + "')\"'>退款</a>" +
+                                        "&nbsp;&nbsp;&nbsp;&nbsp;" +
+                                        "<a style='text-decoration:none' title='问题'  onClick=\"updateOrder(5,'" + full.SELLERSKU + "')\"'>问题</a>" +
+                                        "&nbsp;&nbsp;&nbsp;&nbsp;" +
+                                        "<a style='text-decoration:none' title='妥投'  onClick=\"updateOrder(7,'" + full.SELLERSKU + "')\"'>妥投</a>" +
+                                        "&nbsp;&nbsp;&nbsp;&nbsp;";
+                            }
                         }
                     }
                 }
@@ -381,6 +494,161 @@
             }
         });
     }
+    function initCustomsTable() {
+        $("#customsTable").DataTable({
+            "ordering": false,
+            "searching": false,
+            "bLengthChange": false,
+            "columns": [
+                {"data": "CHNNAME"},
+                {"data": "ENNAME"},
+                {"data": "COUNT"},
+                {"data": "UNIT"},
+                {"data": "PRICE"},
+                {"data": "TOTALPRICE"},
+                {"data": "WEIGHT"},
+                {"data": "TOTALWEIGHT"},
+                {"data": "SKU"},
+                {"data": "CODE"},
+                {"data": "INFO"},
+                {"data": "ADDRESS"},
+                {"data": "STATUS"}
+            ],
+            "columnDefs": [
+                {
+                    "targets": [0],
+                    "data": "CHNNAME",
+                    "render": function (data, type, full) {
+                        return "<input type='text' value='' width='100'/>";
+                    }
+                },
+                {
+                    "targets": [1],
+                    "data": "ENNAME",
+                    "render": function (data, type, full) {
+                        return "<input type='text' value=''/>";
+                    }
+                },
+                {
+                    "targets": [2],
+                    "data": "COUNT",
+                    "render": function (data, type, full) {
+                        return "<input type='text' value=''/>";
+                    }
+                },
+                {
+                    "targets": [3],
+                    "data": "UNIT",
+                    "render": function (data, type, full) {
+                        return "<input type='text' value=''/>";
+                    }
+                },
+                {
+                    "targets": [4],
+                    "data": "PRICE",
+                    "render": function (data, type, full) {
+                        return "<input type='text' value=''/>";
+                    }
+                },
+                {
+                    "targets": [5],
+                    "data": "TOTALPRICE",
+                    "render": function (data, type, full) {
+                        return "<input type='text' value=''/>";
+                    }
+                },
+                {
+                    "targets": [6],
+                    "data": "WEIGHT",
+                    "render": function (data, type, full) {
+                        return "<input type='text' value=''/>";
+                    }
+                },
+                {
+                    "targets": [7],
+                    "data": "TOTALWEIGHT",
+                    "render": function (data, type, full) {
+                        return "<input type='text' value=''/>";
+                    }
+                },
+                {
+                    "targets": [8],
+                    "data": "SKU",
+                    "render": function (data, type, full) {
+                        return "<input type='text' value=''/>";
+                    }
+                }, {
+                    "targets": [9],
+                    "data": "CODE",
+                    "render": function (data, type, full) {
+                        return "<input type='text' value=''/>";
+                    }
+                },
+                {
+                    "targets": [10],
+                    "data": "INFO",
+                    "render": function (data, type, full) {
+                        return "<input type='text' value=''/>";
+                    }
+                },
+                {
+                    "targets": [11],
+                    "data": "ADDRESS",
+                    "render": function (data, type, full) {
+                        return "<input type='text' value=''/>";
+                    }
+                },
+                {
+                    "targets": [12],
+                    "data": "STATUS",
+                    "render": function (data, type, full) {
+                        return "<a style='text-decoration:none' title='删除'  onClick=\"del(7,'" + full.SELLERSKU + "')\"'>删除</a>";
+                    }
+                }
+            ],
+            "bFilter": false,
+            "paging": false,
+            "info": false
+        });
+    }
+    function addRow() {
+        var customsTable = $("#customsTable").DataTable();
+        customsTable.row.add([
+            "Tiger Nixon",
+            "System Architect",
+            "$3,120",
+            "2011/04/25",
+            "Edinburgh",
+            "5421",
+            "5421",
+            "5421",
+            "5421",
+            "5421",
+            "5421",
+            "5421",
+            "5421"]).draw();
+    }
+    function initSelect() {
+        $.ajax({
+            type: 'POST',
+            url: '<%=request.getContextPath()%>/common/getList',
+            dataType: 'json',
+            data: {
+                "code": "transportCompanies"
+            },
+            success: function (data) {
+                if (data.code == 0) {
+                    var data = data.data;
+                    for (var i = 0; i < data.length; i++) {
+                        $("#transportCompany").append($('<option value=' + data[i].ID + '>' + data[i].NAME + '</option>'));
+                    }
+                }
+            },
+            error: function (data) {
+                layer.msg(data.msg, {icon: 2, time: 1000});
+            }
+        });
+    }
     function updateOrder(status, sku) {
         if (status == 2) {
             layer_show("备货", "<%=request.getContextPath()%>/assistant/index/order/stocking.jsp?amazonOrderId=" + amazonOrderId + "&sku=" + sku, 400, 300);
@@ -389,7 +657,7 @@
                 confirm(3, sku)
             });
         } else if (status == 4) {
-
+            layer_show("发货", "<%=request.getContextPath()%>/assistant/index/order/stocking.jsp?amazonOrderId=" + amazonOrderId + "&sku=" + sku, 400, 300);
         } else if (status == 5) {
             layer.confirm('您确定此订单有问题吗？', function (index) {
                 confirm(5, sku)
@@ -400,6 +668,8 @@
             layer.confirm('您确定要妥投吗？', function (index) {
                 confirm(7, sku)
             });
+        } else if (status == 8) {
+            layer_show("修改运费", "<%=request.getContextPath()%>/assistant/index/order/stocking.jsp?amazonOrderId=" + amazonOrderId + "&sku=" + sku, 400, 300);
         }
     }
     function confirm(status, sku) {

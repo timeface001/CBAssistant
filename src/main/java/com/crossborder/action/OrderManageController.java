@@ -222,21 +222,23 @@ public class OrderManageController {
      */
     @ResponseBody
     @RequestMapping(value = "selectLocalOrder", produces = "text/plain;charset=UTF-8")
-    public String selectLocalOrder(HttpSession session, String data, Integer draw, Integer start, Integer length) {
+    public String selectLocalOrder(String data, Integer draw, Integer start, Integer length) {
         Map<String, Object> map = new HashMap<>();
         Map<String, Object> paramMap = JSON.parseObject(data, Map.class);
         List<Map<String, Object>> localOrderList = new ArrayList<>();
         if (paramMap.get("localStatus").toString().equals("0")) {
             paramMap.put("localStatus", "");
         }
+        paramMap.put("logmin", paramMap.get("logmin").toString() + " 00:00:00");
+        paramMap.put("logmax", paramMap.get("logmax").toString() + " 23:59:59");
         try {
-            PageHelper.startPage(start == null ? 1 : start, length);
+            PageHelper.startPage(start == null ? 1 : (start / length + 1), length);
             localOrderList = orderManageService.selectLocalOrder(paramMap);
             PageInfo<Map<String, Object>> pageInfo = new PageInfo<Map<String, Object>>(localOrderList);
             map.put("data", localOrderList);
             map.put("draw", draw);
             map.put("recordsTotal", pageInfo.getTotal());
-            map.put("recordsFiltered", localOrderList.size());
+            map.put("recordsFiltered", pageInfo.getTotal());
             map.put("code", "0");
             map.put("msg", "查询成功");
         } catch (Exception e) {
@@ -300,7 +302,7 @@ public class OrderManageController {
      */
     @ResponseBody
     @RequestMapping(value = "updateOrderInfo", produces = "text/plain;charset=UTF-8")
-    public String updateOrderInfo(String amazonOrderId, String status, String sku, String cost, String refundment, String trackNum, String purchaseNum) {
+    public String updateOrderInfo(String amazonOrderId, String status, String sku, String cost, String refundment, String trackNum, String purchaseNum, String shippingPrice) {
         Map<String, Object> map = new HashMap<>();
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("status", status);
@@ -310,6 +312,7 @@ public class OrderManageController {
         paramMap.put("refundment", refundment);
         paramMap.put("trackNum", trackNum);
         paramMap.put("purchaseNum", purchaseNum);
+        paramMap.put("shippingPrice", shippingPrice);
         try {
             orderManageService.updateOrder(paramMap);
             orderManageService.updateOrderItem(paramMap);

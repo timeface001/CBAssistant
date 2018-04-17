@@ -26,7 +26,8 @@
 <body>
 <div class="pd-20">
     <div class="Huiform">
-        <form id="stockingForm" class="form form-horizontal" method="post" action="<%=request.getContextPath()%>/order/updateOrderInfo">
+        <form id="stockingForm" class="form form-horizontal" method="post"
+              action="<%=request.getContextPath()%>/order/updateOrderInfo">
             <input type="hidden" value="<%=amazonOrderId%>" name="amazonOrderId">
             <input type="hidden" value="<%=sku%>" name="sku">
             <input type="hidden" value="2" name="status">
@@ -63,9 +64,12 @@
 <script type="text/javascript" src="<%=request.getContextPath()%>/assistant/static/h-ui/js/H-ui.min.js"></script>
 <script type="text/javascript"
         src="<%=request.getContextPath()%>/assistant/static/h-ui.admin/js/H-ui.admin.js"></script>
-<script type="text/javascript" src="<%=request.getContextPath()%>/assistant/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
-<script type="text/javascript" src="<%=request.getContextPath()%>/assistant/lib/jquery.validation/1.14.0/validate-methods.js"></script>
-<script type="text/javascript" src="<%=request.getContextPath()%>/assistant/lib/jquery.validation/1.14.0/messages_zh.js"></script>
+<script type="text/javascript"
+        src="<%=request.getContextPath()%>/assistant/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
+<script type="text/javascript"
+        src="<%=request.getContextPath()%>/assistant/lib/jquery.validation/1.14.0/validate-methods.js"></script>
+<script type="text/javascript"
+        src="<%=request.getContextPath()%>/assistant/lib/jquery.validation/1.14.0/messages_zh.js"></script>
 <script type="text/javascript">
     $(function () {
         $("#stockingForm").validate({

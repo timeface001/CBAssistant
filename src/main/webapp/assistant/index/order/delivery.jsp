@@ -21,20 +21,31 @@
           href="<%=request.getContextPath()%>/assistant/static/h-ui.admin/skin/default/skin.css" id="skin"/>
     <link rel="stylesheet" type="text/css"
           href="<%=request.getContextPath()%>/assistant/static/h-ui.admin/css/style.css"/>
-    <title>退款</title>
+    <title>发货</title>
 </head>
 <body>
 <div class="pd-20">
     <div class="Huiform">
-        <form id="refundForm" class="form form-horizontal" method="post"
-              action="<%=request.getContextPath()%>/order/updateOrderInfo">
+        <form id="deliveryForm" class="form form-horizontal" method="post" action="<%=request.getContextPath()%>/order/updateOrderInfo">
             <input type="hidden" value="<%=amazonOrderId%>" name="amazonOrderId">
             <input type="hidden" value="<%=sku%>" name="sku">
-            <input type="hidden" value="6" name="status">
+            <input type="hidden" value="2" name="status">
             <div class="row cl">
-                <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>退款金额：</label>
+                <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>国内追踪号：</label>
                 <div class="formControls col-xs-8 col-sm-9">
-                    <input type="text" class="input-text" value="" placeholder="" id="refund" name="refundment">
+                    <input type="text" class="input-text" value="" placeholder="" id="trackNum" name="trackNum">
+                </div>
+            </div>
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>采购编号：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input type="text" class="input-text" value="" placeholder="" id="purchaseNum" name="purchaseNum">
+                </div>
+            </div>
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>运费：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input type="text" class="input-text" value="" placeholder="" id="shippingPrice" name="shippingPrice">
                 </div>
             </div>
             <div class="row cl">
@@ -55,9 +66,15 @@
 <script type="text/javascript" src="<%=request.getContextPath()%>/assistant/lib/jquery.validation/1.14.0/messages_zh.js"></script>
 <script type="text/javascript">
     $(function () {
-        $("#refundForm").validate({
+        $("#deliveryForm").validate({
             rules: {
-                refundment: {
+                trackNum: {
+                    required: true,
+                },
+                purchaseNum: {
+                    required: true,
+                },
+                shippingPrice: {
                     required: true,
                 }
             },
@@ -65,7 +82,6 @@
             focusCleanup: true,
             success: "valid",
             submitHandler: function (form) {
-                //$(form).ajaxSubmit();
                 var index = parent.layer.getFrameIndex(window.name);
                 parent.layer.close(index);
             }

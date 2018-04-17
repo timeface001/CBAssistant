@@ -21,20 +21,20 @@
           href="<%=request.getContextPath()%>/assistant/static/h-ui.admin/skin/default/skin.css" id="skin"/>
     <link rel="stylesheet" type="text/css"
           href="<%=request.getContextPath()%>/assistant/static/h-ui.admin/css/style.css"/>
-    <title>退款</title>
+    <title>修改运费</title>
 </head>
 <body>
 <div class="pd-20">
     <div class="Huiform">
-        <form id="refundForm" class="form form-horizontal" method="post"
+        <form id="shippingForm" class="form form-horizontal" method="post"
               action="<%=request.getContextPath()%>/order/updateOrderInfo">
             <input type="hidden" value="<%=amazonOrderId%>" name="amazonOrderId">
             <input type="hidden" value="<%=sku%>" name="sku">
             <input type="hidden" value="6" name="status">
             <div class="row cl">
-                <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>退款金额：</label>
+                <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>运费：</label>
                 <div class="formControls col-xs-8 col-sm-9">
-                    <input type="text" class="input-text" value="" placeholder="" id="refund" name="refundment">
+                    <input type="text" class="input-text" value="" placeholder="" id="shippingPrice" name="shippingPrice">
                 </div>
             </div>
             <div class="row cl">
@@ -55,9 +55,9 @@
 <script type="text/javascript" src="<%=request.getContextPath()%>/assistant/lib/jquery.validation/1.14.0/messages_zh.js"></script>
 <script type="text/javascript">
     $(function () {
-        $("#refundForm").validate({
+        $("#shippingForm").validate({
             rules: {
-                refundment: {
+                shippingPrice: {
                     required: true,
                 }
             },
@@ -67,6 +67,7 @@
             submitHandler: function (form) {
                 //$(form).ajaxSubmit();
                 var index = parent.layer.getFrameIndex(window.name);
+                //parent.$('.btn-refresh').click();
                 parent.layer.close(index);
             }
         });

@@ -192,8 +192,11 @@
         <if test="localStatus !=null and localStatus !=''">
             AND t1.LOCALSTATUS = #{localStatus,jdbcType=VARCHAR}
         </if>
-        <if test="logmin !=null or logmax != null">
-            AND t1.PURCHASEDATE between #{logmin,jdbcType=VARCHAR} and #{logmax,jdbcType=VARCHAR}
+        <if test="logmin !=null and logmin != ''">
+            AND t1.PURCHASEDATE <![CDATA[>=]]> #{logmin,jdbcType=VARCHAR}
+        </if>
+        <if test="logmax !=null and logmax != ''">
+            AND t1.PURCHASEDATE  <![CDATA[<=]]> #{logmax,jdbcType=VARCHAR}
         </if>
         group by t1.id,
         t1.amazonorderid,
@@ -233,6 +236,9 @@
         </if>
         <if test="purchaseNum !=null and purchaseNum !=''">
             ,PURCHASENUM = #{purchaseNum,jdbcType=VARCHAR}
+        </if>
+        <if test="shippingPrice !=null and shippingPrice !=''">
+            ,SHIPPINGPRICE = #{shippingPrice,jdbcType=VARCHAR}
         </if>
         WHERE AMAZONORDERID = #{amazonOrderId,jdbcType=VARCHAR}
         AND SELLERSKU = #{sku,jdbcType=VARCHAR}

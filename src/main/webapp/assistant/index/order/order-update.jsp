@@ -1,8 +1,4 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%
-    String amazonOrderId = request.getParameter("amazonOrderId");
-    String sku = request.getParameter("sku");
-%>
 <!DOCTYPE HTML>
 <html>
 <head>
@@ -28,13 +24,13 @@
     <div class="Huiform">
         <form id="refundForm" class="form form-horizontal" method="post"
               action="<%=request.getContextPath()%>/order/updateOrderInfo">
-            <input type="hidden" value="<%=amazonOrderId%>" name="amazonOrderId">
-            <input type="hidden" value="<%=sku%>" name="sku">
-            <input type="hidden" value="6" name="status">
             <div class="row cl">
-                <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>退款金额：</label>
+                <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>批量修改：</label>
                 <div class="formControls col-xs-8 col-sm-9">
-                    <input type="text" class="input-text" value="" placeholder="" id="refund" name="refundment">
+                    <input class="input-text upload-url" type="text" name="uploadfile" id="uploadfile" readonly
+                           style="width:200px">
+                    <a href="javascript:;" class="btn btn-primary upload-btn"><i class="Hui-iconfont">&#xe642;</i>
+                        上传execl</a>
                 </div>
             </div>
             <div class="row cl">
@@ -50,14 +46,17 @@
 <script type="text/javascript" src="<%=request.getContextPath()%>/assistant/static/h-ui/js/H-ui.min.js"></script>
 <script type="text/javascript"
         src="<%=request.getContextPath()%>/assistant/static/h-ui.admin/js/H-ui.admin.js"></script>
-<script type="text/javascript" src="<%=request.getContextPath()%>/assistant/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
-<script type="text/javascript" src="<%=request.getContextPath()%>/assistant/lib/jquery.validation/1.14.0/validate-methods.js"></script>
-<script type="text/javascript" src="<%=request.getContextPath()%>/assistant/lib/jquery.validation/1.14.0/messages_zh.js"></script>
+<script type="text/javascript"
+        src="<%=request.getContextPath()%>/assistant/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
+<script type="text/javascript"
+        src="<%=request.getContextPath()%>/assistant/lib/jquery.validation/1.14.0/validate-methods.js"></script>
+<script type="text/javascript"
+        src="<%=request.getContextPath()%>/assistant/lib/jquery.validation/1.14.0/messages_zh.js"></script>
 <script type="text/javascript">
     $(function () {
         $("#refundForm").validate({
             rules: {
-                refundment: {
+                uploadfile: {
                     required: true,
                 }
             },
@@ -65,7 +64,6 @@
             focusCleanup: true,
             success: "valid",
             submitHandler: function (form) {
-                //$(form).ajaxSubmit();
                 var index = parent.layer.getFrameIndex(window.name);
                 parent.layer.close(index);
             }
