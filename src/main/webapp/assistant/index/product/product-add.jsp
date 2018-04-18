@@ -42,9 +42,17 @@
         </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>产品主图：</label>
-            <button type="button" class="layui-btn" id="test1">
+            <button type="button" class="layui-btn" id="mainPath">
                 <i class="layui-icon">&#xe67c;</i>上传图片
+                <i  id="mainPathSrc"></i>
             </button>
+
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3"><span class=""></span></label>
+            <div class="formControls col-xs-8 col-sm-9" >
+
+            </div>
         </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-3"><span class=""></span>产品分类：</label>
@@ -109,10 +117,13 @@
 
             //执行实例
             var uploadInst = upload.render({
-                elem: '#test1' //绑定元素
+                accept:"images",
+                acceptMime:"image/*",
+                elem: '#mainPath' //绑定元素
                 ,url: '<%=request.getContextPath()%>/upload/image' //上传接口
                 ,done: function(res){
                     console.log(res);
+                    $("#mainPathSrc").append("<img src=<%=request.getContextPath()%>/upload/"+res.data+" />")
                     //上传完毕回调
                 }
                 ,error: function(){
