@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import javax.management.ObjectName;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -41,5 +42,9 @@ public class ProductManagerService {
         for (String id : ids) {
             productManagerDao.delete(id);
         }
+    }
+
+    public Map<String, Object> selectOne(String id) {
+        return productManagerDao.selectOne(id);
     }
 }

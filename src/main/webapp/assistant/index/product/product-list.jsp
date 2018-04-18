@@ -125,44 +125,7 @@
         layer_show(title, url, w);
     }
     function initSelect() {
-        $.ajax({
-            type: 'POST',
-            url: '<%=request.getContextPath()%>/common/getList',
-            dataType: 'json',
-            data: {
-                "code": "countries"
-            },
-            success: function (data) {
-                if (data.code == 0) {
-                    var data = data.data;
-                    for (var i = 0; i < data.length; i++) {
-                        $("#buyerCounty").append($('<option value=' + data[i].ID + '>' + data[i].NAME + '</option>'));
-                    }
-                }
-            },
-            error: function (data) {
-                layer.msg(data.msg, {icon: 2, time: 1000});
-            },
-        });
-        $.ajax({
-            type: 'POST',
-            url: '<%=request.getContextPath()%>/common/getList',
-            dataType: 'json',
-            data: {
-                "code": "transportCompanies"
-            },
-            success: function (data) {
-                if (data.code == 0) {
-                    var data = data.data;
-                    for (var i = 0; i < data.length; i++) {
-                        $("#transportCompany").append($('<option value=' + data[i].ID + '>' + data[i].NAME + '</option>'));
-                    }
-                }
-            },
-            error: function (data) {
-                layer.msg(data.msg, {icon: 2, time: 1000});
-            }
-        });
+
     }
     /*查询订单*/
     function reloadTable(id) {
@@ -265,6 +228,11 @@
             content: 'order-Detail.jsp?amazonOrderId=' + amazonOrderId
         });
         layer.full(index);
+    }
+
+    function editProduct(id) {
+        layer_show("编辑产品", '<%=request.getContextPath()%>/assistant/index/product/product-add.jsp?id='+id, 800);
+
     }
 
     /**

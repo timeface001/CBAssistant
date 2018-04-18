@@ -71,4 +71,8 @@
         UPDATE T_PRODUCT_ITEM a SET STATUS=1,UPDATE_TIME=CURRENT_DATE  WHERE ID=#{id}
     </update>
 
+    <select id="selectOne"  parameterType="java.util.Map"  resultType="java.util.Map">
+        SELECT * FROM T_PRODUCT_ITEM where ID=#{id}
+    </select>
+
 </mapper>

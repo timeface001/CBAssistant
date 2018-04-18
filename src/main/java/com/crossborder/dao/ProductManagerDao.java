@@ -18,4 +18,6 @@ public interface ProductManagerDao {
     int updateState(Map<String,Object> params);
 
     void delete(@Param("id") String id);
+
+    Map<String,Object> selectOne(@Param("id") String id);
 }
