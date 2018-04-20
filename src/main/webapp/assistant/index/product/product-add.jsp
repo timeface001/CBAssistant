@@ -179,6 +179,7 @@
                 , number: 9
                 , url: '<%=request.getContextPath()%>/upload/image' //上传接口
                 , done: function (res) {
+                    console.log(res);
                     $("#imagePathSrc").append("<img width='100px' src=<%=request.getContextPath()%>/upload/" + res.data + " />")
                     $("#imagePath").val(res.data);
                     //上传完毕回调
@@ -186,6 +187,8 @@
                         $("#imagePathSrc img").each(function (i, val) {
                             if (i > 8) {
                                 $(val).remove();
+                            }else{
+
                             }
                         });
                     }
@@ -210,11 +213,12 @@
 
                     if (data.success) {
                         var data = data.data;
-                        console.log(data);
                         $("#pName").val(data.NAME);
                         $("#mainPathSrc").html("<img width='100px' height='90px' src=<%=request.getContextPath()%>/upload/" + data.MAIN_PATH + " />")
-                        $("#countryCode").val(data.COUNTRY_CODE);
+                        //$("#countryCode").val(data.COUNTRY_CODE);
+                        if(data.IMAGE_PATH!=null){
 
+                        }
                         $("#pPrice").val(data.PRICE);
                         $("#pInfo").val(data.INFO);
                     } else {
