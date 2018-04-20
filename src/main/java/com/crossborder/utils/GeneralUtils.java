@@ -1,6 +1,8 @@
 package com.crossborder.utils;
 
 import org.springframework.util.ClassUtils;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,6 +44,10 @@ public class GeneralUtils {
         // 4 代表长度为4
         // d 代表参数为正数型
         return machineId + String.format("%015d", hashCodeV);
+    }
+
+    public static String getUserId(){
+        return  ((Map<String, Object>) ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest().getSession().getAttribute("user")).get("USER_ID").toString();
     }
 
 

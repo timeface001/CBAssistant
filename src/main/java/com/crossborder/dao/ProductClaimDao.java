@@ -11,5 +11,7 @@ import java.util.Map;
  */
 @Repository
 public interface ProductClaimDao {
-    int insertProduct(Map<String, Object> product);
+
+    void saveOrUpdate(Map<String,Object> params);
+
 }

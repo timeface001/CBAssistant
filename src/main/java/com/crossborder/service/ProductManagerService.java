@@ -1,5 +1,6 @@
 package com.crossborder.service;
 
+import com.crossborder.dao.ProductClaimDao;
 import com.crossborder.dao.ProductManagerDao;
 import com.crossborder.utils.GeneralUtils;
 import com.crossborder.utils.ProductStateEnum;
@@ -7,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import javax.management.ObjectName;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +19,8 @@ import java.util.Map;
 public class ProductManagerService {
     @Resource
     private ProductManagerDao productManagerDao;
+    @Resource
+    private ProductClaimDao productClaimDao;
 
     public boolean save(Map<String, Object> product) {
         product.put("createTime", new Date());
@@ -33,6 +35,11 @@ public class ProductManagerService {
     public void updateState(String[] ids, ProductStateEnum stateEnum) {
         for (String id : ids) {
             productManagerDao.updateState(GeneralUtils.genMap("id", id, "pState", stateEnum.getValue()));
+            if(stateEnum.compareTo(ProductStateEnum.claim)==0){//认领插入
+                Map<String,Object> product= productManagerDao.selectOne(id);
+                productClaimDao.saveOrUpdate(GeneralUtils.genMap("sku",GeneralUtils.getUUID16(),"CREATE_USER",GeneralUtils.getUserId()
+                        ,"price",product.get("PRICE"),"imagePath"));
+            }
         }
     }
 
