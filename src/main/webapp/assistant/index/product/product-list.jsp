@@ -244,7 +244,7 @@
             ids=getIDs();
         }
 
-        layer.confirm('产品删除须谨慎，确认要删除吗？', function (index) {
+        layer.confirm('确定认领商品吗？', function (index) {
         $.ajax({
             type: 'POST',
             url: '<%=request.getContextPath()%>/product/state',

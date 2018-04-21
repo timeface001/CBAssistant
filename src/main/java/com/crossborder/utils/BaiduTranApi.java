@@ -1,6 +1,7 @@
 package com.crossborder.utils;
 
 import com.alibaba.fastjson.JSON;
+import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,6 +33,9 @@ public class BaiduTranApi {
     }
 
     public String getTransResult(String query, String from, String to) {
+        if (StringUtils.isEmpty(query) || query.trim().length() == 0) {
+            return query;
+        }
         Map<String, String> params = buildParams(query, from, to);
         return JSON.parseObject(HttpGet.get(TRANS_API_HOST, params)).getJSONArray("trans_result").getJSONObject(0).getString("dst");
     }
