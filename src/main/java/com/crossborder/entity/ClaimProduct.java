@@ -3,6 +3,8 @@ package com.crossborder.entity;
 import java.math.BigDecimal;
 
 public class ClaimProduct {
+    private String id;
+
     private String sku;
 
     private String createUser;
@@ -69,7 +71,13 @@ public class ClaimProduct {
 
     private String productDescriptionCn;
 
-    private String id;
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id == null ? null : id.trim();
+    }
 
     public String getSku() {
         return sku;
@@ -333,13 +341,5 @@ public class ClaimProduct {
 
     public void setProductDescriptionCn(String productDescriptionCn) {
         this.productDescriptionCn = productDescriptionCn == null ? null : productDescriptionCn.trim();
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id == null ? null : id.trim();
     }
 }

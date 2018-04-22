@@ -1,6 +1,6 @@
 package com.crossborder.service;
 
-import com.crossborder.dao.ClaimProductMapper;
+import com.crossborder.dao.ClaimProductExtMapper;
 import com.crossborder.dao.ProductManagerDao;
 import com.crossborder.entity.ClaimProduct;
 import com.crossborder.utils.BaiduTranApi;
@@ -23,23 +23,33 @@ public class ProductManagerService {
     @Resource
     private ProductManagerDao productManagerDao;
     @Resource
-    private ClaimProductMapper claimProductMapper;
+    private ClaimProductExtMapper claimProductExtMapper;
 
     public boolean save(Map<String, Object> product) {
         product.put("createTime", new Date());
-        return productManagerDao.insertProduct(product) == 1;
+        if (product.get("id") != null) {
+            return productManagerDao.updateProduct(product) == 1;
+        } else {
+            return productManagerDao.insertProduct(product) == 1;
+        }
+
     }
 
     public List<Map<String, Object>> selectList(Map<String, Object> params) {
         return productManagerDao.selectList(params);
     }
 
+    public List<ClaimProduct> selectClaimList(Map<String, Object> params) {
+        return claimProductExtMapper.selectList(params);
+    }
+
+
     @Transactional(readOnly = false)
     public void updateState(String[] ids, ProductStateEnum stateEnum) {
         for (String id : ids) {
             productManagerDao.updateState(GeneralUtils.genMap("id", id, "pState", stateEnum.getValue()));
-            if(stateEnum.compareTo(ProductStateEnum.claim)==0){//认领插入
-                Map<String,Object> product= productManagerDao.selectOne(id);
+            if (stateEnum.compareTo(ProductStateEnum.claim) == 0) {//认领插入
+                Map<String, Object> product = productManagerDao.selectOne(id);
                 ClaimProduct claimProduct = new ClaimProduct();
                 claimProduct.setCreateUser(GeneralUtils.getUserId());
                 claimProduct.setImagePath(GeneralUtils.nullToEmpty(product.get("MAIN_PATH")));
@@ -65,7 +75,7 @@ public class ProductManagerService {
                 claimProduct.setItemUk(BaiduTranApi.getInstance().zh2En(name));
                 claimProduct.setItemFr(BaiduTranApi.getInstance().zh2Fra(name));
 
-                claimProductMapper.insert(claimProduct);
+                claimProductExtMapper.insertSelective(claimProduct);
 
             }
         }

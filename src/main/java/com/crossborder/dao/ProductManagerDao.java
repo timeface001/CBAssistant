@@ -15,9 +15,11 @@ public interface ProductManagerDao {
 
     List<Map<String, Object>> selectList(Map<String, Object> params);
 
-    int updateState(Map<String,Object> params);
+    int updateState(Map<String, Object> params);
 
     void delete(@Param("id") String id);
 
-    Map<String,Object> selectOne(@Param("id") String id);
+    Map<String, Object> selectOne(@Param("id") String id);
+
+    int updateProduct(Map<String, Object> product);
 }

@@ -43,7 +43,7 @@
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>产品主图：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input name="mainPath" id="" type="hidden"/>
+                <input name="mainPath" type="hidden"/>
                 <button type="button" class="layui-btn" id="mainPath">
                     <i class="layui-icon">&#xe67c;</i>上传主图
                 </button>
@@ -100,9 +100,10 @@
             <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>产品信息：</label>
             <div class="formControls col-xs-8 col-sm-9">
 
-                <textarea name="info" placeholder="" class="layui-textarea" id="pinfo"></textarea>
+                <textarea name="info" placeholder="" class="layui-textarea" id="pInfo"></textarea>
             </div>
         </div>
+        <input type="hidden" name="id" id="id" />
         <div class="row cl">
             <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
                 <button type="button" class="btn btn-success radius" id="product_save" name="product_save"><i
@@ -162,7 +163,7 @@
                 , url: '<%=request.getContextPath()%>/upload/image' //上传接口
                 , done: function (res) {
                     $("#mainPathSrc").html("<img width='100px' height='90px' src=<%=request.getContextPath()%>/upload/" + res.data + " />")
-                    $("#mainPath").val(res.data);
+                    $("input[name='mainPath']").val(res.data);
                     //上传完毕回调
                 }
                 , error: function () {
@@ -179,9 +180,7 @@
                 , number: 9
                 , url: '<%=request.getContextPath()%>/upload/image' //上传接口
                 , done: function (res) {
-                    console.log(res);
-                    $("#imagePathSrc").append("<img width='100px' src=<%=request.getContextPath()%>/upload/" + res.data + " />")
-                    $("#imagePath").val(res.data);
+                    $("#imagePathSrc").append("<img width='100px' height='90px' style='margin-left:2px;margin-top:2px' src=<%=request.getContextPath()%>/upload/" + res.data + " val='"+res.data+"' />")
                     //上传完毕回调
                     if ($("#imagePathSrc img").length > 9) {//最多上传9张
                         $("#imagePathSrc img").each(function (i, val) {
@@ -202,6 +201,7 @@
     });
     function initProductInfo() {
         if (id != null && id != "" && id != "null" && id != undefined) {
+            $("#id").val(id);
             $.ajax({
                 type: 'POST',
                 url: '<%=request.getContextPath()%>/product/detail',
@@ -215,8 +215,15 @@
                         var data = data.data;
                         $("#pName").val(data.NAME);
                         $("#mainPathSrc").html("<img width='100px' height='90px' src=<%=request.getContextPath()%>/upload/" + data.MAIN_PATH + " />")
-                        //$("#countryCode").val(data.COUNTRY_CODE);
+                        $("input[name='mainPath']").val(data.MAIN_PATH);
                         if(data.IMAGE_PATH!=null){
+                             var ims=data.IMAGE_PATH.split(",");
+                             if(ims.length>0){
+                                 for(var i=0;i<ims.length;i++){
+                                     $("#imagePathSrc").append("<img width='100px' style='margin-left:2px;margin-top:2px' height='90px' src=<%=request.getContextPath()%>/upload/" + ims[i] + " val='"+ims[i]+"' />")
+                                 }
+
+                             }
 
                         }
                         $("#pPrice").val(data.PRICE);
@@ -235,7 +242,11 @@
 
 
         var url = '<%=request.getContextPath()%>/product/save';
-        console.log(getFormJson("#addProductForm"));
+        var imgs=[];
+        $("#imagePathSrc img").each(function (i,val) {
+            imgs.push($(val).attr("val"));
+        });
+        $("input[name='imagePath']").val(imgs.join(","));
         $.ajax({
             type: 'POST',
             url: url,

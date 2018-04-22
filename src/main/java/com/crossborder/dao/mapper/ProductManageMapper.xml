@@ -18,7 +18,8 @@
         UPDATE_TIME,
         P_STATE,
         PRICE,
-        CREATE_USER_ID
+        CREATE_USER_ID,
+        MAIN_PATH
         )
         VALUES
         (seq_product_id.nextval,
@@ -36,8 +37,13 @@
         #{updateTime,jdbcType=DATE},
         1,
         #{price,jdbcType=DOUBLE},
-        #{createUserID,jdbcType=VARCHAR}
+        #{createUserID,jdbcType=VARCHAR},
+        #{mainPath,jdbcType=VARCHAR}
         )
+    </insert>
+
+    <insert id="updateProduct" parameterType="java.util.Map">
+        UPDATE  T_PRODUCT_ITEM SET NAME=#{name},IMAGE_PATH=#{imagePath},MAIN_PATH=#{mainPath},PRICE=#{price},INFO=#{info},UPDATE_TIME=CURRENT_DATE WHERE ID=#{id}
     </insert>
 
     <select id="selectList" parameterType="java.util.Map" resultType="java.util.Map">
