@@ -35,7 +35,7 @@
         class="Hui-iconfont">&#xe68f;</i></a></nav>
 <div class="page-container">
     <form id="productForm" class="form form-horizontal">
-        <div class="row cl">
+        <%--<div class="row cl">
             <label class="form-label col-xs-1 col-sm-1">来源：</label>
             <div class="formControls col-xs-2 col-sm-2">
                 <select id="source" name="source" class="select" style="height: 32px">
@@ -56,16 +56,17 @@
                 <button id="search" class="btn btn-success" type="button"><i class="Hui-iconfont">&#xe665;</i>
                 </button>
             </div>
+
+        </div>--%>
             <input type="hidden" name="pState" id="pStatus" >
-        </div>
     </form>
     <div class="mt-20">
-        <div id="btn-div" class="row text-c">
+        <%--<div id="btn-div" class="row text-c">
             <a href="javascript:;" onclick="reloadTable(0)" class="btn btn-success radius">全部</a>
             <a href="javascript:;" onclick="reloadTable(1)" class="btn btn-default radius">未认领</a>
             <a href="javascript:;" onclick="reloadTable(2)" class="btn btn-default radius">已认领</a>
-        </div>
-        <div class="cl pd-5 bg-1 bk-gray" id="count-div"><span class="l"> <a href="javascript:;"
+        </div>--%>
+        <%--<div class="cl pd-5 bg-1 bk-gray" id="count-div"><span class="l"> <a href="javascript:;"
                                                                              onclick="deleteProduct(null)"
                                                                              class="btn btn-danger radius"><i
                 class="Hui-iconfont">
@@ -75,22 +76,17 @@
                class="btn btn-danger radius"><i
                     class="Hui-iconfont">
                 &#xe6e2;</i> 批量认领</a>
-            <a class="btn btn-primary radius" href="javascript:;"
-               onclick="addProduct('添加产品','<%=request.getContextPath()%>/assistant/index/product/product-add.jsp','800')"><i
-                    class="Hui-iconfont">
-                &#xe600;</i> 添加产品</a> </span></div>
+            </span></div>--%>
         <table id="productTable" class="table table-border table-bordered table-bg table-hover mt-10">
             <thead>
             <tr class="text-c">
                 <th width="25"><input type="checkbox" value="" name=""></th>
-                <th width="80">序号</th>
                 <th width="100">产品图</th>
-                <th width="100">来源</th>
                 <th width="150">标题</th>
-                <th width="150">描述</th>
+                <th width="150">sku</th>
                 <th width="60">售价</th>
-                <th width="100">认领记录</th>
-                <th width="100">创建时间</th>
+                <th width="100">库存</th>
+                <th width="100">时间</th>
                 <th width="100">操作</th>
             </tr>
             </thead>
@@ -151,7 +147,7 @@
         var table = $("#productTable").DataTable({
             "serverSide": true,
             "ajax": {
-                "url": "<%=request.getContextPath()%>/product/list",
+                "url": "<%=request.getContextPath()%>/product/claim/list",
                 "type": "POST",
                 "data": function (d) {
                     return $.extend({}, d, {
@@ -160,39 +156,34 @@
                 }
             },
             "columns": [
-                {"data": "ID"},
-                {"data": "ID"},
+                {"data": "id"},
                 {"data": function (val) {
-                    return val.MAIN_PATH==null?"":"<img width='100px' height='90px'  src='<%=request.getContextPath()%>/upload/"+val.MAIN_PATH+"'/>";
+                    return val.imagePath==null?"":"<img width='100px' height='90px'  src='<%=request.getContextPath()%>/upload/"+val.imagePath+"'/>";
                 }},
-                {"data": "SOURCE"},
-                {"data": "NAME"},
-                {"data": "INFO"},
-                {"data": "PRICE"},
+                {"data": "itemCn"},
+                {"data": "sku"},
+                {"data": "price"},
+                {"data": "quantity"},
                 {"data": function (val) {
-                    return val.STATE_TIME==null?"":"在"+getMyDate(val.STATE_TIME)+"时被认领";
-                }},
-                {"data": function (val) {
-                    return getMyDate( val.CREATE_TIME);
+                    return "<p>创建</p><p>"+getMyDate(val.createTime)+"</p>"+
+                    val.updateTime==null?"<p>创建</p><p>"+getMyDate(val.updateTime)+"</p>":"";
                 }}
             ],
             "columnDefs": [
                 {
                     "targets": [0],
-                    "data": "ID",
+                    "data": "id",
                     "render": function (data, type, full) {
                         return "<input type='checkbox' value=" + full.ID + ">"
                     }
                 },
                 {
-                    "targets": [9],
-                    "data": "ID",
+                    "targets": [7],
+                    "data": "id",
                     "render": function (data, type, full) {
-                        return( full.P_STATE=="1"?"<a style='text-decoration:none' title='认领'  onClick=\"claimProduct('" + full.ID + "')\"')>认领</a>":"") +
+                        return( full.pState=="1"?"<a style='text-decoration:none' title='移入待发布'  onClick=\"claimProduct('" + full.ID + "')\"')>认领</a>":"") +
                             "&nbsp;&nbsp;" +
-                            "<a style='text-decoration:none' title='编辑'  onClick=\"editProduct('" + full.ID + "')\"')>编辑</a>" +
-                            "&nbsp;&nbsp;" +
-                            "<a style='text-decoration:none' title='删除'  onClick=\"deleteProduct('" + full.ID + "')\"')>删除</a>";
+                            "<a style='text-decoration:none' title='编辑'  onClick=\"editProduct('" + full.ID + "')\"')>编辑</a>" ;
                     }
                 }
             ],

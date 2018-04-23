@@ -36,6 +36,8 @@
     <result column="a_PRODUCT_DESCRIPTION_ES" jdbcType="VARCHAR" property="productDescriptionEs" />
     <result column="a_PRODUCT_DESCRIPTION_JP" jdbcType="VARCHAR" property="productDescriptionJp" />
     <result column="a_PRODUCT_DESCRIPTION_CN" jdbcType="VARCHAR" property="productDescriptionCn" />
+    <result column="a_CREATE_TIME" jdbcType="DATE" property="createTime" />
+    <result column="a_UPDATE_TIME" jdbcType="DATE" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
     a.ID as a_ID, a.SKU as a_SKU, a.CREATE_USER as a_CREATE_USER, a.PRICE as a_PRICE, 
@@ -49,7 +51,8 @@
     a.PRODUCT_DESCRIPTION_UK as a_PRODUCT_DESCRIPTION_UK, a.PRODUCT_DESCRIPTION_FR as a_PRODUCT_DESCRIPTION_FR, 
     a.PRODUCT_DESCRIPTION_DE as a_PRODUCT_DESCRIPTION_DE, a.PRODUCT_DESCRIPTION_IT as a_PRODUCT_DESCRIPTION_IT, 
     a.PRODUCT_DESCRIPTION_ES as a_PRODUCT_DESCRIPTION_ES, a.PRODUCT_DESCRIPTION_JP as a_PRODUCT_DESCRIPTION_JP, 
-    a.PRODUCT_DESCRIPTION_CN as a_PRODUCT_DESCRIPTION_CN
+    a.PRODUCT_DESCRIPTION_CN as a_PRODUCT_DESCRIPTION_CN, a.CREATE_TIME as a_CREATE_TIME, 
+    a.UPDATE_TIME as a_UPDATE_TIME
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
@@ -74,7 +77,8 @@
       PRODUCT_DESCRIPTION_UK, PRODUCT_DESCRIPTION_FR, 
       PRODUCT_DESCRIPTION_DE, PRODUCT_DESCRIPTION_IT, 
       PRODUCT_DESCRIPTION_ES, PRODUCT_DESCRIPTION_JP, 
-      PRODUCT_DESCRIPTION_CN)
+      PRODUCT_DESCRIPTION_CN, CREATE_TIME, UPDATE_TIME
+      )
     values (#{id,jdbcType=VARCHAR}, #{sku,jdbcType=VARCHAR}, #{createUser,jdbcType=VARCHAR}, 
       #{price,jdbcType=DECIMAL}, #{quantity,jdbcType=DECIMAL}, #{imagePath,jdbcType=VARCHAR}, 
       #{itemUk,jdbcType=VARCHAR}, #{itemFr,jdbcType=VARCHAR}, #{itemDe,jdbcType=VARCHAR}, 
@@ -87,7 +91,8 @@
       #{productDescriptionUk,jdbcType=VARCHAR}, #{productDescriptionFr,jdbcType=VARCHAR}, 
       #{productDescriptionDe,jdbcType=VARCHAR}, #{productDescriptionIt,jdbcType=VARCHAR}, 
       #{productDescriptionEs,jdbcType=VARCHAR}, #{productDescriptionJp,jdbcType=VARCHAR}, 
-      #{productDescriptionCn,jdbcType=VARCHAR})
+      #{productDescriptionCn,jdbcType=VARCHAR}, #{createTime,jdbcType=DATE}, #{updateTime,jdbcType=DATE}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.crossborder.entity.ClaimProduct">
     insert into T_PRODUCT_ITEM_AMZ
@@ -194,6 +199,12 @@
       <if test="productDescriptionCn != null">
         PRODUCT_DESCRIPTION_CN,
       </if>
+      <if test="createTime != null">
+        CREATE_TIME,
+      </if>
+      <if test="updateTime != null">
+        UPDATE_TIME,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -297,6 +308,12 @@
       </if>
       <if test="productDescriptionCn != null">
         #{productDescriptionCn,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=DATE},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=DATE},
       </if>
     </trim>
   </insert>
@@ -402,6 +419,12 @@
       <if test="productDescriptionCn != null">
         PRODUCT_DESCRIPTION_CN = #{productDescriptionCn,jdbcType=VARCHAR},
       </if>
+      <if test="createTime != null">
+        CREATE_TIME = #{createTime,jdbcType=DATE},
+      </if>
+      <if test="updateTime != null">
+        UPDATE_TIME = #{updateTime,jdbcType=DATE},
+      </if>
     </set>
     where ID = #{id,jdbcType=VARCHAR}
   </update>
@@ -439,7 +462,9 @@
       PRODUCT_DESCRIPTION_IT = #{productDescriptionIt,jdbcType=VARCHAR},
       PRODUCT_DESCRIPTION_ES = #{productDescriptionEs,jdbcType=VARCHAR},
       PRODUCT_DESCRIPTION_JP = #{productDescriptionJp,jdbcType=VARCHAR},
-      PRODUCT_DESCRIPTION_CN = #{productDescriptionCn,jdbcType=VARCHAR}
+      PRODUCT_DESCRIPTION_CN = #{productDescriptionCn,jdbcType=VARCHAR},
+      CREATE_TIME = #{createTime,jdbcType=DATE},
+      UPDATE_TIME = #{updateTime,jdbcType=DATE}
     where ID = #{id,jdbcType=VARCHAR}
   </update>
 </mapper>

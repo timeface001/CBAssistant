@@ -1,6 +1,7 @@
 package com.crossborder.entity;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 public class ClaimProduct {
     private String id;
@@ -70,6 +71,10 @@ public class ClaimProduct {
     private String productDescriptionJp;
 
     private String productDescriptionCn;
+
+    private Date createTime;
+
+    private Date updateTime;
 
     public String getId() {
         return id;
@@ -341,5 +346,21 @@ public class ClaimProduct {
 
     public void setProductDescriptionCn(String productDescriptionCn) {
         this.productDescriptionCn = productDescriptionCn == null ? null : productDescriptionCn.trim();
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
     }
 }
