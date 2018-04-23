@@ -1,5 +1,7 @@
 package com.crossborder.utils;
 
+import com.alibaba.fastjson.JSON;
+
 public class ResponseGen<T> {
 
     public static ResponseDto genSuccess() {
@@ -23,8 +25,8 @@ public class ResponseGen<T> {
         return new ResponseDto(msg, code, false, null, 0);
     }
 
-    public static <T> ResponseDto genSuccessData(T data) {
-        return new ResponseDto("操作成功", "0", false, data, 0);
+    public static <T> String genSuccessData(T data) {
+        return JSON.toJSONString(new ResponseDto("操作成功", "0", false, data, 0));
     }
 
 }

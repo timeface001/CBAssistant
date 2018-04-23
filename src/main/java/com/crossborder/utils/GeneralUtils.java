@@ -1,6 +1,8 @@
 package com.crossborder.utils;
 
 import org.springframework.util.ClassUtils;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,5 +46,12 @@ public class GeneralUtils {
         return machineId + String.format("%015d", hashCodeV);
     }
 
+    public static String getUserId(){
+        return  ((Map<String, Object>) ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest().getSession().getAttribute("user")).get("USER_ID").toString();
+    }
+
+    public static String nullToEmpty(Object obj) {
+        return obj == null ? "" : obj.toString();
+    }
 
 }

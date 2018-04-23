@@ -29,11 +29,11 @@
             src="<%=request.getContextPath()%>/assistant/lib/DD_belatedPNG_0.0.8a-min.js"></script>
     <script>DD_belatedPNG.fix('*');</script>
     <![endif]-->
-    <title>添加产品</title>
+    <title>产品编辑</title>
 </head>
 <body>
 <article class="page-container">
-    <form class="form form-horizontal layui-form" id="addProductForm">
+    <form class="form form-horizontal layui-form" id="addProductForm" >
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>产品名称：</label>
             <div class="formControls col-xs-8 col-sm-9">
@@ -43,15 +43,15 @@
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>产品主图：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input name="mainPath" type="hidden"/>
-                <button type="button" class="layui-btn" id="mainPath">
-                    <i class="layui-icon">&#xe67c;</i>上传主图
-                </button>
+            <input name="mainPath" id="" type="hidden" />
+            <button type="button" class="layui-btn" id="mainPath">
+                <i class="layui-icon">&#xe67c;</i>上传主图
+            </button>
             </div>
         </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-3"><span class=""></span></label>
-            <div class="formControls col-xs-8 col-sm-9" id="mainPathSrc">
+            <div class="formControls col-xs-8 col-sm-9" id="mainPathSrc" >
 
             </div>
         </div>
@@ -59,7 +59,7 @@
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>产品附图：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input name="imagePath" type="hidden"/>
+                <input name="imagePath"  type="hidden" />
                 <button type="button" class="layui-btn" id="imagePath">
                     <i class="layui-icon">&#xe67c;</i>上传附图
                 </button>
@@ -68,7 +68,7 @@
         </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-3"><span class=""></span></label>
-            <div class="formControls col-xs-8 col-sm-9" id="imagePathSrc">
+            <div class="formControls col-xs-8 col-sm-9" id="imagePathSrc" >
 
             </div>
         </div>
@@ -91,8 +91,7 @@
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>价格：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="" placeholder="" id="pPrice" name="price"
-                       lay-verify="number"/>
+                <input type="text" class="input-text" value="" placeholder="" id="pPrice" name="price" lay-verify="number" />
             </div>
         </div>
 
@@ -100,10 +99,9 @@
             <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>产品信息：</label>
             <div class="formControls col-xs-8 col-sm-9">
 
-                <textarea name="info" placeholder="" class="layui-textarea" id="pInfo"></textarea>
+                    <textarea name="info" placeholder="" class="layui-textarea"></textarea>
             </div>
         </div>
-        <input type="hidden" name="id" id="id" />
         <div class="row cl">
             <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
                 <button type="button" class="btn btn-success radius" id="product_save" name="product_save"><i
@@ -131,68 +129,54 @@
         src="<%=request.getContextPath()%>/assistant/lib/jquery.validation/1.14.0/messages_zh.js"></script>
 <script type="text/javascript" src="<%=request.getContextPath()%>/assistant/lib/layui/layui.js"></script>
 <script type="text/javascript">
-    function getParam(paramName) {
-        paramValue = "", isFound = !1;
-        console.log(this.location);
-        if (this.location.search.indexOf("?") == 0 && this.location.search.indexOf("=") > 1) {
-            arrSource = unescape(this.location.search).substring(1, this.location.search.length).split("&"), i = 0;
-            while (i < arrSource.length && !isFound) arrSource[i].indexOf("=") > 0 && arrSource[i].split("=")[0].toLowerCase() == paramName.toLowerCase() && (paramValue = arrSource[i].split("=")[1], isFound = !0), i++
-        }
-        return paramValue == "" && (paramValue = null), paramValue
-    }
     var id = '';
     $(function () {
-        id = getParam("id");
-        if(id!=null&&id!=""){
-            initProductInfo();
-        }
 
-        layui.use('form', function () {
+        layui.use('form', function(){
             var form = layui.form;
 
             //各种基于事件的操作，下面会有进一步介绍
         });
-        layui.use('upload', function () {
+        layui.use('upload', function(){
             var upload = layui.upload;
 
             //执行实例
             var uploadInst = upload.render({
-                accept: "images",
-                acceptMime: "image/*",
+                accept:"images",
+                acceptMime:"image/*",
                 elem: '#mainPath' //绑定元素
-                , url: '<%=request.getContextPath()%>/upload/image' //上传接口
-                , done: function (res) {
-                    $("#mainPathSrc").html("<img width='100px' height='90px' src=<%=request.getContextPath()%>/upload/" + res.data + " />")
-                    $("input[name='mainPath']").val(res.data);
+                ,url: '<%=request.getContextPath()%>/upload/image' //上传接口
+                ,done: function(res){
+                    $("#mainPathSrc").html("<img width='100px' height='90px' src=<%=request.getContextPath()%>/upload/"+res.data+" />")
+                    $("#mainPath").val(res.data);
                     //上传完毕回调
                 }
-                , error: function () {
+                ,error: function(){
                     //请求异常回调
                 }
             });
 
 
             var uploadMuti = upload.render({
-                accept: "images",
-                acceptMime: "image/*",
+                accept:"images",
+                acceptMime:"image/*",
                 elem: '#imagePath', //绑定元素
-                multiple: true
-                , number: 9
-                , url: '<%=request.getContextPath()%>/upload/image' //上传接口
-                , done: function (res) {
-                    $("#imagePathSrc").append("<img width='100px' height='90px' style='margin-left:2px;margin-top:2px' src=<%=request.getContextPath()%>/upload/" + res.data + " val='"+res.data+"' />")
+                multiple:true
+                ,number:9
+                ,url: '<%=request.getContextPath()%>/upload/image' //上传接口
+                ,done: function(res){
+                    $("#imagePathSrc").append("<img width='100px' src=<%=request.getContextPath()%>/upload/"+res.data+" />")
+                    $("#imagePath").val(res.data);
                     //上传完毕回调
-                    if ($("#imagePathSrc img").length > 9) {//最多上传9张
-                        $("#imagePathSrc img").each(function (i, val) {
-                            if (i > 8) {
+                    if($("#imagePathSrc img").length>9){//最多上传9张
+                        $("#imagePathSrc img").each(function (i,val) {
+                            if(i>8){
                                 $(val).remove();
-                            }else{
-
                             }
                         });
                     }
                 }
-                , error: function () {
+                ,error: function(){
                     //请求异常回调
                 }
             });
@@ -201,35 +185,28 @@
     });
     function initProductInfo() {
         if (id != null && id != "" && id != "null" && id != undefined) {
-            $("#id").val(id);
             $.ajax({
                 type: 'POST',
-                url: '<%=request.getContextPath()%>/product/detail',
+                url: '<%=request.getContextPath()%>/shop/selectShops',
                 dataType: 'json',
                 data: {
                     "id": id
                 },
                 success: function (data) {
-
-                    if (data.success) {
-                        var data = data.data;
-                        $("#pName").val(data.NAME);
-                        $("#mainPathSrc").html("<img width='100px' height='90px' src=<%=request.getContextPath()%>/upload/" + data.MAIN_PATH + " />")
-                        $("input[name='mainPath']").val(data.MAIN_PATH);
-                        if(data.IMAGE_PATH!=null){
-                             var ims=data.IMAGE_PATH.split(",");
-                             if(ims.length>0){
-                                 for(var i=0;i<ims.length;i++){
-                                     $("#imagePathSrc").append("<img width='100px' style='margin-left:2px;margin-top:2px' height='90px' src=<%=request.getContextPath()%>/upload/" + ims[i] + " val='"+ims[i]+"' />")
-                                 }
-
-                             }
-
-                        }
-                        $("#pPrice").val(data.PRICE);
-                        $("#pInfo").val(data.INFO);
+                    if (data.code == 0) {
+                        var data = data.data[0];
+                        $("#shopName").val(data.SHOP_NAME);
+                        $("#amazonAccount").val(data.AMAZON_ACCOUNT);
+                        $("#countryCode").val(data.COUNTRY_CODE);
+                        $("#merchantId").val(data.MERCHANT_ID);
+                        $("#merchantId").attr("readOnly", true);
+                        $("#accesskeyId").val(data.ACCESSKEY_ID);
+                        $("#accesskeyId").attr("readOnly", true);
+                        $("#secretKey").val(data.SECRET_KEY);
+                        $("#secretKey").attr("readOnly", true);
+                        $("#state").val(data.SHOP_STATE);
                     } else {
-                        layer.msg(data.msg, {icon: 5, time: 1000});
+                        layer.msg(data.msg, {icon: 6, time: 1000});
                     }
                 },
                 error: function (data) {
@@ -241,12 +218,9 @@
     $("#product_save").click(function () {
 
 
+
         var url = '<%=request.getContextPath()%>/product/save';
-        var imgs=[];
-        $("#imagePathSrc img").each(function (i,val) {
-            imgs.push($(val).attr("val"));
-        });
-        $("input[name='imagePath']").val(imgs.join(","));
+        console.log(getFormJson("#addProductForm"));
         $.ajax({
             type: 'POST',
             url: url,
@@ -255,10 +229,10 @@
                 "data": JSON.stringify(getFormJson("#addProductForm"))
             },
             success: function (data) {
-                if (data.success) {
-                    setTimeout(layer.msg(data.msg, {icon: 6, time: 1000}), 1300);
+                if(data.success){
+                    setTimeout(layer.msg(data.msg, {icon: 6, time: 1000}),1300);
                     layer_close();
-                } else {
+                }else{
                     layer.msg(data.msg, {icon: 5, time: 1000});
                 }
 

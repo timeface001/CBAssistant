@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crossborder.dao.ClaimProductExtMapper">
+  <select id="selectList" parameterType="java.util.Map" resultMap="com.crossborder.dao.mapper.ext.ClaimProductMapper.BaseResultMap">
+      SELECT
+       <include refid="com.crossborder.dao.mapper.ext.ClaimProductMapper.Base_Column_List"/>
+       FROM T_PRODUCT_ITEM_AMZ a
+  </select>
+</mapper>

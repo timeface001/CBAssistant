@@ -94,7 +94,12 @@
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="dataSource" ref="dataSource"></property>
         <property name="configLocation" value="classpath:mybatis-config.xml"></property>
-        <property name="mapperLocations" value="classpath*:com/crossborder/dao/**/*.xml"/>
+        <property name="mapperLocations" >
+            <list>
+                <value>classpath*:com/crossborder/dao/**/*.xml</value>
+                <value>classpath*:com/crossborder/dao/mapper/ext/*.xml</value>
+            </list>
+        </property>
         <property name="plugins">
             <array>
                 <bean class="com.github.pagehelper.PageHelper">

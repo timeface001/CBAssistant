@@ -32,11 +32,11 @@ public class ProductManagerController extends BaseController {
     @ResponseBody
     public String productList(String data, Integer start, Integer length) {
 
-        Map<String, Object> params = JSON.parseObject(data,Map.class);
+        Map<String, Object> params = JSON.parseObject(data, Map.class);
 
-        Object endTime=params.get("endTime");
-        if(endTime!=null&&endTime.toString().length()>0){
-            params.put("endTime",endTime+" 23:59:59");
+        Object endTime = params.get("endTime");
+        if (endTime != null && endTime.toString().length() > 0) {
+            params.put("endTime", endTime + " 23:59:59");
         }
         Map<String, Object> result = new HashMap<>();
         PageHelper.startPage((start == null || start < 1) ? 1 : start, (length == null || length < 1) ? 10 : length);
@@ -102,8 +102,8 @@ public class ProductManagerController extends BaseController {
      * @param data
      * @return
      */
-    @ResponseBody
     @RequestMapping(value = "/product/delete", produces = "text/plain;charset=UTF-8")
+    @ResponseBody
     public String delete(String data) {
 
         Map<String, Object> result = new HashMap<>();
@@ -118,7 +118,22 @@ public class ProductManagerController extends BaseController {
         }
 
         return JSON.toJSONString(result);
+    }
 
+    @RequestMapping(value = "/product/detail", produces = "text/plain;charset=UTF-8")
+    @ResponseBody
+    public String detail(String id) {
+        Map<String, Object> result = new HashMap<>();
+        try {
+            result.put("data", productManagerService.selectOne(id));
+            result.put("success", true);
+            result.put("msg", "操作成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.put("success", false);
+            result.put("msg", "操作失败");
+        }
 
+        return JSON.toJSONString(result);
     }
 }
