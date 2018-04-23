@@ -32,7 +32,8 @@
         TRANSPORTCOMPANY,
         INTLTRACKNUM,
         CURRENCYCODE,
-        LOCALSTATUS)
+        LOCALSTATUS,
+        SHIPPINGPRICE)
         VALUES
         (seq_order_id.nextval,
         #{amazonOrderId,jdbcType=VARCHAR},
@@ -56,9 +57,10 @@
         #{transportCompany,jdbcType=VARCHAR},
         #{intlTrackNum,jdbcType=VARCHAR},
         #{currencyCode,jdbcType=VARCHAR},
-        #{localStatus,jdbcType=VARCHAR})
+        #{localStatus,jdbcType=VARCHAR},
+        #{shippingPrice,jdbcType=DOUBLE})
     </insert>
-    <insert id="insertOrderItem" parameterType="com.crossborder.entity.AddressInfo">
+    <insert id="insertOrderItem" parameterType="com.crossborder.entity.LocalOrderItem">
         MERGE INTO T_ORDER_ITEM t1
         USING (SELECT #{orderItemId} orderItemId FROM dual) t2
         ON (t1.ORDERITEMID = t2.orderItemId)
@@ -145,20 +147,21 @@
     <select id="selectLocalOrder" resultType="java.util.Map" parameterType="java.util.Map">
         select t1.id,
         t1.amazonorderid,
-        t1.salesman,
-        t1.salessource,
+        t6.user_name,
+        t5.shop_name,
         t1.runningtime,
         t1.intltracknum,
         t1.purchaseDate,
         t1.transportcompany,
+        t1.shippingPrice,
+        t1.localstatus,
         t3.name buyercountry,
         t2.smallImage,
         t4.company_name,
         wm_concat(t2.SELLERSKU) sku,
-        trunc(sum(t2.itemprice)*t3.exrate,2) itemprice,
+        trunc(sum((t2.itemprice+t2.shippingPrice)*t3.exrate),2) itemprice,
         trunc(sum(t2.cost),2) cost,
         trunc(sum(t2.refundment),2) refundment,
-        trunc(sum(t2.shippingPrice)*t3.exrate,2) shippingPrice,
         trunc(sum(t2.itemprice)*t3.exrate-sum(t2.cost)-sum(t2.refundment)-sum(t2.shippingPrice)*t3.exrate,2) profit
         from T_ORDER t1
         left join t_order_item t2
@@ -167,6 +170,10 @@
         on t3.id = t1.buyercountry and t3.currencycode = t1.currencycode
         left join t_user_company t4
         on t4.company_id = t1.salescompany
+        left join t_shop t5
+        on t5.shop_id = t1.salessource
+        left join t_user_info t6
+        on t6.user_id= t1.salesman
         WHERE 1=1
         <if test="amazonOrderId !=null and amazonOrderId !=''">
             AND t1.AMAZONORDERID = #{amazonOrderId,jdbcType=VARCHAR}
@@ -200,12 +207,14 @@
         </if>
         group by t1.id,
         t1.amazonorderid,
-        t1.salesman,
-        t1.salessource,
+        t6.user_name,
+        t5.shop_name,
         t1.runningtime,
         t1.intltracknum,
         t1.purchaseDate,
         t1.transportcompany,
+        t1.shippingPrice,
+        t1.localstatus,
         t3.name,
         t2.smallImage,
         t3.exrate,
@@ -219,7 +228,16 @@
     </select>
     <update id="updateOrder" parameterType="java.util.Map">
         UPDATE T_ORDER
-        set LOCALSTATUS = #{status,jdbcType=VARCHAR}
+        set
+        <if test="status !=null and status !=''">
+            LOCALSTATUS = #{status,jdbcType=VARCHAR}
+        </if>
+        <if test="intlTrackNum !=null and intlTrackNum !=''">
+            INTLTRACKNUM = #{intlTrackNum,jdbcType=VARCHAR}
+        </if>
+        <if test="shippingPrice !=null and shippingPrice !=''">
+            ,SHIPPINGPRICE = #{shippingPrice,jdbcType=VARCHAR}
+        </if>
         WHERE AMAZONORDERID = #{amazonOrderId,jdbcType=VARCHAR}
     </update>
     <update id="updateOrderItem">
@@ -236,9 +254,6 @@
         </if>
         <if test="purchaseNum !=null and purchaseNum !=''">
             ,PURCHASENUM = #{purchaseNum,jdbcType=VARCHAR}
-        </if>
-        <if test="shippingPrice !=null and shippingPrice !=''">
-            ,SHIPPINGPRICE = #{shippingPrice,jdbcType=VARCHAR}
         </if>
         WHERE AMAZONORDERID = #{amazonOrderId,jdbcType=VARCHAR}
         AND SELLERSKU = #{sku,jdbcType=VARCHAR}

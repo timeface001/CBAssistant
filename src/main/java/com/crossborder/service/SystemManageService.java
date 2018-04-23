@@ -118,4 +118,8 @@ public class SystemManageService {
     public List<Map<String, Object>> selectMenuRole(String roleId) {
         return systemManageDao.selectMenuRole(roleId);
     }
+
+    public List<Map<String,Object>> selectShops(Map<String, Object> paramMap) {
+        return systemManageDao.selectShops(paramMap);
+    }
 }

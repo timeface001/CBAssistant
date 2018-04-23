@@ -27,6 +27,7 @@ public class LocalOrder {
     private double orderTotal;
     private String currencyCode;
     private String orderType;
+    private double shippingPrice;
 
     public int getId() {
         return id;
@@ -210,5 +211,13 @@ public class LocalOrder {
 
     public void setLocalStatus(String localStatus) {
         this.localStatus = localStatus;
+    }
+
+    public double getShippingPrice() {
+        return shippingPrice;
+    }
+
+    public void setShippingPrice(double shippingPrice) {
+        this.shippingPrice = shippingPrice;
     }
 }

@@ -16,12 +16,14 @@ import com.crossborder.entity.LocalOrder;
 import com.crossborder.entity.LocalOrderItem;
 import com.crossborder.service.OrderManageService;
 import com.crossborder.service.ShopManageService;
+import com.crossborder.utils.ExcelRead;
 import com.crossborder.utils.Tools;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
@@ -122,10 +124,11 @@ public class OrderManageController {
                 localOrder.setMarketplaceId(order.getMarketplaceId());
                 localOrder.setPaymentMethod(order.getPaymentMethod());
                 localOrder.setSalesMan(user.get("USER_ID").toString());
-                localOrder.setSalesSource(user.get("USER_ID").toString());
+                localOrder.setSalesSource(shop.get("SHOP_ID").toString());
                 localOrder.setSalesCompany(user.get("USER_COMPANY").toString());
                 localOrder.setRunningTime(Tools.timeDifference(createDate.getTime(), new Date().getTime()));
                 localOrder.setOrderType(order.getOrderType());
+                localOrder.setShippingPrice(0);
                 orderManageService.insertOrders(localOrder);
                 AddressInfo addressInfo = new AddressInfo();
                 addressInfo.setAmazonOrderId(order.getAmazonOrderId());
@@ -171,6 +174,7 @@ public class OrderManageController {
                     localOrderItem.setStatus("1");
                     localOrderItem.setCost(0);
                     localOrderItem.setRefundment(0);
+                    localOrderItem.setTitle(orderItem.getTitle());
                     orderManageService.insertOrderItem(localOrderItem);
                 }
             }
@@ -292,6 +296,46 @@ public class OrderManageController {
             map.put("code", "-10");
             map.put("msg", "查询失败");
         }
+        return JSON.toJSONString(map);
+    }
+
+    /**
+     * 根据上传文件批量更新订单
+     *
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "updateByExcel", produces = "text/plain;charset=UTF-8")
+    public String updateByExcel(MultipartFile file) {
+        Map<String, Object> map = new HashMap<>();
+        if (file == null || file.getSize() == 0) {
+            map.put("code", "-10");
+            map.put("msg", "上传失败");
+        } else {
+            try {
+                List<ArrayList<String>> list = new ExcelRead().readExcel(file);
+                for (ArrayList<String> arr : list) {
+                    Map<String, Object> item = new HashMap<>();
+                    item.put("amazonOrderId", arr.get(0));
+                    item.put("intlTrackNum", arr.get(1));
+                    item.put("shippingPrice", arr.get(2));
+                    orderManageService.updateOrder(item);
+                }
+                map.put("code", "0");
+                map.put("msg", "更新成功");
+            } catch (Exception e) {
+                e.printStackTrace();
+                map.put("code", "-10");
+                map.put("msg", "更新失败");
+            }
+        }
+        return JSON.toJSONString(map);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "delivery", produces = "text/plain;charset=UTF-8")
+    public String delivery(String data) {
+        Map<String, Object> map = new HashMap<>();
         return JSON.toJSONString(map);
     }
 

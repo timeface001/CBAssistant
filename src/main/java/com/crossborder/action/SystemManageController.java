@@ -70,6 +70,30 @@ public class SystemManageController {
     }
 
     /**
+     * 查询授权店铺
+     *
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "selectShops", produces = "text/plain;charset=UTF-8")
+    public String selectShops(String id) {
+        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("id", id);
+        try {
+            List<Map<String, Object>> list = systemManageService.selectShops(paramMap);
+            map.put("data", list);
+            map.put("code", "0");
+            map.put("msg", "查询成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("code", "-10");
+            map.put("msg", "查询失败");
+        }
+        return JSON.toJSONString(map);
+    }
+
+    /**
      * 修改公司信息
      *
      * @param data

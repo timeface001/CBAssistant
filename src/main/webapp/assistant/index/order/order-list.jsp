@@ -70,7 +70,9 @@
             </div>
             <label class="form-label col-xs-2 col-sm-2">销售来源：</label>
             <div class="formControls col-xs-2 col-sm-2">
-                <input type="text" name="salesSource" placeholder=" " class="input-text">
+                <select id="salesSource" name="salesSource" class="select" style="height: 32px">
+                    <option value="">请选择</option>
+                </select>
             </div>
         </div>
         <div class="row cl">
@@ -101,6 +103,7 @@
         </div>
         <input id="localStatus" type="hidden" name="localStatus" value="1">
         <input id="roleId" type="hidden" value="${sessionScope.user.ROLE_ID}">
+        <input id="userId" type="hidden" value="${sessionScope.user.USER_ID}">
         <input id="companyId" type="hidden" value="${sessionScope.user.USER_COMPANY}">
         <div class="text-c cl row">
             <button id="search" class="btn btn-success" type="button"><i class="Hui-iconfont">&#xe665;</i> 搜订单
@@ -134,9 +137,13 @@
         <c:if test="${sessionScope.user.ROLE_ID eq '100'}">
             <div class="cl pd-5 bg-1 bk-gray mt-10" id="count-div"><span class="l">
             <a class="btn btn-primary radius" href="javascript:;"
-               onclick="updateOrder('添加订单','<%=request.getContextPath()%>/assistant/index/order/order-add.jsp','800')"><i
+               onclick="addOrder('添加订单','<%=request.getContextPath()%>/assistant/index/order/order-add.jsp','800')"><i
                     class="Hui-iconfont">
-                &#xe600;</i> 添加订单</a> </span></div>
+                &#xe600;</i> 添加订单</a>
+             <a class="btn btn-primary radius" href="javascript:;"
+                onclick="addOrder('批量修改','<%=request.getContextPath()%>/assistant/index/order/order-update.jsp','800')"><i
+                     class="Hui-iconfont">
+                 &#xe600;</i> 批量修改</a> </span></div>
         </c:if>
         <c:if test="${sessionScope.user.ROLE_ID eq '200'}">
             <div class="cl pd-5 bg-1 bk-gray mt-10" id="count-div"><span class="l">
@@ -192,6 +199,7 @@
 <script type="text/javascript">
     var orderTable = null;
     var roleId = $("#roleId").val();
+    var userId = $("#userId").val();
     var companyId = $("#companyId").val();
     $(function () {
         if (roleId == 100 || roleId == 200) {
@@ -206,6 +214,7 @@
             $("#salesCompany").empty();
             $("#salesMan").append($("<option value='${sessionScope.user.USER_ID}'>${sessionScope.user.USER_NAME}</option>"));
             $("#salesCompany").append($("<option value='${sessionScope.user.USER_COMPANY}'>${sessionScope.user.COMPANY_NAME}</option>"));
+            initSalesSource();
         }
         var sd = new Date();
         sd.setDate(sd.getDate() - 6);
@@ -300,6 +309,25 @@
                     layer.msg(data.msg, {icon: 2, time: 1000});
                 }
             });
+            $.ajax({
+                type: 'POST',
+                url: '<%=request.getContextPath()%>/common/getList',
+                dataType: 'json',
+                data: {
+                    "code": "shops"
+                },
+                success: function (data) {
+                    if (data.code == 0) {
+                        var data = data.data;
+                        for (var i = 0; i < data.length; i++) {
+                            $("#salesSource").append($('<option value=' + data[i].SHOP_ID + '>' + data[i].SHOP_NAME + '</option>'));
+                        }
+                    }
+                },
+                error: function (data) {
+                    layer.msg(data.msg, {icon: 2, time: 1000});
+                }
+            });
         } else {
             $.ajax({
                 type: 'POST',
@@ -339,7 +367,48 @@
                     layer.msg(data.msg, {icon: 2, time: 1000});
                 }
             });
+            $.ajax({
+                type: 'POST',
+                url: '<%=request.getContextPath()%>/system/selectShopsByCompany',
+                dataType: 'json',
+                data: {
+                    "id": companyId
+                },
+                success: function (data) {
+                    if (data.code == 0) {
+                        var data = data.data;
+                        for (var i = 0; i < data.length; i++) {
+                            $("#salesSource").append($('<option value=' + data[i].SHOP_ID + '>' + data[i].SHOP_NAME + '</option>'));
+                        }
+                    }
+                },
+                error: function (data) {
+                    layer.msg(data.msg, {icon: 2, time: 1000});
+                }
+            });
         }
+    }
+    /*查询个人授权店铺*/
+    function initSalesSource() {
+        $.ajax({
+            type: 'POST',
+            url: '<%=request.getContextPath()%>/system/selectShopsByUser',
+            dataType: 'json',
+            data: {
+                "id": userId
+            },
+            success: function (data) {
+                if (data.code == 0) {
+                    var data = data.data;
+                    for (var i = 0; i < data.length; i++) {
+                        $("#salesSource").append($('<option value=' + data[i].SHOP_ID + '>' + data[i].SHOP_NAME + '</option>'));
+                    }
+                }
+            },
+            error: function (data) {
+                layer.msg(data.msg, {icon: 2, time: 1000});
+            }
+        });
     }
     /*查询订单*/
     function reloadTable(id) {
@@ -386,10 +455,10 @@
                 {"data": "SMALLIMAGE"},
                 {"data": "AMAZONORDERID"},
                 {"data": "SKU"},
-                {"data": "SALESMAN"},
+                {"data": "USER_NAME"},
                 {"data": "COMPANY_NAME"},
                 {"data": "RUNNINGTIME"},
-                {"data": "SALESSOURCE"},
+                {"data": "SHOP_NAME"},
                 {"data": "BUYERCOUNTRY"},
                 {"data": "ITEMPRICE"},
                 {"data": "COST"},
