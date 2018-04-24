@@ -1,7 +1,8 @@
 package com.crossborder.service;
 
-import com.crossborder.dao.ClaimProductExtMapper;
+import com.crossborder.dao.ClaimProductExtDao;
 import com.crossborder.dao.ProductManagerDao;
+import com.crossborder.dao.mapper.ext.ClaimProductMapper;
 import com.crossborder.entity.ClaimProduct;
 import com.crossborder.utils.BaiduTranApi;
 import com.crossborder.utils.GeneralUtils;
@@ -23,7 +24,7 @@ public class ProductManagerService {
     @Resource
     private ProductManagerDao productManagerDao;
     @Resource
-    private ClaimProductExtMapper claimProductExtMapper;
+    private ClaimProductExtDao claimProductExtMapper;
 
     public boolean save(Map<String, Object> product) {
         product.put("createTime", new Date());
@@ -44,7 +45,7 @@ public class ProductManagerService {
     }
 
 
-    @Transactional(readOnly = false)
+    @Transactional(readOnly = false, rollbackFor = Exception.class)
     public void updateState(String[] ids, ProductStateEnum stateEnum) {
         for (String id : ids) {
             productManagerDao.updateState(GeneralUtils.genMap("id", id, "pState", stateEnum.getValue()));
@@ -54,6 +55,7 @@ public class ProductManagerService {
                 claimProduct.setCreateUser(GeneralUtils.getUserId());
                 claimProduct.setImagePath(GeneralUtils.nullToEmpty(product.get("MAIN_PATH")));
                 claimProduct.setPrice(new BigDecimal(String.valueOf(product.get("PRICE"))));
+                claimProduct.setProductId(product.get("ID").toString());
 
                 //产品描述翻译
                 String productDesc = GeneralUtils.nullToEmpty(product.get("INFO"));
@@ -75,6 +77,7 @@ public class ProductManagerService {
                 claimProduct.setItemUk(BaiduTranApi.getInstance().zh2En(name));
                 claimProduct.setItemFr(BaiduTranApi.getInstance().zh2Fra(name));
 
+                claimProduct.setCreateTime(new Date());
                 claimProductExtMapper.insertSelective(claimProduct);
 
             }
@@ -92,4 +95,10 @@ public class ProductManagerService {
     public Map<String, Object> selectOne(String id) {
         return productManagerDao.selectOne(id);
     }
+
+    public void save(ClaimProduct product){
+
+        claimProductExtMapper.updateByPrimaryKeySelective(product);
+    }
+
 }

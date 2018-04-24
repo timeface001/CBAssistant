@@ -145,8 +145,8 @@
         </table>
     </div>
 </div>
-<div class="panel panel-success">
-    <div class="panel-header">已生成快递商品</div>
+<div class="panel panel-success" id="customsDiv">
+    <div class="panel-header">海关申报信息</div>
     <div class="panel-body">
         <div class="row cl">
             <label class=" col-xs-1 col-sm-1 text-r">运输公司：</label>
@@ -167,7 +167,7 @@
                        class="input-text" readonly></div>
         </div>
         <div class="row cl">
-            <label class=" col-xs-1 col-sm-1 text-r">货物重量：</label>
+            <label class=" col-xs-1 col-sm-1 text-r">货物重量(kg)：</label>
             <div class=" col-xs-2 col-sm-2">
                 <input type="text" id="weight" placeholder=" "
                        class="input-text"></div>
@@ -175,26 +175,40 @@
             <div class=" col-xs-2 col-sm-2">
                 <input type="text" id="count" placeholder=" "
                        class="input-text"></div>
-            <label class=" col-xs-2 col-sm-2 text-r">体积：</label>
+
+        </div>
+        <div class="row cl">
+            <label class=" col-xs-2 col-sm-2 text-r">长(cm)：</label>
             <div class=" col-xs-2 col-sm-2">
-                <input type="text" id="volum" placeholder=" "
-                       class="input-text"></div>
+                <input type="text" id="length" placeholder=" "
+                       class="input-text">
+            </div>
+            <label class=" col-xs-2 col-sm-2 text-r">宽(cm)：</label>
+            <div class=" col-xs-2 col-sm-2">
+                <input type="text" id="width" placeholder=" "
+                       class="input-text">
+            </div>
+            <label class=" col-xs-2 col-sm-2 text-r">高(cm)：</label>
+            <div class=" col-xs-2 col-sm-2">
+                <input type="text" id="height" placeholder=" "
+                       class="input-text">
+            </div>
         </div>
         <div class="cl pd-5 bg-1 bk-gray mt-10" id="count-div"><span class="l">
             <a class="btn btn-primary radius" href="javascript:;"
                onclick="addRow()"><i
                     class="Hui-iconfont">
-                &#xe600;</i> 添加一行</a> </span></div>
+                &#xe600;</i>添加一行</a></span></div>
         <table id="customsTable" class="table table-border table-bordered table-bg table-hover">
             <thead>
             <tr class="text-c">
-                <th width="100">英文品名</th>
-                <th width="150">中文品名</th>
-                <th width="150">数量</th>
+                <th width="100"><span class="c-red">*</span>英文品名</th>
+                <th width="100"><span class="c-red">*</span>中文品名</th>
+                <th width="100"><span class="c-red">*</span>数量</th>
                 <th width="100">单位</th>
-                <th width="100">单价</th>
+                <th width="100"><span class="c-red">*</span>单价</th>
                 <th width="100">总价</th>
-                <th width="100">重量（kg）</th>
+                <th width="100"><span class="c-red">*</span>重量(kg)</th>
                 <th width="100">总重</th>
                 <th width="100">SKU</th>
                 <th width="100">海关协制编号</th>
@@ -204,6 +218,13 @@
             </tr>
             </thead>
         </table>
+    </div>
+</div>
+<div class="row cl">
+    <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+        <button type="button" class="btn btn-success radius" id="delivery" name="delivery"><i
+                class="icon-ok"></i>发货
+        </button>
     </div>
 </div>
 <div class="panel panel-success">
@@ -264,10 +285,16 @@
     });
     function initBusiness(localOrder) {
         $("#salesCompany").val(localOrder.COMPANY_NAME);
-        $("#salesMan").val(localOrder.SALESMAN);
-        $("#salesSource").val(localOrder.SALESSOURCE);
+        $("#salesMan").val(localOrder.USER_NAME);
+        $("#salesSource").val(localOrder.SHOP_NAME);
         $("#amazonOrderId").val(localOrder.AMAZONORDERID);
         $("#remark").val(localOrder.REMARK);
+        var customsDiv = document.getElementById("customsDiv");
+        if (roleId == 100 && localOrder.LOCALSTATUS == 1) {
+            customsDiv.style.display = '';
+        } else {
+            customsDiv.style.display = 'none';
+        }
         if (localOrder.LOCALSTATUS == 4) {
             var dataSet = new Array();
             dataSet[0] = localOrder;
@@ -339,6 +366,10 @@
         }
     }
     function initOrderItem() {
+        var vis = true;
+        if (roleId == 400) {
+            vis = false;
+        }
         $("#itemTable").DataTable({
             "serverSide": true,
             "ajax": {
@@ -350,7 +381,7 @@
             },
             "columns": [
                 {"data": "SELLERSKU"},
-                {"data": "TITLE"},
+                {"data": "SMALLIMAGE"},
                 {"data": "TITLE"},
                 {"data": "ASIN"},
                 {"data": "QUANTITYSHIPPED"},
@@ -363,6 +394,21 @@
                 {"data": "STATUS"}
             ],
             "columnDefs": [
+                {
+                    "targets": [5],
+                    "data": "ITEMPRICE",
+                    "visible": vis
+                },
+                {
+                    "targets": [6],
+                    "data": "COST",
+                    "visible": vis
+                },
+                {
+                    "targets": [7],
+                    "data": "REFUNDMENT",
+                    "visible": vis
+                },
                 {
                     "targets": [10],
                     "data": "STATUS",
@@ -494,8 +540,9 @@
             }
         });
     }
+    var customsTable;
     function initCustomsTable() {
-        $("#customsTable").DataTable({
+        customsTable = $("#customsTable").DataTable({
             "ordering": false,
             "searching": false,
             "bLengthChange": false,
@@ -519,90 +566,90 @@
                     "targets": [0],
                     "data": "CHNNAME",
                     "render": function (data, type, full) {
-                        return "<input type='text' value='' width='100'/>";
+                        return "<input type='text' value=''  class='input-text'/>";
                     }
                 },
                 {
                     "targets": [1],
                     "data": "ENNAME",
                     "render": function (data, type, full) {
-                        return "<input type='text' value=''/>";
+                        return "<input type='text' value='' class='input-text'/>";
                     }
                 },
                 {
                     "targets": [2],
                     "data": "COUNT",
                     "render": function (data, type, full) {
-                        return "<input type='text' value=''/>";
+                        return "<input type='text' value=''  class='input-text'/>";
                     }
                 },
                 {
                     "targets": [3],
                     "data": "UNIT",
                     "render": function (data, type, full) {
-                        return "<input type='text' value=''/>";
+                        return "<input type='text' value=''  class='input-text'/>";
                     }
                 },
                 {
                     "targets": [4],
                     "data": "PRICE",
                     "render": function (data, type, full) {
-                        return "<input type='text' value=''/>";
+                        return "<input type='text' value=''  class='input-text'/>";
                     }
                 },
                 {
                     "targets": [5],
                     "data": "TOTALPRICE",
                     "render": function (data, type, full) {
-                        return "<input type='text' value=''/>";
+                        return "<input type='text' value=''  class='input-text'/>";
                     }
                 },
                 {
                     "targets": [6],
                     "data": "WEIGHT",
                     "render": function (data, type, full) {
-                        return "<input type='text' value=''/>";
+                        return "<input type='text' value=''  class='input-text'/>";
                     }
                 },
                 {
                     "targets": [7],
                     "data": "TOTALWEIGHT",
                     "render": function (data, type, full) {
-                        return "<input type='text' value=''/>";
+                        return "<input type='text' value=''  class='input-text'/>";
                     }
                 },
                 {
                     "targets": [8],
                     "data": "SKU",
                     "render": function (data, type, full) {
-                        return "<input type='text' value=''/>";
+                        return "<input type='text' value=''  class='input-text'/>";
                     }
                 }, {
                     "targets": [9],
                     "data": "CODE",
                     "render": function (data, type, full) {
-                        return "<input type='text' value=''/>";
+                        return "<input type='text' value=''  class='input-text'/>";
                     }
                 },
                 {
                     "targets": [10],
                     "data": "INFO",
                     "render": function (data, type, full) {
-                        return "<input type='text' value=''/>";
+                        return "<input type='text' value=''  class='input-text'/>";
                     }
                 },
                 {
                     "targets": [11],
                     "data": "ADDRESS",
                     "render": function (data, type, full) {
-                        return "<input type='text' value=''/>";
+                        return "<input type='text' value=''  class='input-text'/>";
                     }
                 },
                 {
                     "targets": [12],
                     "data": "STATUS",
                     "render": function (data, type, full) {
-                        return "<a style='text-decoration:none' title='删除'  onClick=\"del(7,'" + full.SELLERSKU + "')\"'>删除</a>";
+                        return "<a style='text-decoration:none' title='删除'  onClick='removeRow(this)'>删除</a>";
                     }
                 }
             ],
@@ -611,23 +658,49 @@
             "info": false
         });
     }
+    var count = 0;
     function addRow() {
-        var customsTable = $("#customsTable").DataTable();
         customsTable.row.add([
-            "Tiger Nixon",
-            "System Architect",
-            "$3,120",
-            "2011/04/25",
-            "Edinburgh",
-            "5421",
-            "5421",
-            "5421",
-            "5421",
-            "5421",
-            "5421",
-            "5421",
-            "5421"]).draw();
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            count]).draw();
+        count += 1;
     }
+    function removeRow(obj) {
+        customsTable.row($(obj).parents('tr')).remove().draw();
+
+    }
+    $("#delivery").click(function () {
+        var datas = customsTable.rows();
+        for (var i = 0; i < datas.length; i++) {
+            alert(customsTable.fnGetData(datas[i]));
+        }
+        $.ajax({
+            type: 'POST',
+            url: '<%=request.getContextPath()%>/order/delivery',
+            dataType: 'json',
+            data: {
+                "data": customsTable.$("input").serialize()
+            },
+            success: function (data) {
+                layer.msg(data.msg, {icon: 6, time: 1000});
+                layer_close();
+            },
+            error: function (data) {
+                layer.msg(data.msg, {icon: 5, time: 1000});
+            },
+        });
+    });
     function initSelect() {
         $.ajax({
             type: 'POST',

@@ -76,23 +76,23 @@
             rules: {
                 trackNum: {
                     required: true,
+                    digits: true
                 },
                 purchaseNum: {
                     required: true,
-                    isMobile: true,
+                    digits: true
                 },
                 cost: {
                     required: true,
-                    email: true,
+                    number: true
                 }
             },
             onkeyup: false,
             focusCleanup: true,
             success: "valid",
             submitHandler: function (form) {
-                //$(form).ajaxSubmit();
+                $(form).ajaxSubmit();
                 var index = parent.layer.getFrameIndex(window.name);
-                //parent.$('.btn-refresh').click();
                 parent.layer.close(index);
             }
         });

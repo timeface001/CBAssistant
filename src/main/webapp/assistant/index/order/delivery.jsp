@@ -82,6 +82,7 @@
             focusCleanup: true,
             success: "valid",
             submitHandler: function (form) {
+                $(form).ajaxSubmit();
                 var index = parent.layer.getFrameIndex(window.name);
                 parent.layer.close(index);
             }

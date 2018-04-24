@@ -3,6 +3,7 @@
 <html>
 <head>
     <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="multipart/form-data; charset=utf-8"/>
     <meta name="renderer" content="webkit|ie-comp|ie-stand">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport"
@@ -22,20 +23,24 @@
 <body>
 <div class="pd-20">
     <div class="Huiform">
-        <form id="refundForm" class="form form-horizontal" method="post"
-              action="<%=request.getContextPath()%>/order/updateOrderInfo">
+        <form id="fileForm" class="form form-horizontal">
             <div class="row cl">
                 <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>批量修改：</label>
                 <div class="formControls col-xs-8 col-sm-9">
-                    <input class="input-text upload-url" type="text" name="uploadfile" id="uploadfile" readonly
+                    <input class="input-text" type="text" name="fileUrl" id="fileUrl" readonly
                            style="width:200px">
-                    <a href="javascript:;" class="btn btn-primary upload-btn"><i class="Hui-iconfont">&#xe642;</i>
-                        上传execl</a>
+                    <span class="btn-upload form-group">
+			            <a href="javascript:;" class="btn btn-primary upload-btn"><i class="Hui-iconfont">&#xe642;</i>
+                            上传Excel</a>
+			                <input type="file"
+                                   accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                                   name="file" id="file" class="input-file" onchange="fileChange(this)">
+			            </span>
                 </div>
             </div>
             <div class="row cl">
                 <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
-                    <input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+                    <input class="btn btn-primary radius" id="submit" type="button" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
                 </div>
             </div>
         </form>
@@ -54,7 +59,7 @@
         src="<%=request.getContextPath()%>/assistant/lib/jquery.validation/1.14.0/messages_zh.js"></script>
 <script type="text/javascript">
     $(function () {
-        $("#refundForm").validate({
+        $("#fileForm").validate({
             rules: {
                 uploadfile: {
                     required: true,
@@ -67,6 +72,29 @@
                 var index = parent.layer.getFrameIndex(window.name);
                 parent.layer.close(index);
             }
+        });
+    });
+    function fileChange(file) {
+        document.getElementById("fileUrl").value = file.value;
+    }
+    $("#submit").click(function () {
+        var fileObj = document.getElementById("file").files[0];
+        var form = new FormData();
+        form.append("file", fileObj);
+        $.ajax({
+            type: 'POST',
+            url: '<%=request.getContextPath()%>/order/updateByExcel',
+            dataType: 'json',
+            data: form,
+            processData: false,//用于对data参数进行序列化处理 这里必须false
+            contentType: false, //必须
+            success: function (data) {
+                layer.msg(data.msg, {icon: 6, time: 1000});
+                layer_close();
+            },
+            error: function (data) {
+                layer.msg(data.msg, {icon: 5, time: 1000});
+            },
         });
     });
 </script>

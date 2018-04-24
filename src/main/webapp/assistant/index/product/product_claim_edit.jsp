@@ -33,80 +33,71 @@
 </head>
 <body>
 <article class="page-container">
-    <form class="form form-horizontal layui-form" id="addProductForm" >
-        <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>产品名称：</label>
-            <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="" placeholder="" id="pName" name="name" required>
+    <form class="layui-form" action="">
+        <div class="layui-form-item">
+            <label class="layui-form-label">售卖形式</label>
+            <div class="layui-input-block">
+                <input type="radio" name="sex" value="单体" title="1" checked>
+                <input type="radio" name="sex" value="多变种" title="2" >
             </div>
         </div>
-        <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>产品主图：</label>
-            <div class="formControls col-xs-8 col-sm-9">
-            <input name="mainPath" id="" type="hidden" />
-            <button type="button" class="layui-btn" id="mainPath">
-                <i class="layui-icon">&#xe67c;</i>上传主图
-            </button>
+        <div class="layui-form-item">
+            <label class="layui-form-label">输入框</label>
+            <div class="layui-input-block">
+                <input type="text" name="title" required  lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
             </div>
         </div>
-        <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-3"><span class=""></span></label>
-            <div class="formControls col-xs-8 col-sm-9" id="mainPathSrc" >
-
+        <div class="layui-form-item">
+            <label class="layui-form-label">密码框</label>
+            <div class="layui-input-inline">
+                <input type="password" name="password" required lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
             </div>
+            <div class="layui-form-mid layui-word-aux">辅助文字</div>
         </div>
-
-        <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>产品附图：</label>
-            <div class="formControls col-xs-8 col-sm-9">
-                <input name="imagePath"  type="hidden" />
-                <button type="button" class="layui-btn" id="imagePath">
-                    <i class="layui-icon">&#xe67c;</i>上传附图
-                </button>
-                <span style="font-size: 10px;">(最多9张)</span>
-            </div>
-        </div>
-        <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-3"><span class=""></span></label>
-            <div class="formControls col-xs-8 col-sm-9" id="imagePathSrc" >
-
-            </div>
-        </div>
-        <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-3"><span class=""></span>产品分类：</label>
-            <div class="formControls col-xs-8 col-sm-9">
-                <select id="pType" name="typeId" class="select" style="height: 32px">
-                    <option value="">请选择</option>
+        <div class="layui-form-item">
+            <label class="layui-form-label">选择框</label>
+            <div class="layui-input-block">
+                <select name="city" lay-verify="required">
+                    <option value=""></option>
+                    <option value="0">北京</option>
+                    <option value="1">上海</option>
+                    <option value="2">广州</option>
+                    <option value="3">深圳</option>
+                    <option value="4">杭州</option>
                 </select>
             </div>
         </div>
-
-        <%--<div class="row cl">
-            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>产品SKU：</label>
-            <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="" placeholder="" id="pSku" name="sku">
-            </div>
-        </div>--%>
-
-        <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>价格：</label>
-            <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="" placeholder="" id="pPrice" name="price" lay-verify="number" />
+        <div class="layui-form-item">
+            <label class="layui-form-label">复选框</label>
+            <div class="layui-input-block">
+                <input type="checkbox" name="like[write]" title="写作">
+                <input type="checkbox" name="like[read]" title="阅读" checked>
+                <input type="checkbox" name="like[dai]" title="发呆">
             </div>
         </div>
-
-        <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>产品信息：</label>
-            <div class="formControls col-xs-8 col-sm-9">
-
-                    <textarea name="info" placeholder="" class="layui-textarea"></textarea>
+        <div class="layui-form-item">
+            <label class="layui-form-label">开关</label>
+            <div class="layui-input-block">
+                <input type="checkbox" name="switch" lay-skin="switch">
             </div>
         </div>
-        <div class="row cl">
-            <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
-                <button type="button" class="btn btn-success radius" id="product_save" name="product_save"><i
-                        class="icon-ok"></i> 确定
-                </button>
+        <div class="layui-form-item">
+            <label class="layui-form-label">单选框</label>
+            <div class="layui-input-block">
+                <input type="radio" name="sex" value="男" title="男">
+                <input type="radio" name="sex" value="女" title="女" checked>
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">文本域</label>
+            <div class="layui-input-block">
+                <textarea name="desc" placeholder="请输入内容" class="layui-textarea"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
             </div>
         </div>
     </form>
@@ -219,7 +210,7 @@
 
 
 
-        var url = '<%=request.getContextPath()%>/product/save';
+        var url = '<%=request.getContextPath()%>/product/claim/save';
         console.log(getFormJson("#addProductForm"));
         $.ajax({
             type: 'POST',
@@ -231,7 +222,7 @@
             success: function (data) {
                 if(data.success){
                     setTimeout(layer.msg(data.msg, {icon: 6, time: 1000}),1300);
-                    layer_close();
+                    location.href='<%=request.getContextPath()%>/assistant/index/product/product_claim_edit.jsp?id='+id;
                 }else{
                     layer.msg(data.msg, {icon: 5, time: 1000});
                 }

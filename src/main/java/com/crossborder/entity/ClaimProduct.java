@@ -76,6 +76,10 @@ public class ClaimProduct {
 
     private Date updateTime;
 
+    private String productId;
+
+    private String updateState;
+
     public String getId() {
         return id;
     }
@@ -362,5 +366,21 @@ public class ClaimProduct {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public String getProductId() {
+        return productId;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId == null ? null : productId.trim();
+    }
+
+    public String getUpdateState() {
+        return updateState;
+    }
+
+    public void setUpdateState(String updateState) {
+        this.updateState = updateState == null ? null : updateState.trim();
     }
 }
