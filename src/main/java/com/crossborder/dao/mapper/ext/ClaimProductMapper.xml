@@ -38,6 +38,7 @@
     <result column="a_PRODUCT_DESCRIPTION_CN" jdbcType="VARCHAR" property="productDescriptionCn" />
     <result column="a_CREATE_TIME" jdbcType="DATE" property="createTime" />
     <result column="a_UPDATE_TIME" jdbcType="DATE" property="updateTime" />
+    <result column="a_PRODUCT_ID" jdbcType="VARCHAR" property="productId" />
   </resultMap>
   <sql id="Base_Column_List">
     a.ID as a_ID, a.SKU as a_SKU, a.CREATE_USER as a_CREATE_USER, a.PRICE as a_PRICE, 
@@ -52,7 +53,7 @@
     a.PRODUCT_DESCRIPTION_DE as a_PRODUCT_DESCRIPTION_DE, a.PRODUCT_DESCRIPTION_IT as a_PRODUCT_DESCRIPTION_IT, 
     a.PRODUCT_DESCRIPTION_ES as a_PRODUCT_DESCRIPTION_ES, a.PRODUCT_DESCRIPTION_JP as a_PRODUCT_DESCRIPTION_JP, 
     a.PRODUCT_DESCRIPTION_CN as a_PRODUCT_DESCRIPTION_CN, a.CREATE_TIME as a_CREATE_TIME, 
-    a.UPDATE_TIME as a_UPDATE_TIME
+    a.UPDATE_TIME as a_UPDATE_TIME, a.PRODUCT_ID as a_PRODUCT_ID
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
@@ -65,6 +66,9 @@
     where ID = #{id,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.crossborder.entity.ClaimProduct">
+    <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.String">
+      select seq_product_amz_id.NEXTVAL from dual
+    </selectKey>
     insert into T_PRODUCT_ITEM_AMZ (ID, SKU, CREATE_USER, 
       PRICE, QUANTITY, IMAGE_PATH, 
       ITEM_UK, ITEM_FR, ITEM_DE, 
@@ -77,8 +81,8 @@
       PRODUCT_DESCRIPTION_UK, PRODUCT_DESCRIPTION_FR, 
       PRODUCT_DESCRIPTION_DE, PRODUCT_DESCRIPTION_IT, 
       PRODUCT_DESCRIPTION_ES, PRODUCT_DESCRIPTION_JP, 
-      PRODUCT_DESCRIPTION_CN, CREATE_TIME, UPDATE_TIME
-      )
+      PRODUCT_DESCRIPTION_CN, CREATE_TIME, UPDATE_TIME, 
+      PRODUCT_ID)
     values (#{id,jdbcType=VARCHAR}, #{sku,jdbcType=VARCHAR}, #{createUser,jdbcType=VARCHAR}, 
       #{price,jdbcType=DECIMAL}, #{quantity,jdbcType=DECIMAL}, #{imagePath,jdbcType=VARCHAR}, 
       #{itemUk,jdbcType=VARCHAR}, #{itemFr,jdbcType=VARCHAR}, #{itemDe,jdbcType=VARCHAR}, 
@@ -91,10 +95,13 @@
       #{productDescriptionUk,jdbcType=VARCHAR}, #{productDescriptionFr,jdbcType=VARCHAR}, 
       #{productDescriptionDe,jdbcType=VARCHAR}, #{productDescriptionIt,jdbcType=VARCHAR}, 
       #{productDescriptionEs,jdbcType=VARCHAR}, #{productDescriptionJp,jdbcType=VARCHAR}, 
-      #{productDescriptionCn,jdbcType=VARCHAR}, #{createTime,jdbcType=DATE}, #{updateTime,jdbcType=DATE}
-      )
+      #{productDescriptionCn,jdbcType=VARCHAR}, #{createTime,jdbcType=DATE}, #{updateTime,jdbcType=DATE}, 
+      #{productId,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.crossborder.entity.ClaimProduct">
+    <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.String">
+      select seq_product_amz_id.NEXTVAL from dual
+    </selectKey>
     insert into T_PRODUCT_ITEM_AMZ
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -204,6 +211,9 @@
       </if>
       <if test="updateTime != null">
         UPDATE_TIME,
+      </if>
+      <if test="productId != null">
+        PRODUCT_ID,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -315,6 +325,9 @@
       <if test="updateTime != null">
         #{updateTime,jdbcType=DATE},
       </if>
+      <if test="productId != null">
+        #{productId,jdbcType=VARCHAR},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.crossborder.entity.ClaimProduct">
@@ -425,6 +438,9 @@
       <if test="updateTime != null">
         UPDATE_TIME = #{updateTime,jdbcType=DATE},
       </if>
+      <if test="productId != null">
+        PRODUCT_ID = #{productId,jdbcType=VARCHAR},
+      </if>
     </set>
     where ID = #{id,jdbcType=VARCHAR}
   </update>
@@ -464,7 +480,8 @@
       PRODUCT_DESCRIPTION_JP = #{productDescriptionJp,jdbcType=VARCHAR},
       PRODUCT_DESCRIPTION_CN = #{productDescriptionCn,jdbcType=VARCHAR},
       CREATE_TIME = #{createTime,jdbcType=DATE},
-      UPDATE_TIME = #{updateTime,jdbcType=DATE}
+      UPDATE_TIME = #{updateTime,jdbcType=DATE},
+      PRODUCT_ID = #{productId,jdbcType=VARCHAR}
     where ID = #{id,jdbcType=VARCHAR}
   </update>
 </mapper>

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.crossborder.entity.ClaimProduct;
 import com.crossborder.service.ProductManagerService;
 import com.crossborder.utils.ProductStateEnum;
+import com.crossborder.utils.ResponseGen;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Controller;
@@ -53,6 +54,14 @@ public class ProductClaimController extends BaseController {
         result.put("recordsTotal", pageInfo.getTotal());
         result.put("recordsFiltered", list.size());
         return JSON.toJSONString(result);
+    }
+
+    @RequestMapping(value = "/product/claim/save", produces = "text/plain;charset=UTF-8")
+    @ResponseBody
+    public String save(String data) {
+
+
+        return JSON.toJSONString(ResponseGen.genSuccess());
     }
 
 

@@ -160,10 +160,16 @@
                 {"data": function (val) {
                     return val.imagePath==null?"":"<img width='100px' height='90px'  src='<%=request.getContextPath()%>/upload/"+val.imagePath+"'/>";
                 }},
-                {"data": "itemCn"},
-                {"data": "sku"},
+                {"data": function (val) {
+                    return val.itemCn==null?"":val.itemCn;
+                }},
+                {"data": function (val) {
+                    return val.sku==null?"":val.sku;
+                }},
                 {"data": "price"},
-                {"data": "quantity"},
+                {"data": function (val) {
+                    return val.quantity==null?"":val.quantity;
+                }},
                 {"data": function (val) {
                     return "<p>创建</p><p>"+getMyDate(val.createTime)+"</p>"+
                     val.updateTime==null?"<p>创建</p><p>"+getMyDate(val.updateTime)+"</p>":"";
@@ -181,7 +187,7 @@
                     "targets": [7],
                     "data": "id",
                     "render": function (data, type, full) {
-                        return( full.pState=="1"?"<a style='text-decoration:none' title='移入待发布'  onClick=\"claimProduct('" + full.ID + "')\"')>认领</a>":"") +
+                        return( full.updateState=="1"?"<a style='text-decoration:none' title='移入待发布'  onClick=\"claimProduct('" + full.ID + "')\"')>认领</a>":"") +
                             "&nbsp;&nbsp;" +
                             "<a style='text-decoration:none' title='编辑'  onClick=\"editProduct('" + full.ID + "')\"')>编辑</a>" ;
                     }
@@ -224,7 +230,7 @@
     }
 
     function editProduct(id) {
-        layer_show("编辑产品", '<%=request.getContextPath()%>/assistant/index/product/product-add.jsp?id='+id, 800);
+        location.href='<%=request.getContextPath()%>/assistant/index/product/product_claim_edit.jsp?id='+id;
 
     }
 
