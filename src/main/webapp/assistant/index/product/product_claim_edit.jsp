@@ -1,4 +1,5 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE HTML>
 <html>
 <head>
@@ -30,74 +31,185 @@
     <script>DD_belatedPNG.fix('*');</script>
     <![endif]-->
     <title>产品编辑</title>
+    <style>
+        .width300{width: 300px;}
+    </style>
 </head>
 <body>
 <article class="page-container">
+
+    <blockquote class="layui-elem-quote">产品信息</blockquote>
     <form class="layui-form" action="">
         <div class="layui-form-item">
             <label class="layui-form-label">售卖形式</label>
+            <div class="layui-input-block" >
+                <input type="radio" name="skuType" lay-filter="skuType" value="1" title="单体" checked="checked">
+                <input type="radio" name="skuType" lay-filter="skuType" value="2" title="多变种" >
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">ParentSKU</label>
             <div class="layui-input-block">
-                <input type="radio" name="sex" value="单体" title="1" checked>
-                <input type="radio" name="sex" value="多变种" title="2" >
+                <input type="text" name="title" required  lay-verify="required" placeholder="请输入ParentSKU" autocomplete="off" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">输入框</label>
+            <label class="layui-form-label">产品标题</label>
             <div class="layui-input-block">
-                <input type="text" name="title" required  lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
+                <input type="text" name="title" value="${product.itemCn}"  id="pName" readonly="readonly"  lay-verify="required" placeholder=""  autocomplete="off" class="layui-input layui-disabled">
             </div>
         </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">密码框</label>
-            <div class="layui-input-inline">
-                <input type="password" name="password" required lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
-            </div>
-            <div class="layui-form-mid layui-word-aux">辅助文字</div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">选择框</label>
+
+        <div id="skuMutiDiv">
+        <blockquote class="layui-elem-quote">变种信息</blockquote>
+        <div class="layui-form-item" >
+            <label class="layui-form-label">变种主题</label>
             <div class="layui-input-block">
                 <select name="city" lay-verify="required">
                     <option value=""></option>
-                    <option value="0">北京</option>
-                    <option value="1">上海</option>
-                    <option value="2">广州</option>
-                    <option value="3">深圳</option>
-                    <option value="4">杭州</option>
+                    <c:forEach items="${typeList}" var="type">
+                        <option value="${type.variationType}">${type.variationName}</option>
+                    </c:forEach>
+
                 </select>
             </div>
         </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">复选框</label>
-            <div class="layui-input-block">
-                <input type="checkbox" name="like[write]" title="写作">
-                <input type="checkbox" name="like[read]" title="阅读" checked>
-                <input type="checkbox" name="like[dai]" title="发呆">
+
+            <div class="layui-form-item" >
+                <label class="layui-form-label"></label>
+                <div class="layui-inline">
+                    size:
+                </div>
+                <div class="layui-inline">
+                    color:
+                </div>
             </div>
         </div>
+
+
+        <blockquote class="layui-elem-quote">价格信息</blockquote>
+        <div id="priceInfo">
         <div class="layui-form-item">
-            <label class="layui-form-label">开关</label>
-            <div class="layui-input-block">
-                <input type="checkbox" name="switch" lay-skin="switch">
+                <label class="layui-form-label">价格</label>
+                <div class="layui-inline">
+                    <input type="text" name="price" required lay-verType="msg"  lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                </div>
+
+        </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">促销价</label>
+                <div class="layui-inline">
+                    <input type="text" name="salePrice"   placeholder="" autocomplete="off" class="layui-input">
+                </div>
+
             </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">促销时间</label>
+                <div class="layui-inline">
+                    <input type="text" name="saleStartTime" id="saleStartTime" lay-verify="date"   placeholder="" autocomplete="off" class="layui-input">
+                </div>
+                -
+                <div class="layui-inline">
+                    <input type="text" name="saleEndTime" id="saleEndTime"  lay-verify="date"  placeholder="" autocomplete="off" class="layui-input">
+                </div>
+
+            </div>
+
+
+
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">单选框</label>
-            <div class="layui-input-block">
-                <input type="radio" name="sex" value="男" title="男">
-                <input type="radio" name="sex" value="女" title="女" checked>
+            <label class="layui-form-label">数量</label>
+            <div class="layui-inline">
+                <input type="text" name="quantity" required  lay-verify="required" placeholder="请输入数量" autocomplete="off" class="layui-input">
             </div>
         </div>
-        <div class="layui-form-item layui-form-text">
-            <label class="layui-form-label">文本域</label>
+
+
+        <blockquote class="layui-elem-quote">描述信息</blockquote>
+        <div class="layui-form-item" >
+            <label class="layui-form-label">产品描述</label>
             <div class="layui-input-block">
-                <textarea name="desc" placeholder="请输入内容" class="layui-textarea"></textarea>
+                <textarea name="pDesc" placeholder="请输入产品描述" class="layui-textarea"></textarea>
+            </div>
+
+        </div>
+
+        <div class="layui-form-item" >
+            <label class="layui-form-label">简要描述</label>
+
+            <div class="layui-inline">
+                <input type="text" name="bulletPoint1"  style="width: 300px"  lay-verify="required" placeholder="" autocomplete="off" class="layui-input ">
+            </div>
+            <div class="layui-inline">
+                <input type="text" name="bulletPoint2" style="width: 300px"  lay-verify="required"   placeholder="" autocomplete="off" class="layui-input">
+            </div>
+
+        </div>
+
+
+        <div class="layui-form-item" >
+            <label class="layui-form-label"></label>
+
+            <div class="layui-inline">
+                <input type="text" name="bulletPoint3" style="width: 300px" lay-verify="required"  placeholder="" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-inline">
+                <input type="text" name="bulletPoint4" style="width: 300px"  lay-verify="required"   placeholder="" autocomplete="off" class="layui-input">
+            </div>
+
+        </div>
+
+        <div class="layui-form-item" >
+            <label class="layui-form-label"></label>
+
+            <div class="layui-inline">
+                <input type="text" name="bulletPoint5" style="width: 300px"  lay-verify="required"   placeholder="" autocomplete="off" class="layui-input">
             </div>
         </div>
-        <div class="layui-form-item">
+
+
+        <blockquote class="layui-elem-quote">关键词信息</blockquote>
+        <div class="layui-form-item" >
+            <label class="layui-form-label">关键词</label>
+
+            <div class="layui-inline">
+                <input type="text" name="keyword1"  style="width: 300px" lay-verify="required"  placeholder="" autocomplete="off" class="layui-input ">
+            </div>
+            <div class="layui-inline">
+                <input type="text" name="keyword2" style="width: 300px" lay-verify="required"   placeholder="" autocomplete="off" class="layui-input">
+            </div>
+
+        </div>
+
+
+        <div class="layui-form-item" >
+            <label class="layui-form-label"></label>
+
+            <div class="layui-inline">
+                <input type="text" name="keyword3" style="width: 300px"  lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-inline">
+                <input type="text" name="keyword4" style="width: 300px" lay-verify="required"    placeholder="" autocomplete="off" class="layui-input">
+            </div>
+
+        </div>
+
+        <div class="layui-form-item" >
+            <label class="layui-form-label"></label>
+
+            <div class="layui-inline">
+                <input type="text" name="keyword5" style="width: 300px"  lay-verify="required"   placeholder="" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item" >
             <div class="layui-input-block">
-                <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
-                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                <button class="layui-btn" lay-submit lay-filter="formDemo">保存</button>
+                <button type="reset" class="layui-btn layui-btn-primary" href="location.href='<%=request.getContextPath()%>/assistant/index/product/product_claim_list.jsp'">返回</button>
             </div>
         </div>
     </form>
@@ -123,11 +235,48 @@
     var id = '';
     $(function () {
 
+
+        singleSku();
+        //日期
+        layui.use('laydate', function(){
+            var laydate = layui.laydate;
+
+            laydate.render({
+                elem: '#saleStartTime' //促销开始时间
+            });
+
+            laydate.render({
+                elem: '#saleEndTime' //促销结束时间
+            });
+        });
+
+
         layui.use('form', function(){
             var form = layui.form;
 
-            //各种基于事件的操作，下面会有进一步介绍
+            form.on('radio(skuType)', function(data){//切换变体类型
+                if($(this).val()=="2"){//选中多变体
+                    mutiSku();
+                }else{//单体
+                   singleSku();
+                }
+            });
         });
+
+        function singleSku() {
+            $("#skuMutiDiv").css("display","none");
+            $("#skuSingleDiv").css("display","");
+            $("#priceInfo").css("display","");
+        }
+
+        function mutiSku() {
+            $("#skuMutiDiv").css("display","");
+            $("#skuSingleDiv").css("display","none");
+            $("#priceInfo").css("display","none");
+        }
+
+        initProductInfo();
+
         layui.use('upload', function(){
             var upload = layui.upload;
 
@@ -175,40 +324,14 @@
 
     });
     function initProductInfo() {
-        if (id != null && id != "" && id != "null" && id != undefined) {
-            $.ajax({
-                type: 'POST',
-                url: '<%=request.getContextPath()%>/shop/selectShops',
-                dataType: 'json',
-                data: {
-                    "id": id
-                },
-                success: function (data) {
-                    if (data.code == 0) {
-                        var data = data.data[0];
-                        $("#shopName").val(data.SHOP_NAME);
-                        $("#amazonAccount").val(data.AMAZON_ACCOUNT);
-                        $("#countryCode").val(data.COUNTRY_CODE);
-                        $("#merchantId").val(data.MERCHANT_ID);
-                        $("#merchantId").attr("readOnly", true);
-                        $("#accesskeyId").val(data.ACCESSKEY_ID);
-                        $("#accesskeyId").attr("readOnly", true);
-                        $("#secretKey").val(data.SECRET_KEY);
-                        $("#secretKey").attr("readOnly", true);
-                        $("#state").val(data.SHOP_STATE);
-                    } else {
-                        layer.msg(data.msg, {icon: 6, time: 1000});
-                    }
-                },
-                error: function (data) {
-                    layer.msg(data.msg, {icon: 5, time: 1000});
-                }
-            });
-        }
+
+        /*var product=JSON.parse();
+        console.log(product.itemCn);
+        console.log(product["itemCn"]);
+        console.log(JSON.stringify(product));
+        $("#pName").val(product.itemCn);*/
     }
     $("#product_save").click(function () {
-
-
 
         var url = '<%=request.getContextPath()%>/product/claim/save';
         console.log(getFormJson("#addProductForm"));

@@ -189,7 +189,7 @@
                     "render": function (data, type, full) {
                         return( full.updateState=="1"?"<a style='text-decoration:none' title='移入待发布'  onClick=\"claimProduct('" + full.ID + "')\"')>认领</a>":"") +
                             "&nbsp;&nbsp;" +
-                            "<a style='text-decoration:none' title='编辑'  onClick=\"editProduct('" + full.ID + "')\"')>编辑</a>" ;
+                            "<a style='text-decoration:none' title='编辑'  onClick=\"editProduct('" + full.id + "')\"')>编辑</a>" ;
                     }
                 }
             ],
@@ -230,7 +230,7 @@
     }
 
     function editProduct(id) {
-        location.href='<%=request.getContextPath()%>/assistant/index/product/product_claim_edit.jsp?id='+id;
+        location.href='<%=request.getContextPath()%>/product/claim/detail?id='+id;
 
     }
 
