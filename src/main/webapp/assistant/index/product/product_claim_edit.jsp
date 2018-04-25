@@ -61,12 +61,12 @@
             </div>
         </div>
 
-        <div id="skuMutiDiv">
+        <div id="skuMutiDiv" >
         <blockquote class="layui-elem-quote">变种信息</blockquote>
         <div class="layui-form-item" >
             <label class="layui-form-label">变种主题</label>
             <div class="layui-input-block">
-                <select name="city" lay-verify="required">
+                <select name="city" lay-filter="skuMuti" >
                     <option value=""></option>
                     <c:forEach items="${typeList}" var="type">
                         <option value="${type.variationType}">${type.variationName}</option>
@@ -76,14 +76,8 @@
             </div>
         </div>
 
-            <div class="layui-form-item" >
-                <label class="layui-form-label"></label>
-                <div class="layui-inline">
-                    size:
-                </div>
-                <div class="layui-inline">
-                    color:
-                </div>
+            <div lay-filter="skuRender" id="skuRender">
+
             </div>
         </div>
 
@@ -250,18 +244,51 @@
             });
         });
 
-
         layui.use('form', function(){
             var form = layui.form;
 
             form.on('radio(skuType)', function(data){//切换变体类型
                 if($(this).val()=="2"){//选中多变体
                     mutiSku();
+
                 }else{//单体
                    singleSku();
                 }
             });
+
+            form.on('select(skuMuti)', function(data){//刷新
+
+                console.log(data.value);
+                $("#skuRender").append("<div class=\"layui-form-item\" >\n" +
+                    "<div class=\"layui-input-block\">\n" +
+                    "   Size: </div>" +
+                    "<div class=\"layui-input-block\">\n" +
+                    "    <div class=\"layui-input-inline\" style=\"width: 100px;\">\n" +
+                    "      <input type=\"text\" name=\"\" autocomplete=\"off\" class=\"layui-input\">\n" +
+                    "    </div>\n" +
+                    "   <div class=\"layui-input-inline\" style=\"width: 100px;\">\n" +
+                    "      <button class=\"layui-btn\">添加</button>\n" +
+                    "    </div>\n" +
+                    "    </div>" +
+                    "            </div>");
+                form.render(null, 'skuRender');
+            });
         });
+
+        function genSkuTypeDom(type) {
+            "<div class=\"layui-form-item\" >\n" +
+            "<div class=\"layui-input-block\">\n" +
+            "   Size: </div>" +
+            "<div class=\"layui-input-block\">\n" +
+            "    <div class=\"layui-input-inline\" style=\"width: 100px;\">\n" +
+            "      <input type=\"text\" name=\"\" autocomplete=\"off\" class=\"layui-input\">\n" +
+            "    </div>\n" +
+            "   <div class=\"layui-input-inline\" style=\"width: 100px;\">\n" +
+            "      <button class=\"layui-btn\">添加</button>\n" +
+            "    </div>\n" +
+            "    </div>" +
+            "            </div>"
+        }
 
         function singleSku() {
             $("#skuMutiDiv").css("display","none");
