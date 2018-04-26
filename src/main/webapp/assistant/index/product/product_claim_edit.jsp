@@ -55,6 +55,9 @@
                        class="layui-input">
             </div>
         </div>
+
+
+
         <div class="layui-form-item">
             <label class="layui-form-label">产品标题</label>
             <div class="layui-input-block">
@@ -244,6 +247,14 @@
             laydate.render({
                 elem: '#saleEndTime' //促销结束时间
             });
+
+            laydate.render({
+                elem: '.saleStart' //促销开始时间
+            });
+
+            laydate.render({
+                elem: '.saleEnd' //促销结束时间
+            });
         });
 
         layui.use('form', function(){
@@ -254,8 +265,13 @@
                     mutiSku();
 
                 }else{//单体
-                   singleSku();
+                    singleSku();
                 }
+            });
+
+            form.on('checkbox(skuMutiCheck)', function(data){//切换变体类型
+                refrehSKuPath();
+                form.render(null,"skuMutiPath");
             });
 
             form.on('select(skuMuti)', function(data){//刷新
@@ -277,10 +293,11 @@
                             }
                         }
                         if(!isExist){
-                            $skuCheclk.append("<input type=\"checkbox\" name=\"\" title="+text+" lay-skin=\"primary\" checked>");
+                            $skuCheclk.append("<input type=\"checkbox\" lay-filter='skuMutiCheck' name=\"\" title="+text+" lay-skin=\"primary\" checked>");
                             form.render('checkbox');
                             refrehSKuPath();
                             form.render(null,"skuMutiPath");
+                            form.render(null,"skuTable");
                         }
 
                     }
@@ -293,6 +310,7 @@
         });
 
         function refrehSKuPath() {
+            $("#skuMutiPath").html("");
             var arr=[];
             var skuCheckRow=$(".skuCheckbox");
             if(skuCheckRow==null||skuCheckRow.length==0){
@@ -301,16 +319,92 @@
 
             //做多2中sku组合 暂时不考虑
             var first=[];
-            var send=[];
-            if(skuCheckRow.length==1){
-                var skuTypeDesc=$(".skuCheckbox").parent().find("span").text();
+            var second=[];
+            var fistRow=[];
+            var secondRow=[];
+            if(skuCheckRow.length==1){//只有一个变种
+                var skuTypeDesc=$(".skuCheckbox").prev().find("span").text();
+                console.log(skuTypeDesc);
                 var checked=$(".skuCheckbox .layui-form-checked");
-                console.log(checked);
                 for(var i=0;i<checked.length;i++){
                     arr.push(skuTypeDesc+":"+$(checked[i]).find("span").text());
+                    fistRow.push($(checked[i]).find("span").text());
+                    skuTable(skuTypeDesc,fistRow,null,null);
+                }
+            }else {
+                var fisrtDesc=$(".skuCheckbox").eq(0).prev().find("span").text();
+                var secondDesc=$(".skuCheckbox").eq(1).prev().find("span").text();
+                first=$(".skuCheckbox").eq(0).find(".layui-form-checked");
+                second=$(".skuCheckbox").eq(1).find(".layui-form-checked");
+                if(first.length==0&&second.length==0)return;
+                if(first.length>0&&second.length>0){
+                    for(var i=0;i<first.length;i++){
+                        for(var k=0;k<second.length;k++){
+                            arr.push(fisrtDesc+":"+$(first[i]).find("span").text()+" "+secondDesc+":"+$(second[k]).find("span").text());
+                            fistRow.push($(first[i]).find("span").text());
+                            secondRow.push($(second[k]).find("span").text());
+                        }
+                    }
+
+                    skuTable(fisrtDesc,fistRow,secondDesc,secondRow);
+                }else{
+                    var desc=(first.length==0)?$(".skuCheckbox").eq(1).prev().find("span").text():$(".skuCheckbox").eq(0).prev().find("span").text();
+                    var checked=(first.length==0)?second:first;
+                    var fisrtDesc=$(".skuCheckbox").eq(0).prev().find("span").text();
+                    for(var i=0;i<checked.length;i++){
+                        arr.push(desc+":"+$(checked[i]).find("span").text());
+                        fistRow.push($(first[i]).find("span").text());
+
+                    }
+                    skuTable(desc,fistRow,null,null);
                 }
             }
+
             $("#skuMutiPath").append(getSKuPathDom(arr));
+        }
+
+        function skuTable(fisrtDesc,fisrtArr,secondDesc,secondArr) {
+           $("skuTable tbody").html("");
+           if(fisrtDesc==null){
+               return;
+           }
+
+           var dom="";
+           if(fisrtDesc!=null&&secondDesc!=null){
+               $("#skuTable col").eq(0).after("<col width=\"100\"><col width=\"100\">");
+               $("#skuTable thead th").eq(0).after("<th>"+fisrtDesc+"</th><th>"+secondDesc+"</th>");
+               for(var i=0;i<fisrtArr.length;i++){
+                    dom+=getTR(false,fisrtArr[i],secondArr[i]);
+               }
+           }else{
+               $("#skuTable col").eq(0).after("<col width=\"100\">");
+               $("#skuTable thead th").eq(0).after("<th>"+fisrtDesc+"</th>");
+               for(var i=0;i<fisrtArr.length;i++){
+                   dom+=getTR(true,fisrtArr[i],null);
+               }
+           }
+
+            $("skuTable tbody").html(dom);
+
+        }
+
+        function getTR(isSingle,first,second) {
+            return "<tr>"+
+                "<td><input type='text'  lay-verify='required'  autocomplete='off' class='layui-input'></td>"+
+                  isSingle?"<td>"+first+"</td>":"<td>"+first+"</td><td>"+second+"</td>"
+                 +
+                "<td><input type='text' lay-verify='required'  autocomplete='off' class='layui-input'></td>"+
+                "<td><input type='text'  autocomplete='off' class='layui-input'></td>"+
+                "<td> <div class='layui-inline'>"+
+                "<input type='text'  autocomplete='off' class='layui-input saleStart'>"+
+                "</div>"+
+                "-"+
+                "<div class='layui-inline'>"+
+                "<input type='text' autocomplete='off' class='layui-input saleEnd'>"+
+                "</div>"+
+                "</td>"+
+                "<td><input type='text' lay-verify='required'  autocomplete='off' class='layui-input'></td>"+
+                "</tr>";
         }
 
         function genSkuTypeDom(type) {
@@ -333,11 +427,27 @@
                 "            <label class=\"layui-form-label\">变种图片</label>\n" +
                 "</div>";
 
+            dom+="<div class=\"layui-form-item\">"+
+             "<label class=\"layui-form-label\">变种参数</label>"+
+                "<div class=\"layui-input-block\">"+
+                "<table class=\"layui-table\" id=\"skuTable\" lay-filter='skuTable'>"+
+               " <colgroup>"+
+                "<col width=\"200\">"+
+            " <col width=\"100\">"+
+            "  <col width=\"100\">"+
+            "  <col width=\"400\">"+
+            "  <col width=\"100\">"+
+             "   </colgroup><thead><tr> <th>sku</th><th>价格</th> <th>促销价</th> <th>促销时间</th> <th>数量</th></tr> </thead> <tbody>"+
+
+                "</tbody>"+
+                "</table>"+
+                "</div>"+
+                "</div>";
+
             return dom;
         }
 
         function getSKuPathDom(arr) {
-            console.log(arr);
             if(arr==null||arr.length==0){
                return "";
             }
@@ -406,7 +516,7 @@
             var uploadInst = upload.render({
                 accept:"images",
                 acceptMime:"image/*",
-                elem: '#mainPath' //绑定元素
+                elem: '.skuMainPath' //绑定元素
                 ,url: '<%=request.getContextPath()%>/upload/image' //上传接口
                 ,done: function(res){
                     $("#mainPathSrc").html("<img width='100px' height='90px' src=<%=request.getContextPath()%>/upload/"+res.data+" />")
