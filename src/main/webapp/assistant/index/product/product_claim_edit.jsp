@@ -384,14 +384,14 @@
                }
            }
 
-            $("skuTable tbody").html(dom);
+            $("#skuTable tbody").html(dom);
 
         }
 
         function getTR(isSingle,first,second) {
             return "<tr>"+
                 "<td><input type='text'  lay-verify='required'  autocomplete='off' class='layui-input'></td>"+
-                  isSingle?"<td>"+first+"</td>":"<td>"+first+"</td><td>"+second+"</td>"
+                (isSingle?("<td>"+first+"</td>"):("<td>"+first+"</td><td>"+second+"</td>"))
                  +
                 "<td><input type='text' lay-verify='required'  autocomplete='off' class='layui-input'></td>"+
                 "<td><input type='text'  autocomplete='off' class='layui-input'></td>"+
