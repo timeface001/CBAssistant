@@ -51,7 +51,8 @@
         <div class="layui-form-item">
             <label class="layui-form-label">ParentSKU</label>
             <div class="layui-input-block">
-                <input type="text" name="title" required  lay-verify="required" placeholder="请输入ParentSKU" autocomplete="off" class="layui-input">
+                <input type="text" name="title" lay-verify="required" placeholder="请输入ParentSKU" autocomplete="off"
+                       class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
@@ -66,7 +67,7 @@
         <div class="layui-form-item" >
             <label class="layui-form-label">变种主题</label>
             <div class="layui-input-block">
-                <select name="city" lay-filter="skuMuti" >
+                <select name="sku" lay-filter="skuMuti">
                     <option value=""></option>
                     <c:forEach items="${typeList}" var="type">
                         <option value="${type.variationType}">${type.variationName}</option>
@@ -87,7 +88,7 @@
         <div class="layui-form-item">
                 <label class="layui-form-label">价格</label>
                 <div class="layui-inline">
-                    <input type="text" name="price" required lay-verType="msg"  lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                    <input type="text" name="price" placeholder="" autocomplete="off" class="layui-input">
                 </div>
 
         </div>
@@ -118,7 +119,8 @@
         <div class="layui-form-item">
             <label class="layui-form-label">数量</label>
             <div class="layui-inline">
-                <input type="text" name="quantity" required  lay-verify="required" placeholder="请输入数量" autocomplete="off" class="layui-input">
+                <input type="text" name="quantity" lay-verify="required" placeholder="请输入数量" autocomplete="off"
+                       class="layui-input">
             </div>
         </div>
 
@@ -229,7 +231,7 @@
     var id = '';
     $(function () {
 
-
+        var skuArr=[];
         singleSku();
         //日期
         layui.use('laydate', function(){
@@ -258,37 +260,130 @@
 
             form.on('select(skuMuti)', function(data){//刷新
 
-                console.log(data.value);
-                $("#skuRender").append("<div class=\"layui-form-item\" >\n" +
-                    "<div class=\"layui-input-block\">\n" +
-                    "   Size: </div>" +
-                    "<div class=\"layui-input-block\">\n" +
-                    "    <div class=\"layui-input-inline\" style=\"width: 100px;\">\n" +
-                    "      <input type=\"text\" name=\"\" autocomplete=\"off\" class=\"layui-input\">\n" +
-                    "    </div>\n" +
-                    "   <div class=\"layui-input-inline\" style=\"width: 100px;\">\n" +
-                    "      <button class=\"layui-btn\">添加</button>\n" +
-                    "    </div>\n" +
-                    "    </div>" +
-                    "            </div>");
+                $("#skuRender").html("");
+                $("#skuRender").append(genSkuTypeDom($("#skuMutiDiv option:selected").text()));
+
+                $(".skuBtn").on("click", function () {
+                    var text = $(this).parent().parent().find("input").val();
+                    if (text != null && $.trim(text).length > 0) {
+                        text=$.trim(text);
+                        var $skuCheclk=$(this).parent().parent().prev().find(".skuCheckbox").eq(0);
+                        var skarr=$skuCheclk.find("input[type='checkbox']");
+                        var isExist=false;
+                        for(var i=0;i<skarr.length;i++){
+                            if($(skarr[i]).next().find("span").text()==text){
+                                isExist=true;
+                                break;
+                            }
+                        }
+                        if(!isExist){
+                            $skuCheclk.append("<input type=\"checkbox\" name=\"\" title="+text+" lay-skin=\"primary\" checked>");
+                            form.render('checkbox');
+                            refrehSKuPath();
+                            form.render(null,"skuMutiPath");
+                        }
+
+                    }
+                });
+
                 form.render(null, 'skuRender');
+                form.render('checkbox');
+
             });
         });
 
-        function genSkuTypeDom(type) {
-            "<div class=\"layui-form-item\" >\n" +
-            "<div class=\"layui-input-block\">\n" +
-            "   Size: </div>" +
-            "<div class=\"layui-input-block\">\n" +
-            "    <div class=\"layui-input-inline\" style=\"width: 100px;\">\n" +
-            "      <input type=\"text\" name=\"\" autocomplete=\"off\" class=\"layui-input\">\n" +
-            "    </div>\n" +
-            "   <div class=\"layui-input-inline\" style=\"width: 100px;\">\n" +
-            "      <button class=\"layui-btn\">添加</button>\n" +
-            "    </div>\n" +
-            "    </div>" +
-            "            </div>"
+        function refrehSKuPath() {
+            var arr=[];
+            var skuCheckRow=$(".skuCheckbox");
+            if(skuCheckRow==null||skuCheckRow.length==0){
+                return;
+            }
+
+            //做多2中sku组合 暂时不考虑
+            var first=[];
+            var send=[];
+            if(skuCheckRow.length==1){
+                var skuTypeDesc=$(".skuCheckbox").parent().find("span").text();
+                var checked=$(".skuCheckbox .layui-form-checked");
+                console.log(checked);
+                for(var i=0;i<checked.length;i++){
+                    arr.push("skuTypeDesc:"+$(checked[i]).find("span").text());
+                }
+            }
+            $("#skuMutiPath").append(getSKuPathDom(arr));
         }
+
+        function genSkuTypeDom(type) {
+            var dom = "";
+            if (type == "") {
+                return;
+            }
+
+            if (type.indexOf("-") > 0) {
+                var arr = type.split("-");
+                for (var i = 0; i < arr.length; i++) {
+                    dom += (getSkuItemDom(arr[i]));
+                }
+
+            } else {
+                dom = (getSkuItemDom(type));
+            }
+
+            dom+="<div class=\"layui-form-item\" id='skuMutiPath' lay-filter=\"skuMutiPath\" >\n" +
+                "            <label class=\"layui-form-label\">变种图片</label>\n" +
+                "</div>";
+
+            return dom;
+        }
+
+        function getSKuPathDom(arr) {
+            console.log(arr);
+            if(arr==null||arr.length==0){
+               return "";
+            }
+
+           var dom="";
+            for(var i=0;i<arr.length;i++){
+                dom+="<div class=\"layui-input-block\">" +
+                    "    <div class='layui-inline' style='margin-top: 10px;'>变种属性"+arr[i]+"</div>" +
+                    "            </div>"+
+                    "            <div class=\"layui-input-block\">\n" +
+                    "                <button type=\"button\" class=\"layui-btn skuMainPath\" >\n" +
+                    "            <i class=\"layui-icon\">&#xe67c;</i>上传主图\n" +
+                    "        </button>" +
+                    "            </div>\n" +
+                    "            <div class=\"layui-input-block\" style='margin-top: 10px;'>\n" +
+                    "                <button type=\"button\" class=\"layui-btn skuOtherPath\"  >\n" +
+                    "            <i class=\"layui-icon\">&#xe67c;</i>上传附图\n" +
+                    "        </button>" +
+                    "            </div>";
+            }
+
+
+
+            return dom;
+        }
+
+        function getSkuItemDom(desc) {
+            return "<div class='layui-form-item' >" +
+                "<div class='layui-input-block'>" +
+                "    <div class='layui-inline' style='width: 50px;'><span>" + desc +
+                "  </span>  :</div>" +
+                "    <div class='layui-inline skuCheckbox'>" +
+                "    </div>" +
+                "</div>" +
+                "      <div class='layui-input-block'>" +
+                "    <div class=\"layui-input-inline\" style=\"width: 150px;\">" +
+                "      <input type=\"text\" name=\"\" autocomplete=\"off\" class=\"layui-input\">" +
+                "    </div>" +
+                "   <div class=\"layui-input-inline\" style=\"width: 100px;\">" +
+                "      <button type='button' class=\"layui-btn skuBtn\">添加</button>\n" +
+                "    </div>" +
+                "      </div>" +
+                "</div> " +
+                "</div>";
+        }
+
 
         function singleSku() {
             $("#skuMutiDiv").css("display","none");
