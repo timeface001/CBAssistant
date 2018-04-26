@@ -307,7 +307,7 @@
                 var checked=$(".skuCheckbox .layui-form-checked");
                 console.log(checked);
                 for(var i=0;i<checked.length;i++){
-                    arr.push("skuTypeDesc:"+$(checked[i]).find("span").text());
+                    arr.push(skuTypeDesc+":"+$(checked[i]).find("span").text());
                 }
             }
             $("#skuMutiPath").append(getSKuPathDom(arr));
@@ -345,7 +345,7 @@
            var dom="";
             for(var i=0;i<arr.length;i++){
                 dom+="<div class=\"layui-input-block\">" +
-                    "    <div class='layui-inline' style='margin-top: 10px;'>变种属性"+arr[i]+"</div>" +
+                    "    <div class='layui-inline layui-bg-gray' style='margin-top: 10px;'>变种属性    "+arr[i]+"</div>" +
                     "            </div>"+
                     "            <div class=\"layui-input-block\">\n" +
                     "                <button type=\"button\" class=\"layui-btn skuMainPath\" >\n" +
