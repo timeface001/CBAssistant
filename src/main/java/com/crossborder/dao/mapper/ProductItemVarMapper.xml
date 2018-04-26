@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crossborder.dao.ProductItemVarDao">
+    <resultMap id="BaseResultMap" type="com.crossborder.entity.ProductItemVar">
+        <id column="a_ID" jdbcType="VARCHAR" property="id" />
+        <result column="a_SKU" jdbcType="VARCHAR" property="sku" />
+        <result column="a_VARIATION_TYPE" jdbcType="VARCHAR" property="variationType" />
+        <result column="a_COLOR_NAME" jdbcType="VARCHAR" property="colorName" />
+        <result column="a_COLOR_MAP" jdbcType="VARCHAR" property="colorMap" />
+        <result column="a_SIZE_NAME" jdbcType="VARCHAR" property="sizeName" />
+        <result column="a_SIZE_MAP" jdbcType="VARCHAR" property="sizeMap" />
+        <result column="a_MATERIAL_TYPE" jdbcType="VARCHAR" property="materialType" />
+        <result column="a_ITEM_PACKAGE_QUANTITY" jdbcType="DECIMAL" property="itemPackageQuantity" />
+        <result column="a_PRODUCT_ID" jdbcType="VARCHAR" property="productId" />
+        <result column="a_PRICE" jdbcType="DECIMAL" property="price" />
+        <result column="a_SALE_PRICE" jdbcType="DECIMAL" property="salePrice" />
+        <result column="a_SALE_START_TIME" jdbcType="DATE" property="saleStartTime" />
+        <result column="a_SALE_END_TIME" jdbcType="DATE" property="saleEndTime" />
+        <result column="a_QUANTITY" jdbcType="DECIMAL" property="quantity" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        a.ID as a_ID, a.SKU as a_SKU, a.VARIATION_TYPE as a_VARIATION_TYPE, a.COLOR_NAME as a_COLOR_NAME,
+        a.COLOR_MAP as a_COLOR_MAP, a.SIZE_NAME as a_SIZE_NAME, a.SIZE_MAP as a_SIZE_MAP,
+        a.MATERIAL_TYPE as a_MATERIAL_TYPE, a.ITEM_PACKAGE_QUANTITY as a_ITEM_PACKAGE_QUANTITY,
+        a.PRODUCT_ID as a_PRODUCT_ID, a.PRICE as a_PRICE, a.SALE_PRICE as a_SALE_PRICE, a.SALE_START_TIME as a_SALE_START_TIME,
+        a.SALE_END_TIME as a_SALE_END_TIME, a.QUANTITY as a_QUANTITY
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from T_PRODUCT_ITEM_VAR a
+        where a.ID = #{id,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from T_PRODUCT_ITEM_VAR
+        where ID = #{id,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.crossborder.entity.ProductItemVar">
+        insert into T_PRODUCT_ITEM_VAR (ID, SKU, VARIATION_TYPE,
+        COLOR_NAME, COLOR_MAP, SIZE_NAME,
+        SIZE_MAP, MATERIAL_TYPE, ITEM_PACKAGE_QUANTITY,
+        PRODUCT_ID, PRICE, SALE_PRICE,
+        SALE_START_TIME, SALE_END_TIME, QUANTITY
+        )
+        values (#{id,jdbcType=VARCHAR}, #{sku,jdbcType=VARCHAR}, #{variationType,jdbcType=VARCHAR},
+        #{colorName,jdbcType=VARCHAR}, #{colorMap,jdbcType=VARCHAR}, #{sizeName,jdbcType=VARCHAR},
+        #{sizeMap,jdbcType=VARCHAR}, #{materialType,jdbcType=VARCHAR}, #{itemPackageQuantity,jdbcType=DECIMAL},
+        #{productId,jdbcType=VARCHAR}, #{price,jdbcType=DECIMAL}, #{salePrice,jdbcType=DECIMAL},
+        #{saleStartTime,jdbcType=DATE}, #{saleEndTime,jdbcType=DATE}, #{quantity,jdbcType=DECIMAL}
+        )
+    </insert>
+    <insert id="insertSelective" parameterType="com.crossborder.entity.ProductItemVar">
+        insert into T_PRODUCT_ITEM_VAR
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                ID,
+            </if>
+            <if test="sku != null">
+                SKU,
+            </if>
+            <if test="variationType != null">
+                VARIATION_TYPE,
+            </if>
+            <if test="colorName != null">
+                COLOR_NAME,
+            </if>
+            <if test="colorMap != null">
+                COLOR_MAP,
+            </if>
+            <if test="sizeName != null">
+                SIZE_NAME,
+            </if>
+            <if test="sizeMap != null">
+                SIZE_MAP,
+            </if>
+            <if test="materialType != null">
+                MATERIAL_TYPE,
+            </if>
+            <if test="itemPackageQuantity != null">
+                ITEM_PACKAGE_QUANTITY,
+            </if>
+            <if test="productId != null">
+                PRODUCT_ID,
+            </if>
+            <if test="price != null">
+                PRICE,
+            </if>
+            <if test="salePrice != null">
+                SALE_PRICE,
+            </if>
+            <if test="saleStartTime != null">
+                SALE_START_TIME,
+            </if>
+            <if test="saleEndTime != null">
+                SALE_END_TIME,
+            </if>
+            <if test="quantity != null">
+                QUANTITY,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="sku != null">
+                #{sku,jdbcType=VARCHAR},
+            </if>
+            <if test="variationType != null">
+                #{variationType,jdbcType=VARCHAR},
+            </if>
+            <if test="colorName != null">
+                #{colorName,jdbcType=VARCHAR},
+            </if>
+            <if test="colorMap != null">
+                #{colorMap,jdbcType=VARCHAR},
+            </if>
+            <if test="sizeName != null">
+                #{sizeName,jdbcType=VARCHAR},
+            </if>
+            <if test="sizeMap != null">
+                #{sizeMap,jdbcType=VARCHAR},
+            </if>
+            <if test="materialType != null">
+                #{materialType,jdbcType=VARCHAR},
+            </if>
+            <if test="itemPackageQuantity != null">
+                #{itemPackageQuantity,jdbcType=DECIMAL},
+            </if>
+            <if test="productId != null">
+                #{productId,jdbcType=VARCHAR},
+            </if>
+            <if test="price != null">
+                #{price,jdbcType=DECIMAL},
+            </if>
+            <if test="salePrice != null">
+                #{salePrice,jdbcType=DECIMAL},
+            </if>
+            <if test="saleStartTime != null">
+                #{saleStartTime,jdbcType=DATE},
+            </if>
+            <if test="saleEndTime != null">
+                #{saleEndTime,jdbcType=DATE},
+            </if>
+            <if test="quantity != null">
+                #{quantity,jdbcType=DECIMAL},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.crossborder.entity.ProductItemVar">
+        update T_PRODUCT_ITEM_VAR
+        <set>
+            <if test="sku != null">
+                SKU = #{sku,jdbcType=VARCHAR},
+            </if>
+            <if test="variationType != null">
+                VARIATION_TYPE = #{variationType,jdbcType=VARCHAR},
+            </if>
+            <if test="colorName != null">
+                COLOR_NAME = #{colorName,jdbcType=VARCHAR},
+            </if>
+            <if test="colorMap != null">
+                COLOR_MAP = #{colorMap,jdbcType=VARCHAR},
+            </if>
+            <if test="sizeName != null">
+                SIZE_NAME = #{sizeName,jdbcType=VARCHAR},
+            </if>
+            <if test="sizeMap != null">
+                SIZE_MAP = #{sizeMap,jdbcType=VARCHAR},
+            </if>
+            <if test="materialType != null">
+                MATERIAL_TYPE = #{materialType,jdbcType=VARCHAR},
+            </if>
+            <if test="itemPackageQuantity != null">
+                ITEM_PACKAGE_QUANTITY = #{itemPackageQuantity,jdbcType=DECIMAL},
+            </if>
+            <if test="productId != null">
+                PRODUCT_ID = #{productId,jdbcType=VARCHAR},
+            </if>
+            <if test="price != null">
+                PRICE = #{price,jdbcType=DECIMAL},
+            </if>
+            <if test="salePrice != null">
+                SALE_PRICE = #{salePrice,jdbcType=DECIMAL},
+            </if>
+            <if test="saleStartTime != null">
+                SALE_START_TIME = #{saleStartTime,jdbcType=DATE},
+            </if>
+            <if test="saleEndTime != null">
+                SALE_END_TIME = #{saleEndTime,jdbcType=DATE},
+            </if>
+            <if test="quantity != null">
+                QUANTITY = #{quantity,jdbcType=DECIMAL},
+            </if>
+        </set>
+        where ID = #{id,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.crossborder.entity.ProductItemVar">
+        update T_PRODUCT_ITEM_VAR
+        set SKU = #{sku,jdbcType=VARCHAR},
+        VARIATION_TYPE = #{variationType,jdbcType=VARCHAR},
+        COLOR_NAME = #{colorName,jdbcType=VARCHAR},
+        COLOR_MAP = #{colorMap,jdbcType=VARCHAR},
+        SIZE_NAME = #{sizeName,jdbcType=VARCHAR},
+        SIZE_MAP = #{sizeMap,jdbcType=VARCHAR},
+        MATERIAL_TYPE = #{materialType,jdbcType=VARCHAR},
+        ITEM_PACKAGE_QUANTITY = #{itemPackageQuantity,jdbcType=DECIMAL},
+        PRODUCT_ID = #{productId,jdbcType=VARCHAR},
+        PRICE = #{price,jdbcType=DECIMAL},
+        SALE_PRICE = #{salePrice,jdbcType=DECIMAL},
+        SALE_START_TIME = #{saleStartTime,jdbcType=DATE},
+        SALE_END_TIME = #{saleEndTime,jdbcType=DATE},
+        QUANTITY = #{quantity,jdbcType=DECIMAL}
+        where ID = #{id,jdbcType=VARCHAR}
+    </update>
+</mapper>

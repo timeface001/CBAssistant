@@ -3,15 +3,18 @@ package com.crossborder.action;
 import com.alibaba.fastjson.JSON;
 import com.crossborder.entity.ClaimProduct;
 import com.crossborder.service.ProductManagerService;
-import com.crossborder.utils.ProductStateEnum;
+import com.crossborder.service.ProductSkuTypeService;
 import com.crossborder.utils.ResponseGen;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +30,8 @@ public class ProductClaimController extends BaseController {
 
     @Resource
     private ProductManagerService productManagerService;
+    @Autowired
+    private ProductSkuTypeService productSkuTypeService;
 
     /**
      * 已认领产品列表
@@ -62,6 +67,18 @@ public class ProductClaimController extends BaseController {
 
 
         return JSON.toJSONString(ResponseGen.genSuccess());
+    }
+
+
+    @RequestMapping(value = "/product/claim/detail", produces = "text/plain;charset=UTF-8")
+    public ModelAndView detail(String id, HttpServletRequest request) {
+        ModelAndView view = new ModelAndView("forward:/assistant/index/product/product_claim_edit.jsp");
+        ClaimProduct claimProduct = productManagerService.selectClaimProduct(id);
+        //view.addObject("product", claimProduct);
+        request.setAttribute("typeList", productSkuTypeService.selectTypeList());
+        request.setAttribute("product", claimProduct);
+        request.setAttribute("productStr", JSON.toJSONString(claimProduct));
+        return view;
     }
 
 

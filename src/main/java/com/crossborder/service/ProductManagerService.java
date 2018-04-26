@@ -1,8 +1,7 @@
 package com.crossborder.service;
 
-import com.crossborder.dao.ClaimProductExtDao;
+import com.crossborder.dao.ClaimProductDao;
 import com.crossborder.dao.ProductManagerDao;
-import com.crossborder.dao.mapper.ext.ClaimProductMapper;
 import com.crossborder.entity.ClaimProduct;
 import com.crossborder.utils.BaiduTranApi;
 import com.crossborder.utils.GeneralUtils;
@@ -24,7 +23,7 @@ public class ProductManagerService {
     @Resource
     private ProductManagerDao productManagerDao;
     @Resource
-    private ClaimProductExtDao claimProductExtMapper;
+    private ClaimProductDao claimProductExtMapper;
 
     public boolean save(Map<String, Object> product) {
         product.put("createTime", new Date());
@@ -99,6 +98,10 @@ public class ProductManagerService {
     public void save(ClaimProduct product){
 
         claimProductExtMapper.updateByPrimaryKeySelective(product);
+    }
+
+    public ClaimProduct selectClaimProduct(String id) {
+        return claimProductExtMapper.selectByPrimaryKey(id);
     }
 
 }
