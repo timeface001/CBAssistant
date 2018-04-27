@@ -71,6 +71,8 @@
 <script type="text/javascript"
         src="<%=request.getContextPath()%>/assistant/lib/jquery.validation/1.14.0/messages_zh.js"></script>
 <script type="text/javascript">
+    var amazonOrderId = "<%=amazonOrderId%>";
+    var sku = "<%=sku%>";
     $(function () {
         $("#stockingForm").validate({
             rules: {
@@ -94,6 +96,24 @@
                 $(form).ajaxSubmit();
                 var index = parent.layer.getFrameIndex(window.name);
                 parent.layer.close(index);
+            }
+        });
+        $.ajax({
+            type: 'POST',
+            url: '<%=request.getContextPath()%>/order/selectLocalOrderItem',
+            dataType: 'json',
+            "data": {
+                "amazonOrderId": amazonOrderId,
+                "sku": sku
+            },
+            success: function (data) {
+                var orderItem = data.data;
+                $("#trackNum").val(orderItem[0].TRACKNUM);
+                $("#purchaseNum").val(orderItem[0].PURCHASENUM);
+                $("#cost").val(orderItem[0].COST);
+            },
+            error: function (data) {
+                layer.msg('查询失败!', {icon: 2, time: 1000});
             }
         });
     });

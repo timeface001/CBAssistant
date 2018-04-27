@@ -1,8 +1,14 @@
 package com.crossborder.action;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.crossborder.entity.Menu;
+import com.crossborder.entity.SenderInfo;
+import com.crossborder.entity.ShippingInfo;
+import com.crossborder.entity.WayBill;
 import com.crossborder.service.CommonService;
+import com.crossborder.utils.HttpClientUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -169,6 +175,52 @@ public class CommonController {
             e.printStackTrace();
             map.put("code", "-10");
             map.put("msg", "查询失败");
+        }
+        return JSON.toJSONString(map);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "getShipTypes", produces = "text/plain;charset=UTF-8")
+    public String getShipTypes(String countryCode) {
+        //http://www.sendfromchina.com/shipfee/ship_type_list
+        Map<String, Object> map = new HashMap<>();
+        Map<String, String> paramMap = new HashMap<>();
+        try {
+            String result = HttpClientUtil.doGetRequest("http://120.76.199.53:8034/LMS.API/api/lms/Get?countryCode=" + countryCode);
+            /*JSONObject jsonObject = XmlUtil.xml2JSON(result.getBytes());
+            JSONArray res = jsonObject.getJSONObject("GetShipTypesListResponse").getJSONArray("shiptypes").getJSONObject(0).getJSONArray("shiptype");*/
+            JSONObject jsonObject = JSONObject.parseObject(result);
+            JSONArray jsonArray = jsonObject.getJSONArray("Item");
+            List<Map<String, String>> ships = new ArrayList<>();
+            for (int i = 0; i < jsonArray.size(); i++) {
+                Map<String, String> shipMap = new HashMap<>();
+                shipMap.put("code", jsonArray.getJSONObject(i).getString("Code"));
+                shipMap.put("name", jsonArray.getJSONObject(i).getString("FullName"));
+                ships.add(shipMap);
+            }
+            map.put("data", ships);
+            map.put("code", "0");
+            map.put("msg", "查询成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("code", "-10");
+            map.put("msg", "查询失败");
+        }
+        return JSON.toJSONString(map);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "confirmOrder", produces = "text/plain;charset=UTF-8")
+    public String confirmOrder(String json) {
+        Map<String, Object> map = new HashMap<>();
+        WayBill wayBill = new WayBill();
+        ShippingInfo shippingInfo = new ShippingInfo();
+        SenderInfo senderInfo = new SenderInfo();
+        try {
+            String result = HttpClientUtil.doPostRequest("http://120.76.199.53:8034/LMS.API/api/WayBill/BatchAdd", json);
+            map.put("data", result);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return JSON.toJSONString(map);
     }

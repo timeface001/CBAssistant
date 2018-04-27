@@ -19,7 +19,7 @@ public interface OrderManageDao {
 
     public List<Map<String, Object>> selectLocalOrder(Map<String, Object> map);
 
-    public List<Map<String, Object>> selectLocalOrderItem(String amazonOrderId);
+    public List<Map<String, Object>> selectLocalOrderItem(Map<String, Object> map);
 
     public int updateOrder(Map<String, Object> map);
 

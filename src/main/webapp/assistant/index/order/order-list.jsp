@@ -82,7 +82,8 @@
             </div>
             <label class="form-label col-xs-2 col-sm-2">订单号：</label>
             <div class="formControls col-xs-2 col-sm-2">
-                <input type="text" name="amazonOrderId" placeholder=" " class="input-text">
+                <input type="text" name="amazonOrderId" placeholder=" " class="input-text"
+                       onkeyup="this.value=this.value.replace(/(^\s+)|(\s+$)/g,'')">
             </div>
             <label class="form-label col-xs-2 col-sm-2">货运公司：</label>
             <div class="formControls col-xs-2 col-sm-2">
@@ -94,7 +95,7 @@
         <div class="row cl">
             <label class="form-label col-xs-2 col-sm-2">国内跟踪号：</label>
             <div class="formControls col-xs-2 col-sm-2">
-                <input type="text" name="" placeholder=" " class="input-text">
+                <input type="text" name="trackNum" placeholder=" " class="input-text">
             </div>
             <label class="form-label col-xs-2 col-sm-2">国际跟踪号：</label>
             <div class="formControls col-xs-2 col-sm-2">
@@ -178,6 +179,7 @@
                 <th width="50">利润（元）</th>
                 <th width="100">货运公司</th>
                 <th width="100">国际跟踪号</th>
+                <th width="50">状态</th>
                 <th width="100">创建时间</th>
                 <th width="90">操作</th>
             </tr>
@@ -401,7 +403,7 @@
                 if (data.code == 0) {
                     var data = data.data;
                     for (var i = 0; i < data.length; i++) {
-                        $("#salesSource").append($('<option value=' + data[i].SHOP_ID + '>' + data[i].SHOP_NAME + '</option>'));
+                        $("#salesSource").append($('<option value=' + data[i].MERCHANT_ID + '>' + data[i].SHOP_NAME + '</option>'));
                     }
                 }
             },
@@ -411,8 +413,10 @@
         });
     }
     /*查询订单*/
+    var isShowStatus = false;
     function reloadTable(id) {
         if (id == 8) {
+            isShowStatus = true;
             document.getElementById('localStatus').value = 0;
         } else {
             $("#localStatus").val(id + 1);
@@ -467,6 +471,7 @@
                 {"data": "PROFIT"},
                 {"data": "TRANSPORTCOMPANY"},
                 {"data": "INTLTRACKNUM"},
+                {"data": "LOCALSTATUS"},
                 {"data": "PURCHASEDATE"},
                 {"data": "LOCALSTATUS"},
             ],
@@ -504,7 +509,31 @@
                     "visible": vis
                 },
                 {
-                    "targets": [17],
+                    "targets": [16],
+                    "data": "LOCALSTATUS",
+                    "visible": isShowStatus,
+                    "render": function (data, type, full) {
+                        if (data == 1) {
+                            return "<div>新单</div>"
+                        } else if (data == 2) {
+                            return "<div>备货</div>"
+                        } else if (data == 3) {
+                            return "<div>缺货</div>"
+                        } else if (data == 4) {
+                            return "<div>发货</div>"
+                        } else if (data == 5) {
+                            return "<div>问题</div>"
+                        } else if (data == 6) {
+                            return "<div>退款</div>"
+                        } else if (data == 7) {
+                            return "<div>妥投</div>"
+                        } else if (data == 8) {
+                            return "<div>代发</div>"
+                        }
+                    }
+                },
+                {
+                    "targets": [18],
                     "data": "LOCALSTATUS",
                     "render": function (data, type, full) {
                         if (roleId == 100) {
@@ -557,12 +586,12 @@
                 if (data.code == 0) {
                     layer.msg(data.msg, {icon: 1, time: 1000});
                 } else {
-                    layer.msg(data.msg, {icon: 1, time: 1000});
+                    layer.msg(data.msg, {icon: 2, time: 1000});
                 }
             },
             error: function (data) {
                 layer.msg(data.msg, {icon: 2, time: 1000});
-            },
+            }
         });
     }
     /*打开订单详情页*/

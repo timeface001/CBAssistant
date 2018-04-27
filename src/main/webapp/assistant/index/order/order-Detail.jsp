@@ -151,13 +151,14 @@
         <div class="row cl">
             <label class=" col-xs-1 col-sm-1 text-r">运输公司：</label>
             <div class=" col-xs-2 col-sm-2">
-                <select id="transportCompany" name="transportCompany" class="select" style="height: 32px">
+                <select id="transportCompany" name="transportCompany" class="select" style="height: 32px"
+                        onchange="loadShips(this.value)">
                     <option value="">请选择</option>
                 </select>
             </div>
             <label class=" col-xs-2 col-sm-2 text-r">运输方式：</label>
             <div class=" col-xs-2 col-sm-2">
-                <select id="tranType" name="tranType" class="select" style="height: 32px">
+                <select id="transType" name="transType" class="select" style="height: 32px">
                     <option value="">请选择</option>
                 </select>
             </div>
@@ -218,13 +219,14 @@
             </tr>
             </thead>
         </table>
-    </div>
-</div>
-<div class="row cl">
-    <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
-        <button type="button" class="btn btn-success radius" id="delivery" name="delivery"><i
-                class="icon-ok"></i>发货
-        </button>
+        <div class="row cl">
+            <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+                <button type="button" class="btn btn-success radius" id="delivery" name="delivery" onclick="delivery()">
+                    <i
+                            class="icon-ok"></i>发货
+                </button>
+            </div>
+        </div>
     </div>
 </div>
 <div class="panel panel-success">
@@ -267,6 +269,7 @@
 <script type="text/javascript">
     var amazonOrderId = '<%=amazonOrderId%>';
     var roleId = $("#roleId").val();
+    var countryCode;
     $(function () {
         $.post("<%=request.getContextPath()%>/order/selectOrderInfo",
                 {
@@ -274,9 +277,9 @@
                 },
                 function (data) {
                     var map = JSON.parse(data);
+                    countryCode = map.address.COUNTRYCODE;
                     initBusiness(map.localOrder);
                     initAddressInfo(map.address);
-
                 });
         initOrderItem();
         initOperationLog();
@@ -288,10 +291,15 @@
         $("#salesMan").val(localOrder.USER_NAME);
         $("#salesSource").val(localOrder.SHOP_NAME);
         $("#amazonOrderId").val(localOrder.AMAZONORDERID);
+        $("#amazonId").val(localOrder.AMAZONORDERID);
         $("#remark").val(localOrder.REMARK);
         var customsDiv = document.getElementById("customsDiv");
-        if (roleId == 100 && localOrder.LOCALSTATUS == 1) {
-            customsDiv.style.display = '';
+        if (roleId == 100 || roleId == 400) {
+            if (localOrder.LOCALSTATUS == 2) {
+                customsDiv.style.display = '';
+            } else {
+                customsDiv.style.display = 'none';
+            }
         } else {
             customsDiv.style.display = 'none';
         }
@@ -453,7 +461,7 @@
                             if (roleId == 300) {
                                 return "";
                             } else if (roleId == 400) {
-                                return "<a style='text-decoration:none' title='发货'  onClick=\"updateOrder(4,'" + full.SELLERSKU + "')\"'>发货</a>";
+                                return "";
                             } else if (roleId == 500) {
                                 return "<a style='text-decoration:none' title='缺货'  onClick=\"updateOrder(3,'" + full.SELLERSKU + "')\"'>缺货</a>" +
                                         "&nbsp;&nbsp;&nbsp;&nbsp;" +
@@ -658,7 +666,6 @@
             "info": false
         });
     }
-    var count = 0;
     function addRow() {
         customsTable.row.add([
             "",
@@ -673,34 +680,12 @@
             "",
             "",
             "",
-            count]).draw();
-        count += 1;
+            ""]).draw();
     }
     function removeRow(obj) {
         customsTable.row($(obj).parents('tr')).remove().draw();
 
     }
-    $("#delivery").click(function () {
-        var datas = customsTable.rows();
-        for (var i = 0; i < datas.length; i++) {
-            alert(customsTable.fnGetData(datas[i]));
-        }
-        $.ajax({
-            type: 'POST',
-            url: '<%=request.getContextPath()%>/order/delivery',
-            dataType: 'json',
-            data: {
-                "data": customsTable.$("input").serialize()
-            },
-            success: function (data) {
-                layer.msg(data.msg, {icon: 6, time: 1000});
-                layer_close();
-            },
-            error: function (data) {
-                layer.msg(data.msg, {icon: 5, time: 1000});
-            },
-        });
-    });
     function initSelect() {
         $.ajax({
             type: 'POST',
@@ -714,6 +699,27 @@
                     var data = data.data;
                     for (var i = 0; i < data.length; i++) {
                         $("#transportCompany").append($('<option value=' + data[i].ID + '>' + data[i].NAME + '</option>'));
+                    }
+                }
+            },
+            error: function (data) {
+                layer.msg(data.msg, {icon: 2, time: 1000});
+            }
+        });
+    }
+    function loadShips(value) {
+        $.ajax({
+            type: 'POST',
+            url: '<%=request.getContextPath()%>/common/getShipTypes',
+            dataType: 'json',
+            data: {
+                "countryCode": countryCode
+            },
+            success: function (data) {
+                if (data.code == 0) {
+                    var data = data.data;
+                    for (var i = 0; i < data.length; i++) {
+                        $("#transType").append($('<option value=' + data[i].code + '>' + data[i].name + '</option>'));
                     }
                 }
             },
@@ -779,6 +785,50 @@
             "data": {
                 "amazonOrderId": amazonOrderId,
                 "remark": $("#remark").val()
+            },
+            success: function (data) {
+                layer.msg('添加备注成功!', {icon: 1, time: 1000});
+            },
+            error: function (data) {
+                layer.msg('添加备注失败!', {icon: 2, time: 1000});
+            }
+        });
+    }
+    function delivery() {
+        var wayBills = new Array();
+        var wayBill = new Object();
+        var ShippingInfo = new Object();
+        var SenderInfo = new Object();
+        var ApplicationInfos = new Array();
+        var applicationInfo = new Object();
+        wayBill.WayBillNumber = $("#amazonId").val();
+        wayBill.ShippingMethodCode = $("#transType").val();
+        wayBill.Length = $("#length").val();
+        wayBill.Width = $("#width").val();
+        wayBill.Height = $("#height").val();
+        wayBill.PackageNumber = $("#count").val();
+        wayBill.Weight = $("#weight").val();
+        ShippingInfo.CountryCode = $("#countryCode").val();
+        ShippingInfo.ShippingFirstName = $("#name").val();
+        ShippingInfo.ShippingLastName = $("#name").val();
+        ShippingInfo.ShippingCompany = $("#company").val();
+        ShippingInfo.ShippingAddress = $("#addressLine1").val();
+        ShippingInfo.ShippingAddress1 = $("#addressLine2").val();
+        ShippingInfo.ShippingAddress2 = $("#addressLine3").val();
+        ShippingInfo.ShippingCity = $("#city").val();
+        ShippingInfo.ShippingState = $("#stateOrRegion").val();
+        ShippingInfo.ShippingZip = $("#postalCode").val();
+        ShippingInfo.ShippingPhone = $("#phone").val();
+        var nTrs = customsTable.rows[0];//fnGetNodes获取表格所有行，nTrs[i]表示第i行tr对象
+        console.log('[获取数据]' + nTrs);//fnGetData获取一行的数据
+        wayBill.ShippingInfo = ShippingInfo;
+        wayBills.push(wayBill);
+        $.ajax({
+            type: 'POST',
+            url: '<%=request.getContextPath()%>/common/confirmOrder',
+            dataType: 'json',
+            "data": {
+                "json": JSON.stringify(wayBills)
             },
             success: function (data) {
                 layer.msg('添加备注成功!', {icon: 1, time: 1000});

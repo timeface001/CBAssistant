@@ -22,6 +22,8 @@ public class LocalOrderItem {
     private String currencyCode;
     private double itemPrice;
     private String smallImage;
+    private double itemPriceRMB;
+    private double shippingPriceRMB;
 
     public String getAsin() {
         return asin;
@@ -165,5 +167,21 @@ public class LocalOrderItem {
 
     public void setSmallImage(String smallImage) {
         this.smallImage = smallImage;
+    }
+
+    public double getItemPriceRMB() {
+        return itemPriceRMB;
+    }
+
+    public void setItemPriceRMB(double itemPriceRMB) {
+        this.itemPriceRMB = itemPriceRMB;
+    }
+
+    public double getShippingPriceRMB() {
+        return shippingPriceRMB;
+    }
+
+    public void setShippingPriceRMB(double shippingPriceRMB) {
+        this.shippingPriceRMB = shippingPriceRMB;
     }
 }

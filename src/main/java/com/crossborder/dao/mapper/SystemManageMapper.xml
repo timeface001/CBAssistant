@@ -25,19 +25,18 @@
         </if>
     </select>
     <select id="selectShopsByUser" parameterType="java.util.Map" resultType="java.util.Map">
-        SELECT * FROM T_SHOP
+        SELECT distinct shop_name,merchant_id FROM T_SHOP
         WHERE 1=1
         <if test="id !=null and id !=''">
             AND CREATE_USER = #{id,jdbcType=VARCHAR}
         </if>
     </select>
     <select id="selectShopsByCompany" parameterType="java.util.Map" resultType="java.util.Map">
-        select *
+        select distinct shop_name,merchant_id
         from T_SHOP t
         where create_user in
         (select user_id from t_user_info where user_company = #{id,jdbcType=VARCHAR})
     </select>
-
     <update id="updateCompanyState" parameterType="java.util.Map">
         UPDATE T_USER_COMPANY
         set
