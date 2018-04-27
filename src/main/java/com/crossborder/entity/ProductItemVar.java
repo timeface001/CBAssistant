@@ -32,7 +32,7 @@ public class ProductItemVar {
 
     private Date saleEndTime;
 
-    private BigDecimal quantity;
+    private Integer quantity;
 
     public String getId() {
         return id;
@@ -146,11 +146,11 @@ public class ProductItemVar {
         this.saleEndTime = saleEndTime;
     }
 
-    public BigDecimal getQuantity() {
+    public Integer getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(BigDecimal quantity) {
+    public void setQuantity(Integer quantity) {
         this.quantity = quantity;
     }
 }

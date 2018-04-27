@@ -52,7 +52,7 @@
         <div class="layui-form-item">
             <label class="layui-form-label">ParentSKU</label>
             <div class="layui-input-block">
-                <input type="text" name="title" lay-verify="required" placeholder="" autocomplete="off"
+                <input type="text" name="sku" lay-verify="required" placeholder="" autocomplete="off"
                        class="layui-input" value="${product.sku}">
             </div>
         </div>
@@ -71,7 +71,7 @@
         <div class="layui-form-item" >
             <label class="layui-form-label">变种主题</label>
             <div class="layui-input-block">
-                <select name="sku" lay-filter="skuMuti">
+                <select name="skuType" lay-filter="skuMuti">
                     <option value=""></option>
                     <c:forEach items="${typeList}" var="type">
                         <option value="${type.variationType}">${type.variationName}</option>
@@ -93,7 +93,7 @@
         <div class="layui-form-item">
                 <label class="layui-form-label">价格</label>
                 <div class="layui-inline">
-                    <input type="text" name="price" placeholder="" autocomplete="off" class="layui-input">
+                    <input type="text" name="price" value="${product.price}" placeholder="" autocomplete="off" class="layui-input">
                 </div>
 
         </div>
@@ -101,7 +101,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">促销价</label>
                 <div class="layui-inline">
-                    <input type="text" name="salePrice"   placeholder="" autocomplete="off" class="layui-input">
+                    <input type="text" name="salePrice" value="${productVar.salePrice}"   placeholder="" autocomplete="off" class="layui-input">
                 </div>
 
             </div>
@@ -109,7 +109,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">促销时间</label>
                 <div class="layui-inline">
-                    <input type="text" name="saleStartTime" id="saleStartTime"   placeholder="" autocomplete="off" class="layui-input">
+                    <input type="text" name="saleStartTime" id="saleStartTime"  placeholder="" autocomplete="off" class="layui-input">
                 </div>
                 -
                 <div class="layui-inline">
@@ -133,7 +133,7 @@
         <div class="layui-form-item" >
             <label class="layui-form-label">产品描述</label>
             <div class="layui-input-block">
-                <textarea name="pDesc" placeholder="请输入产品描述" class="layui-textarea"></textarea>
+                <textarea name="pDesc" placeholder=""   class="layui-textarea">${product.productDescriptionCn}</textarea>
             </div>
 
         </div>
@@ -145,7 +145,7 @@
                 <input type="text" name="bulletPoint1"  style="width: 300px"  value="${points[0]}" lay-verify="required" placeholder="" autocomplete="off" class="layui-input ">
             </div>
             <div class="layui-inline">
-                <input type="text" name="bulletPoint2" style="width: 300px" value="${point[1]}"  lay-verify="required"   placeholder="" autocomplete="off" class="layui-input">
+                <input type="text" name="bulletPoint2" style="width: 300px" value="${points[1]}"  lay-verify="required"   placeholder="" autocomplete="off" class="layui-input">
             </div>
 
         </div>
@@ -155,10 +155,10 @@
             <label class="layui-form-label"></label>
 
             <div class="layui-inline">
-                <input type="text" name="bulletPoint3" value="${point[2]}" style="width: 300px" lay-verify="required"  placeholder="" autocomplete="off" class="layui-input">
+                <input type="text" name="bulletPoint3" value="${points[2]}" style="width: 300px" lay-verify="required"  placeholder="" autocomplete="off" class="layui-input">
             </div>
             <div class="layui-inline">
-                <input type="text" name="bulletPoint4" value="${point[3]}" style="width: 300px"  lay-verify="required"   placeholder="" autocomplete="off" class="layui-input">
+                <input type="text" name="bulletPoint4" value="${points[3]}" style="width: 300px"  lay-verify="required"   placeholder="" autocomplete="off" class="layui-input">
             </div>
 
         </div>
@@ -167,7 +167,7 @@
             <label class="layui-form-label"></label>
 
             <div class="layui-inline">
-                <input type="text" name="bulletPoint5" value="${point[4]}" style="width: 300px"  lay-verify="required"   placeholder="" autocomplete="off" class="layui-input">
+                <input type="text" name="bulletPoint5" value="${points[4]}" style="width: 300px"  lay-verify="required"   placeholder="" autocomplete="off" class="layui-input">
             </div>
         </div>
 
@@ -177,10 +177,10 @@
             <label class="layui-form-label">关键词</label>
 
             <div class="layui-inline">
-                <input type="text" name="keyword1" value="${points[0]}"  style="width: 300px" lay-verify="required"  placeholder="" autocomplete="off" class="layui-input ">
+                <input type="text" name="keyword1" value="${keywords[0]}"  style="width: 300px" lay-verify="required"  placeholder="" autocomplete="off" class="layui-input ">
             </div>
             <div class="layui-inline">
-                <input type="text" name="keyword2" value="${points[1]}" style="width: 300px" lay-verify="required"   placeholder="" autocomplete="off" class="layui-input">
+                <input type="text" name="keyword2" value="${keywords[1]}" style="width: 300px" lay-verify="required"   placeholder="" autocomplete="off" class="layui-input">
             </div>
 
         </div>
@@ -190,10 +190,10 @@
             <label class="layui-form-label"></label>
 
             <div class="layui-inline">
-                <input type="text" name="keyword3" value="${points[2]}" style="width: 300px"  lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                <input type="text" name="keyword3" value="${keywords[2]}" style="width: 300px"  lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
             </div>
             <div class="layui-inline">
-                <input type="text" name="keyword4" value="${points[3]}" style="width: 300px" lay-verify="required"    placeholder="" autocomplete="off" class="layui-input">
+                <input type="text" name="keyword4" value="${keywords[3]}" style="width: 300px" lay-verify="required"    placeholder="" autocomplete="off" class="layui-input">
             </div>
 
         </div>
@@ -202,7 +202,7 @@
             <label class="layui-form-label"></label>
 
             <div class="layui-inline">
-                <input type="text" name="keyword5" value="${points[4]}" style="width: 300px"  lay-verify="required"   placeholder="" autocomplete="off" class="layui-input">
+                <input type="text" name="keyword5" value="${keywords[4]}" style="width: 300px"  lay-verify="required"   placeholder="" autocomplete="off" class="layui-input">
             </div>
         </div>
 
@@ -343,6 +343,8 @@
                 data.field["keywordsCn"]=JSON.stringify(keys);
                 if(skuType==1){//单体
 
+
+
                 }else{//多变中
 
                 }
@@ -356,18 +358,19 @@
                          data.field
                     ,
                     success: function (data) {
+                        layer.msg(data.msg, {icon: 6, time: 1000});
                         if(data.success){
                             setTimeout(function () {
-                                layer.msg(data.msg, {icon: 6, time: 1000})
-                            },1300);
-                            location.href='<%=request.getContextPath()%>/assistant/index/product/product_claim_list.jsp';
+                                location.href='<%=request.getContextPath()%>/assistant/index/product/product_claim_list.jsp';
+                            },1000);
+
                         }else{
                             layer.msg(data.msg, {icon: 5, time: 1000});
                         }
 
                     },
                     error: function (data) {
-                        layer.msg(data.msg, {icon: 5, time: 1000});
+                        layer.msg("保存失败", {icon: 5, time: 1000});
                     }
                 });
                 return false;

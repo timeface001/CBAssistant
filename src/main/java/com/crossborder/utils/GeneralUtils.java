@@ -4,10 +4,9 @@ import org.springframework.util.ClassUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-import java.util.UUID;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * Created by fengsong on 2018/4/15.
@@ -69,6 +68,24 @@ public class GeneralUtils {
             sb.append(str.charAt(number));
         }
         return sb.toString();
+    }
+
+    public static Date getDateFromStr(String time) {
+        if (org.apache.commons.lang3.StringUtils.isBlank(time)) {
+            return null;
+        }
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            return sdf.parse(time);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public static boolean isNotNullOrEmpty(List<?> list) {
+        return list != null && !list.isEmpty();
     }
 
 }

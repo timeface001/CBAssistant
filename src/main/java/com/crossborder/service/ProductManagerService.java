@@ -1,5 +1,6 @@
 package com.crossborder.service;
 
+import com.alibaba.fastjson.JSON;
 import com.crossborder.dao.ClaimProductDao;
 import com.crossborder.dao.ProductManagerDao;
 import com.crossborder.entity.ClaimProduct;
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -96,7 +98,71 @@ public class ProductManagerService {
     }
 
     public void save(ClaimProduct product){
+         //翻译产品描述  产品概要  关键词翻译
+        List<String> keyList= JSON.parseArray(product.getKeywordsCn(),String.class);
+        List<String> pointList= JSON.parseArray(product.getBulletPointCn(),String.class);
 
+        String productDesc = product.getProductDescriptionCn();
+        product.setProductDescriptionCn(productDesc);
+        product.setProductDescriptionDe(BaiduTranApi.getInstance().zh2De(productDesc));
+        product.setProductDescriptionEs(BaiduTranApi.getInstance().zh2spa(productDesc));
+        product.setProductDescriptionIt(BaiduTranApi.getInstance().zh2It(productDesc));
+        product.setProductDescriptionJp(BaiduTranApi.getInstance().zh2Jp(productDesc));
+        product.setProductDescriptionUk(BaiduTranApi.getInstance().zh2En(productDesc));
+        product.setProductDescriptionFr(BaiduTranApi.getInstance().zh2Fra(productDesc));
+
+        List<String> keyDe=new ArrayList<>();
+        List<String> keyEs=new ArrayList<>();
+        List<String> keyIt=new ArrayList<>();
+        List<String> keyJp=new ArrayList<>();
+        List<String> keyUk=new ArrayList<>();
+        List<String> keyFr=new ArrayList<>();
+        for(String key:keyList){
+            keyDe.add(BaiduTranApi.getInstance().zh2De(key));
+            keyEs.add(BaiduTranApi.getInstance().zh2spa(key));
+            keyIt.add(BaiduTranApi.getInstance().zh2It(key));
+            keyJp.add(BaiduTranApi.getInstance().zh2Jp(key));
+            keyUk.add(BaiduTranApi.getInstance().zh2En(key));
+            keyFr.add(BaiduTranApi.getInstance().zh2Fra(key));
+
+        }
+        product.setKeywordsCn(JSON.toJSONString(keyList));
+        product.setKeywordsDe(JSON.toJSONString(keyDe));
+        product.setKeywordsEs(JSON.toJSONString(keyEs));
+        product.setKeywordsIt(JSON.toJSONString(keyIt));
+        product.setKeywordsJp(JSON.toJSONString(keyJp));
+        product.setKeywordsUk(JSON.toJSONString(keyUk));
+        product.setKeywordsFr(JSON.toJSONString(keyFr));
+
+
+        List<String> pointDe=new ArrayList<>();
+        List<String> pointEs=new ArrayList<>();
+        List<String> pointIt=new ArrayList<>();
+        List<String> pointJp=new ArrayList<>();
+        List<String> pointUk=new ArrayList<>();
+        List<String> pointFr=new ArrayList<>();
+        for(String point:pointList){
+            pointDe.add(BaiduTranApi.getInstance().zh2De(point));
+            pointEs.add(BaiduTranApi.getInstance().zh2spa(point));
+            pointIt.add(BaiduTranApi.getInstance().zh2It(point));
+            pointJp.add(BaiduTranApi.getInstance().zh2Jp(point));
+            pointUk.add(BaiduTranApi.getInstance().zh2En(point));
+            pointFr.add(BaiduTranApi.getInstance().zh2Fra(point));
+
+        }
+        product.setBulletPointCn(product.getKeywordsCn());
+        product.setBulletPointDe(JSON.toJSONString(pointDe));
+        product.setBulletPointEs(JSON.toJSONString(pointEs));
+        product.setBulletPointIt(JSON.toJSONString(pointIt));
+        product.setBulletPointJp(JSON.toJSONString(pointJp));
+        product.setBulletPointUk(JSON.toJSONString(pointUk));
+        product.setBulletPointFr(JSON.toJSONString(pointFr));
+
+
+        product.setUpdateState("1");//已编辑
+        product.setUpdateTime(new Date());
+        product.setCreateUser(GeneralUtils.getUserId());
+        product.setSkuType("1");//默认单体
         claimProductExtMapper.updateByPrimaryKeySelective(product);
     }
 

@@ -2,6 +2,7 @@ package com.crossborder.action;
 
 import com.alibaba.fastjson.JSON;
 import com.crossborder.entity.ClaimProduct;
+import com.crossborder.entity.ProductItemVar;
 import com.crossborder.service.ProductManagerService;
 import com.crossborder.service.ProductSkuTypeService;
 import com.crossborder.utils.GeneralUtils;
@@ -68,9 +69,23 @@ public class ProductClaimController extends BaseController {
 
     @RequestMapping(value = "/product/claim/save", produces = "text/plain;charset=UTF-8")
     @ResponseBody
-    public String save(ClaimProduct product) {
+    public String save(ClaimProduct product, String saleStartTime, String saleEndTime) {
 
-        //productManagerService.save(product);
+        productManagerService.save(product);
+        List<ProductItemVar> list = new ArrayList<>();
+        if (product.getSkuType().equals("1")) {//单体保存
+            ProductItemVar var = new ProductItemVar();
+            var.setProductId(product.getId());
+            var.setPrice(product.getPrice());
+            var.setQuantity(product.getQuantity());
+            var.setSaleStartTime(GeneralUtils.getDateFromStr(saleStartTime));
+            var.setSaleEndTime(GeneralUtils.getDateFromStr(saleEndTime));
+            var.setSku(product.getSku());
+            list.add(var);
+        } else {
+
+        }
+        productSkuTypeService.save(list, product.getId());
         return JSON.toJSONString(ResponseGen.genSuccess());
     }
 
@@ -88,19 +103,28 @@ public class ProductClaimController extends BaseController {
         List<String> keyJson = JSON.parseArray(keywords, String.class);
         List<String> pointJson = JSON.parseArray(points, String.class);
 
-        if (keyJson != null) {
+        if (keyJson == null) {
             keyJson = new ArrayList<>(5);
         }
-        if (pointJson != null) {
+        if (pointJson == null) {
             pointJson = new ArrayList<>(5);
         }
 
         request.setAttribute("productStr", JSON.toJSONString(claimProduct));
         request.setAttribute("keywords", keyJson);
         request.setAttribute("points", pointJson);
+        List<ProductItemVar> vars = productSkuTypeService.selectListByProductId(id);
+        if (claimProduct.getSkuType().equals("1")) {
+            if (GeneralUtils.isNotNullOrEmpty(vars)) {
+                request.setAttribute("productVar", vars.get(0));
+            } else {
+                request.setAttribute("productVar", new ProductItemVar());
+            }
+        }else{
+            //todo 多变种回显
+        }
         return view;
     }
-
 
 
 }
