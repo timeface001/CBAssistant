@@ -171,8 +171,8 @@
                     return val.quantity==null?"":val.quantity;
                 }},
                 {"data": function (val) {
-                    return "<p>创建</p><p>"+getMyDate(val.createTime)+"</p>"+
-                    val.updateTime==null?"<p>创建</p><p>"+getMyDate(val.updateTime)+"</p>":"";
+                    console.log(getMyDate(val.createTime));
+                    return "<p style='text-align: left'>创建</p><p style='text-align: left'>"+getMyDate(val.createTime)+"</p>"+(val.updateTime!=null?("<p style='text-align: left'>更新</p><p style='text-align: left'>"+getMyDate(val.updateTime)+"</p>"):"");
                 }}
             ],
             "columnDefs": [
@@ -187,7 +187,7 @@
                     "targets": [7],
                     "data": "id",
                     "render": function (data, type, full) {
-                        return( full.updateState=="1"?"<a style='text-decoration:none' title='移入待发布'  onClick=\"claimProduct('" + full.ID + "')\"')>认领</a>":"") +
+                        return( full.updateState=="1"?"<a style='text-decoration:none' title='移入待发布'  onClick=\"claimProduct('" + full.ID + "')\"')>移入待发布</a>":"") +
                             "&nbsp;&nbsp;" +
                             "<a style='text-decoration:none' title='编辑'  onClick=\"editProduct('" + full.id + "')\"')>编辑</a>" ;
                     }
@@ -310,7 +310,7 @@
             oHour = oDate.getHours(),
             oMin = oDate.getMinutes(),
             oSen = oDate.getSeconds(),
-            oTime = oYear +'-'+ getzf(oMonth) +'-'+ getzf(oDay) +' '+ getzf(oHour) +':'+ getzf(oMin) +':'+getzf(oSen);//最后拼接时间
+            oTime = oYear +'-'+ getzf(oMonth) +'-'+ getzf(oDay) ;//+' '+ getzf(oHour) +':'+ getzf(oMin) +':'+getzf(oSen);//最后拼接时间
 
         return oTime;
     };
