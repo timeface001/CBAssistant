@@ -58,13 +58,13 @@ public class ProductManagerService {
 
                 //产品描述翻译
                 String productDesc = GeneralUtils.nullToEmpty(product.get("INFO"));
-                claimProduct.setBulletPointCn(productDesc);
-                claimProduct.setBulletPointDe(BaiduTranApi.getInstance().zh2De(productDesc));
-                claimProduct.setBulletPointEs(BaiduTranApi.getInstance().zh2spa(productDesc));
-                claimProduct.setBulletPointIt(BaiduTranApi.getInstance().zh2It(productDesc));
-                claimProduct.setBulletPointJp(BaiduTranApi.getInstance().zh2Jp(productDesc));
-                claimProduct.setBulletPointUk(BaiduTranApi.getInstance().zh2En(productDesc));
-                claimProduct.setBulletPointFr(BaiduTranApi.getInstance().zh2Fra(productDesc));
+                claimProduct.setProductDescriptionCn(productDesc);
+                claimProduct.setProductDescriptionDe(BaiduTranApi.getInstance().zh2De(productDesc));
+                claimProduct.setProductDescriptionEs(BaiduTranApi.getInstance().zh2spa(productDesc));
+                claimProduct.setProductDescriptionIt(BaiduTranApi.getInstance().zh2It(productDesc));
+                claimProduct.setProductDescriptionJp(BaiduTranApi.getInstance().zh2Jp(productDesc));
+                claimProduct.setProductDescriptionUk(BaiduTranApi.getInstance().zh2En(productDesc));
+                claimProduct.setProductDescriptionFr(BaiduTranApi.getInstance().zh2Fra(productDesc));
 
                 //标题翻译
                 String name = GeneralUtils.nullToEmpty(product.get("NAME"));

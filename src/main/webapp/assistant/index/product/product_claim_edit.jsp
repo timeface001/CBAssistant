@@ -40,6 +40,7 @@
 
     <blockquote class="layui-elem-quote">产品信息</blockquote>
     <form class="layui-form" action="">
+        <input name="id" type="hidden" value="${product.id}" />
         <div class="layui-form-item">
             <label class="layui-form-label">售卖形式</label>
             <div class="layui-input-block" >
@@ -51,8 +52,8 @@
         <div class="layui-form-item">
             <label class="layui-form-label">ParentSKU</label>
             <div class="layui-input-block">
-                <input type="text" name="title" lay-verify="required" placeholder="请输入ParentSKU" autocomplete="off"
-                       class="layui-input">
+                <input type="text" name="title" lay-verify="required" placeholder="" autocomplete="off"
+                       class="layui-input" value="${product.sku}">
             </div>
         </div>
 
@@ -86,8 +87,9 @@
         </div>
 
 
-        <blockquote class="layui-elem-quote">价格信息</blockquote>
+
         <div id="priceInfo">
+            <blockquote class="layui-elem-quote">价格信息</blockquote>
         <div class="layui-form-item">
                 <label class="layui-form-label">价格</label>
                 <div class="layui-inline">
@@ -107,24 +109,23 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">促销时间</label>
                 <div class="layui-inline">
-                    <input type="text" name="saleStartTime" id="saleStartTime" lay-verify="date"   placeholder="" autocomplete="off" class="layui-input">
+                    <input type="text" name="saleStartTime" id="saleStartTime"   placeholder="" autocomplete="off" class="layui-input">
                 </div>
                 -
                 <div class="layui-inline">
-                    <input type="text" name="saleEndTime" id="saleEndTime"  lay-verify="date"  placeholder="" autocomplete="off" class="layui-input">
+                    <input type="text" name="saleEndTime" id="saleEndTime"   placeholder="" autocomplete="off" class="layui-input">
                 </div>
 
             </div>
 
-
-
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">数量</label>
-            <div class="layui-inline">
-                <input type="text" name="quantity" lay-verify="required" placeholder="请输入数量" autocomplete="off"
-                       class="layui-input">
+            <div class="layui-form-item">
+                <label class="layui-form-label">数量</label>
+                <div class="layui-inline">
+                    <input type="text" name="quantity"  placeholder="请输入数量" autocomplete="off"
+                           class="layui-input">
+                </div>
             </div>
+
         </div>
 
 
@@ -141,10 +142,10 @@
             <label class="layui-form-label">简要描述</label>
 
             <div class="layui-inline">
-                <input type="text" name="bulletPoint1"  style="width: 300px"  lay-verify="required" placeholder="" autocomplete="off" class="layui-input ">
+                <input type="text" name="bulletPoint1"  style="width: 300px"  value="${points[0]}" lay-verify="required" placeholder="" autocomplete="off" class="layui-input ">
             </div>
             <div class="layui-inline">
-                <input type="text" name="bulletPoint2" style="width: 300px"  lay-verify="required"   placeholder="" autocomplete="off" class="layui-input">
+                <input type="text" name="bulletPoint2" style="width: 300px" value="${point[1]}"  lay-verify="required"   placeholder="" autocomplete="off" class="layui-input">
             </div>
 
         </div>
@@ -154,10 +155,10 @@
             <label class="layui-form-label"></label>
 
             <div class="layui-inline">
-                <input type="text" name="bulletPoint3" style="width: 300px" lay-verify="required"  placeholder="" autocomplete="off" class="layui-input">
+                <input type="text" name="bulletPoint3" value="${point[2]}" style="width: 300px" lay-verify="required"  placeholder="" autocomplete="off" class="layui-input">
             </div>
             <div class="layui-inline">
-                <input type="text" name="bulletPoint4" style="width: 300px"  lay-verify="required"   placeholder="" autocomplete="off" class="layui-input">
+                <input type="text" name="bulletPoint4" value="${point[3]}" style="width: 300px"  lay-verify="required"   placeholder="" autocomplete="off" class="layui-input">
             </div>
 
         </div>
@@ -166,7 +167,7 @@
             <label class="layui-form-label"></label>
 
             <div class="layui-inline">
-                <input type="text" name="bulletPoint5" style="width: 300px"  lay-verify="required"   placeholder="" autocomplete="off" class="layui-input">
+                <input type="text" name="bulletPoint5" value="${point[4]}" style="width: 300px"  lay-verify="required"   placeholder="" autocomplete="off" class="layui-input">
             </div>
         </div>
 
@@ -176,10 +177,10 @@
             <label class="layui-form-label">关键词</label>
 
             <div class="layui-inline">
-                <input type="text" name="keyword1"  style="width: 300px" lay-verify="required"  placeholder="" autocomplete="off" class="layui-input ">
+                <input type="text" name="keyword1" value="${points[0]}"  style="width: 300px" lay-verify="required"  placeholder="" autocomplete="off" class="layui-input ">
             </div>
             <div class="layui-inline">
-                <input type="text" name="keyword2" style="width: 300px" lay-verify="required"   placeholder="" autocomplete="off" class="layui-input">
+                <input type="text" name="keyword2" value="${points[1]}" style="width: 300px" lay-verify="required"   placeholder="" autocomplete="off" class="layui-input">
             </div>
 
         </div>
@@ -189,10 +190,10 @@
             <label class="layui-form-label"></label>
 
             <div class="layui-inline">
-                <input type="text" name="keyword3" style="width: 300px"  lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                <input type="text" name="keyword3" value="${points[2]}" style="width: 300px"  lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
             </div>
             <div class="layui-inline">
-                <input type="text" name="keyword4" style="width: 300px" lay-verify="required"    placeholder="" autocomplete="off" class="layui-input">
+                <input type="text" name="keyword4" value="${points[3]}" style="width: 300px" lay-verify="required"    placeholder="" autocomplete="off" class="layui-input">
             </div>
 
         </div>
@@ -201,7 +202,7 @@
             <label class="layui-form-label"></label>
 
             <div class="layui-inline">
-                <input type="text" name="keyword5" style="width: 300px"  lay-verify="required"   placeholder="" autocomplete="off" class="layui-input">
+                <input type="text" name="keyword5" value="${points[4]}" style="width: 300px"  lay-verify="required"   placeholder="" autocomplete="off" class="layui-input">
             </div>
         </div>
 
@@ -237,9 +238,9 @@
         var skuArr=[];
         singleSku();
         //日期
+
         layui.use('laydate', function(){
             var laydate = layui.laydate;
-
             laydate.render({
                 elem: '#saleStartTime' //促销开始时间
             });
@@ -257,9 +258,23 @@
             });
         });
 
+        function  initSkuSaleDate() {
+            var laydate = layui.laydate;
+            layui.use('laydate', function(){
+
+                laydate.render({
+                    elem: '.saleStart' //促销开始时间
+                });
+
+                laydate.render({
+                    elem: '.saleEnd' //促销结束时间
+                });
+            });
+        }
+
+
         layui.use('form', function(){
             var form = layui.form;
-
             form.on('radio(skuType)', function(data){//切换变体类型
                 if($(this).val()=="2"){//选中多变体
                     mutiSku();
@@ -306,6 +321,56 @@
                 form.render(null, 'skuRender');
                 form.render('checkbox');
 
+            });
+
+            form.on('submit', function(data){
+                var skuType=data.field.skuType;
+                //组合关键词和简要描述
+                var keys=[],points=[];
+                points.push($("input[name='bulletPoint1']").val());
+                points.push($("input[name='bulletPoint2']").val());
+                points.push($("input[name='bulletPoint3']").val());
+                points.push($("input[name='bulletPoint4']").val());
+                points.push($("input[name='bulletPoint5']").val());
+
+                keys.push($("input[name='keyword1']").val());
+                keys.push($("input[name='keyword2']").val());
+                keys.push($("input[name='keyword3']").val());
+                keys.push($("input[name='keyword4']").val());
+                keys.push($("input[name='keyword5']").val());
+
+                data.field["bulletPointCn"]=JSON.stringify(points);
+                data.field["keywordsCn"]=JSON.stringify(keys);
+                if(skuType==1){//单体
+
+                }else{//多变中
+
+                }
+
+                var url = '<%=request.getContextPath()%>/product/claim/save';
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    dataType: 'json',
+                    data:
+                         data.field
+                    ,
+                    success: function (data) {
+                        if(data.success){
+                            setTimeout(function () {
+                                layer.msg(data.msg, {icon: 6, time: 1000})
+                            },1300);
+                            location.href='<%=request.getContextPath()%>/assistant/index/product/product_claim_list.jsp';
+                        }else{
+                            layer.msg(data.msg, {icon: 5, time: 1000});
+                        }
+
+                    },
+                    error: function (data) {
+                        layer.msg(data.msg, {icon: 5, time: 1000});
+                    }
+                });
+                return false;
             });
         });
 
@@ -361,6 +426,7 @@
             }
 
             $("#skuMutiPath").append(getSKuPathDom(arr));
+
         }
 
         function skuTable(fisrtDesc,fisrtArr,secondDesc,secondArr) {
@@ -371,20 +437,21 @@
 
            var dom="";
            if(fisrtDesc!=null&&secondDesc!=null){
-               $("#skuTable col").eq(0).after("<col width=\"100\"><col width=\"100\">");
-               $("#skuTable thead th").eq(0).after("<th>"+fisrtDesc+"</th><th>"+secondDesc+"</th>");
+               $("#skuTable colgroup").html(getCgroup(false));
+               $("#skuTable thead").html(getThead("<th>"+fisrtDesc+"</th><th>"+secondDesc+"</th>"));
                for(var i=0;i<fisrtArr.length;i++){
                     dom+=getTR(false,fisrtArr[i],secondArr[i]);
                }
            }else{
-               $("#skuTable col").eq(0).after("<col width=\"100\">");
-               $("#skuTable thead th").eq(0).after("<th>"+fisrtDesc+"</th>");
+               $("#skuTable colgroup").html(getCgroup(true));
+               $("#skuTable thead").html(getThead("<th>"+fisrtDesc+"</th>"));
                for(var i=0;i<fisrtArr.length;i++){
                    dom+=getTR(true,fisrtArr[i],null);
                }
            }
 
             $("#skuTable tbody").html(dom);
+           initSkuSaleDate();
 
         }
 
@@ -405,6 +472,19 @@
                 "</td>"+
                 "<td><input type='text' lay-verify='required'  autocomplete='off' class='layui-input'></td>"+
                 "</tr>";
+        }
+
+        function getCgroup(isSingle) {
+            return "<col width=\"200\">"+
+                 isSingle?("<col width=\"100\">"):("<col width=\"100\"><col width=\"100\">")+
+                " <col width=\"100\">"+
+                "  <col width=\"100\">"+
+                "  <col width=\"400\">"+
+                "  <col width=\"100\">";
+        }
+
+        function getThead(desc) {
+            return "<tr> <th>sku</th>"+desc+"<th>价格</th> <th>促销价</th> <th>促销时间</th> <th>数量</th></tr> ";
         }
 
         function genSkuTypeDom(type) {
@@ -432,12 +512,8 @@
                 "<div class=\"layui-input-block\">"+
                 "<table class=\"layui-table\" id=\"skuTable\" lay-filter='skuTable'>"+
                " <colgroup>"+
-                "<col width=\"200\">"+
-            " <col width=\"100\">"+
-            "  <col width=\"100\">"+
-            "  <col width=\"400\">"+
-            "  <col width=\"100\">"+
-             "   </colgroup><thead><tr> <th>sku</th><th>价格</th> <th>促销价</th> <th>促销时间</th> <th>数量</th></tr> </thead> <tbody>"+
+
+             "   </colgroup><thead></thead> <tbody>"+
 
                 "</tbody>"+
                 "</table>"+
@@ -469,6 +545,7 @@
                     "            </div>";
             }
 
+            initSKuPath();
 
 
             return dom;
@@ -509,50 +586,56 @@
 
         initProductInfo();
 
-        layui.use('upload', function(){
-            var upload = layui.upload;
+        function initSKuPath() {
 
-            //执行实例
-            var uploadInst = upload.render({
-                accept:"images",
-                acceptMime:"image/*",
-                elem: '.skuMainPath' //绑定元素
-                ,url: '<%=request.getContextPath()%>/upload/image' //上传接口
-                ,done: function(res){
-                    $("#mainPathSrc").html("<img width='100px' height='90px' src=<%=request.getContextPath()%>/upload/"+res.data+" />")
-                    $("#mainPath").val(res.data);
-                    //上传完毕回调
-                }
-                ,error: function(){
-                    //请求异常回调
-                }
-            });
+            layui.use('upload', function(){
+                var upload = layui.upload;
 
-
-            var uploadMuti = upload.render({
-                accept:"images",
-                acceptMime:"image/*",
-                elem: '#imagePath', //绑定元素
-                multiple:true
-                ,number:9
-                ,url: '<%=request.getContextPath()%>/upload/image' //上传接口
-                ,done: function(res){
-                    $("#imagePathSrc").append("<img width='100px' src=<%=request.getContextPath()%>/upload/"+res.data+" />")
-                    $("#imagePath").val(res.data);
-                    //上传完毕回调
-                    if($("#imagePathSrc img").length>9){//最多上传9张
-                        $("#imagePathSrc img").each(function (i,val) {
-                            if(i>8){
-                                $(val).remove();
-                            }
-                        });
+                //执行实例
+                var uploadInst = upload.render({
+                    accept:"images",
+                    acceptMime:"image/*",
+                    elem: '.skuMainPath' //绑定元素
+                    ,url: '<%=request.getContextPath()%>/upload/image' //上传接口
+                    ,done: function(res){
+                        $("#mainPathSrc").html("<img width='100px' height='90px' src=<%=request.getContextPath()%>/upload/"+res.data+" />")
+                        $("#mainPath").val(res.data);
+                        //上传完毕回调
                     }
-                }
-                ,error: function(){
-                    //请求异常回调
-                }
+                    ,error: function(){
+                        //请求异常回调
+                    }
+                });
+
+
+                var uploadMuti = upload.render({
+                    accept:"images",
+                    acceptMime:"image/*",
+                    elem: '#imagePath', //绑定元素
+                    multiple:true
+                    ,number:9
+                    ,url: '<%=request.getContextPath()%>/upload/image' //上传接口
+                    ,done: function(res){
+                        $("#imagePathSrc").append("<img width='100px' src=<%=request.getContextPath()%>/upload/"+res.data+" />")
+                        $("#imagePath").val(res.data);
+                        //上传完毕回调
+                        if($("#imagePathSrc img").length>9){//最多上传9张
+                            $("#imagePathSrc img").each(function (i,val) {
+                                if(i>8){
+                                    $(val).remove();
+                                }
+                            });
+                        }
+                    }
+                    ,error: function(){
+                        //请求异常回调
+                    }
+                });
             });
-        });
+
+        }
+
+
 
     });
     function initProductInfo() {

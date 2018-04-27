@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.crossborder.entity.ClaimProduct;
 import com.crossborder.service.ProductManagerService;
 import com.crossborder.service.ProductSkuTypeService;
+import com.crossborder.utils.GeneralUtils;
 import com.crossborder.utils.ResponseGen;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -15,6 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +48,9 @@ public class ProductClaimController extends BaseController {
     public String productList(String data, Integer start, Integer length) {
 
         Map<String, Object> params = JSON.parseObject(data, Map.class);
+        if (params == null) {
+            params = new HashMap<>();
+        }
 
         Object endTime = params.get("endTime");
         if (endTime != null && endTime.toString().length() > 0) {
@@ -63,9 +68,9 @@ public class ProductClaimController extends BaseController {
 
     @RequestMapping(value = "/product/claim/save", produces = "text/plain;charset=UTF-8")
     @ResponseBody
-    public String save(String data) {
+    public String save(ClaimProduct product) {
 
-
+        //productManagerService.save(product);
         return JSON.toJSONString(ResponseGen.genSuccess());
     }
 
@@ -76,10 +81,26 @@ public class ProductClaimController extends BaseController {
         ClaimProduct claimProduct = productManagerService.selectClaimProduct(id);
         //view.addObject("product", claimProduct);
         request.setAttribute("typeList", productSkuTypeService.selectTypeList());
+        claimProduct.setSku(GeneralUtils.getRandomString(16));
         request.setAttribute("product", claimProduct);
+        String keywords = claimProduct.getKeywordsCn();
+        String points = claimProduct.getBulletPointCn();
+        List<String> keyJson = JSON.parseArray(keywords, String.class);
+        List<String> pointJson = JSON.parseArray(points, String.class);
+
+        if (keyJson != null) {
+            keyJson = new ArrayList<>(5);
+        }
+        if (pointJson != null) {
+            pointJson = new ArrayList<>(5);
+        }
+
         request.setAttribute("productStr", JSON.toJSONString(claimProduct));
+        request.setAttribute("keywords", keyJson);
+        request.setAttribute("points", pointJson);
         return view;
     }
+
 
 
 }
