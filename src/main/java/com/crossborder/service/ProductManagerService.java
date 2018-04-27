@@ -1,7 +1,6 @@
 package com.crossborder.service;
 
 import com.alibaba.fastjson.JSON;
-import com.amazonservices.mws.products.model.Product;
 import com.crossborder.dao.ProductAmzUploadDao;
 import com.crossborder.dao.ProductClaimDao;
 import com.crossborder.dao.ProductManagerDao;
