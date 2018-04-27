@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <!DOCTYPE HTML>
 <html>
 <head>
@@ -71,7 +72,7 @@
         <div class="layui-form-item" >
             <label class="layui-form-label">变种主题</label>
             <div class="layui-input-block">
-                <select name="skuType" lay-filter="skuMuti">
+                <select name="skuMuti" lay-filter="skuMuti">
                     <option value=""></option>
                     <c:forEach items="${typeList}" var="type">
                         <option value="${type.variationType}">${type.variationName}</option>
@@ -109,11 +110,11 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">促销时间</label>
                 <div class="layui-inline">
-                    <input type="text" name="saleStartTime" id="saleStartTime"  placeholder="" autocomplete="off" class="layui-input">
+                    <input type="text" name="saleStartTime" id="saleStartTime" value="<fmt:formatDate value="${productVar.saleStartTime}" pattern="yyyy-MM-dd" />"  placeholder="" autocomplete="off" class="layui-input">
                 </div>
                 -
                 <div class="layui-inline">
-                    <input type="text" name="saleEndTime" id="saleEndTime"   placeholder="" autocomplete="off" class="layui-input">
+                    <input type="text" name="saleEndTime" id="saleEndTime" value="<fmt:formatDate value="${productVar.saleEndTime}" pattern="yyyy-MM-dd" />"   placeholder="" autocomplete="off" class="layui-input">
                 </div>
 
             </div>
@@ -121,7 +122,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">数量</label>
                 <div class="layui-inline">
-                    <input type="text" name="quantity"  placeholder="请输入数量" autocomplete="off"
+                    <input type="text" name="quantity" value="${productVar.quantity}"  placeholder="请输入数量" autocomplete="off"
                            class="layui-input">
                 </div>
             </div>
@@ -392,7 +393,6 @@
             var secondRow=[];
             if(skuCheckRow.length==1){//只有一个变种
                 var skuTypeDesc=$(".skuCheckbox").prev().find("span").text();
-                console.log(skuTypeDesc);
                 var checked=$(".skuCheckbox .layui-form-checked");
                 for(var i=0;i<checked.length;i++){
                     arr.push(skuTypeDesc+":"+$(checked[i]).find("span").text());

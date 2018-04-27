@@ -1,9 +1,12 @@
 package com.crossborder.service;
 
 import com.alibaba.fastjson.JSON;
-import com.crossborder.dao.ClaimProductDao;
+import com.amazonservices.mws.products.model.Product;
+import com.crossborder.dao.ProductAmzUploadDao;
+import com.crossborder.dao.ProductClaimDao;
 import com.crossborder.dao.ProductManagerDao;
 import com.crossborder.entity.ClaimProduct;
+import com.crossborder.entity.ProductAmzUpload;
 import com.crossborder.utils.BaiduTranApi;
 import com.crossborder.utils.GeneralUtils;
 import com.crossborder.utils.ProductStateEnum;
@@ -25,7 +28,9 @@ public class ProductManagerService {
     @Resource
     private ProductManagerDao productManagerDao;
     @Resource
-    private ClaimProductDao claimProductExtMapper;
+    private ProductClaimDao claimProductExtMapper;
+    @Resource
+    private ProductAmzUploadDao productAmzUploadDao;
 
     public boolean save(Map<String, Object> product) {
         product.put("createTime", new Date());
@@ -79,6 +84,8 @@ public class ProductManagerService {
                 claimProduct.setItemFr(BaiduTranApi.getInstance().zh2Fra(name));
 
                 claimProduct.setCreateTime(new Date());
+                claimProduct.setCreateUser(GeneralUtils.getUserId());
+                claimProduct.setSkuType("1");
                 claimProductExtMapper.insertSelective(claimProduct);
 
             }
@@ -97,10 +104,10 @@ public class ProductManagerService {
         return productManagerDao.selectOne(id);
     }
 
-    public void save(ClaimProduct product){
-         //翻译产品描述  产品概要  关键词翻译
-        List<String> keyList= JSON.parseArray(product.getKeywordsCn(),String.class);
-        List<String> pointList= JSON.parseArray(product.getBulletPointCn(),String.class);
+    public void save(ClaimProduct product) {
+        //翻译产品描述  产品概要  关键词翻译
+        List<String> keyList = JSON.parseArray(product.getKeywordsCn(), String.class);
+        List<String> pointList = JSON.parseArray(product.getBulletPointCn(), String.class);
 
         String productDesc = product.getProductDescriptionCn();
         product.setProductDescriptionCn(productDesc);
@@ -111,13 +118,13 @@ public class ProductManagerService {
         product.setProductDescriptionUk(BaiduTranApi.getInstance().zh2En(productDesc));
         product.setProductDescriptionFr(BaiduTranApi.getInstance().zh2Fra(productDesc));
 
-        List<String> keyDe=new ArrayList<>();
-        List<String> keyEs=new ArrayList<>();
-        List<String> keyIt=new ArrayList<>();
-        List<String> keyJp=new ArrayList<>();
-        List<String> keyUk=new ArrayList<>();
-        List<String> keyFr=new ArrayList<>();
-        for(String key:keyList){
+        List<String> keyDe = new ArrayList<>();
+        List<String> keyEs = new ArrayList<>();
+        List<String> keyIt = new ArrayList<>();
+        List<String> keyJp = new ArrayList<>();
+        List<String> keyUk = new ArrayList<>();
+        List<String> keyFr = new ArrayList<>();
+        for (String key : keyList) {
             keyDe.add(BaiduTranApi.getInstance().zh2De(key));
             keyEs.add(BaiduTranApi.getInstance().zh2spa(key));
             keyIt.add(BaiduTranApi.getInstance().zh2It(key));
@@ -135,13 +142,13 @@ public class ProductManagerService {
         product.setKeywordsFr(JSON.toJSONString(keyFr));
 
 
-        List<String> pointDe=new ArrayList<>();
-        List<String> pointEs=new ArrayList<>();
-        List<String> pointIt=new ArrayList<>();
-        List<String> pointJp=new ArrayList<>();
-        List<String> pointUk=new ArrayList<>();
-        List<String> pointFr=new ArrayList<>();
-        for(String point:pointList){
+        List<String> pointDe = new ArrayList<>();
+        List<String> pointEs = new ArrayList<>();
+        List<String> pointIt = new ArrayList<>();
+        List<String> pointJp = new ArrayList<>();
+        List<String> pointUk = new ArrayList<>();
+        List<String> pointFr = new ArrayList<>();
+        for (String point : pointList) {
             pointDe.add(BaiduTranApi.getInstance().zh2De(point));
             pointEs.add(BaiduTranApi.getInstance().zh2spa(point));
             pointIt.add(BaiduTranApi.getInstance().zh2It(point));
@@ -161,13 +168,90 @@ public class ProductManagerService {
 
         product.setUpdateState("1");//已编辑
         product.setUpdateTime(new Date());
-        product.setCreateUser(GeneralUtils.getUserId());
-        product.setSkuType("1");//默认单体
+
         claimProductExtMapper.updateByPrimaryKeySelective(product);
     }
 
     public ClaimProduct selectClaimProduct(String id) {
         return claimProductExtMapper.selectByPrimaryKey(id);
+    }
+
+    public List<ProductAmzUpload> selectAmzUploadList(Map<String, Object> params) {
+        return productAmzUploadDao.selectList(params);
+
+    }
+
+    /**
+     * 预发布产品
+     *
+     * @param id
+     * @return
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public int prePublishProduct(String id) throws Exception {
+        ClaimProduct product = claimProductExtMapper.selectByPrimaryKey(id);
+        if (product != null) {
+            //GB 英国
+            ProductAmzUpload uploadGB = generateCommonProperties(product.getBulletPointUk(), product.getItemUk(), product.getProductDescriptionUk(), product.getKeywordsUk());
+            //JP 日本
+            ProductAmzUpload uploadJP = generateCommonProperties(product.getBulletPointJp(), product.getItemJp(), product.getProductDescriptionJp(), product.getKeywordsJp());
+            //CN
+            ProductAmzUpload uploadCN = generateCommonProperties(product.getBulletPointCn(), product.getItemCn(), product.getProductDescriptionCn(), product.getKeywordsCn());
+            //DE 德国
+            ProductAmzUpload uploadDE = generateCommonProperties(product.getBulletPointDe(), product.getItemDe(), product.getProductDescriptionDe(), product.getKeywordsDe());
+            //FR 法国
+            ProductAmzUpload uploadFR = generateCommonProperties(product.getBulletPointFr(), product.getItemFr(), product.getProductDescriptionFr(), product.getKeywordsFr());
+            //ES 西班牙
+            ProductAmzUpload uploadES = generateCommonProperties(product.getBulletPointEs(), product.getItemEs(), product.getProductDescriptionEs(), product.getKeywordsEs());
+            //IT意大利
+            ProductAmzUpload uploadIT = generateCommonProperties(product.getBulletPointIt(), product.getItemIt(), product.getProductDescriptionIt(), product.getKeywordsIt());
+
+            int i = 0;
+            i += productAmzUploadDao.insertSelective(uploadGB);
+            i += productAmzUploadDao.insertSelective(uploadES);
+            i += productAmzUploadDao.insertSelective(uploadDE);
+            i += productAmzUploadDao.insertSelective(uploadFR);
+            i += productAmzUploadDao.insertSelective(uploadJP);
+            i += productAmzUploadDao.insertSelective(uploadCN);
+            i += productAmzUploadDao.insertSelective(uploadIT);
+
+            if (i < 7) {
+                throw new Exception("pre publish insert failed.");
+            }
+
+        }
+
+        return 0;
+    }
+
+    private ProductAmzUpload generateCommonProperties(String points, String productName, String productDesc, String keywords) {
+        ProductAmzUpload upload = new ProductAmzUpload();
+        generateUploadPoints(upload, points);
+
+        upload.setItemName(productName);
+        upload.setProductDescription(productDesc);
+
+        generateUploadKeywords(upload, keywords);
+
+        return upload;
+    }
+
+    private void generateUploadKeywords(ProductAmzUpload uploadGB, String points) {
+        List<String> keywordsGB = JSON.parseArray(points, String.class);
+        uploadGB.setGenericKeywords1(keywordsGB.get(0));
+        uploadGB.setGenericKeywords2(keywordsGB.get(1));
+        uploadGB.setGenericKeywords3(keywordsGB.get(2));
+        uploadGB.setGenericKeywords4(keywordsGB.get(3));
+        uploadGB.setGenericKeywords5(keywordsGB.get(4));
+    }
+
+    private void generateUploadPoints(ProductAmzUpload uploadGB, String keywords) {
+        List<String> pointGB = JSON.parseArray(keywords, String.class);
+        uploadGB.setBulletPoint1(pointGB.get(0));
+        uploadGB.setBulletPoint2(pointGB.get(1));
+        uploadGB.setBulletPoint3(pointGB.get(2));
+        uploadGB.setBulletPoint4(pointGB.get(3));
+        uploadGB.setBulletPoint5(pointGB.get(4));
     }
 
 }

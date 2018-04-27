@@ -1,0 +1,717 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crossborder.dao.ProductAmzUploadDao">
+    
+    <select id="selectList" parameterType="java.util.Map" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>  from T_PRODUCT_ITEM_AMZ_UPLOAD a
+        WHERE a.P_STATE=1 AND a.PARENT_CHILD='parent'
+            <if test="publishStatus!=null">
+              AND  a.PUBLISH_STATUS=#{publishStatus}
+            </if>
+        ORDER BY a.CREATE_TIME DESC
+    </select>
+
+    <resultMap id="BaseResultMap" type="com.crossborder.entity.ProductAmzUpload">
+        <id column="a_ID" jdbcType="DECIMAL" property="id" />
+        <result column="a_LANGUAGE_ID" jdbcType="VARCHAR" property="languageId" />
+        <result column="a_TEMPLATETYPE" jdbcType="VARCHAR" property="templatetype" />
+        <result column="a_ITEM_SKU" jdbcType="VARCHAR" property="itemSku" />
+        <result column="a_EXTERNAL_PRODUCT_ID" jdbcType="VARCHAR" property="externalProductId" />
+        <result column="a_EXTERNAL_PRODUCT_ID_TYPE" jdbcType="VARCHAR" property="externalProductIdType" />
+        <result column="a_ITEM_NAME" jdbcType="VARCHAR" property="itemName" />
+        <result column="a_BRAND_NAME" jdbcType="VARCHAR" property="brandName" />
+        <result column="a_MANUFACTURER" jdbcType="VARCHAR" property="manufacturer" />
+        <result column="a_PART_NUMBER" jdbcType="VARCHAR" property="partNumber" />
+        <result column="a_PRODUCT_DESCRIPTION" jdbcType="VARCHAR" property="productDescription" />
+        <result column="a_FEED_PRODUCT_TYPE" jdbcType="VARCHAR" property="feedProductType" />
+        <result column="a_UPDATE_DELETE" jdbcType="VARCHAR" property="updateDelete" />
+        <result column="a_STANDARD_PRICE" jdbcType="DECIMAL" property="standardPrice" />
+        <result column="a_QUANTITY" jdbcType="DECIMAL" property="quantity" />
+        <result column="a_CONDITION_TYPE" jdbcType="VARCHAR" property="conditionType" />
+        <result column="a_ITEM_WEIGHT" jdbcType="DECIMAL" property="itemWeight" />
+        <result column="a_WEBSITE_SHIPPING_WEIGHT" jdbcType="DECIMAL" property="websiteShippingWeight" />
+        <result column="a_WEIGHT_UNIT" jdbcType="VARCHAR" property="weightUnit" />
+        <result column="a_BULLET_POINT1" jdbcType="VARCHAR" property="bulletPoint1" />
+        <result column="a_BULLET_POINT2" jdbcType="VARCHAR" property="bulletPoint2" />
+        <result column="a_BULLET_POINT3" jdbcType="VARCHAR" property="bulletPoint3" />
+        <result column="a_BULLET_POINT4" jdbcType="VARCHAR" property="bulletPoint4" />
+        <result column="a_BULLET_POINT5" jdbcType="VARCHAR" property="bulletPoint5" />
+        <result column="a_BROWSE_NODES" jdbcType="VARCHAR" property="browseNodes" />
+        <result column="a_GENERIC_KEYWORDS1" jdbcType="VARCHAR" property="genericKeywords1" />
+        <result column="a_GENERIC_KEYWORDS2" jdbcType="VARCHAR" property="genericKeywords2" />
+        <result column="a_GENERIC_KEYWORDS3" jdbcType="VARCHAR" property="genericKeywords3" />
+        <result column="a_GENERIC_KEYWORDS4" jdbcType="VARCHAR" property="genericKeywords4" />
+        <result column="a_GENERIC_KEYWORDS5" jdbcType="VARCHAR" property="genericKeywords5" />
+        <result column="a_PRODUCTIMAGE_MAIN" jdbcType="VARCHAR" property="productimageMain" />
+        <result column="a_PRODUCTIMAGE_PT01" jdbcType="VARCHAR" property="productimagePt01" />
+        <result column="a_PRODUCTIMAGE_PT02" jdbcType="VARCHAR" property="productimagePt02" />
+        <result column="a_PRODUCTIMAGE_PT03" jdbcType="VARCHAR" property="productimagePt03" />
+        <result column="a_PRODUCTIMAGE_PT04" jdbcType="VARCHAR" property="productimagePt04" />
+        <result column="a_PRODUCTIMAGE_PT05" jdbcType="VARCHAR" property="productimagePt05" />
+        <result column="a_PRODUCTIMAGE_PT06" jdbcType="VARCHAR" property="productimagePt06" />
+        <result column="a_PRODUCTIMAGE_PT07" jdbcType="VARCHAR" property="productimagePt07" />
+        <result column="a_PRODUCTIMAGE_PT08" jdbcType="VARCHAR" property="productimagePt08" />
+        <result column="a_PARENT_CHILD" jdbcType="VARCHAR" property="parentChild" />
+        <result column="a_PARENT_SKU" jdbcType="VARCHAR" property="parentSku" />
+        <result column="a_RELATIONSHIP_TYPE" jdbcType="VARCHAR" property="relationshipType" />
+        <result column="a_VARIATION_THEME" jdbcType="VARCHAR" property="variationTheme" />
+        <result column="a_COLOR_NAME" jdbcType="VARCHAR" property="colorName" />
+        <result column="a_COLOR_MAP" jdbcType="VARCHAR" property="colorMap" />
+        <result column="a_SIZE_NAME" jdbcType="VARCHAR" property="sizeName" />
+        <result column="a_SIZE_MAP" jdbcType="VARCHAR" property="sizeMap" />
+        <result column="a_P_STATE" jdbcType="CHAR" property="pState" />
+        <result column="a_MATERIAL_TYPE" jdbcType="VARCHAR" property="materialType" />
+        <result column="a_ITEM_PACKAGE_QUANTITY" jdbcType="DECIMAL" property="itemPackageQuantity" />
+        <result column="a_SHOP_ID" jdbcType="VARCHAR" property="shopId" />
+        <result column="a_SALE_PRICE" jdbcType="DECIMAL" property="salePrice" />
+        <result column="a_SALE_FROM_DATE" jdbcType="DATE" property="saleFromDate" />
+        <result column="a_SALE_END_DATE" jdbcType="DATE" property="saleEndDate" />
+        <result column="a_PUBLISH_STATUS" jdbcType="CHAR" property="publishStatus" />
+        <result column="a_CREATE_TIME" jdbcType="DATE" property="createTime" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        a.ID as a_ID, a.LANGUAGE_ID as a_LANGUAGE_ID, a.TEMPLATETYPE as a_TEMPLATETYPE, a.ITEM_SKU as a_ITEM_SKU,
+        a.EXTERNAL_PRODUCT_ID as a_EXTERNAL_PRODUCT_ID, a.EXTERNAL_PRODUCT_ID_TYPE as a_EXTERNAL_PRODUCT_ID_TYPE,
+        a.ITEM_NAME as a_ITEM_NAME, a.BRAND_NAME as a_BRAND_NAME, a.MANUFACTURER as a_MANUFACTURER,
+        a.PART_NUMBER as a_PART_NUMBER, a.PRODUCT_DESCRIPTION as a_PRODUCT_DESCRIPTION, a.FEED_PRODUCT_TYPE as a_FEED_PRODUCT_TYPE,
+        a.UPDATE_DELETE as a_UPDATE_DELETE, a.STANDARD_PRICE as a_STANDARD_PRICE, a.QUANTITY as a_QUANTITY,
+        a.CONDITION_TYPE as a_CONDITION_TYPE, a.ITEM_WEIGHT as a_ITEM_WEIGHT, a.WEBSITE_SHIPPING_WEIGHT as a_WEBSITE_SHIPPING_WEIGHT,
+        a.WEIGHT_UNIT as a_WEIGHT_UNIT, a.BULLET_POINT1 as a_BULLET_POINT1, a.BULLET_POINT2 as a_BULLET_POINT2,
+        a.BULLET_POINT3 as a_BULLET_POINT3, a.BULLET_POINT4 as a_BULLET_POINT4, a.BULLET_POINT5 as a_BULLET_POINT5,
+        a.BROWSE_NODES as a_BROWSE_NODES, a.GENERIC_KEYWORDS1 as a_GENERIC_KEYWORDS1, a.GENERIC_KEYWORDS2 as a_GENERIC_KEYWORDS2,
+        a.GENERIC_KEYWORDS3 as a_GENERIC_KEYWORDS3, a.GENERIC_KEYWORDS4 as a_GENERIC_KEYWORDS4,
+        a.GENERIC_KEYWORDS5 as a_GENERIC_KEYWORDS5, a.PRODUCTIMAGE_MAIN as a_PRODUCTIMAGE_MAIN,
+        a.PRODUCTIMAGE_PT01 as a_PRODUCTIMAGE_PT01, a.PRODUCTIMAGE_PT02 as a_PRODUCTIMAGE_PT02,
+        a.PRODUCTIMAGE_PT03 as a_PRODUCTIMAGE_PT03, a.PRODUCTIMAGE_PT04 as a_PRODUCTIMAGE_PT04,
+        a.PRODUCTIMAGE_PT05 as a_PRODUCTIMAGE_PT05, a.PRODUCTIMAGE_PT06 as a_PRODUCTIMAGE_PT06,
+        a.PRODUCTIMAGE_PT07 as a_PRODUCTIMAGE_PT07, a.PRODUCTIMAGE_PT08 as a_PRODUCTIMAGE_PT08,
+        a.PARENT_CHILD as a_PARENT_CHILD, a.PARENT_SKU as a_PARENT_SKU, a.RELATIONSHIP_TYPE as a_RELATIONSHIP_TYPE,
+        a.VARIATION_THEME as a_VARIATION_THEME, a.COLOR_NAME as a_COLOR_NAME, a.COLOR_MAP as a_COLOR_MAP,
+        a.SIZE_NAME as a_SIZE_NAME, a.SIZE_MAP as a_SIZE_MAP, a.P_STATE as a_P_STATE, a.MATERIAL_TYPE as a_MATERIAL_TYPE,
+        a.ITEM_PACKAGE_QUANTITY as a_ITEM_PACKAGE_QUANTITY, a.SHOP_ID as a_SHOP_ID, a.SALE_PRICE as a_SALE_PRICE,
+        a.SALE_FROM_DATE as a_SALE_FROM_DATE, a.SALE_END_DATE as a_SALE_END_DATE, a.PUBLISH_STATUS as a_PUBLISH_STATUS,
+        a.CREATE_TIME as a_CREATE_TIME
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.math.BigDecimal" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from T_PRODUCT_ITEM_AMZ_UPLOAD a
+        where a.ID = #{id,jdbcType=DECIMAL}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.math.BigDecimal">
+        delete from T_PRODUCT_ITEM_AMZ_UPLOAD
+        where ID = #{id,jdbcType=DECIMAL}
+    </delete>
+    <insert id="insert" parameterType="com.crossborder.entity.ProductAmzUpload">
+        insert into T_PRODUCT_ITEM_AMZ_UPLOAD (ID, LANGUAGE_ID, TEMPLATETYPE,
+        ITEM_SKU, EXTERNAL_PRODUCT_ID, EXTERNAL_PRODUCT_ID_TYPE,
+        ITEM_NAME, BRAND_NAME, MANUFACTURER,
+        PART_NUMBER, PRODUCT_DESCRIPTION, FEED_PRODUCT_TYPE,
+        UPDATE_DELETE, STANDARD_PRICE, QUANTITY,
+        CONDITION_TYPE, ITEM_WEIGHT, WEBSITE_SHIPPING_WEIGHT,
+        WEIGHT_UNIT, BULLET_POINT1, BULLET_POINT2,
+        BULLET_POINT3, BULLET_POINT4, BULLET_POINT5,
+        BROWSE_NODES, GENERIC_KEYWORDS1, GENERIC_KEYWORDS2,
+        GENERIC_KEYWORDS3, GENERIC_KEYWORDS4, GENERIC_KEYWORDS5,
+        PRODUCTIMAGE_MAIN, PRODUCTIMAGE_PT01, PRODUCTIMAGE_PT02,
+        PRODUCTIMAGE_PT03, PRODUCTIMAGE_PT04, PRODUCTIMAGE_PT05,
+        PRODUCTIMAGE_PT06, PRODUCTIMAGE_PT07, PRODUCTIMAGE_PT08,
+        PARENT_CHILD, PARENT_SKU, RELATIONSHIP_TYPE,
+        VARIATION_THEME, COLOR_NAME, COLOR_MAP,
+        SIZE_NAME, SIZE_MAP, P_STATE,
+        MATERIAL_TYPE, ITEM_PACKAGE_QUANTITY, SHOP_ID,
+        SALE_PRICE, SALE_FROM_DATE, SALE_END_DATE,
+        PUBLISH_STATUS, CREATE_TIME)
+        values (#{id,jdbcType=DECIMAL}, #{languageId,jdbcType=VARCHAR}, #{templatetype,jdbcType=VARCHAR},
+        #{itemSku,jdbcType=VARCHAR}, #{externalProductId,jdbcType=VARCHAR}, #{externalProductIdType,jdbcType=VARCHAR},
+        #{itemName,jdbcType=VARCHAR}, #{brandName,jdbcType=VARCHAR}, #{manufacturer,jdbcType=VARCHAR},
+        #{partNumber,jdbcType=VARCHAR}, #{productDescription,jdbcType=VARCHAR}, #{feedProductType,jdbcType=VARCHAR},
+        #{updateDelete,jdbcType=VARCHAR}, #{standardPrice,jdbcType=DECIMAL}, #{quantity,jdbcType=DECIMAL},
+        #{conditionType,jdbcType=VARCHAR}, #{itemWeight,jdbcType=DECIMAL}, #{websiteShippingWeight,jdbcType=DECIMAL},
+        #{weightUnit,jdbcType=VARCHAR}, #{bulletPoint1,jdbcType=VARCHAR}, #{bulletPoint2,jdbcType=VARCHAR},
+        #{bulletPoint3,jdbcType=VARCHAR}, #{bulletPoint4,jdbcType=VARCHAR}, #{bulletPoint5,jdbcType=VARCHAR},
+        #{browseNodes,jdbcType=VARCHAR}, #{genericKeywords1,jdbcType=VARCHAR}, #{genericKeywords2,jdbcType=VARCHAR},
+        #{genericKeywords3,jdbcType=VARCHAR}, #{genericKeywords4,jdbcType=VARCHAR}, #{genericKeywords5,jdbcType=VARCHAR},
+        #{productimageMain,jdbcType=VARCHAR}, #{productimagePt01,jdbcType=VARCHAR}, #{productimagePt02,jdbcType=VARCHAR},
+        #{productimagePt03,jdbcType=VARCHAR}, #{productimagePt04,jdbcType=VARCHAR}, #{productimagePt05,jdbcType=VARCHAR},
+        #{productimagePt06,jdbcType=VARCHAR}, #{productimagePt07,jdbcType=VARCHAR}, #{productimagePt08,jdbcType=VARCHAR},
+        #{parentChild,jdbcType=VARCHAR}, #{parentSku,jdbcType=VARCHAR}, #{relationshipType,jdbcType=VARCHAR},
+        #{variationTheme,jdbcType=VARCHAR}, #{colorName,jdbcType=VARCHAR}, #{colorMap,jdbcType=VARCHAR},
+        #{sizeName,jdbcType=VARCHAR}, #{sizeMap,jdbcType=VARCHAR}, #{pState,jdbcType=CHAR},
+        #{materialType,jdbcType=VARCHAR}, #{itemPackageQuantity,jdbcType=DECIMAL}, #{shopId,jdbcType=VARCHAR},
+        #{salePrice,jdbcType=DECIMAL}, #{saleFromDate,jdbcType=DATE}, #{saleEndDate,jdbcType=DATE},
+        #{publishStatus,jdbcType=CHAR}, #{createTime,jdbcType=DATE})
+    </insert>
+    <insert id="insertSelective" parameterType="com.crossborder.entity.ProductAmzUpload">
+        insert into T_PRODUCT_ITEM_AMZ_UPLOAD
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                ID,
+            </if>
+            <if test="languageId != null">
+                LANGUAGE_ID,
+            </if>
+            <if test="templatetype != null">
+                TEMPLATETYPE,
+            </if>
+            <if test="itemSku != null">
+                ITEM_SKU,
+            </if>
+            <if test="externalProductId != null">
+                EXTERNAL_PRODUCT_ID,
+            </if>
+            <if test="externalProductIdType != null">
+                EXTERNAL_PRODUCT_ID_TYPE,
+            </if>
+            <if test="itemName != null">
+                ITEM_NAME,
+            </if>
+            <if test="brandName != null">
+                BRAND_NAME,
+            </if>
+            <if test="manufacturer != null">
+                MANUFACTURER,
+            </if>
+            <if test="partNumber != null">
+                PART_NUMBER,
+            </if>
+            <if test="productDescription != null">
+                PRODUCT_DESCRIPTION,
+            </if>
+            <if test="feedProductType != null">
+                FEED_PRODUCT_TYPE,
+            </if>
+            <if test="updateDelete != null">
+                UPDATE_DELETE,
+            </if>
+            <if test="standardPrice != null">
+                STANDARD_PRICE,
+            </if>
+            <if test="quantity != null">
+                QUANTITY,
+            </if>
+            <if test="conditionType != null">
+                CONDITION_TYPE,
+            </if>
+            <if test="itemWeight != null">
+                ITEM_WEIGHT,
+            </if>
+            <if test="websiteShippingWeight != null">
+                WEBSITE_SHIPPING_WEIGHT,
+            </if>
+            <if test="weightUnit != null">
+                WEIGHT_UNIT,
+            </if>
+            <if test="bulletPoint1 != null">
+                BULLET_POINT1,
+            </if>
+            <if test="bulletPoint2 != null">
+                BULLET_POINT2,
+            </if>
+            <if test="bulletPoint3 != null">
+                BULLET_POINT3,
+            </if>
+            <if test="bulletPoint4 != null">
+                BULLET_POINT4,
+            </if>
+            <if test="bulletPoint5 != null">
+                BULLET_POINT5,
+            </if>
+            <if test="browseNodes != null">
+                BROWSE_NODES,
+            </if>
+            <if test="genericKeywords1 != null">
+                GENERIC_KEYWORDS1,
+            </if>
+            <if test="genericKeywords2 != null">
+                GENERIC_KEYWORDS2,
+            </if>
+            <if test="genericKeywords3 != null">
+                GENERIC_KEYWORDS3,
+            </if>
+            <if test="genericKeywords4 != null">
+                GENERIC_KEYWORDS4,
+            </if>
+            <if test="genericKeywords5 != null">
+                GENERIC_KEYWORDS5,
+            </if>
+            <if test="productimageMain != null">
+                PRODUCTIMAGE_MAIN,
+            </if>
+            <if test="productimagePt01 != null">
+                PRODUCTIMAGE_PT01,
+            </if>
+            <if test="productimagePt02 != null">
+                PRODUCTIMAGE_PT02,
+            </if>
+            <if test="productimagePt03 != null">
+                PRODUCTIMAGE_PT03,
+            </if>
+            <if test="productimagePt04 != null">
+                PRODUCTIMAGE_PT04,
+            </if>
+            <if test="productimagePt05 != null">
+                PRODUCTIMAGE_PT05,
+            </if>
+            <if test="productimagePt06 != null">
+                PRODUCTIMAGE_PT06,
+            </if>
+            <if test="productimagePt07 != null">
+                PRODUCTIMAGE_PT07,
+            </if>
+            <if test="productimagePt08 != null">
+                PRODUCTIMAGE_PT08,
+            </if>
+            <if test="parentChild != null">
+                PARENT_CHILD,
+            </if>
+            <if test="parentSku != null">
+                PARENT_SKU,
+            </if>
+            <if test="relationshipType != null">
+                RELATIONSHIP_TYPE,
+            </if>
+            <if test="variationTheme != null">
+                VARIATION_THEME,
+            </if>
+            <if test="colorName != null">
+                COLOR_NAME,
+            </if>
+            <if test="colorMap != null">
+                COLOR_MAP,
+            </if>
+            <if test="sizeName != null">
+                SIZE_NAME,
+            </if>
+            <if test="sizeMap != null">
+                SIZE_MAP,
+            </if>
+            <if test="pState != null">
+                P_STATE,
+            </if>
+            <if test="materialType != null">
+                MATERIAL_TYPE,
+            </if>
+            <if test="itemPackageQuantity != null">
+                ITEM_PACKAGE_QUANTITY,
+            </if>
+            <if test="shopId != null">
+                SHOP_ID,
+            </if>
+            <if test="salePrice != null">
+                SALE_PRICE,
+            </if>
+            <if test="saleFromDate != null">
+                SALE_FROM_DATE,
+            </if>
+            <if test="saleEndDate != null">
+                SALE_END_DATE,
+            </if>
+            <if test="publishStatus != null">
+                PUBLISH_STATUS,
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=DECIMAL},
+            </if>
+            <if test="languageId != null">
+                #{languageId,jdbcType=VARCHAR},
+            </if>
+            <if test="templatetype != null">
+                #{templatetype,jdbcType=VARCHAR},
+            </if>
+            <if test="itemSku != null">
+                #{itemSku,jdbcType=VARCHAR},
+            </if>
+            <if test="externalProductId != null">
+                #{externalProductId,jdbcType=VARCHAR},
+            </if>
+            <if test="externalProductIdType != null">
+                #{externalProductIdType,jdbcType=VARCHAR},
+            </if>
+            <if test="itemName != null">
+                #{itemName,jdbcType=VARCHAR},
+            </if>
+            <if test="brandName != null">
+                #{brandName,jdbcType=VARCHAR},
+            </if>
+            <if test="manufacturer != null">
+                #{manufacturer,jdbcType=VARCHAR},
+            </if>
+            <if test="partNumber != null">
+                #{partNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="productDescription != null">
+                #{productDescription,jdbcType=VARCHAR},
+            </if>
+            <if test="feedProductType != null">
+                #{feedProductType,jdbcType=VARCHAR},
+            </if>
+            <if test="updateDelete != null">
+                #{updateDelete,jdbcType=VARCHAR},
+            </if>
+            <if test="standardPrice != null">
+                #{standardPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="quantity != null">
+                #{quantity,jdbcType=DECIMAL},
+            </if>
+            <if test="conditionType != null">
+                #{conditionType,jdbcType=VARCHAR},
+            </if>
+            <if test="itemWeight != null">
+                #{itemWeight,jdbcType=DECIMAL},
+            </if>
+            <if test="websiteShippingWeight != null">
+                #{websiteShippingWeight,jdbcType=DECIMAL},
+            </if>
+            <if test="weightUnit != null">
+                #{weightUnit,jdbcType=VARCHAR},
+            </if>
+            <if test="bulletPoint1 != null">
+                #{bulletPoint1,jdbcType=VARCHAR},
+            </if>
+            <if test="bulletPoint2 != null">
+                #{bulletPoint2,jdbcType=VARCHAR},
+            </if>
+            <if test="bulletPoint3 != null">
+                #{bulletPoint3,jdbcType=VARCHAR},
+            </if>
+            <if test="bulletPoint4 != null">
+                #{bulletPoint4,jdbcType=VARCHAR},
+            </if>
+            <if test="bulletPoint5 != null">
+                #{bulletPoint5,jdbcType=VARCHAR},
+            </if>
+            <if test="browseNodes != null">
+                #{browseNodes,jdbcType=VARCHAR},
+            </if>
+            <if test="genericKeywords1 != null">
+                #{genericKeywords1,jdbcType=VARCHAR},
+            </if>
+            <if test="genericKeywords2 != null">
+                #{genericKeywords2,jdbcType=VARCHAR},
+            </if>
+            <if test="genericKeywords3 != null">
+                #{genericKeywords3,jdbcType=VARCHAR},
+            </if>
+            <if test="genericKeywords4 != null">
+                #{genericKeywords4,jdbcType=VARCHAR},
+            </if>
+            <if test="genericKeywords5 != null">
+                #{genericKeywords5,jdbcType=VARCHAR},
+            </if>
+            <if test="productimageMain != null">
+                #{productimageMain,jdbcType=VARCHAR},
+            </if>
+            <if test="productimagePt01 != null">
+                #{productimagePt01,jdbcType=VARCHAR},
+            </if>
+            <if test="productimagePt02 != null">
+                #{productimagePt02,jdbcType=VARCHAR},
+            </if>
+            <if test="productimagePt03 != null">
+                #{productimagePt03,jdbcType=VARCHAR},
+            </if>
+            <if test="productimagePt04 != null">
+                #{productimagePt04,jdbcType=VARCHAR},
+            </if>
+            <if test="productimagePt05 != null">
+                #{productimagePt05,jdbcType=VARCHAR},
+            </if>
+            <if test="productimagePt06 != null">
+                #{productimagePt06,jdbcType=VARCHAR},
+            </if>
+            <if test="productimagePt07 != null">
+                #{productimagePt07,jdbcType=VARCHAR},
+            </if>
+            <if test="productimagePt08 != null">
+                #{productimagePt08,jdbcType=VARCHAR},
+            </if>
+            <if test="parentChild != null">
+                #{parentChild,jdbcType=VARCHAR},
+            </if>
+            <if test="parentSku != null">
+                #{parentSku,jdbcType=VARCHAR},
+            </if>
+            <if test="relationshipType != null">
+                #{relationshipType,jdbcType=VARCHAR},
+            </if>
+            <if test="variationTheme != null">
+                #{variationTheme,jdbcType=VARCHAR},
+            </if>
+            <if test="colorName != null">
+                #{colorName,jdbcType=VARCHAR},
+            </if>
+            <if test="colorMap != null">
+                #{colorMap,jdbcType=VARCHAR},
+            </if>
+            <if test="sizeName != null">
+                #{sizeName,jdbcType=VARCHAR},
+            </if>
+            <if test="sizeMap != null">
+                #{sizeMap,jdbcType=VARCHAR},
+            </if>
+            <if test="pState != null">
+                #{pState,jdbcType=CHAR},
+            </if>
+            <if test="materialType != null">
+                #{materialType,jdbcType=VARCHAR},
+            </if>
+            <if test="itemPackageQuantity != null">
+                #{itemPackageQuantity,jdbcType=DECIMAL},
+            </if>
+            <if test="shopId != null">
+                #{shopId,jdbcType=VARCHAR},
+            </if>
+            <if test="salePrice != null">
+                #{salePrice,jdbcType=DECIMAL},
+            </if>
+            <if test="saleFromDate != null">
+                #{saleFromDate,jdbcType=DATE},
+            </if>
+            <if test="saleEndDate != null">
+                #{saleEndDate,jdbcType=DATE},
+            </if>
+            <if test="publishStatus != null">
+                #{publishStatus,jdbcType=CHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=DATE},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.crossborder.entity.ProductAmzUpload">
+        update T_PRODUCT_ITEM_AMZ_UPLOAD
+        <set>
+            <if test="languageId != null">
+                LANGUAGE_ID = #{languageId,jdbcType=VARCHAR},
+            </if>
+            <if test="templatetype != null">
+                TEMPLATETYPE = #{templatetype,jdbcType=VARCHAR},
+            </if>
+            <if test="itemSku != null">
+                ITEM_SKU = #{itemSku,jdbcType=VARCHAR},
+            </if>
+            <if test="externalProductId != null">
+                EXTERNAL_PRODUCT_ID = #{externalProductId,jdbcType=VARCHAR},
+            </if>
+            <if test="externalProductIdType != null">
+                EXTERNAL_PRODUCT_ID_TYPE = #{externalProductIdType,jdbcType=VARCHAR},
+            </if>
+            <if test="itemName != null">
+                ITEM_NAME = #{itemName,jdbcType=VARCHAR},
+            </if>
+            <if test="brandName != null">
+                BRAND_NAME = #{brandName,jdbcType=VARCHAR},
+            </if>
+            <if test="manufacturer != null">
+                MANUFACTURER = #{manufacturer,jdbcType=VARCHAR},
+            </if>
+            <if test="partNumber != null">
+                PART_NUMBER = #{partNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="productDescription != null">
+                PRODUCT_DESCRIPTION = #{productDescription,jdbcType=VARCHAR},
+            </if>
+            <if test="feedProductType != null">
+                FEED_PRODUCT_TYPE = #{feedProductType,jdbcType=VARCHAR},
+            </if>
+            <if test="updateDelete != null">
+                UPDATE_DELETE = #{updateDelete,jdbcType=VARCHAR},
+            </if>
+            <if test="standardPrice != null">
+                STANDARD_PRICE = #{standardPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="quantity != null">
+                QUANTITY = #{quantity,jdbcType=DECIMAL},
+            </if>
+            <if test="conditionType != null">
+                CONDITION_TYPE = #{conditionType,jdbcType=VARCHAR},
+            </if>
+            <if test="itemWeight != null">
+                ITEM_WEIGHT = #{itemWeight,jdbcType=DECIMAL},
+            </if>
+            <if test="websiteShippingWeight != null">
+                WEBSITE_SHIPPING_WEIGHT = #{websiteShippingWeight,jdbcType=DECIMAL},
+            </if>
+            <if test="weightUnit != null">
+                WEIGHT_UNIT = #{weightUnit,jdbcType=VARCHAR},
+            </if>
+            <if test="bulletPoint1 != null">
+                BULLET_POINT1 = #{bulletPoint1,jdbcType=VARCHAR},
+            </if>
+            <if test="bulletPoint2 != null">
+                BULLET_POINT2 = #{bulletPoint2,jdbcType=VARCHAR},
+            </if>
+            <if test="bulletPoint3 != null">
+                BULLET_POINT3 = #{bulletPoint3,jdbcType=VARCHAR},
+            </if>
+            <if test="bulletPoint4 != null">
+                BULLET_POINT4 = #{bulletPoint4,jdbcType=VARCHAR},
+            </if>
+            <if test="bulletPoint5 != null">
+                BULLET_POINT5 = #{bulletPoint5,jdbcType=VARCHAR},
+            </if>
+            <if test="browseNodes != null">
+                BROWSE_NODES = #{browseNodes,jdbcType=VARCHAR},
+            </if>
+            <if test="genericKeywords1 != null">
+                GENERIC_KEYWORDS1 = #{genericKeywords1,jdbcType=VARCHAR},
+            </if>
+            <if test="genericKeywords2 != null">
+                GENERIC_KEYWORDS2 = #{genericKeywords2,jdbcType=VARCHAR},
+            </if>
+            <if test="genericKeywords3 != null">
+                GENERIC_KEYWORDS3 = #{genericKeywords3,jdbcType=VARCHAR},
+            </if>
+            <if test="genericKeywords4 != null">
+                GENERIC_KEYWORDS4 = #{genericKeywords4,jdbcType=VARCHAR},
+            </if>
+            <if test="genericKeywords5 != null">
+                GENERIC_KEYWORDS5 = #{genericKeywords5,jdbcType=VARCHAR},
+            </if>
+            <if test="productimageMain != null">
+                PRODUCTIMAGE_MAIN = #{productimageMain,jdbcType=VARCHAR},
+            </if>
+            <if test="productimagePt01 != null">
+                PRODUCTIMAGE_PT01 = #{productimagePt01,jdbcType=VARCHAR},
+            </if>
+            <if test="productimagePt02 != null">
+                PRODUCTIMAGE_PT02 = #{productimagePt02,jdbcType=VARCHAR},
+            </if>
+            <if test="productimagePt03 != null">
+                PRODUCTIMAGE_PT03 = #{productimagePt03,jdbcType=VARCHAR},
+            </if>
+            <if test="productimagePt04 != null">
+                PRODUCTIMAGE_PT04 = #{productimagePt04,jdbcType=VARCHAR},
+            </if>
+            <if test="productimagePt05 != null">
+                PRODUCTIMAGE_PT05 = #{productimagePt05,jdbcType=VARCHAR},
+            </if>
+            <if test="productimagePt06 != null">
+                PRODUCTIMAGE_PT06 = #{productimagePt06,jdbcType=VARCHAR},
+            </if>
+            <if test="productimagePt07 != null">
+                PRODUCTIMAGE_PT07 = #{productimagePt07,jdbcType=VARCHAR},
+            </if>
+            <if test="productimagePt08 != null">
+                PRODUCTIMAGE_PT08 = #{productimagePt08,jdbcType=VARCHAR},
+            </if>
+            <if test="parentChild != null">
+                PARENT_CHILD = #{parentChild,jdbcType=VARCHAR},
+            </if>
+            <if test="parentSku != null">
+                PARENT_SKU = #{parentSku,jdbcType=VARCHAR},
+            </if>
+            <if test="relationshipType != null">
+                RELATIONSHIP_TYPE = #{relationshipType,jdbcType=VARCHAR},
+            </if>
+            <if test="variationTheme != null">
+                VARIATION_THEME = #{variationTheme,jdbcType=VARCHAR},
+            </if>
+            <if test="colorName != null">
+                COLOR_NAME = #{colorName,jdbcType=VARCHAR},
+            </if>
+            <if test="colorMap != null">
+                COLOR_MAP = #{colorMap,jdbcType=VARCHAR},
+            </if>
+            <if test="sizeName != null">
+                SIZE_NAME = #{sizeName,jdbcType=VARCHAR},
+            </if>
+            <if test="sizeMap != null">
+                SIZE_MAP = #{sizeMap,jdbcType=VARCHAR},
+            </if>
+            <if test="pState != null">
+                P_STATE = #{pState,jdbcType=CHAR},
+            </if>
+            <if test="materialType != null">
+                MATERIAL_TYPE = #{materialType,jdbcType=VARCHAR},
+            </if>
+            <if test="itemPackageQuantity != null">
+                ITEM_PACKAGE_QUANTITY = #{itemPackageQuantity,jdbcType=DECIMAL},
+            </if>
+            <if test="shopId != null">
+                SHOP_ID = #{shopId,jdbcType=VARCHAR},
+            </if>
+            <if test="salePrice != null">
+                SALE_PRICE = #{salePrice,jdbcType=DECIMAL},
+            </if>
+            <if test="saleFromDate != null">
+                SALE_FROM_DATE = #{saleFromDate,jdbcType=DATE},
+            </if>
+            <if test="saleEndDate != null">
+                SALE_END_DATE = #{saleEndDate,jdbcType=DATE},
+            </if>
+            <if test="publishStatus != null">
+                PUBLISH_STATUS = #{publishStatus,jdbcType=CHAR},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime,jdbcType=DATE},
+            </if>
+        </set>
+        where ID = #{id,jdbcType=DECIMAL}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.crossborder.entity.ProductAmzUpload">
+    update T_PRODUCT_ITEM_AMZ_UPLOAD
+    set LANGUAGE_ID = #{languageId,jdbcType=VARCHAR},
+    TEMPLATETYPE = #{templatetype,jdbcType=VARCHAR},
+    ITEM_SKU = #{itemSku,jdbcType=VARCHAR},
+    EXTERNAL_PRODUCT_ID = #{externalProductId,jdbcType=VARCHAR},
+    EXTERNAL_PRODUCT_ID_TYPE = #{externalProductIdType,jdbcType=VARCHAR},
+    ITEM_NAME = #{itemName,jdbcType=VARCHAR},
+    BRAND_NAME = #{brandName,jdbcType=VARCHAR},
+    MANUFACTURER = #{manufacturer,jdbcType=VARCHAR},
+    PART_NUMBER = #{partNumber,jdbcType=VARCHAR},
+    PRODUCT_DESCRIPTION = #{productDescription,jdbcType=VARCHAR},
+    FEED_PRODUCT_TYPE = #{feedProductType,jdbcType=VARCHAR},
+    UPDATE_DELETE = #{updateDelete,jdbcType=VARCHAR},
+    STANDARD_PRICE = #{standardPrice,jdbcType=DECIMAL},
+    QUANTITY = #{quantity,jdbcType=DECIMAL},
+    CONDITION_TYPE = #{conditionType,jdbcType=VARCHAR},
+    ITEM_WEIGHT = #{itemWeight,jdbcType=DECIMAL},
+    WEBSITE_SHIPPING_WEIGHT = #{websiteShippingWeight,jdbcType=DECIMAL},
+    WEIGHT_UNIT = #{weightUnit,jdbcType=VARCHAR},
+    BULLET_POINT1 = #{bulletPoint1,jdbcType=VARCHAR},
+    BULLET_POINT2 = #{bulletPoint2,jdbcType=VARCHAR},
+    BULLET_POINT3 = #{bulletPoint3,jdbcType=VARCHAR},
+    BULLET_POINT4 = #{bulletPoint4,jdbcType=VARCHAR},
+    BULLET_POINT5 = #{bulletPoint5,jdbcType=VARCHAR},
+    BROWSE_NODES = #{browseNodes,jdbcType=VARCHAR},
+    GENERIC_KEYWORDS1 = #{genericKeywords1,jdbcType=VARCHAR},
+    GENERIC_KEYWORDS2 = #{genericKeywords2,jdbcType=VARCHAR},
+    GENERIC_KEYWORDS3 = #{genericKeywords3,jdbcType=VARCHAR},
+    GENERIC_KEYWORDS4 = #{genericKeywords4,jdbcType=VARCHAR},
+    GENERIC_KEYWORDS5 = #{genericKeywords5,jdbcType=VARCHAR},
+    PRODUCTIMAGE_MAIN = #{productimageMain,jdbcType=VARCHAR},
+    PRODUCTIMAGE_PT01 = #{productimagePt01,jdbcType=VARCHAR},
+    PRODUCTIMAGE_PT02 = #{productimagePt02,jdbcType=VARCHAR},
+    PRODUCTIMAGE_PT03 = #{productimagePt03,jdbcType=VARCHAR},
+    PRODUCTIMAGE_PT04 = #{productimagePt04,jdbcType=VARCHAR},
+    PRODUCTIMAGE_PT05 = #{productimagePt05,jdbcType=VARCHAR},
+    PRODUCTIMAGE_PT06 = #{productimagePt06,jdbcType=VARCHAR},
+    PRODUCTIMAGE_PT07 = #{productimagePt07,jdbcType=VARCHAR},
+    PRODUCTIMAGE_PT08 = #{productimagePt08,jdbcType=VARCHAR},
+    PARENT_CHILD = #{parentChild,jdbcType=VARCHAR},
+    PARENT_SKU = #{parentSku,jdbcType=VARCHAR},
+    RELATIONSHIP_TYPE = #{relationshipType,jdbcType=VARCHAR},
+    VARIATION_THEME = #{variationTheme,jdbcType=VARCHAR},
+    COLOR_NAME = #{colorName,jdbcType=VARCHAR},
+    COLOR_MAP = #{colorMap,jdbcType=VARCHAR},
+    SIZE_NAME = #{sizeName,jdbcType=VARCHAR},
+    SIZE_MAP = #{sizeMap,jdbcType=VARCHAR},
+    P_STATE = #{pState,jdbcType=CHAR},
+    MATERIAL_TYPE = #{materialType,jdbcType=VARCHAR},
+    ITEM_PACKAGE_QUANTITY = #{itemPackageQuantity,jdbcType=DECIMAL},
+    SHOP_ID = #{shopId,jdbcType=VARCHAR},
+    SALE_PRICE = #{salePrice,jdbcType=DECIMAL},
+    SALE_FROM_DATE = #{saleFromDate,jdbcType=DATE},
+    SALE_END_DATE = #{saleEndDate,jdbcType=DATE},
+    PUBLISH_STATUS = #{publishStatus,jdbcType=CHAR},
+    CREATE_TIME = #{createTime,jdbcType=DATE}
+    where ID = #{id,jdbcType=DECIMAL}
+</mapper>

@@ -126,5 +126,11 @@ public class ProductClaimController extends BaseController {
         return view;
     }
 
+    @RequestMapping(value = "/product/claim/prePublish", produces = "text/plain;charset=UTF-8")
+    @ResponseBody
+    public String prePublish(String id) {
+        return null;
+    }
+
 
 }
