@@ -1,9 +1,512 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.crossborder.dao.ClaimProductExtMapper">
-  <select id="selectList" parameterType="java.util.Map" resultMap="com.crossborder.dao.mapper.ext.ClaimProductMapper.BaseResultMap">
+<mapper namespace="com.crossborder.dao.ClaimProductDao">
+  <select id="selectList" parameterType="java.util.Map" resultMap="BaseResultMap">
       SELECT
-       <include refid="com.crossborder.dao.mapper.ext.ClaimProductMapper.Base_Column_List"/>
+       <include refid="Base_Column_List"/>
        FROM T_PRODUCT_ITEM_AMZ a
   </select>
+
+    <resultMap id="BaseResultMap" type="com.crossborder.entity.ClaimProduct">
+        <id column="a_ID" jdbcType="VARCHAR" property="id" />
+        <result column="a_SKU" jdbcType="VARCHAR" property="sku" />
+        <result column="a_CREATE_USER" jdbcType="VARCHAR" property="createUser" />
+        <result column="a_PRICE" jdbcType="DECIMAL" property="price" />
+        <result column="a_QUANTITY" jdbcType="DECIMAL" property="quantity" />
+        <result column="a_IMAGE_PATH" jdbcType="VARCHAR" property="imagePath" />
+        <result column="a_ITEM_UK" jdbcType="VARCHAR" property="itemUk" />
+        <result column="a_ITEM_FR" jdbcType="VARCHAR" property="itemFr" />
+        <result column="a_ITEM_DE" jdbcType="VARCHAR" property="itemDe" />
+        <result column="a_ITEM_IT" jdbcType="VARCHAR" property="itemIt" />
+        <result column="a_ITEM_ES" jdbcType="VARCHAR" property="itemEs" />
+        <result column="a_ITEM_JP" jdbcType="VARCHAR" property="itemJp" />
+        <result column="a_ITEM_CN" jdbcType="VARCHAR" property="itemCn" />
+        <result column="a_BULLET_POINT_UK" jdbcType="VARCHAR" property="bulletPointUk" />
+        <result column="a_BULLET_POINT_FR" jdbcType="VARCHAR" property="bulletPointFr" />
+        <result column="a_BULLET_POINT_DE" jdbcType="VARCHAR" property="bulletPointDe" />
+        <result column="a_BULLET_POINT_IT" jdbcType="VARCHAR" property="bulletPointIt" />
+        <result column="a_BULLET_POINT_ES" jdbcType="VARCHAR" property="bulletPointEs" />
+        <result column="a_BULLET_POINT_JP" jdbcType="VARCHAR" property="bulletPointJp" />
+        <result column="a_BULLET_POINT_CN" jdbcType="VARCHAR" property="bulletPointCn" />
+        <result column="a_KEYWORDS_UK" jdbcType="VARCHAR" property="keywordsUk" />
+        <result column="a_KEYWORDS_FR" jdbcType="VARCHAR" property="keywordsFr" />
+        <result column="a_KEYWORDS_DE" jdbcType="VARCHAR" property="keywordsDe" />
+        <result column="a_KEYWORDS_IT" jdbcType="VARCHAR" property="keywordsIt" />
+        <result column="a_KEYWORDS_ES" jdbcType="VARCHAR" property="keywordsEs" />
+        <result column="a_KEYWORDS_JP" jdbcType="VARCHAR" property="keywordsJp" />
+        <result column="a_KEYWORDS_CN" jdbcType="VARCHAR" property="keywordsCn" />
+        <result column="a_PRODUCT_DESCRIPTION_UK" jdbcType="VARCHAR" property="productDescriptionUk" />
+        <result column="a_PRODUCT_DESCRIPTION_FR" jdbcType="VARCHAR" property="productDescriptionFr" />
+        <result column="a_PRODUCT_DESCRIPTION_DE" jdbcType="VARCHAR" property="productDescriptionDe" />
+        <result column="a_PRODUCT_DESCRIPTION_IT" jdbcType="VARCHAR" property="productDescriptionIt" />
+        <result column="a_PRODUCT_DESCRIPTION_ES" jdbcType="VARCHAR" property="productDescriptionEs" />
+        <result column="a_PRODUCT_DESCRIPTION_JP" jdbcType="VARCHAR" property="productDescriptionJp" />
+        <result column="a_PRODUCT_DESCRIPTION_CN" jdbcType="VARCHAR" property="productDescriptionCn" />
+        <result column="a_CREATE_TIME" jdbcType="DATE" property="createTime" />
+        <result column="a_UPDATE_TIME" jdbcType="DATE" property="updateTime" />
+        <result column="a_PRODUCT_ID" jdbcType="VARCHAR" property="productId" />
+        <result column="a_UPDATE_STATE" jdbcType="CHAR" property="updateState" />
+        <result column="a_SKU_TYPE" jdbcType="CHAR" property="skuType" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        a.ID as a_ID, a.SKU as a_SKU, a.CREATE_USER as a_CREATE_USER, a.PRICE as a_PRICE,
+        a.QUANTITY as a_QUANTITY, a.IMAGE_PATH as a_IMAGE_PATH, a.ITEM_UK as a_ITEM_UK, a.ITEM_FR as a_ITEM_FR,
+        a.ITEM_DE as a_ITEM_DE, a.ITEM_IT as a_ITEM_IT, a.ITEM_ES as a_ITEM_ES, a.ITEM_JP as a_ITEM_JP,
+        a.ITEM_CN as a_ITEM_CN, a.BULLET_POINT_UK as a_BULLET_POINT_UK, a.BULLET_POINT_FR as a_BULLET_POINT_FR,
+        a.BULLET_POINT_DE as a_BULLET_POINT_DE, a.BULLET_POINT_IT as a_BULLET_POINT_IT, a.BULLET_POINT_ES as a_BULLET_POINT_ES,
+        a.BULLET_POINT_JP as a_BULLET_POINT_JP, a.BULLET_POINT_CN as a_BULLET_POINT_CN, a.KEYWORDS_UK as a_KEYWORDS_UK,
+        a.KEYWORDS_FR as a_KEYWORDS_FR, a.KEYWORDS_DE as a_KEYWORDS_DE, a.KEYWORDS_IT as a_KEYWORDS_IT,
+        a.KEYWORDS_ES as a_KEYWORDS_ES, a.KEYWORDS_JP as a_KEYWORDS_JP, a.KEYWORDS_CN as a_KEYWORDS_CN,
+        a.PRODUCT_DESCRIPTION_UK as a_PRODUCT_DESCRIPTION_UK, a.PRODUCT_DESCRIPTION_FR as a_PRODUCT_DESCRIPTION_FR,
+        a.PRODUCT_DESCRIPTION_DE as a_PRODUCT_DESCRIPTION_DE, a.PRODUCT_DESCRIPTION_IT as a_PRODUCT_DESCRIPTION_IT,
+        a.PRODUCT_DESCRIPTION_ES as a_PRODUCT_DESCRIPTION_ES, a.PRODUCT_DESCRIPTION_JP as a_PRODUCT_DESCRIPTION_JP,
+        a.PRODUCT_DESCRIPTION_CN as a_PRODUCT_DESCRIPTION_CN, a.CREATE_TIME as a_CREATE_TIME,
+        a.UPDATE_TIME as a_UPDATE_TIME, a.PRODUCT_ID as a_PRODUCT_ID, a.UPDATE_STATE as a_UPDATE_STATE,
+        a.SKU_TYPE as a_SKU_TYPE
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from T_PRODUCT_ITEM_AMZ a
+        where a.ID = #{id,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from T_PRODUCT_ITEM_AMZ
+        where ID = #{id,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.crossborder.entity.ClaimProduct">
+        insert into T_PRODUCT_ITEM_AMZ (ID, SKU, CREATE_USER,
+        PRICE, QUANTITY, IMAGE_PATH,
+        ITEM_UK, ITEM_FR, ITEM_DE,
+        ITEM_IT, ITEM_ES, ITEM_JP,
+        ITEM_CN, BULLET_POINT_UK, BULLET_POINT_FR,
+        BULLET_POINT_DE, BULLET_POINT_IT, BULLET_POINT_ES,
+        BULLET_POINT_JP, BULLET_POINT_CN, KEYWORDS_UK,
+        KEYWORDS_FR, KEYWORDS_DE, KEYWORDS_IT,
+        KEYWORDS_ES, KEYWORDS_JP, KEYWORDS_CN,
+        PRODUCT_DESCRIPTION_UK, PRODUCT_DESCRIPTION_FR,
+        PRODUCT_DESCRIPTION_DE, PRODUCT_DESCRIPTION_IT,
+        PRODUCT_DESCRIPTION_ES, PRODUCT_DESCRIPTION_JP,
+        PRODUCT_DESCRIPTION_CN, CREATE_TIME, UPDATE_TIME,
+        PRODUCT_ID, UPDATE_STATE, SKU_TYPE
+        )
+        values (#{id,jdbcType=VARCHAR}, #{sku,jdbcType=VARCHAR}, #{createUser,jdbcType=VARCHAR},
+        #{price,jdbcType=DECIMAL}, #{quantity,jdbcType=DECIMAL}, #{imagePath,jdbcType=VARCHAR},
+        #{itemUk,jdbcType=VARCHAR}, #{itemFr,jdbcType=VARCHAR}, #{itemDe,jdbcType=VARCHAR},
+        #{itemIt,jdbcType=VARCHAR}, #{itemEs,jdbcType=VARCHAR}, #{itemJp,jdbcType=VARCHAR},
+        #{itemCn,jdbcType=VARCHAR}, #{bulletPointUk,jdbcType=VARCHAR}, #{bulletPointFr,jdbcType=VARCHAR},
+        #{bulletPointDe,jdbcType=VARCHAR}, #{bulletPointIt,jdbcType=VARCHAR}, #{bulletPointEs,jdbcType=VARCHAR},
+        #{bulletPointJp,jdbcType=VARCHAR}, #{bulletPointCn,jdbcType=VARCHAR}, #{keywordsUk,jdbcType=VARCHAR},
+        #{keywordsFr,jdbcType=VARCHAR}, #{keywordsDe,jdbcType=VARCHAR}, #{keywordsIt,jdbcType=VARCHAR},
+        #{keywordsEs,jdbcType=VARCHAR}, #{keywordsJp,jdbcType=VARCHAR}, #{keywordsCn,jdbcType=VARCHAR},
+        #{productDescriptionUk,jdbcType=VARCHAR}, #{productDescriptionFr,jdbcType=VARCHAR},
+        #{productDescriptionDe,jdbcType=VARCHAR}, #{productDescriptionIt,jdbcType=VARCHAR},
+        #{productDescriptionEs,jdbcType=VARCHAR}, #{productDescriptionJp,jdbcType=VARCHAR},
+        #{productDescriptionCn,jdbcType=VARCHAR}, #{createTime,jdbcType=DATE}, #{updateTime,jdbcType=DATE},
+        #{productId,jdbcType=VARCHAR}, #{updateState,jdbcType=CHAR}, #{skuType,jdbcType=CHAR}
+        )
+    </insert>
+    <insert id="insertSelective" parameterType="com.crossborder.entity.ClaimProduct">
+        insert into T_PRODUCT_ITEM_AMZ
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                ID,
+            </if>
+            <if test="sku != null">
+                SKU,
+            </if>
+            <if test="createUser != null">
+                CREATE_USER,
+            </if>
+            <if test="price != null">
+                PRICE,
+            </if>
+            <if test="quantity != null">
+                QUANTITY,
+            </if>
+            <if test="imagePath != null">
+                IMAGE_PATH,
+            </if>
+            <if test="itemUk != null">
+                ITEM_UK,
+            </if>
+            <if test="itemFr != null">
+                ITEM_FR,
+            </if>
+            <if test="itemDe != null">
+                ITEM_DE,
+            </if>
+            <if test="itemIt != null">
+                ITEM_IT,
+            </if>
+            <if test="itemEs != null">
+                ITEM_ES,
+            </if>
+            <if test="itemJp != null">
+                ITEM_JP,
+            </if>
+            <if test="itemCn != null">
+                ITEM_CN,
+            </if>
+            <if test="bulletPointUk != null">
+                BULLET_POINT_UK,
+            </if>
+            <if test="bulletPointFr != null">
+                BULLET_POINT_FR,
+            </if>
+            <if test="bulletPointDe != null">
+                BULLET_POINT_DE,
+            </if>
+            <if test="bulletPointIt != null">
+                BULLET_POINT_IT,
+            </if>
+            <if test="bulletPointEs != null">
+                BULLET_POINT_ES,
+            </if>
+            <if test="bulletPointJp != null">
+                BULLET_POINT_JP,
+            </if>
+            <if test="bulletPointCn != null">
+                BULLET_POINT_CN,
+            </if>
+            <if test="keywordsUk != null">
+                KEYWORDS_UK,
+            </if>
+            <if test="keywordsFr != null">
+                KEYWORDS_FR,
+            </if>
+            <if test="keywordsDe != null">
+                KEYWORDS_DE,
+            </if>
+            <if test="keywordsIt != null">
+                KEYWORDS_IT,
+            </if>
+            <if test="keywordsEs != null">
+                KEYWORDS_ES,
+            </if>
+            <if test="keywordsJp != null">
+                KEYWORDS_JP,
+            </if>
+            <if test="keywordsCn != null">
+                KEYWORDS_CN,
+            </if>
+            <if test="productDescriptionUk != null">
+                PRODUCT_DESCRIPTION_UK,
+            </if>
+            <if test="productDescriptionFr != null">
+                PRODUCT_DESCRIPTION_FR,
+            </if>
+            <if test="productDescriptionDe != null">
+                PRODUCT_DESCRIPTION_DE,
+            </if>
+            <if test="productDescriptionIt != null">
+                PRODUCT_DESCRIPTION_IT,
+            </if>
+            <if test="productDescriptionEs != null">
+                PRODUCT_DESCRIPTION_ES,
+            </if>
+            <if test="productDescriptionJp != null">
+                PRODUCT_DESCRIPTION_JP,
+            </if>
+            <if test="productDescriptionCn != null">
+                PRODUCT_DESCRIPTION_CN,
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME,
+            </if>
+            <if test="updateTime != null">
+                UPDATE_TIME,
+            </if>
+            <if test="productId != null">
+                PRODUCT_ID,
+            </if>
+            <if test="updateState != null">
+                UPDATE_STATE,
+            </if>
+            <if test="skuType != null">
+                SKU_TYPE,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="sku != null">
+                #{sku,jdbcType=VARCHAR},
+            </if>
+            <if test="createUser != null">
+                #{createUser,jdbcType=VARCHAR},
+            </if>
+            <if test="price != null">
+                #{price,jdbcType=DECIMAL},
+            </if>
+            <if test="quantity != null">
+                #{quantity,jdbcType=DECIMAL},
+            </if>
+            <if test="imagePath != null">
+                #{imagePath,jdbcType=VARCHAR},
+            </if>
+            <if test="itemUk != null">
+                #{itemUk,jdbcType=VARCHAR},
+            </if>
+            <if test="itemFr != null">
+                #{itemFr,jdbcType=VARCHAR},
+            </if>
+            <if test="itemDe != null">
+                #{itemDe,jdbcType=VARCHAR},
+            </if>
+            <if test="itemIt != null">
+                #{itemIt,jdbcType=VARCHAR},
+            </if>
+            <if test="itemEs != null">
+                #{itemEs,jdbcType=VARCHAR},
+            </if>
+            <if test="itemJp != null">
+                #{itemJp,jdbcType=VARCHAR},
+            </if>
+            <if test="itemCn != null">
+                #{itemCn,jdbcType=VARCHAR},
+            </if>
+            <if test="bulletPointUk != null">
+                #{bulletPointUk,jdbcType=VARCHAR},
+            </if>
+            <if test="bulletPointFr != null">
+                #{bulletPointFr,jdbcType=VARCHAR},
+            </if>
+            <if test="bulletPointDe != null">
+                #{bulletPointDe,jdbcType=VARCHAR},
+            </if>
+            <if test="bulletPointIt != null">
+                #{bulletPointIt,jdbcType=VARCHAR},
+            </if>
+            <if test="bulletPointEs != null">
+                #{bulletPointEs,jdbcType=VARCHAR},
+            </if>
+            <if test="bulletPointJp != null">
+                #{bulletPointJp,jdbcType=VARCHAR},
+            </if>
+            <if test="bulletPointCn != null">
+                #{bulletPointCn,jdbcType=VARCHAR},
+            </if>
+            <if test="keywordsUk != null">
+                #{keywordsUk,jdbcType=VARCHAR},
+            </if>
+            <if test="keywordsFr != null">
+                #{keywordsFr,jdbcType=VARCHAR},
+            </if>
+            <if test="keywordsDe != null">
+                #{keywordsDe,jdbcType=VARCHAR},
+            </if>
+            <if test="keywordsIt != null">
+                #{keywordsIt,jdbcType=VARCHAR},
+            </if>
+            <if test="keywordsEs != null">
+                #{keywordsEs,jdbcType=VARCHAR},
+            </if>
+            <if test="keywordsJp != null">
+                #{keywordsJp,jdbcType=VARCHAR},
+            </if>
+            <if test="keywordsCn != null">
+                #{keywordsCn,jdbcType=VARCHAR},
+            </if>
+            <if test="productDescriptionUk != null">
+                #{productDescriptionUk,jdbcType=VARCHAR},
+            </if>
+            <if test="productDescriptionFr != null">
+                #{productDescriptionFr,jdbcType=VARCHAR},
+            </if>
+            <if test="productDescriptionDe != null">
+                #{productDescriptionDe,jdbcType=VARCHAR},
+            </if>
+            <if test="productDescriptionIt != null">
+                #{productDescriptionIt,jdbcType=VARCHAR},
+            </if>
+            <if test="productDescriptionEs != null">
+                #{productDescriptionEs,jdbcType=VARCHAR},
+            </if>
+            <if test="productDescriptionJp != null">
+                #{productDescriptionJp,jdbcType=VARCHAR},
+            </if>
+            <if test="productDescriptionCn != null">
+                #{productDescriptionCn,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=DATE},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=DATE},
+            </if>
+            <if test="productId != null">
+                #{productId,jdbcType=VARCHAR},
+            </if>
+            <if test="updateState != null">
+                #{updateState,jdbcType=CHAR},
+            </if>
+            <if test="skuType != null">
+                #{skuType,jdbcType=CHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.crossborder.entity.ClaimProduct">
+        update T_PRODUCT_ITEM_AMZ
+        <set>
+            <if test="sku != null">
+                SKU = #{sku,jdbcType=VARCHAR},
+            </if>
+            <if test="createUser != null">
+                CREATE_USER = #{createUser,jdbcType=VARCHAR},
+            </if>
+            <if test="price != null">
+                PRICE = #{price,jdbcType=DECIMAL},
+            </if>
+            <if test="quantity != null">
+                QUANTITY = #{quantity,jdbcType=DECIMAL},
+            </if>
+            <if test="imagePath != null">
+                IMAGE_PATH = #{imagePath,jdbcType=VARCHAR},
+            </if>
+            <if test="itemUk != null">
+                ITEM_UK = #{itemUk,jdbcType=VARCHAR},
+            </if>
+            <if test="itemFr != null">
+                ITEM_FR = #{itemFr,jdbcType=VARCHAR},
+            </if>
+            <if test="itemDe != null">
+                ITEM_DE = #{itemDe,jdbcType=VARCHAR},
+            </if>
+            <if test="itemIt != null">
+                ITEM_IT = #{itemIt,jdbcType=VARCHAR},
+            </if>
+            <if test="itemEs != null">
+                ITEM_ES = #{itemEs,jdbcType=VARCHAR},
+            </if>
+            <if test="itemJp != null">
+                ITEM_JP = #{itemJp,jdbcType=VARCHAR},
+            </if>
+            <if test="itemCn != null">
+                ITEM_CN = #{itemCn,jdbcType=VARCHAR},
+            </if>
+            <if test="bulletPointUk != null">
+                BULLET_POINT_UK = #{bulletPointUk,jdbcType=VARCHAR},
+            </if>
+            <if test="bulletPointFr != null">
+                BULLET_POINT_FR = #{bulletPointFr,jdbcType=VARCHAR},
+            </if>
+            <if test="bulletPointDe != null">
+                BULLET_POINT_DE = #{bulletPointDe,jdbcType=VARCHAR},
+            </if>
+            <if test="bulletPointIt != null">
+                BULLET_POINT_IT = #{bulletPointIt,jdbcType=VARCHAR},
+            </if>
+            <if test="bulletPointEs != null">
+                BULLET_POINT_ES = #{bulletPointEs,jdbcType=VARCHAR},
+            </if>
+            <if test="bulletPointJp != null">
+                BULLET_POINT_JP = #{bulletPointJp,jdbcType=VARCHAR},
+            </if>
+            <if test="bulletPointCn != null">
+                BULLET_POINT_CN = #{bulletPointCn,jdbcType=VARCHAR},
+            </if>
+            <if test="keywordsUk != null">
+                KEYWORDS_UK = #{keywordsUk,jdbcType=VARCHAR},
+            </if>
+            <if test="keywordsFr != null">
+                KEYWORDS_FR = #{keywordsFr,jdbcType=VARCHAR},
+            </if>
+            <if test="keywordsDe != null">
+                KEYWORDS_DE = #{keywordsDe,jdbcType=VARCHAR},
+            </if>
+            <if test="keywordsIt != null">
+                KEYWORDS_IT = #{keywordsIt,jdbcType=VARCHAR},
+            </if>
+            <if test="keywordsEs != null">
+                KEYWORDS_ES = #{keywordsEs,jdbcType=VARCHAR},
+            </if>
+            <if test="keywordsJp != null">
+                KEYWORDS_JP = #{keywordsJp,jdbcType=VARCHAR},
+            </if>
+            <if test="keywordsCn != null">
+                KEYWORDS_CN = #{keywordsCn,jdbcType=VARCHAR},
+            </if>
+            <if test="productDescriptionUk != null">
+                PRODUCT_DESCRIPTION_UK = #{productDescriptionUk,jdbcType=VARCHAR},
+            </if>
+            <if test="productDescriptionFr != null">
+                PRODUCT_DESCRIPTION_FR = #{productDescriptionFr,jdbcType=VARCHAR},
+            </if>
+            <if test="productDescriptionDe != null">
+                PRODUCT_DESCRIPTION_DE = #{productDescriptionDe,jdbcType=VARCHAR},
+            </if>
+            <if test="productDescriptionIt != null">
+                PRODUCT_DESCRIPTION_IT = #{productDescriptionIt,jdbcType=VARCHAR},
+            </if>
+            <if test="productDescriptionEs != null">
+                PRODUCT_DESCRIPTION_ES = #{productDescriptionEs,jdbcType=VARCHAR},
+            </if>
+            <if test="productDescriptionJp != null">
+                PRODUCT_DESCRIPTION_JP = #{productDescriptionJp,jdbcType=VARCHAR},
+            </if>
+            <if test="productDescriptionCn != null">
+                PRODUCT_DESCRIPTION_CN = #{productDescriptionCn,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime,jdbcType=DATE},
+            </if>
+            <if test="updateTime != null">
+                UPDATE_TIME = #{updateTime,jdbcType=DATE},
+            </if>
+            <if test="productId != null">
+                PRODUCT_ID = #{productId,jdbcType=VARCHAR},
+            </if>
+            <if test="updateState != null">
+                UPDATE_STATE = #{updateState,jdbcType=CHAR},
+            </if>
+            <if test="skuType != null">
+                SKU_TYPE = #{skuType,jdbcType=CHAR},
+            </if>
+        </set>
+        where ID = #{id,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.crossborder.entity.ClaimProduct">
+    update T_PRODUCT_ITEM_AMZ
+    set SKU = #{sku,jdbcType=VARCHAR},
+      CREATE_USER = #{createUser,jdbcType=VARCHAR},
+      PRICE = #{price,jdbcType=DECIMAL},
+      QUANTITY = #{quantity,jdbcType=DECIMAL},
+      IMAGE_PATH = #{imagePath,jdbcType=VARCHAR},
+      ITEM_UK = #{itemUk,jdbcType=VARCHAR},
+      ITEM_FR = #{itemFr,jdbcType=VARCHAR},
+      ITEM_DE = #{itemDe,jdbcType=VARCHAR},
+      ITEM_IT = #{itemIt,jdbcType=VARCHAR},
+      ITEM_ES = #{itemEs,jdbcType=VARCHAR},
+      ITEM_JP = #{itemJp,jdbcType=VARCHAR},
+      ITEM_CN = #{itemCn,jdbcType=VARCHAR},
+      BULLET_POINT_UK = #{bulletPointUk,jdbcType=VARCHAR},
+      BULLET_POINT_FR = #{bulletPointFr,jdbcType=VARCHAR},
+      BULLET_POINT_DE = #{bulletPointDe,jdbcType=VARCHAR},
+      BULLET_POINT_IT = #{bulletPointIt,jdbcType=VARCHAR},
+      BULLET_POINT_ES = #{bulletPointEs,jdbcType=VARCHAR},
+      BULLET_POINT_JP = #{bulletPointJp,jdbcType=VARCHAR},
+      BULLET_POINT_CN = #{bulletPointCn,jdbcType=VARCHAR},
+      KEYWORDS_UK = #{keywordsUk,jdbcType=VARCHAR},
+      KEYWORDS_FR = #{keywordsFr,jdbcType=VARCHAR},
+      KEYWORDS_DE = #{keywordsDe,jdbcType=VARCHAR},
+      KEYWORDS_IT = #{keywordsIt,jdbcType=VARCHAR},
+      KEYWORDS_ES = #{keywordsEs,jdbcType=VARCHAR},
+      KEYWORDS_JP = #{keywordsJp,jdbcType=VARCHAR},
+      KEYWORDS_CN = #{keywordsCn,jdbcType=VARCHAR},
+      PRODUCT_DESCRIPTION_UK = #{productDescriptionUk,jdbcType=VARCHAR},
+      PRODUCT_DESCRIPTION_FR = #{productDescriptionFr,jdbcType=VARCHAR},
+      PRODUCT_DESCRIPTION_DE = #{productDescriptionDe,jdbcType=VARCHAR},
+      PRODUCT_DESCRIPTION_IT = #{productDescriptionIt,jdbcType=VARCHAR},
+      PRODUCT_DESCRIPTION_ES = #{productDescriptionEs,jdbcType=VARCHAR},
+      PRODUCT_DESCRIPTION_JP = #{productDescriptionJp,jdbcType=VARCHAR},
+      PRODUCT_DESCRIPTION_CN = #{productDescriptionCn,jdbcType=VARCHAR},
+      CREATE_TIME = #{createTime,jdbcType=DATE},
+      UPDATE_TIME = #{updateTime,jdbcType=DATE},
+      PRODUCT_ID = #{productId,jdbcType=VARCHAR},
+      UPDATE_STATE = #{updateState,jdbcType=CHAR},
+      SKU_TYPE = #{skuType,jdbcType=CHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
 </mapper>

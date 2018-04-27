@@ -49,31 +49,6 @@
             <property name="enableSubPackages" value="false" />
         </javaClientGenerator>
 
-        <!-- 配置表信息,tableName 表名，domainObjectName  生成实体类名称 -->
-        <!--        <table schema="ntes" tableName="artist" domainObjectName="Artist" enableCountByExample="false" enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false"></table>
-                <table schema="ntes" tableName="song" domainObjectName="Song" enableCountByExample="false" enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false" ></table>
-                <table schema="ntes" tableName="song_comment" domainObjectName="SongComment" enableCountByExample="false" enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false" ></table>
-                <table schema="ntes" tableName="album" domainObjectName="Album" enableCountByExample="false" enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false"></table>
-                <table tableName="song_artist_relation"  schema="ntes" domainObjectName="SongArtistRelation" enableCountByExample="false" enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false"></table>-->
-
-        <!-- schema即为数据库名 tableName为对应的数据库表 domainObjectName是要生成的实体类 enable*ByExample
-            是否生成 example类   -->
-
-        <!-- 忽略列，不生成bean 字段 -->
-        <!--         <ignoreColumn column="FRED" /> -->
-        <!-- 指定列的java数据类型 -->
-        <!--          <columnOverride column="LONG_VARCHAR_FIELD" jdbcType="VARCHAR" /> -->
-
-        <!--<table  tableName="member" domainObjectName="Member" enableCountByExample="false" enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false" alias="a"></table>-->
-        <!--<table  tableName="role" domainObjectName="Role" enableCountByExample="false" enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false" alias="a"></table>-->
-        <!--<table  tableName="permission" domainObjectName="Permission" enableCountByExample="false" enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false" alias="a"></table>-->
-        <!--<table  tableName="member_role" domainObjectName="MemberRole" enableCountByExample="false" enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false" alias="a"></table>-->
-        <!--<table  tableName="role_permission" domainObjectName="RolePermission" enableCountByExample="false" enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false" alias="a"></table>-->
-        <!--<table  tableName="item" domainObjectName="Item" enableCountByExample="false" enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false" alias="a"></table>-->
-        <!--<table  tableName="point" domainObjectName="Point" enableCountByExample="false" enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false" alias="a">
-            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
-        </table>-->
-
         <!--<table  tableName="question" domainObjectName="Question" enableCountByExample="false"  enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false" alias="a" >
             <generatedKey column="id" sqlStatement="MySql" identity="true"/>
             <columnOverride column="content" javaType="java.lang.String" jdbcType="VARCHAR" />
@@ -84,8 +59,14 @@
                enableSelectByExample="false" enableUpdateByExample="false" alias="a">
         </table>
 
-        <!--<table tableName="relations" domainObjectName="Relations" enableCountByExample="false"
-               enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false"
-               alias="a"></table>-->
+        <!--<table tableName="T_PRODUCT_ITEM_VAR" domainObjectName="ProductItemVar" enableCountByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" enableUpdateByExample="false" alias="a">
+        </table>-->
+
+        <!--<table tableName="T_PRODUCT_ITEM_VAR_TYPE" domainObjectName="ProductItemVarType" enableCountByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" enableUpdateByExample="false" alias="a">
+        </table>-->
+
+
     </context>
 </generatorConfiguration>

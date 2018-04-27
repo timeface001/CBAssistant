@@ -6,6 +6,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
 
 /**
@@ -52,6 +53,22 @@ public class GeneralUtils {
 
     public static String nullToEmpty(Object obj) {
         return obj == null ? "" : obj.toString();
+    }
+
+
+    public static String getRandomString(int length){
+        String str="1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        Random random=new Random();
+
+        StringBuffer sb=new StringBuffer();
+
+        for(int i=0;i<length;i++){
+
+            int number =random.nextInt(46);
+
+            sb.append(str.charAt(number));
+        }
+        return sb.toString();
     }
 
 }
