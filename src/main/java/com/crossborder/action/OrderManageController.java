@@ -1,6 +1,9 @@
 package com.crossborder.action;
 
 import com.alibaba.fastjson.JSON;
+import com.amazonaws.mws.MarketplaceWebServiceClient;
+import com.amazonaws.mws.MarketplaceWebServiceConfig;
+import com.amazonaws.mws.model.*;
 import com.amazonservices.mws.orders._2013_09_01.MarketplaceWebServiceOrders;
 import com.amazonservices.mws.orders._2013_09_01.MarketplaceWebServiceOrdersClient;
 import com.amazonservices.mws.orders._2013_09_01.MarketplaceWebServiceOrdersConfig;
@@ -29,6 +32,8 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -54,45 +59,53 @@ public class OrderManageController {
         Map<String, Object> user = (Map<String, Object>) session.getAttribute("user");
         shopMap.put("createUser", user.get("USER_ID").toString());
         List<Map<String, Object>> shops = shopManageService.selectShops(shopMap);
-        for (int i = 0; i < shops.size(); i++) {
-            Map<String, Object> shop = shops.get(i);
-            Map<String, Object> paramMap = JSON.parseObject(data, Map.class);
-            MarketplaceWebServiceOrdersConfig config = new MarketplaceWebServiceOrdersConfig();
-            config.setServiceURL(shop.get("ENDPOINT").toString());
-            MarketplaceWebServiceOrdersClient client = new MarketplaceWebServiceOrdersClient(shop.get("ACCESSKEY_ID").toString(), shop.get("SECRET_KEY").toString(), config);
-            ListOrdersRequest request = new ListOrdersRequest();
-            request.setSellerId(shop.get("MERCHANT_ID").toString());
-            request.setMWSAuthToken("");
-            GregorianCalendar cal = new GregorianCalendar();
-            XMLGregorianCalendar createdAfter = null;
-            XMLGregorianCalendar createdBefore = null;
-            try {
-                cal.setTime(Tools.strToDateLong(paramMap.get("logmin").toString() + " 00:00:00"));
-                createdAfter = DatatypeFactory.newInstance().newXMLGregorianCalendar(cal);
-                if (Tools.isToday(paramMap.get("logmax").toString(), "yyyy-MM-dd")) {
-                    long curren = System.currentTimeMillis() - 3 * 60 * 1000;
-                    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-                    cal.setTime(Tools.strToDateLong(paramMap.get("logmax").toString() + " " + sdf.format(new Date(curren))));
-                } else {
-                    cal.setTime(Tools.strToDateLong(paramMap.get("logmax").toString() + " 24:00:00"));
+        if (shops != null && shops.size() > 0) {
+            for (int i = 0; i < shops.size(); i++) {
+                Map<String, Object> shop = shops.get(i);
+                getOrderItemFees(shop);
+                Map<String, Object> paramMap = JSON.parseObject(data, Map.class);
+                MarketplaceWebServiceOrdersConfig config = new MarketplaceWebServiceOrdersConfig();
+                config.setServiceURL(shop.get("ENDPOINT").toString());
+                MarketplaceWebServiceOrdersClient client = new MarketplaceWebServiceOrdersClient(shop.get("ACCESSKEY_ID").toString(), shop.get("SECRET_KEY").toString(), config);
+                ListOrdersRequest request = new ListOrdersRequest();
+                request.setSellerId(shop.get("MERCHANT_ID").toString());
+                request.setMWSAuthToken("");
+                GregorianCalendar cal = new GregorianCalendar();
+                XMLGregorianCalendar createdAfter = null;
+                XMLGregorianCalendar createdBefore = null;
+                try {
+                    cal.setTime(Tools.strToDateLong(paramMap.get("logmin").toString() + " 00:00:00"));
+                    createdAfter = DatatypeFactory.newInstance().newXMLGregorianCalendar(cal);
+                    if (Tools.isToday(paramMap.get("logmax").toString(), "yyyy-MM-dd")) {
+                        long curren = System.currentTimeMillis() - 3 * 60 * 1000;
+                        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+                        cal.setTime(Tools.strToDateLong(paramMap.get("logmax").toString() + " " + sdf.format(new Date(curren))));
+                    } else {
+                        cal.setTime(Tools.strToDateLong(paramMap.get("logmax").toString() + " 24:00:00"));
+                    }
+                    createdBefore = DatatypeFactory.newInstance().newXMLGregorianCalendar(cal);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                createdBefore = DatatypeFactory.newInstance().newXMLGregorianCalendar(cal);
-            } catch (Exception e) {
-                e.printStackTrace();
+                request.setCreatedAfter(createdAfter);
+                request.setCreatedBefore(createdBefore);
+                List<String> marketplaceId = new ArrayList<String>();
+                marketplaceId.add(shop.get("MARKETPLACEID").toString());
+                request.setMarketplaceId(marketplaceId);
+                List<String> orderStatus = new ArrayList<String>();
+                orderStatus.add("Unshipped");
+                orderStatus.add("PartiallyShipped");
+                orderStatus.add("Shipped");
+                request.setOrderStatus(orderStatus);
+                result = getListOrders(client, request, user, shop);
             }
-            request.setCreatedAfter(createdAfter);
-            request.setCreatedBefore(createdBefore);
-            List<String> marketplaceId = new ArrayList<String>();
-            marketplaceId.add(shop.get("MARKETPLACEID").toString());
-            request.setMarketplaceId(marketplaceId);
-            List<String> orderStatus = new ArrayList<String>();
-            orderStatus.add("Unshipped");
-            orderStatus.add("PartiallyShipped");
-            orderStatus.add("Shipped");
-            request.setOrderStatus(orderStatus);
-            result = getListOrders(client, request, user, shop);
+            return result;
+        } else {
+            Map<String, Object> map = new HashMap<>();
+            map.put("code", "1");
+            map.put("msg", "您还未授权店铺，快去授权吧！");
+            return JSON.toJSONString(map);
         }
-        return result;
     }
 
     public String getListOrders(MarketplaceWebServiceOrders client,
@@ -105,6 +118,9 @@ public class OrderManageController {
             int count = 0;
             for (int i = 0; i < orderList.size(); i++) {
                 Order order = orderList.get(i);
+                if (order.getOrderStatus().equals("Unshipped")) {
+
+                }
                 //插入订单信息
                 LocalOrder localOrder = new LocalOrder();
                 localOrder.setAmazonOrderId(order.getAmazonOrderId());
@@ -124,7 +140,7 @@ public class OrderManageController {
                 localOrder.setMarketplaceId(order.getMarketplaceId());
                 localOrder.setPaymentMethod(order.getPaymentMethod());
                 localOrder.setSalesMan(user.get("USER_ID").toString());
-                localOrder.setSalesSource(shop.get("SHOP_ID").toString());
+                localOrder.setSalesSource(shop.get("MERCHANT_ID").toString());
                 localOrder.setSalesCompany(user.get("USER_COMPANY").toString());
                 localOrder.setRunningTime(Tools.timeDifference(createDate.getTime(), new Date().getTime()));
                 localOrder.setOrderType(order.getOrderType());
@@ -171,6 +187,8 @@ public class OrderManageController {
                     localOrderItem.setQuantityShipped(orderItem.getQuantityShipped());
                     localOrderItem.setSellerSKU(orderItem.getSellerSKU());
                     localOrderItem.setShippingPrice(Double.parseDouble(orderItem.getShippingPrice().getAmount()));
+                    localOrderItem.setItemPriceRMB(Double.parseDouble(orderItem.getItemPrice().getAmount()) * Double.parseDouble(shop.get("EXRATE").toString()));
+                    localOrderItem.setShippingPriceRMB(Double.parseDouble(orderItem.getShippingPrice().getAmount()) * Double.parseDouble(shop.get("EXRATE").toString()));
                     localOrderItem.setStatus("1");
                     localOrderItem.setCost(0);
                     localOrderItem.setRefundment(0);
@@ -187,6 +205,46 @@ public class OrderManageController {
             map.put("msg", "下载失败");
         }
         return JSON.toJSONString(map);
+    }
+
+    public void updateOrderStatus(String amazonOrderId, Map<String, Object> shop) {
+        MarketplaceWebServiceConfig config = new MarketplaceWebServiceConfig();
+        config.setServiceURL(shop.get("ENDPOINT").toString());
+        MarketplaceWebServiceClient client = new MarketplaceWebServiceClient(shop.get("ACCESSKEY_ID").toString(), shop.get("SECRET_KEY").toString(), "", "", config);
+        SubmitFeedRequest request = new SubmitFeedRequest();
+        IdList idList = new IdList();
+        List<String> ids = new ArrayList<>();
+        ids.add(shop.get("MARKETPLACEID").toString());
+        idList.setId(ids);
+        request.setMarketplaceIdList(idList);
+        request.setMerchant(shop.get("MERCHANT_ID").toString());
+        request.setFeedContent(new InputStream() {
+            @Override
+            public int read() throws IOException {
+                return 0;
+            }
+        });
+        request.setFeedType("");
+        request.setContentMD5("");
+    }
+
+    public void getOrderItemFees(Map<String, Object> shop) {
+        try {
+            MarketplaceWebServiceConfig config = new MarketplaceWebServiceConfig();
+            config.setServiceURL(shop.get("ENDPOINT").toString());
+            MarketplaceWebServiceClient client = new MarketplaceWebServiceClient(shop.get("ACCESSKEY_ID").toString(), shop.get("SECRET_KEY").toString(), "", "", config);
+            GetReportListRequest request = new GetReportListRequest();
+            request.setMerchant(shop.get("MERCHANT_ID").toString());
+            TypeList typeList = new TypeList();
+            List<String> types = new ArrayList<>();
+            types.add("_GET_FLAT_FILE_ACTIONABLE_ORDER_DATA_");
+            typeList.setType(types);
+            request.setReportTypeList(typeList);
+            GetReportListResponse response = client.getReportList(request);
+            List<ReportInfo> reportInfos = response.getGetReportListResult().getReportInfoList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public List<OrderItem> getOrderItem(String amazonOrderId, Map<String, Object> shop) {
@@ -260,10 +318,13 @@ public class OrderManageController {
      */
     @ResponseBody
     @RequestMapping(value = "selectLocalOrderItem", produces = "text/plain;charset=UTF-8")
-    public String selectLocalOrderItem(String amazonOrderId) {
+    public String selectLocalOrderItem(String amazonOrderId, String sku) {
         Map<String, Object> map = new HashMap<>();
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("amazonOrderId", amazonOrderId);
+        paramMap.put("sku", sku);
         try {
-            List<Map<String, Object>> localOrderItemList = orderManageService.selectLocalOrderItem(amazonOrderId);
+            List<Map<String, Object>> localOrderItemList = orderManageService.selectLocalOrderItem(paramMap);
             map.put("data", localOrderItemList);
             map.put("code", "0");
             map.put("msg", "查询成功");

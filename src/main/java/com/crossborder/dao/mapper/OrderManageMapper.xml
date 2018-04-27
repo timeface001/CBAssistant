@@ -85,7 +85,9 @@
         PAYWEIGHT,
         VOLUMEWEIGHT,
         CURRENCYCODE,
-        SMALLIMAGE)
+        SMALLIMAGE,
+        ITEMPRICERMB,
+        SHIPPINGPRICERMB)
         VALUES (#{amazonOrderId,jdbcType=VARCHAR},
         #{cost,jdbcType=VARCHAR},
         #{sellerSKU,jdbcType=VARCHAR},
@@ -103,7 +105,9 @@
         #{payWeight,jdbcType=DOUBLE},
         #{volumeWeight,jdbcType=DOUBLE},
         #{currencyCode,jdbcType=VARCHAR},
-        #{smallImage,jdbcType=VARCHAR})
+        #{smallImage,jdbcType=VARCHAR},
+        #{itemPriceRMB,jdbcType=VARCHAR},
+        #{shippingPriceRMB,jdbcType=VARCHAR})
     </insert>
     <insert id="insertAddress" parameterType="com.crossborder.entity.AddressInfo">
         MERGE INTO T_ADDRESS t1
@@ -159,19 +163,25 @@
         t2.smallImage,
         t4.company_name,
         wm_concat(t2.SELLERSKU) sku,
-        trunc(sum((t2.itemprice+t2.shippingPrice)*t3.exrate),2) itemprice,
+        trunc(sum(t2.itempricermb + t2.shippingPricermb),2) itemprice,
         trunc(sum(t2.cost),2) cost,
         trunc(sum(t2.refundment),2) refundment,
-        trunc(sum(t2.itemprice)*t3.exrate-sum(t2.cost)-sum(t2.refundment)-sum(t2.shippingPrice)*t3.exrate,2) profit
+        trunc(sum(t2.itempricermb - t2.cost - t2.refundment),2) profit
         from T_ORDER t1
         left join t_order_item t2
         on t2.amazonorderid = t1.amazonorderid
+        <if test="sku !=null and sku != ''">
+            AND t2.SELLERSKU = #{sku,jdbcType=VARCHAR}
+        </if>
+        <if test="trackNum !=null and trackNum != ''">
+            AND t2.TRACKNUM = #{trackNum,jdbcType=VARCHAR}
+        </if>
         left join t_country t3
-        on t3.id = t1.buyercountry and t3.currencycode = t1.currencycode
+        on t3.id = t1.buyercountry
         left join t_user_company t4
         on t4.company_id = t1.salescompany
         left join t_shop t5
-        on t5.shop_id = t1.salessource
+        on t5.merchant_id = t1.salessource
         left join t_user_info t6
         on t6.user_id= t1.salesman
         WHERE 1=1
@@ -223,8 +233,11 @@
     </select>
 
     <select id="selectLocalOrderItem" resultType="java.util.Map" parameterType="java.lang.String">
-        SELECT  * from T_ORDER_ITEM
-        WHERE AMAZONORDERID =  #{amazonOrderId,jdbcType=VARCHAR}
+        SELECT * from T_ORDER_ITEM
+        WHERE AMAZONORDERID = #{amazonOrderId,jdbcType=VARCHAR}
+        <if test="sku !=null and sku != ''">
+            AND SELLERSKU = #{sku,jdbcType=VARCHAR}
+        </if>
     </select>
     <update id="updateOrder" parameterType="java.util.Map">
         UPDATE T_ORDER

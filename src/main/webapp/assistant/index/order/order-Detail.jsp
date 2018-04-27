@@ -151,13 +151,14 @@
         <div class="row cl">
             <label class=" col-xs-1 col-sm-1 text-r">运输公司：</label>
             <div class=" col-xs-2 col-sm-2">
-                <select id="transportCompany" name="transportCompany" class="select" style="height: 32px">
+                <select id="transportCompany" name="transportCompany" class="select" style="height: 32px"
+                        onchange="loadShips(this.value)">
                     <option value="">请选择</option>
                 </select>
             </div>
             <label class=" col-xs-2 col-sm-2 text-r">运输方式：</label>
             <div class=" col-xs-2 col-sm-2">
-                <select id="tranType" name="tranType" class="select" style="height: 32px">
+                <select id="transType" name="transType" class="select" style="height: 32px">
                     <option value="">请选择</option>
                 </select>
             </div>
@@ -218,13 +219,13 @@
             </tr>
             </thead>
         </table>
-    </div>
-</div>
-<div class="row cl">
-    <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
-        <button type="button" class="btn btn-success radius" id="delivery" name="delivery"><i
-                class="icon-ok"></i>发货
-        </button>
+        <div class="row cl">
+            <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+                <button type="button" class="btn btn-success radius" id="delivery" name="delivery"><i
+                        class="icon-ok"></i>发货
+                </button>
+            </div>
+        </div>
     </div>
 </div>
 <div class="panel panel-success">
@@ -267,6 +268,7 @@
 <script type="text/javascript">
     var amazonOrderId = '<%=amazonOrderId%>';
     var roleId = $("#roleId").val();
+    var countryCode;
     $(function () {
         $.post("<%=request.getContextPath()%>/order/selectOrderInfo",
                 {
@@ -274,9 +276,9 @@
                 },
                 function (data) {
                     var map = JSON.parse(data);
+                    countryCode = map.address.COUNTRYCODE;
                     initBusiness(map.localOrder);
                     initAddressInfo(map.address);
-
                 });
         initOrderItem();
         initOperationLog();
@@ -290,8 +292,12 @@
         $("#amazonOrderId").val(localOrder.AMAZONORDERID);
         $("#remark").val(localOrder.REMARK);
         var customsDiv = document.getElementById("customsDiv");
-        if (roleId == 100 && localOrder.LOCALSTATUS == 1) {
-            customsDiv.style.display = '';
+        if (roleId == 100 || roleId == 400) {
+            if (localOrder.LOCALSTATUS == 2) {
+                customsDiv.style.display = '';
+            } else {
+                customsDiv.style.display = 'none';
+            }
         } else {
             customsDiv.style.display = 'none';
         }
@@ -453,7 +459,7 @@
                             if (roleId == 300) {
                                 return "";
                             } else if (roleId == 400) {
-                                return "<a style='text-decoration:none' title='发货'  onClick=\"updateOrder(4,'" + full.SELLERSKU + "')\"'>发货</a>";
+                                return "";
                             } else if (roleId == 500) {
                                 return "<a style='text-decoration:none' title='缺货'  onClick=\"updateOrder(3,'" + full.SELLERSKU + "')\"'>缺货</a>" +
                                         "&nbsp;&nbsp;&nbsp;&nbsp;" +
@@ -714,6 +720,28 @@
                     var data = data.data;
                     for (var i = 0; i < data.length; i++) {
                         $("#transportCompany").append($('<option value=' + data[i].ID + '>' + data[i].NAME + '</option>'));
+                    }
+                }
+            },
+            error: function (data) {
+                layer.msg(data.msg, {icon: 2, time: 1000});
+            }
+        });
+    }
+    function loadShips(value) {
+        alert(value);
+        $.ajax({
+            type: 'POST',
+            url: '<%=request.getContextPath()%>/common/getShipTypes',
+            dataType: 'json',
+            data: {
+                "countryCode": countryCode
+            },
+            success: function (data) {
+                if (data.code == 0) {
+                    var data = data.data;
+                    for (var i = 0; i < data.length; i++) {
+                        $("#transType").append($('<option value=' + data[i].code + '>' + data[i].name + '</option>'));
                     }
                 }
             },

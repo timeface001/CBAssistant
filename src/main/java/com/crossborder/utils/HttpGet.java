@@ -1,5 +1,7 @@
 package com.crossborder.utils;
 
+import org.apache.axis.encoding.Base64;
+
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -15,7 +17,7 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Map;
 
-class HttpGet {
+public class HttpGet {
     protected static final int SOCKET_TIMEOUT = 10000; // 10S
     protected static final String GET = "GET";
 
@@ -23,40 +25,33 @@ class HttpGet {
         try {
             // 设置SSLContext
             SSLContext sslcontext = SSLContext.getInstance("TLS");
-            sslcontext.init(null, new TrustManager[] { myX509TrustManager }, null);
-
+            sslcontext.init(null, new TrustManager[]{myX509TrustManager}, null);
             String sendUrl = getUrlWithQueryString(host, params);
-
-            // System.out.println("URL:" + sendUrl);
-
             URL uri = new URL(sendUrl); // 创建URL对象
             HttpURLConnection conn = (HttpURLConnection) uri.openConnection();
             if (conn instanceof HttpsURLConnection) {
                 ((HttpsURLConnection) conn).setSSLSocketFactory(sslcontext.getSocketFactory());
             }
-
+            String token = "C88888&JCJaDQ68amA=";
+            conn.setRequestProperty("Authorization","Basic "+Base64.encode(token.getBytes()));
             conn.setConnectTimeout(SOCKET_TIMEOUT); // 设置相应超时
             conn.setRequestMethod(GET);
             int statusCode = conn.getResponseCode();
             if (statusCode != HttpURLConnection.HTTP_OK) {
                 System.out.println("Http错误码：" + statusCode);
             }
-
             // 读取服务器的数据
             InputStream is = conn.getInputStream();
-            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            BufferedReader br = new BufferedReader(new InputStreamReader(is,"UTF-8"));
             StringBuilder builder = new StringBuilder();
             String line = null;
             while ((line = br.readLine()) != null) {
                 builder.append(line);
             }
-
             String text = builder.toString();
-
             close(br); // 关闭数据流
             close(is); // 关闭数据流
             conn.disconnect(); // 断开连接
-
             return text;
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -67,7 +62,6 @@ class HttpGet {
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
-
         return null;
     }
 
@@ -116,7 +110,7 @@ class HttpGet {
 
     /**
      * 对输入的字符串进行URL编码, 即转换为%20这种形式
-     * 
+     *
      * @param input 原文
      * @return URL编码. 如果编码失败, 则返回原文
      */

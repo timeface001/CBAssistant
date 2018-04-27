@@ -30,8 +30,8 @@ public class OrderManageService {
         return orderManageDao.selectLocalOrder(map);
     }
 
-    public List<Map<String, Object>> selectLocalOrderItem(String amazonOrderId) {
-        return orderManageDao.selectLocalOrderItem(amazonOrderId);
+    public List<Map<String, Object>> selectLocalOrderItem(Map<String, Object> map) {
+        return orderManageDao.selectLocalOrderItem(map);
     }
 
     public int updateOrder(Map<String, Object> map) {
