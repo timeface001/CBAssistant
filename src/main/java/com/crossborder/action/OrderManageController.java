@@ -393,13 +393,6 @@ public class OrderManageController {
         return JSON.toJSONString(map);
     }
 
-    @ResponseBody
-    @RequestMapping(value = "delivery", produces = "text/plain;charset=UTF-8")
-    public String delivery(String data) {
-        Map<String, Object> map = new HashMap<>();
-        return JSON.toJSONString(map);
-    }
-
     /**
      * 更新订单信息
      *

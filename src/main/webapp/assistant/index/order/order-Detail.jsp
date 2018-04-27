@@ -221,8 +221,9 @@
         </table>
         <div class="row cl">
             <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
-                <button type="button" class="btn btn-success radius" id="delivery" name="delivery"><i
-                        class="icon-ok"></i>发货
+                <button type="button" class="btn btn-success radius" id="delivery" name="delivery" onclick="delivery()">
+                    <i
+                            class="icon-ok"></i>发货
                 </button>
             </div>
         </div>
@@ -290,6 +291,7 @@
         $("#salesMan").val(localOrder.USER_NAME);
         $("#salesSource").val(localOrder.SHOP_NAME);
         $("#amazonOrderId").val(localOrder.AMAZONORDERID);
+        $("#amazonId").val(localOrder.AMAZONORDERID);
         $("#remark").val(localOrder.REMARK);
         var customsDiv = document.getElementById("customsDiv");
         if (roleId == 100 || roleId == 400) {
@@ -664,7 +666,6 @@
             "info": false
         });
     }
-    var count = 0;
     function addRow() {
         customsTable.row.add([
             "",
@@ -679,34 +680,12 @@
             "",
             "",
             "",
-            count]).draw();
-        count += 1;
+            ""]).draw();
     }
     function removeRow(obj) {
         customsTable.row($(obj).parents('tr')).remove().draw();
 
     }
-    $("#delivery").click(function () {
-        var datas = customsTable.rows();
-        for (var i = 0; i < datas.length; i++) {
-            alert(customsTable.fnGetData(datas[i]));
-        }
-        $.ajax({
-            type: 'POST',
-            url: '<%=request.getContextPath()%>/order/delivery',
-            dataType: 'json',
-            data: {
-                "data": customsTable.$("input").serialize()
-            },
-            success: function (data) {
-                layer.msg(data.msg, {icon: 6, time: 1000});
-                layer_close();
-            },
-            error: function (data) {
-                layer.msg(data.msg, {icon: 5, time: 1000});
-            },
-        });
-    });
     function initSelect() {
         $.ajax({
             type: 'POST',
@@ -729,7 +708,6 @@
         });
     }
     function loadShips(value) {
-        alert(value);
         $.ajax({
             type: 'POST',
             url: '<%=request.getContextPath()%>/common/getShipTypes',
@@ -807,6 +785,50 @@
             "data": {
                 "amazonOrderId": amazonOrderId,
                 "remark": $("#remark").val()
+            },
+            success: function (data) {
+                layer.msg('添加备注成功!', {icon: 1, time: 1000});
+            },
+            error: function (data) {
+                layer.msg('添加备注失败!', {icon: 2, time: 1000});
+            }
+        });
+    }
+    function delivery() {
+        var wayBills = new Array();
+        var wayBill = new Object();
+        var ShippingInfo = new Object();
+        var SenderInfo = new Object();
+        var ApplicationInfos = new Array();
+        var applicationInfo = new Object();
+        wayBill.WayBillNumber = $("#amazonId").val();
+        wayBill.ShippingMethodCode = $("#transType").val();
+        wayBill.Length = $("#length").val();
+        wayBill.Width = $("#width").val();
+        wayBill.Height = $("#height").val();
+        wayBill.PackageNumber = $("#count").val();
+        wayBill.Weight = $("#weight").val();
+        ShippingInfo.CountryCode = $("#countryCode").val();
+        ShippingInfo.ShippingFirstName = $("#name").val();
+        ShippingInfo.ShippingLastName = $("#name").val();
+        ShippingInfo.ShippingCompany = $("#company").val();
+        ShippingInfo.ShippingAddress = $("#addressLine1").val();
+        ShippingInfo.ShippingAddress1 = $("#addressLine2").val();
+        ShippingInfo.ShippingAddress2 = $("#addressLine3").val();
+        ShippingInfo.ShippingCity = $("#city").val();
+        ShippingInfo.ShippingState = $("#stateOrRegion").val();
+        ShippingInfo.ShippingZip = $("#postalCode").val();
+        ShippingInfo.ShippingPhone = $("#phone").val();
+        var nTrs = customsTable.rows[0];//fnGetNodes获取表格所有行，nTrs[i]表示第i行tr对象
+        console.log('[获取数据]' + nTrs);//fnGetData获取一行的数据
+        wayBill.ShippingInfo = ShippingInfo;
+        wayBills.push(wayBill);
+        $.ajax({
+            type: 'POST',
+            url: '<%=request.getContextPath()%>/common/confirmOrder',
+            dataType: 'json',
+            "data": {
+                "json": JSON.stringify(wayBills)
             },
             success: function (data) {
                 layer.msg('添加备注成功!', {icon: 1, time: 1000});

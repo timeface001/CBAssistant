@@ -4,6 +4,9 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.crossborder.entity.Menu;
+import com.crossborder.entity.SenderInfo;
+import com.crossborder.entity.ShippingInfo;
+import com.crossborder.entity.WayBill;
 import com.crossborder.service.CommonService;
 import com.crossborder.utils.HttpClientUtil;
 import org.springframework.stereotype.Controller;
@@ -208,11 +211,14 @@ public class CommonController {
 
     @ResponseBody
     @RequestMapping(value = "confirmOrder", produces = "text/plain;charset=UTF-8")
-    public String confirmOrder() {
+    public String confirmOrder(String json) {
         Map<String, Object> map = new HashMap<>();
+        WayBill wayBill = new WayBill();
+        ShippingInfo shippingInfo = new ShippingInfo();
+        SenderInfo senderInfo = new SenderInfo();
         try {
-
-            String result = HttpClientUtil.doPostRequest("http://120.76.199.53:8034/LMS.API/api/WayBill/BatchAdd");
+            String result = HttpClientUtil.doPostRequest("http://120.76.199.53:8034/LMS.API/api/WayBill/BatchAdd", json);
+            map.put("data", result);
         } catch (Exception e) {
             e.printStackTrace();
         }
