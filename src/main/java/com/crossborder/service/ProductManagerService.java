@@ -37,7 +37,7 @@ public class ProductManagerService {
 
     public boolean save(Map<String, Object> product) {
         product.put("createTime", new Date());
-        if (product.get("id") != null) {
+        if (product.get("id") != null&&StringUtils.isNotBlank(product.get("id").toString())) {
             return productManagerDao.updateProduct(product) == 1;
         } else {
             return productManagerDao.insertProduct(product) == 1;
