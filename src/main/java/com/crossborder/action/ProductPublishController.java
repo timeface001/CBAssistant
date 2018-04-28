@@ -53,6 +53,7 @@ public class ProductPublishController extends BaseController {
         PageInfo pageInfo = new PageInfo<>(list);
         result.put("data", list);
         result.put("draw", draw);
+
         result.put("recordsTotal", pageInfo.getTotal());
         result.put("recordsFiltered", pageInfo.getTotal());
         return JSON.toJSONString(result);
