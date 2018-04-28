@@ -82,10 +82,11 @@
             <tr class="text-c">
                 <th width="25"><input type="checkbox" value="" name=""></th>
                 <th width="100">产品图</th>
+                <th width="60">国家</th>
                 <th width="150">标题</th>
-                <th width="150">sku</th>
                 <th width="60">售价</th>
                 <th width="100">库存</th>
+                <th width="150">发布状况描述</th>
                 <th width="100">时间</th>
                 <th width="100">操作</th>
             </tr>
@@ -147,7 +148,7 @@
         var table = $("#productTable").DataTable({
             "serverSide": true,
             "ajax": {
-                "url": "<%=request.getContextPath()%>/product/claim/list",
+                "url": "<%=request.getContextPath()%>/product/publish/list",
                 "type": "POST",
                 "data": function (d) {
                     return $.extend({}, d, {
@@ -158,21 +159,23 @@
             "columns": [
                 {"data": "id"},
                 {"data": function (val) {
-                    return val.imagePath==null?"":"<img width='100px' height='90px'  src='<%=request.getContextPath()%>/upload/"+val.imagePath+"'/>";
+                    return val.mainPath==null?"":"<img width='100px' height='90px'  src='<%=request.getContextPath()%>/upload/"+val.mainPath+"'/>";
                 }},
                 {"data": function (val) {
-                    return val.itemCn==null?"":val.itemCn;
+                    return getCountryName(val.languageId);
                 }},
                 {"data": function (val) {
-                    return val.sku==null?"":val.sku;
+                    return val.itemName==null?"":val.itemName;
                 }},
-                {"data": "price"},
+                {"data": "standardPrice"},
                 {"data": function (val) {
                     return val.quantity==null?"":val.quantity;
                 }},
                 {"data": function (val) {
-                    console.log(getMyDate(val.createTime));
-                    return "<p style='text-align: left'>创建</p><p style='text-align: left'>"+getMyDate(val.createTime)+"</p>"+(val.updateTime!=null?("<p style='text-align: left'>更新</p><p style='text-align: left'>"+getMyDate(val.updateTime)+"</p>"):"");
+                    return "未发布";
+                }},
+                {"data": function (val) {
+                    return "<p style='text-align: left'>创建:</p><p style='text-align: left'>"+getMyDate(val.createTime)+"</p>"+"<p style='text-align: left'>发布时间</p><p style='text-align: left'>"+getMyDate(val.updateTime)+"</p>";
                 }}
             ],
             "columnDefs": [
@@ -184,7 +187,7 @@
                     }
                 },
                 {
-                    "targets": [7],
+                    "targets": [8],
                     "data": "id",
                     "render": function (data, type, full) {
                         return( full.publishStatus!="2"?"<a style='text-decoration:none' title=''  onClick=\"publishProduct('" + full.ID + "')\"')>发布</a>":"") +
@@ -219,6 +222,34 @@
         });
         return table;
     }
+
+    function getCountryName(id) {
+        if(id==="GB"){
+            return "英国";
+        }
+        if(id==="JP"){
+            return "日本";
+        }
+        if(id==="CN"){
+            return "中国";
+        }
+        if(id==="DE"){
+            return "德国";
+        }
+        if(id==="FR"){
+            return "法国";
+        }
+        if(id==="ES"){
+            return "西班牙";
+        }
+        if(id==="IT"){
+            return "意大利";
+        }
+
+        return "";
+
+    }
+
     /*打开订单详情页*/
     function toDetail(amazonOrderId) {
         var index = layer.open({

@@ -59,9 +59,9 @@
                enableSelectByExample="false" enableUpdateByExample="false" alias="a">
         </table>-->
 
-        <!--<table tableName="T_PRODUCT_ITEM_VAR" domainObjectName="ProductItemVar" enableCountByExample="false" enableDeleteByExample="false"
+        <table tableName="T_PRODUCT_ITEM_VAR" domainObjectName="ProductItemVar" enableCountByExample="false" enableDeleteByExample="false"
                enableSelectByExample="false" enableUpdateByExample="false" alias="a">
-        </table>-->
+        </table>
 
         <!--<table tableName="T_PRODUCT_ITEM_VAR_TYPE" domainObjectName="ProductItemVarType" enableCountByExample="false" enableDeleteByExample="false"
                enableSelectByExample="false" enableUpdateByExample="false" alias="a">

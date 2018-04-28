@@ -30,7 +30,7 @@ public class ProductManagerController extends BaseController {
 
     @RequestMapping(value = "/product/list", produces = "text/plain;charset=UTF-8")
     @ResponseBody
-    public String productList(String data, Integer start, Integer length) {
+    public String productList(String data, Integer start, Integer length,Integer draw) {
 
         Map<String, Object> params = JSON.parseObject(data, Map.class);
 
@@ -43,8 +43,9 @@ public class ProductManagerController extends BaseController {
         List<Map<String, Object>> list = productManagerService.selectList(params);
         PageInfo pageInfo = new PageInfo<>(list);
         result.put("data", list);
+        result.put("draw", draw);
         result.put("recordsTotal", pageInfo.getTotal());
-        result.put("recordsFiltered", list.size());
+        result.put("recordsFiltered", pageInfo.getTotal());
         return JSON.toJSONString(result);
     }
 

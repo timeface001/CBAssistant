@@ -6,9 +6,11 @@ import com.crossborder.dao.ProductClaimDao;
 import com.crossborder.dao.ProductManagerDao;
 import com.crossborder.entity.ClaimProduct;
 import com.crossborder.entity.ProductAmzUpload;
+import com.crossborder.entity.ProductItemVar;
 import com.crossborder.utils.BaiduTranApi;
 import com.crossborder.utils.GeneralUtils;
 import com.crossborder.utils.ProductStateEnum;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +32,8 @@ public class ProductManagerService {
     private ProductClaimDao claimProductExtMapper;
     @Resource
     private ProductAmzUploadDao productAmzUploadDao;
+    @Resource
+    private ProductSkuTypeService productSkuTypeService;
 
     public boolean save(Map<String, Object> product) {
         product.put("createTime", new Date());
@@ -187,46 +191,101 @@ public class ProductManagerService {
      * @return
      */
     @Transactional(rollbackFor = Exception.class)
-    public int prePublishProduct(String id) throws Exception {
+    public void prePublishProduct(String id) throws Exception {
         ClaimProduct product = claimProductExtMapper.selectByPrimaryKey(id);
         if (product != null) {
+
+            List<ProductItemVar> vars=productSkuTypeService.selectListByProductId(id);
+
+            //sku信息插入
+            if (product.getSkuType().equals("1")) {//单体
+
+            } else {
+
+            }
+
             //GB 英国
-            ProductAmzUpload uploadGB = generateCommonProperties(product.getBulletPointUk(), product.getItemUk(), product.getProductDescriptionUk(), product.getKeywordsUk());
+            ProductAmzUpload uploadGB = generateCommonProperties(product, "GB", product.getBulletPointUk(), product.getItemUk(), product.getProductDescriptionUk(), product.getKeywordsUk());
             //JP 日本
-            ProductAmzUpload uploadJP = generateCommonProperties(product.getBulletPointJp(), product.getItemJp(), product.getProductDescriptionJp(), product.getKeywordsJp());
+            ProductAmzUpload uploadJP = generateCommonProperties(product, "JP", product.getBulletPointJp(), product.getItemJp(), product.getProductDescriptionJp(), product.getKeywordsJp());
             //CN
-            ProductAmzUpload uploadCN = generateCommonProperties(product.getBulletPointCn(), product.getItemCn(), product.getProductDescriptionCn(), product.getKeywordsCn());
+            ProductAmzUpload uploadCN = generateCommonProperties(product, "CN", product.getBulletPointCn(), product.getItemCn(), product.getProductDescriptionCn(), product.getKeywordsCn());
             //DE 德国
-            ProductAmzUpload uploadDE = generateCommonProperties(product.getBulletPointDe(), product.getItemDe(), product.getProductDescriptionDe(), product.getKeywordsDe());
+            ProductAmzUpload uploadDE = generateCommonProperties(product, "DE", product.getBulletPointDe(), product.getItemDe(), product.getProductDescriptionDe(), product.getKeywordsDe());
             //FR 法国
-            ProductAmzUpload uploadFR = generateCommonProperties(product.getBulletPointFr(), product.getItemFr(), product.getProductDescriptionFr(), product.getKeywordsFr());
+            ProductAmzUpload uploadFR = generateCommonProperties(product, "FR", product.getBulletPointFr(), product.getItemFr(), product.getProductDescriptionFr(), product.getKeywordsFr());
             //ES 西班牙
-            ProductAmzUpload uploadES = generateCommonProperties(product.getBulletPointEs(), product.getItemEs(), product.getProductDescriptionEs(), product.getKeywordsEs());
+            ProductAmzUpload uploadES = generateCommonProperties(product, "ES", product.getBulletPointEs(), product.getItemEs(), product.getProductDescriptionEs(), product.getKeywordsEs());
             //IT意大利
-            ProductAmzUpload uploadIT = generateCommonProperties(product.getBulletPointIt(), product.getItemIt(), product.getProductDescriptionIt(), product.getKeywordsIt());
+            ProductAmzUpload uploadIT = generateCommonProperties(product, "IT", product.getBulletPointIt(), product.getItemIt(), product.getProductDescriptionIt(), product.getKeywordsIt());
+
 
             int i = 0;
-            i += productAmzUploadDao.insertSelective(uploadGB);
-            i += productAmzUploadDao.insertSelective(uploadES);
-            i += productAmzUploadDao.insertSelective(uploadDE);
-            i += productAmzUploadDao.insertSelective(uploadFR);
-            i += productAmzUploadDao.insertSelective(uploadJP);
-            i += productAmzUploadDao.insertSelective(uploadCN);
-            i += productAmzUploadDao.insertSelective(uploadIT);
+            i += saveAmzUploadBySku(uploadGB,product,vars);
+            i += saveAmzUploadBySku(uploadJP,product,vars);
+            i += saveAmzUploadBySku(uploadCN,product,vars);
+            i += saveAmzUploadBySku(uploadDE,product,vars);
+            i += saveAmzUploadBySku(uploadFR,product,vars);
+            i += saveAmzUploadBySku(uploadES,product,vars);
+            i += saveAmzUploadBySku(uploadIT,product,vars);
 
-            if (i < 7) {
+
+            if (i < (vars.size()*7)) {
                 throw new Exception("pre publish insert failed.");
             }
 
         }
 
-        return 0;
     }
 
-    private ProductAmzUpload generateCommonProperties(String points, String productName, String productDesc, String keywords) {
+    private int saveAmzUploadBySku(ProductAmzUpload upload, ClaimProduct product, List<ProductItemVar> vars) throws Exception {
+        int i=0;
+        if (GeneralUtils.isNotNullOrEmpty(vars)) {
+            for (ProductItemVar var : vars) {
+                upload.setpState("1");
+                upload.setQuantity(var.getQuantity());
+                upload.setPublishStatus("0");
+
+                if (StringUtils.isBlank(var.getVariationType())) {//主体
+                    upload.setParentChild("parent");
+
+
+                } else {//变体
+                    upload.setParentChild("child");
+                    upload.setRelationshipType("Variation");
+                    upload.setVariationTheme(var.getVariationType());
+                    upload.setParentSku(product.getSku());
+
+                }
+
+                upload.setSaleEndDate(var.getSaleEndTime());
+                upload.setSaleFromDate(var.getSaleStartTime());
+                upload.setSizeMap(var.getSizeMap());
+                upload.setSizeName(var.getSizeName());
+                upload.setSalePrice(var.getSalePrice());
+                upload.setMaterialType(var.getMaterialType());
+                upload.setItemPackageQuantity(var.getItemPackageQuantity());
+                upload.setStandardPrice(var.getPrice());
+                upload.setVariationTheme(var.getVariationType());
+                upload.setQuantity(var.getQuantity());
+                upload.setProductAmzId(product.getId());
+                upload.setCreateTime(new Date());
+
+                i+=productAmzUploadDao.insertSelective(upload);
+
+            }
+        } else {
+            throw new Exception("product sku is null,id :" + product.getId());
+        }
+
+        return i;
+    }
+
+    private ProductAmzUpload generateCommonProperties(ClaimProduct product, String languageId, String points, String productName, String productDesc, String keywords) {
         ProductAmzUpload upload = new ProductAmzUpload();
         generateUploadPoints(upload, points);
 
+        upload.setLanguageId(languageId);
         upload.setItemName(productName);
         upload.setProductDescription(productDesc);
 

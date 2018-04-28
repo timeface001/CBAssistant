@@ -26,7 +26,7 @@ public class ResponseGen<T> {
     }
 
     public static <T> String genSuccessData(T data) {
-        return JSON.toJSONString(new ResponseDto("操作成功", "0", false, data, 0));
+        return JSON.toJSONString(new ResponseDto("操作成功", "0", true, data, 0));
     }
 
 }

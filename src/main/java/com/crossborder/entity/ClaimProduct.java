@@ -82,6 +82,10 @@ public class ClaimProduct {
 
     private String skuType;
 
+    private String source;
+
+    private String typeId;
+
     public String getId() {
         return id;
     }
@@ -392,5 +396,21 @@ public class ClaimProduct {
 
     public void setSkuType(String skuType) {
         this.skuType = skuType == null ? null : skuType.trim();
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source == null ? null : source.trim();
+    }
+
+    public String getTypeId() {
+        return typeId;
+    }
+
+    public void setTypeId(String typeId) {
+        this.typeId = typeId == null ? null : typeId.trim();
     }
 }

@@ -20,7 +20,7 @@ public class ProductItemVar {
 
     private String materialType;
 
-    private BigDecimal itemPackageQuantity;
+    private Integer itemPackageQuantity;
 
     private String productId;
 
@@ -33,6 +33,10 @@ public class ProductItemVar {
     private Date saleEndTime;
 
     private Integer quantity;
+
+    private String mainPath;
+
+    private String attachPath;
 
     public String getId() {
         return id;
@@ -98,11 +102,11 @@ public class ProductItemVar {
         this.materialType = materialType == null ? null : materialType.trim();
     }
 
-    public BigDecimal getItemPackageQuantity() {
+    public Integer getItemPackageQuantity() {
         return itemPackageQuantity;
     }
 
-    public void setItemPackageQuantity(BigDecimal itemPackageQuantity) {
+    public void setItemPackageQuantity(Integer itemPackageQuantity) {
         this.itemPackageQuantity = itemPackageQuantity;
     }
 
@@ -152,5 +156,21 @@ public class ProductItemVar {
 
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
+    }
+
+    public String getMainPath() {
+        return mainPath;
+    }
+
+    public void setMainPath(String mainPath) {
+        this.mainPath = mainPath == null ? null : mainPath.trim();
+    }
+
+    public String getAttachPath() {
+        return attachPath;
+    }
+
+    public void setAttachPath(String attachPath) {
+        this.attachPath = attachPath == null ? null : attachPath.trim();
     }
 }

@@ -63,7 +63,7 @@ public class ProductClaimController extends BaseController {
         PageInfo pageInfo = new PageInfo<>(list);
         result.put("data", list);
         result.put("recordsTotal", pageInfo.getTotal());
-        result.put("recordsFiltered", list.size());
+        result.put("recordsFiltered", pageInfo.getTotal());
         return JSON.toJSONString(result);
     }
 
@@ -129,7 +129,14 @@ public class ProductClaimController extends BaseController {
     @RequestMapping(value = "/product/claim/prePublish", produces = "text/plain;charset=UTF-8")
     @ResponseBody
     public String prePublish(String id) {
-        return null;
+
+        try {
+            productManagerService.prePublishProduct(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return JSON.toJSONString(ResponseGen.genFail());
+        }
+        return ResponseGen.genSuccessData(null);
     }
 
 

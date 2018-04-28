@@ -102,7 +102,7 @@ public class ProductAmzUpload {
 
     private String materialType;
 
-    private BigDecimal itemPackageQuantity;
+    private Integer itemPackageQuantity;
 
     private String shopId;
 
@@ -115,6 +115,12 @@ public class ProductAmzUpload {
     private String publishStatus;
 
     private Date createTime;
+
+    private String productAmzId;
+
+    private String mainPath;
+
+    private String attachPath;
 
     public BigDecimal getId() {
         return id;
@@ -508,11 +514,11 @@ public class ProductAmzUpload {
         this.materialType = materialType == null ? null : materialType.trim();
     }
 
-    public BigDecimal getItemPackageQuantity() {
+    public Integer getItemPackageQuantity() {
         return itemPackageQuantity;
     }
 
-    public void setItemPackageQuantity(BigDecimal itemPackageQuantity) {
+    public void setItemPackageQuantity(Integer itemPackageQuantity) {
         this.itemPackageQuantity = itemPackageQuantity;
     }
 
@@ -562,5 +568,29 @@ public class ProductAmzUpload {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public String getProductAmzId() {
+        return productAmzId;
+    }
+
+    public void setProductAmzId(String productAmzId) {
+        this.productAmzId = productAmzId == null ? null : productAmzId.trim();
+    }
+
+    public String getMainPath() {
+        return mainPath;
+    }
+
+    public void setMainPath(String mainPath) {
+        this.mainPath = mainPath == null ? null : mainPath.trim();
+    }
+
+    public String getAttachPath() {
+        return attachPath;
+    }
+
+    public void setAttachPath(String attachPath) {
+        this.attachPath = attachPath == null ? null : attachPath.trim();
     }
 }

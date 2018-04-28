@@ -17,13 +17,16 @@
     <result column="a_SALE_START_TIME" jdbcType="DATE" property="saleStartTime" />
     <result column="a_SALE_END_TIME" jdbcType="DATE" property="saleEndTime" />
     <result column="a_QUANTITY" jdbcType="DECIMAL" property="quantity" />
+    <result column="a_MAIN_PATH" jdbcType="VARCHAR" property="mainPath" />
+    <result column="a_ATTACH_PATH" jdbcType="VARCHAR" property="attachPath" />
   </resultMap>
   <sql id="Base_Column_List">
     a.ID as a_ID, a.SKU as a_SKU, a.VARIATION_TYPE as a_VARIATION_TYPE, a.COLOR_NAME as a_COLOR_NAME, 
     a.COLOR_MAP as a_COLOR_MAP, a.SIZE_NAME as a_SIZE_NAME, a.SIZE_MAP as a_SIZE_MAP, 
     a.MATERIAL_TYPE as a_MATERIAL_TYPE, a.ITEM_PACKAGE_QUANTITY as a_ITEM_PACKAGE_QUANTITY, 
     a.PRODUCT_ID as a_PRODUCT_ID, a.PRICE as a_PRICE, a.SALE_PRICE as a_SALE_PRICE, a.SALE_START_TIME as a_SALE_START_TIME, 
-    a.SALE_END_TIME as a_SALE_END_TIME, a.QUANTITY as a_QUANTITY
+    a.SALE_END_TIME as a_SALE_END_TIME, a.QUANTITY as a_QUANTITY, a.MAIN_PATH as a_MAIN_PATH, 
+    a.ATTACH_PATH as a_ATTACH_PATH
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
@@ -40,14 +43,14 @@
       COLOR_NAME, COLOR_MAP, SIZE_NAME, 
       SIZE_MAP, MATERIAL_TYPE, ITEM_PACKAGE_QUANTITY, 
       PRODUCT_ID, PRICE, SALE_PRICE, 
-      SALE_START_TIME, SALE_END_TIME, QUANTITY
-      )
+      SALE_START_TIME, SALE_END_TIME, QUANTITY, 
+      MAIN_PATH, ATTACH_PATH)
     values (#{id,jdbcType=VARCHAR}, #{sku,jdbcType=VARCHAR}, #{variationType,jdbcType=VARCHAR}, 
       #{colorName,jdbcType=VARCHAR}, #{colorMap,jdbcType=VARCHAR}, #{sizeName,jdbcType=VARCHAR}, 
       #{sizeMap,jdbcType=VARCHAR}, #{materialType,jdbcType=VARCHAR}, #{itemPackageQuantity,jdbcType=DECIMAL}, 
       #{productId,jdbcType=VARCHAR}, #{price,jdbcType=DECIMAL}, #{salePrice,jdbcType=DECIMAL}, 
-      #{saleStartTime,jdbcType=DATE}, #{saleEndTime,jdbcType=DATE}, #{quantity,jdbcType=DECIMAL}
-      )
+      #{saleStartTime,jdbcType=DATE}, #{saleEndTime,jdbcType=DATE}, #{quantity,jdbcType=DECIMAL}, 
+      #{mainPath,jdbcType=VARCHAR}, #{attachPath,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.crossborder.entity.ProductItemVar">
     insert into T_PRODUCT_ITEM_VAR
@@ -97,6 +100,12 @@
       <if test="quantity != null">
         QUANTITY,
       </if>
+      <if test="mainPath != null">
+        MAIN_PATH,
+      </if>
+      <if test="attachPath != null">
+        ATTACH_PATH,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -143,6 +152,12 @@
       </if>
       <if test="quantity != null">
         #{quantity,jdbcType=DECIMAL},
+      </if>
+      <if test="mainPath != null">
+        #{mainPath,jdbcType=VARCHAR},
+      </if>
+      <if test="attachPath != null">
+        #{attachPath,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -191,6 +206,12 @@
       <if test="quantity != null">
         QUANTITY = #{quantity,jdbcType=DECIMAL},
       </if>
+      <if test="mainPath != null">
+        MAIN_PATH = #{mainPath,jdbcType=VARCHAR},
+      </if>
+      <if test="attachPath != null">
+        ATTACH_PATH = #{attachPath,jdbcType=VARCHAR},
+      </if>
     </set>
     where ID = #{id,jdbcType=VARCHAR}
   </update>
@@ -209,7 +230,9 @@
       SALE_PRICE = #{salePrice,jdbcType=DECIMAL},
       SALE_START_TIME = #{saleStartTime,jdbcType=DATE},
       SALE_END_TIME = #{saleEndTime,jdbcType=DATE},
-      QUANTITY = #{quantity,jdbcType=DECIMAL}
+      QUANTITY = #{quantity,jdbcType=DECIMAL},
+      MAIN_PATH = #{mainPath,jdbcType=VARCHAR},
+      ATTACH_PATH = #{attachPath,jdbcType=VARCHAR}
     where ID = #{id,jdbcType=VARCHAR}
   </update>
 </mapper>

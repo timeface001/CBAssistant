@@ -165,10 +165,17 @@
                 {"data": function (val) {
                     return val.MAIN_PATH==null?"":"<img width='100px' height='90px'  src='<%=request.getContextPath()%>/upload/"+val.MAIN_PATH+"'/>";
                 }},
-                {"data": "SOURCE"},
-                {"data": "NAME"},
-                {"data": "INFO"},
-                {"data": "PRICE"},
+                {"data": function (val) {
+                    return val.SOURCE==null?"":val.SOURCE;
+                }},
+                {"data": function (val) {
+                    return val.NAME==null?"":val.NAME;}},
+                {"data": function (val) {
+                    return val.INFO==null?"":val.INFO;
+                }},
+                {"data": function (val) {
+                    return val.PRICE==null?"":val.PRICE;
+                }},
                 {"data": function (val) {
                     return val.STATE_TIME==null?"":"在"+getMyDate(val.STATE_TIME)+"时被认领";
                 }},
