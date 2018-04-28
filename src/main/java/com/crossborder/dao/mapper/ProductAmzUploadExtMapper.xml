@@ -714,4 +714,5 @@
     PUBLISH_STATUS = #{publishStatus,jdbcType=CHAR},
     CREATE_TIME = #{createTime,jdbcType=DATE}
     where ID = #{id,jdbcType=DECIMAL}
+    </update>
 </mapper>
