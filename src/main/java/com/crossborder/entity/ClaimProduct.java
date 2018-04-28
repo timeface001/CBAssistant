@@ -86,6 +86,8 @@ public class ClaimProduct {
 
     private String typeId;
 
+    private String isPrepublish;
+
     public String getId() {
         return id;
     }
@@ -412,5 +414,13 @@ public class ClaimProduct {
 
     public void setTypeId(String typeId) {
         this.typeId = typeId == null ? null : typeId.trim();
+    }
+
+    public String getIsPrepublish() {
+        return isPrepublish;
+    }
+
+    public void setIsPrepublish(String isPrepublish) {
+        this.isPrepublish = isPrepublish == null ? null : isPrepublish.trim();
     }
 }

@@ -73,7 +73,7 @@ public class ProductClaimController extends BaseController {
     @ResponseBody
     public String save(ClaimProduct product, String saleStartTime, String saleEndTime,String vars) {
 
-        productManagerService.save(product);
+
         List<ProductItemVar> list = new ArrayList<>();
 
         ProductItemVar var = new ProductItemVar();
@@ -87,10 +87,18 @@ public class ProductClaimController extends BaseController {
         if (product.getSkuType().equals("2")) {//变体
             if(org.apache.commons.lang3.StringUtils.isNotBlank(vars)){
                 list=JSON.parseArray(vars,ProductItemVar.class);
+                Integer totalInventory=0;
+                for (ProductItemVar va : list) {
+                    totalInventory+=va.getQuantity();
+                }
+
+                product.setQuantity(totalInventory);
+                var.setQuantity(totalInventory);
             }
 
         }
         list.add(var);
+        productManagerService.save(product);
         productSkuTypeService.save(list, product.getId());
         return JSON.toJSONString(ResponseGen.genSuccess());
     }

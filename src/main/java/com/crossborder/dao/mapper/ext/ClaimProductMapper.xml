@@ -43,6 +43,7 @@
     <result column="a_SKU_TYPE" jdbcType="CHAR" property="skuType" />
     <result column="a_SOURCE" jdbcType="VARCHAR" property="source" />
     <result column="a_TYPE_ID" jdbcType="VARCHAR" property="typeId" />
+    <result column="a_IS_PREPUBLISH" jdbcType="CHAR" property="isPrepublish" />
   </resultMap>
   <sql id="Base_Column_List">
     a.ID as a_ID, a.SKU as a_SKU, a.CREATE_USER as a_CREATE_USER, a.PRICE as a_PRICE, 
@@ -58,7 +59,7 @@
     a.PRODUCT_DESCRIPTION_ES as a_PRODUCT_DESCRIPTION_ES, a.PRODUCT_DESCRIPTION_JP as a_PRODUCT_DESCRIPTION_JP, 
     a.PRODUCT_DESCRIPTION_CN as a_PRODUCT_DESCRIPTION_CN, a.CREATE_TIME as a_CREATE_TIME, 
     a.UPDATE_TIME as a_UPDATE_TIME, a.PRODUCT_ID as a_PRODUCT_ID, a.UPDATE_STATE as a_UPDATE_STATE, 
-    a.SKU_TYPE as a_SKU_TYPE, a.SOURCE as a_SOURCE, a.TYPE_ID as a_TYPE_ID
+    a.SKU_TYPE as a_SKU_TYPE, a.SOURCE as a_SOURCE, a.TYPE_ID as a_TYPE_ID, a.IS_PREPUBLISH as a_IS_PREPUBLISH
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
@@ -85,7 +86,8 @@
       PRODUCT_DESCRIPTION_ES, PRODUCT_DESCRIPTION_JP, 
       PRODUCT_DESCRIPTION_CN, CREATE_TIME, UPDATE_TIME, 
       PRODUCT_ID, UPDATE_STATE, SKU_TYPE, 
-      SOURCE, TYPE_ID)
+      SOURCE, TYPE_ID, IS_PREPUBLISH
+      )
     values (#{id,jdbcType=VARCHAR}, #{sku,jdbcType=VARCHAR}, #{createUser,jdbcType=VARCHAR}, 
       #{price,jdbcType=DECIMAL}, #{quantity,jdbcType=DECIMAL}, #{imagePath,jdbcType=VARCHAR}, 
       #{itemUk,jdbcType=VARCHAR}, #{itemFr,jdbcType=VARCHAR}, #{itemDe,jdbcType=VARCHAR}, 
@@ -100,7 +102,8 @@
       #{productDescriptionEs,jdbcType=VARCHAR}, #{productDescriptionJp,jdbcType=VARCHAR}, 
       #{productDescriptionCn,jdbcType=VARCHAR}, #{createTime,jdbcType=DATE}, #{updateTime,jdbcType=DATE}, 
       #{productId,jdbcType=VARCHAR}, #{updateState,jdbcType=CHAR}, #{skuType,jdbcType=CHAR}, 
-      #{source,jdbcType=VARCHAR}, #{typeId,jdbcType=VARCHAR})
+      #{source,jdbcType=VARCHAR}, #{typeId,jdbcType=VARCHAR}, #{isPrepublish,jdbcType=CHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.crossborder.entity.ClaimProduct">
     insert into T_PRODUCT_ITEM_AMZ
@@ -228,6 +231,9 @@
       <if test="typeId != null">
         TYPE_ID,
       </if>
+      <if test="isPrepublish != null">
+        IS_PREPUBLISH,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -352,6 +358,9 @@
       </if>
       <if test="typeId != null">
         #{typeId,jdbcType=VARCHAR},
+      </if>
+      <if test="isPrepublish != null">
+        #{isPrepublish,jdbcType=CHAR},
       </if>
     </trim>
   </insert>
@@ -478,6 +487,9 @@
       <if test="typeId != null">
         TYPE_ID = #{typeId,jdbcType=VARCHAR},
       </if>
+      <if test="isPrepublish != null">
+        IS_PREPUBLISH = #{isPrepublish,jdbcType=CHAR},
+      </if>
     </set>
     where ID = #{id,jdbcType=VARCHAR}
   </update>
@@ -522,7 +534,8 @@
       UPDATE_STATE = #{updateState,jdbcType=CHAR},
       SKU_TYPE = #{skuType,jdbcType=CHAR},
       SOURCE = #{source,jdbcType=VARCHAR},
-      TYPE_ID = #{typeId,jdbcType=VARCHAR}
+      TYPE_ID = #{typeId,jdbcType=VARCHAR},
+      IS_PREPUBLISH = #{isPrepublish,jdbcType=CHAR}
     where ID = #{id,jdbcType=VARCHAR}
   </update>
 </mapper>

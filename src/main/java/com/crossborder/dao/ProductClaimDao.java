@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
-public interface ProductClaimDao extends ClaimProductMapper{
+public interface ProductClaimDao extends ClaimProductMapper {
      List<ClaimProduct> selectList(Map<String,Object> params);
 
 }
