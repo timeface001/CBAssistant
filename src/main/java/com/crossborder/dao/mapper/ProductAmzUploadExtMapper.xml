@@ -127,7 +127,7 @@
         SALE_PRICE, SALE_FROM_DATE, SALE_END_DATE,
         PUBLISH_STATUS, CREATE_TIME, PRODUCT_AMZ_ID,
         MAIN_PATH, ATTACH_PATH)
-        values (#{id,jdbcType=DECIMAL}, #{languageId,jdbcType=VARCHAR}, #{templatetype,jdbcType=VARCHAR},
+        values (SEQ_PRODUCT_AMZ_UPLOAD_ID.nextval, #{languageId,jdbcType=VARCHAR}, #{templatetype,jdbcType=VARCHAR},
         #{itemSku,jdbcType=VARCHAR}, #{externalProductId,jdbcType=VARCHAR}, #{externalProductIdType,jdbcType=VARCHAR},
         #{itemName,jdbcType=VARCHAR}, #{brandName,jdbcType=VARCHAR}, #{manufacturer,jdbcType=VARCHAR},
         #{partNumber,jdbcType=VARCHAR}, #{productDescription,jdbcType=VARCHAR}, #{feedProductType,jdbcType=VARCHAR},
@@ -151,9 +151,9 @@
     <insert id="insertSelective" parameterType="com.crossborder.entity.ProductAmzUpload">
         insert into T_PRODUCT_ITEM_AMZ_UPLOAD
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="id != null">
+
                 ID,
-            </if>
+
             <if test="languageId != null">
                 LANGUAGE_ID,
             </if>
@@ -330,9 +330,7 @@
             </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="id != null">
-                #{id,jdbcType=DECIMAL},
-            </if>
+            SEQ_PRODUCT_AMZ_UPLOAD_ID.nextval,
             <if test="languageId != null">
                 #{languageId,jdbcType=VARCHAR},
             </if>

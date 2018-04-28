@@ -9,6 +9,8 @@ import com.crossborder.utils.GeneralUtils;
 import com.crossborder.utils.ResponseGen;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.github.pagehelper.StringUtil;
+import org.apache.axis.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -69,22 +71,26 @@ public class ProductClaimController extends BaseController {
 
     @RequestMapping(value = "/product/claim/save", produces = "text/plain;charset=UTF-8")
     @ResponseBody
-    public String save(ClaimProduct product, String saleStartTime, String saleEndTime) {
+    public String save(ClaimProduct product, String saleStartTime, String saleEndTime,String vars) {
 
         productManagerService.save(product);
         List<ProductItemVar> list = new ArrayList<>();
-        if (product.getSkuType().equals("1")) {//单体保存
-            ProductItemVar var = new ProductItemVar();
-            var.setProductId(product.getId());
-            var.setPrice(product.getPrice());
-            var.setQuantity(product.getQuantity());
-            var.setSaleStartTime(GeneralUtils.getDateFromStr(saleStartTime));
-            var.setSaleEndTime(GeneralUtils.getDateFromStr(saleEndTime));
-            var.setSku(product.getSku());
-            list.add(var);
-        } else {
+
+        ProductItemVar var = new ProductItemVar();
+        var.setProductId(product.getId());
+        var.setPrice(product.getPrice());
+        var.setQuantity(product.getQuantity());
+        var.setSaleStartTime(GeneralUtils.getDateFromStr(saleStartTime));
+        var.setSaleEndTime(GeneralUtils.getDateFromStr(saleEndTime));
+        var.setSku(product.getSku());
+        list.add(var);
+        if (product.getSkuType().equals("2")) {//变体
+            if(org.apache.commons.lang3.StringUtils.isNotBlank(vars)){
+                list=JSON.parseArray(vars,ProductItemVar.class);
+            }
 
         }
+        list.add(var);
         productSkuTypeService.save(list, product.getId());
         return JSON.toJSONString(ResponseGen.genSuccess());
     }

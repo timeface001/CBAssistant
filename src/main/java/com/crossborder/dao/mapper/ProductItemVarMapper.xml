@@ -57,7 +57,7 @@
         PRODUCT_ID, PRICE, SALE_PRICE,
         SALE_START_TIME, SALE_END_TIME, QUANTITY,
         MAIN_PATH, ATTACH_PATH)
-        values (#{id,jdbcType=VARCHAR}, #{sku,jdbcType=VARCHAR}, #{variationType,jdbcType=VARCHAR},
+        values (SEQ_ITEM_VAR_ID.nextval, #{sku,jdbcType=VARCHAR}, #{variationType,jdbcType=VARCHAR},
         #{colorName,jdbcType=VARCHAR}, #{colorMap,jdbcType=VARCHAR}, #{sizeName,jdbcType=VARCHAR},
         #{sizeMap,jdbcType=VARCHAR}, #{materialType,jdbcType=VARCHAR}, #{itemPackageQuantity,jdbcType=DECIMAL},
         #{productId,jdbcType=VARCHAR}, #{price,jdbcType=DECIMAL}, #{salePrice,jdbcType=DECIMAL},
@@ -67,9 +67,9 @@
     <insert id="insertSelective" parameterType="com.crossborder.entity.ProductItemVar">
         insert into T_PRODUCT_ITEM_VAR
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="id != null">
+
                 ID,
-            </if>
+
             <if test="sku != null">
                 SKU,
             </if>
@@ -120,9 +120,7 @@
             </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="id != null">
-                #{id,jdbcType=VARCHAR},
-            </if>
+            SEQ_ITEM_VAR_ID.nextval,
             <if test="sku != null">
                 #{sku,jdbcType=VARCHAR},
             </if>

@@ -219,7 +219,7 @@
                     //上传完毕回调
                     if ($("#imagePathSrc img").length > 9) {//最多上传9张
                         $("#imagePathSrc img").each(function (i, val) {
-                            if (i > 8) {
+                            if (i > 9) {
                                 $(val).remove();
                             }else{
 

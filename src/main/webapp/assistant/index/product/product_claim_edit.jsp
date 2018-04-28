@@ -273,7 +273,7 @@
             });
         }
 
-
+        var selectValue=null;
         layui.use('form', function(){
             var form = layui.form;
             form.on('radio(skuType)', function(data){//切换变体类型
@@ -286,12 +286,13 @@
             });
 
             form.on('checkbox(skuMutiCheck)', function(data){//切换变体类型
+
                 refrehSKuPath();
                 form.render(null,"skuMutiPath");
             });
 
             form.on('select(skuMuti)', function(data){//刷新
-
+                selectValue=data.value;
                 $("#skuRender").html("");
                 $("#skuRender").append(genSkuTypeDom($("#skuMutiDiv option:selected").text()));
 
@@ -342,13 +343,76 @@
 
                 data.field["bulletPointCn"]=JSON.stringify(points);
                 data.field["keywordsCn"]=JSON.stringify(keys);
+                console.log("type"+skuType);
                 if(skuType==1){//单体
 
-
-
                 }else{//多变中
+                    if(selectValue==null||selectValue==""){
+                        layer.msg("请选择变种主题！", {icon: 5, time: 1000});
+                        return false;
+                    }
+
+
+                    var skuVar=[];
+                    $("#skuTable tbody tr").each(function (i,val) {
+                        var item={};
+                        item["productId"]=$("input[name='id']").val();
+                        item["mainPath"]=$(val).eq(0).find(".trMainPath").val();
+                        item["attachPath"]=$(val).eq(0).find(".trOtherPath").val();
+                        item["sku"]=$(val).eq(0).find("input[type='text']").val();
+                        item["price"]=$(val).find(".price").val();
+                        item["salePrice"]=$(val).find(".salePrice").val();
+                        item["saleStartTime"]=$(val).find(".saleStart").val();
+                        item["saleEndTime"]=$(val).find(".saleEnd").val();
+                        item["quantity"]=$(val).find(".quantity").val();
+                        item["variationType"]=selectValue;
+
+                        var firstValue,secondValue;
+                        $(val).find(".skuVarType").each(function (i,v) {
+                            if(i==0){firstValue=$(v).html();}
+                            if(i==1){secondValue=$(v).html();}
+                        });
+                        if(selectValue=="Color"){
+                            item["colorName"]=firstValue;
+                            item["colorMap"]=firstValue;
+                        }else if(secondValue=="Size"){
+                             item["sizeMap"]=firstValue;
+                            item["sizeName"]=firstValue;
+                        }else if(secondValue=="material"){
+                            item["materialType"]=firstValue;
+                        }else if(secondValue=="size-material"){
+                            item["sizeMap"]=firstValue;
+                            item["sizeName"]=firstValue;
+                            item["materialType"]=secondValue;
+                        }else if(secondValue=="color-material"){
+                            item["colorName"]=firstValue;
+                            item["colorMap"]=firstValue;
+                            item["materialType"]=secondValue;
+                        }else if(secondValue=="itempackagequantity"){
+                            item["itemPackageQuantity"]=firstValue;
+                        }else if(secondValue=="color-itempackagequantity"){
+                            item["colorName"]=firstValue;
+                            item["colorMap"]=firstValue;
+                            item["itemPackageQuantity"]=secondValue;
+                        }else if(secondValue=="itempackagequantity-size"){
+                            item["itemPackageQuantity"]=firstValue;
+                            item["sizeMap"]=secondValue;
+                            item["sizeName"]=secondValue;
+                        }else if(secondValue=="itempackagequantity-material"){
+                            item["itempackagequantity"]=firstValue;
+                            item["materialType"]=secondValue;
+                        }
+
+                        skuVar.push(item);
+
+                    });
+
+
+
 
                 }
+
+                data.field["vars"]=JSON.stringify(skuVar);
 
                 var url = '<%=request.getContextPath()%>/product/claim/save';
                 $.ajax({
@@ -429,6 +493,7 @@
             }
 
             $("#skuMutiPath").append(getSKuPathDom(arr));
+            initSKuPath(null,null);
 
         }
 
@@ -459,12 +524,13 @@
         }
 
         function getTR(isSingle,first,second) {
-            return "<tr>"+
-                "<td><input type='text'  lay-verify='required'  autocomplete='off' class='layui-input'></td>"+
-                (isSingle?("<td>"+first+"</td>"):("<td>"+first+"</td><td>"+second+"</td>"))
+            var sku=$("input[name='sku']").val()+"-"+(isSingle?first:(first+"-"+second));
+            return "<tr val="+(isSingle?first:(first+":"+second))+">"+
+                "<td><input type='hidden' class='trMainPath' /> <input type='hidden' class='trOtherPath' /> <input type='text' value='"+sku+"'  lay-verify='required'  autocomplete='off' class='layui-input'></td>"+
+                (isSingle?("<td class='skuVarType'>"+first+"</td>"):("<td class='skuVarType'>"+first+"</td><td>"+second+"</td>"))
                  +
-                "<td><input type='text' lay-verify='required'  autocomplete='off' class='layui-input'></td>"+
-                "<td><input type='text'  autocomplete='off' class='layui-input'></td>"+
+                "<td><input type='text' lay-verify='required'  autocomplete='off' class='layui-input price'></td>"+
+                "<td><input type='text'  autocomplete='off' class='layui-input salePrice'></td>"+
                 "<td> <div class='layui-inline'>"+
                 "<input type='text'  autocomplete='off' class='layui-input saleStart'>"+
                 "</div>"+
@@ -473,16 +539,24 @@
                 "<input type='text' autocomplete='off' class='layui-input saleEnd'>"+
                 "</div>"+
                 "</td>"+
-                "<td><input type='text' lay-verify='required'  autocomplete='off' class='layui-input'></td>"+
+                "<td><input type='text' lay-verify='required'  autocomplete='off' class='layui-input quantity'></td>"+
                 "</tr>";
         }
 
+        //监听parentSKU值变化
+        $("input[name='sku']").bind("input propertychange change",function(event){
+            $("#skuTable tbody tr").each(function (i,val) {
+                var text=$(val).find("td").eq(0).find("input[type='text']").val();
+                $(val).find("td").eq(0).find("input[type='text']").val($("input[name='sku']").val()+text.substring(text.indexOf("-")))
+            });
+        });
+
         function getCgroup(isSingle) {
             return "<col width=\"200\">"+
-                 isSingle?("<col width=\"100\">"):("<col width=\"100\"><col width=\"100\">")+
-                " <col width=\"100\">"+
-                "  <col width=\"100\">"+
-                "  <col width=\"400\">"+
+                (isSingle?("<col width=\"100\">"):("<col width=\"100\"><col width=\"100\">"))+
+                " <col width=\"50\">"+
+                "  <col width=\"50\">"+
+                "  <col width=\"300\">"+
                 "  <col width=\"100\">";
         }
 
@@ -533,22 +607,36 @@
 
            var dom="";
             for(var i=0;i<arr.length;i++){
-                dom+="<div class=\"layui-input-block\">" +
+                var id="skuMainPath"+i;
+                var sid="skuOtherPath"+i;
+                dom+="<div class=\"layui-input-block\" val="+(arr[i].substring(arr[i].indexOf(":")+1))+">" +
                     "    <div class='layui-inline layui-bg-gray' style='margin-top: 10px;'>变种属性    "+arr[i]+"</div>" +
                     "            </div>"+
                     "            <div class=\"layui-input-block\">\n" +
-                    "                <button type=\"button\" class=\"layui-btn skuMainPath\" >\n" +
+                    "                <button id="+id+" type=\"button\" class=\"layui-btn skuMainPath\" >\n" +
                     "            <i class=\"layui-icon\">&#xe67c;</i>上传主图\n" +
                     "        </button>" +
                     "            </div>\n" +
+
+
+                    "            <div class=\"layui-input-block\" style='margin-top: 5px'>" +
+                                    "<img src='http://bpic.588ku.com/element_origin_min_pic/01/47/02/12574338a640011.jpg!r650' width='100' height='90' />"+
+                    "                     </div>" +
+
+
                     "            <div class=\"layui-input-block\" style='margin-top: 10px;'>\n" +
-                    "                <button type=\"button\" class=\"layui-btn skuOtherPath\"  >\n" +
+                    "                <button type=\"button\" id="+sid+" class=\"layui-btn skuOtherPath\"  >\n" +
                     "            <i class=\"layui-icon\">&#xe67c;</i>上传附图\n" +
                     "        </button>" +
-                    "            </div>";
+                    "            </div>"+
+                    "            <div class=\"layui-input-block\" style='margin-top: 5px'>" +
+                "<img class=\"pathDemo\" src='http://bpic.588ku.com/element_origin_min_pic/01/47/02/12574338a640011.jpg!r650' width='100' height='90' />"+
+                "                     </div>";
+
+
             }
 
-            initSKuPath();
+
 
 
             return dom;
@@ -589,20 +677,28 @@
 
         initProductInfo();
 
-        function initSKuPath() {
+        function initSKuPath(id,sid) {
 
             layui.use('upload', function(){
-                var upload = layui.upload;
 
+                var upload = layui.upload;
                 //执行实例
                 var uploadInst = upload.render({
                     accept:"images",
                     acceptMime:"image/*",
-                    elem: '.skuMainPath' //绑定元素
+                    elem: ".skuMainPath" //绑定元素
                     ,url: '<%=request.getContextPath()%>/upload/image' //上传接口
                     ,done: function(res){
-                        $("#mainPathSrc").html("<img width='100px' height='90px' src=<%=request.getContextPath()%>/upload/"+res.data+" />")
-                        $("#mainPath").val(res.data);
+                        var $this=$($(this)[0].elem[0]);
+                        var key=$this.parent().prev().attr("val");
+                        $this.parent().next().html("<img width='100px' height='90px' src=<%=request.getContextPath()%>/upload/"+res.data+" />");
+                        $("#skuTable tbody tr").each(function (i,val) {
+
+                            if($(val).attr("val")==key){
+                                 $(val).find(".trMainPath").val(res.data);
+                            }
+
+                        });
                         //上传完毕回调
                     }
                     ,error: function(){
@@ -614,16 +710,25 @@
                 var uploadMuti = upload.render({
                     accept:"images",
                     acceptMime:"image/*",
-                    elem: '#imagePath', //绑定元素
+                    elem: ".skuOtherPath", //绑定元素
                     multiple:true
                     ,number:9
                     ,url: '<%=request.getContextPath()%>/upload/image' //上传接口
                     ,done: function(res){
-                        $("#imagePathSrc").append("<img width='100px' src=<%=request.getContextPath()%>/upload/"+res.data+" />")
-                        $("#imagePath").val(res.data);
+                        var $this=$($(this)[0].elem[0]);
+                        var key=$this.parent().prev().attr("val");
+                        $this.parent().next().find(".pathDemo").remove();
+                        $this.parent().next().append("<img width='100px' height='90px' style='padding-right:5px;' src=<%=request.getContextPath()%>/upload/"+res.data+" />");
+                        $("#skuTable tbody tr").each(function (i,val) {
+                            if($(val).attr("val")==key){
+                                var exVal=$(val).find(".trOtherPath").val();
+                                $(val).find(".trOtherPath").val((exVal==null||exVal=="")?res.data:(exVal+=","+res.data));
+                            }
+
+                        });
                         //上传完毕回调
-                        if($("#imagePathSrc img").length>9){//最多上传9张
-                            $("#imagePathSrc img").each(function (i,val) {
+                        if($this.parent().next().find("img").length>9){//最多上传9张
+                            $this.parent().next().find("img").each(function (i,val) {
                                 if(i>8){
                                     $(val).remove();
                                 }
@@ -652,7 +757,6 @@
     $("#product_save").click(function () {
 
         var url = '<%=request.getContextPath()%>/product/claim/save';
-        console.log(getFormJson("#addProductForm"));
         $.ajax({
             type: 'POST',
             url: url,
