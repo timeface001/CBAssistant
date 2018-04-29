@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.crossborder.dao.mapper.ext.ProductAmzUploadMapper">
   <resultMap id="BaseResultMap" type="com.crossborder.entity.ProductAmzUpload">
-    <id column="a_ID" jdbcType="DECIMAL" property="id" />
+    <id column="a_ID" jdbcType="VARCHAR" property="id" />
     <result column="a_LANGUAGE_ID" jdbcType="VARCHAR" property="languageId" />
     <result column="a_TEMPLATETYPE" jdbcType="VARCHAR" property="templatetype" />
     <result column="a_ITEM_SKU" jdbcType="VARCHAR" property="itemSku" />
@@ -61,6 +61,7 @@
     <result column="a_PRODUCT_AMZ_ID" jdbcType="VARCHAR" property="productAmzId" />
     <result column="a_MAIN_PATH" jdbcType="VARCHAR" property="mainPath" />
     <result column="a_ATTACH_PATH" jdbcType="VARCHAR" property="attachPath" />
+    <result column="a_WEBSITE_TYPE" jdbcType="VARCHAR" property="websiteType" />
   </resultMap>
   <sql id="Base_Column_List">
     a.ID as a_ID, a.LANGUAGE_ID as a_LANGUAGE_ID, a.TEMPLATETYPE as a_TEMPLATETYPE, a.ITEM_SKU as a_ITEM_SKU, 
@@ -84,17 +85,17 @@
     a.ITEM_PACKAGE_QUANTITY as a_ITEM_PACKAGE_QUANTITY, a.SHOP_ID as a_SHOP_ID, a.SALE_PRICE as a_SALE_PRICE, 
     a.SALE_FROM_DATE as a_SALE_FROM_DATE, a.SALE_END_DATE as a_SALE_END_DATE, a.PUBLISH_STATUS as a_PUBLISH_STATUS, 
     a.CREATE_TIME as a_CREATE_TIME, a.PRODUCT_AMZ_ID as a_PRODUCT_AMZ_ID, a.MAIN_PATH as a_MAIN_PATH, 
-    a.ATTACH_PATH as a_ATTACH_PATH
+    a.ATTACH_PATH as a_ATTACH_PATH, a.WEBSITE_TYPE as a_WEBSITE_TYPE
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.math.BigDecimal" resultMap="BaseResultMap">
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from T_PRODUCT_ITEM_AMZ_UPLOAD a
-    where a.ID = #{id,jdbcType=DECIMAL}
+    where a.ID = #{id,jdbcType=VARCHAR}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.math.BigDecimal">
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from T_PRODUCT_ITEM_AMZ_UPLOAD
-    where ID = #{id,jdbcType=DECIMAL}
+    where ID = #{id,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.crossborder.entity.ProductAmzUpload">
     insert into T_PRODUCT_ITEM_AMZ_UPLOAD (ID, LANGUAGE_ID, TEMPLATETYPE, 
@@ -116,8 +117,9 @@
       MATERIAL_TYPE, ITEM_PACKAGE_QUANTITY, SHOP_ID, 
       SALE_PRICE, SALE_FROM_DATE, SALE_END_DATE, 
       PUBLISH_STATUS, CREATE_TIME, PRODUCT_AMZ_ID, 
-      MAIN_PATH, ATTACH_PATH)
-    values (#{id,jdbcType=DECIMAL}, #{languageId,jdbcType=VARCHAR}, #{templatetype,jdbcType=VARCHAR}, 
+      MAIN_PATH, ATTACH_PATH, WEBSITE_TYPE
+      )
+    values (#{id,jdbcType=VARCHAR}, #{languageId,jdbcType=VARCHAR}, #{templatetype,jdbcType=VARCHAR}, 
       #{itemSku,jdbcType=VARCHAR}, #{externalProductId,jdbcType=VARCHAR}, #{externalProductIdType,jdbcType=VARCHAR}, 
       #{itemName,jdbcType=VARCHAR}, #{brandName,jdbcType=VARCHAR}, #{manufacturer,jdbcType=VARCHAR}, 
       #{partNumber,jdbcType=VARCHAR}, #{productDescription,jdbcType=VARCHAR}, #{feedProductType,jdbcType=VARCHAR}, 
@@ -136,7 +138,8 @@
       #{materialType,jdbcType=VARCHAR}, #{itemPackageQuantity,jdbcType=DECIMAL}, #{shopId,jdbcType=VARCHAR}, 
       #{salePrice,jdbcType=DECIMAL}, #{saleFromDate,jdbcType=DATE}, #{saleEndDate,jdbcType=DATE}, 
       #{publishStatus,jdbcType=CHAR}, #{createTime,jdbcType=DATE}, #{productAmzId,jdbcType=VARCHAR}, 
-      #{mainPath,jdbcType=VARCHAR}, #{attachPath,jdbcType=VARCHAR})
+      #{mainPath,jdbcType=VARCHAR}, #{attachPath,jdbcType=VARCHAR}, #{websiteType,jdbcType=VARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.crossborder.entity.ProductAmzUpload">
     insert into T_PRODUCT_ITEM_AMZ_UPLOAD
@@ -318,10 +321,13 @@
       <if test="attachPath != null">
         ATTACH_PATH,
       </if>
+      <if test="websiteType != null">
+        WEBSITE_TYPE,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
-        #{id,jdbcType=DECIMAL},
+        #{id,jdbcType=VARCHAR},
       </if>
       <if test="languageId != null">
         #{languageId,jdbcType=VARCHAR},
@@ -496,6 +502,9 @@
       </if>
       <if test="attachPath != null">
         #{attachPath,jdbcType=VARCHAR},
+      </if>
+      <if test="websiteType != null">
+        #{websiteType,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -676,8 +685,11 @@
       <if test="attachPath != null">
         ATTACH_PATH = #{attachPath,jdbcType=VARCHAR},
       </if>
+      <if test="websiteType != null">
+        WEBSITE_TYPE = #{websiteType,jdbcType=VARCHAR},
+      </if>
     </set>
-    where ID = #{id,jdbcType=DECIMAL}
+    where ID = #{id,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.crossborder.entity.ProductAmzUpload">
     update T_PRODUCT_ITEM_AMZ_UPLOAD
@@ -738,7 +750,8 @@
       CREATE_TIME = #{createTime,jdbcType=DATE},
       PRODUCT_AMZ_ID = #{productAmzId,jdbcType=VARCHAR},
       MAIN_PATH = #{mainPath,jdbcType=VARCHAR},
-      ATTACH_PATH = #{attachPath,jdbcType=VARCHAR}
-    where ID = #{id,jdbcType=DECIMAL}
+      ATTACH_PATH = #{attachPath,jdbcType=VARCHAR},
+      WEBSITE_TYPE = #{websiteType,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
   </update>
 </mapper>

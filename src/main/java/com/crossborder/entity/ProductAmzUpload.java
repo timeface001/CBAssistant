@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 public class ProductAmzUpload {
-    private BigDecimal id;
+    private String id;
 
     private String languageId;
 
@@ -122,12 +122,14 @@ public class ProductAmzUpload {
 
     private String attachPath;
 
-    public BigDecimal getId() {
+    private String websiteType;
+
+    public String getId() {
         return id;
     }
 
-    public void setId(BigDecimal id) {
-        this.id = id;
+    public void setId(String id) {
+        this.id = id == null ? null : id.trim();
     }
 
     public String getLanguageId() {
@@ -592,5 +594,13 @@ public class ProductAmzUpload {
 
     public void setAttachPath(String attachPath) {
         this.attachPath = attachPath == null ? null : attachPath.trim();
+    }
+
+    public String getWebsiteType() {
+        return websiteType;
+    }
+
+    public void setWebsiteType(String websiteType) {
+        this.websiteType = websiteType == null ? null : websiteType.trim();
     }
 }
