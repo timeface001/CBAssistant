@@ -170,18 +170,18 @@
                     </ul>
                     <div class="layui-tab-content" style="height: 100px;">
                         <div class="layui-tab-item layui-show"> <textarea name="productDescriptionCn" placeholder=""   class="layui-textarea">${product.productDescriptionCn}</textarea></div>
-                        <div class="layui-tab-item layui-show"> <textarea name="productDescriptionUk" placeholder=""   class="layui-textarea">${product.productDescriptionUk}</textarea></div>
-                        <div class="layui-tab-item layui-show"> <textarea name="productDescriptionJp" placeholder=""   class="layui-textarea">${product.productDescriptionJp}</textarea></div>
-                        <div class="layui-tab-item layui-show"> <textarea name="productDescriptionDe" placeholder=""   class="layui-textarea">${product.productDescriptionDe}</textarea></div>
-                        <div class="layui-tab-item layui-show"> <textarea name="productDescriptionFr" placeholder=""   class="layui-textarea">${product.productDescriptionFr}</textarea></div>
-                        <div class="layui-tab-item layui-show"> <textarea name="productDescriptionEs" placeholder=""   class="layui-textarea">${product.productDescriptionEs}</textarea></div>
-                        <div class="layui-tab-item layui-show"> <textarea name="productDescriptionIt" placeholder=""   class="layui-textarea">${product.productDescriptionIt}</textarea></div>
+                        <div class="layui-tab-item"> <textarea name="productDescriptionUk" placeholder=""   class="layui-textarea">${product.productDescriptionUk}</textarea></div>
+                        <div class="layui-tab-item "> <textarea name="productDescriptionJp" placeholder=""   class="layui-textarea">${product.productDescriptionJp}</textarea></div>
+                        <div class="layui-tab-item "> <textarea name="productDescriptionDe" placeholder=""   class="layui-textarea">${product.productDescriptionDe}</textarea></div>
+                        <div class="layui-tab-item "> <textarea name="productDescriptionFr" placeholder=""   class="layui-textarea">${product.productDescriptionFr}</textarea></div>
+                        <div class="layui-tab-item "> <textarea name="productDescriptionEs" placeholder=""   class="layui-textarea">${product.productDescriptionEs}</textarea></div>
+                        <div class="layui-tab-item "> <textarea name="productDescriptionIt" placeholder=""   class="layui-textarea">${product.productDescriptionIt}</textarea></div>
 
                     </div>
                 </div>
             </div>
             <div class="layui-inline">
-                <button class="layui-btn" style="margin-bottom: 75px;">一键翻译</button>
+                <button class="layui-btn" style="margin-bottom: 125px;">一键翻译</button>
             </div>
 
 
