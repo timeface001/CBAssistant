@@ -47,10 +47,17 @@ public class CommonController {
             paramMap.put("password", password);
             List<Map<String, Object>> list = commonService.login(paramMap);
             if (list != null && list.size() == 1) {
-                session.setAttribute("user", list.get(0));
-                map.put("data", list.get(0));
-                map.put("code", "0");
-                map.put("msg", "登录成功");
+                if (list.get(0).get("ISLOGIN").toString().equals("1")) {
+                    map.put("code", "1");
+                    map.put("msg", "当前用户已登录");
+                } else {
+                    paramMap.put("isLogin", 1);
+                    commonService.updateLogin(paramMap);
+                    session.setAttribute("user", list.get(0));
+                    map.put("data", list.get(0));
+                    map.put("code", "0");
+                    map.put("msg", "登录成功");
+                }
             } else {
                 map.put("code", "-10");
                 map.put("msg", "登录失败");
@@ -59,6 +66,33 @@ public class CommonController {
             e.printStackTrace();
             map.put("code", "-10");
             map.put("msg", "登录失败");
+        }
+        return JSON.toJSONString(map);
+    }
+
+    /**
+     * 登出
+     *
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "logout", produces = "text/plain;charset=UTF-8")
+    public String logout(HttpSession session) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            Map<String, Object> user = (Map<String, Object>) session.getAttribute("user");
+            Map<String, Object> paramMap = new HashMap<>();
+            paramMap.put("userId", user.get("USER_ID"));
+            paramMap.put("isLogin", 0);
+            commonService.updateLogin(paramMap);
+            session.removeAttribute("user");
+            session.invalidate();
+            map.put("code", "0");
+            map.put("msg", "退出成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("code", "-10");
+            map.put("msg", "退出失败");
         }
         return JSON.toJSONString(map);
     }

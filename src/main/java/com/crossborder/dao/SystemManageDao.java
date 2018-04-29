@@ -63,4 +63,5 @@ public interface SystemManageDao {
     public List<Map<String, Object>> selectMenuRole(String roleId);
 
     public List<Map<String, Object>> selectShops(Map<String, Object> paramMap);
+
 }

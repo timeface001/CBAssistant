@@ -78,7 +78,8 @@
         <div class="row cl">
             <label class="form-label col-xs-2 col-sm-2">SKU：</label>
             <div class="formControls col-xs-2 col-sm-2">
-                <input type="text" name="" placeholder=" " class="input-text">
+                <input type="text" name="sku" placeholder=" " class="input-text"
+                       onkeyup="this.value=this.value.replace(/(^\s+)|(\s+$)/g,'')">
             </div>
             <label class="form-label col-xs-2 col-sm-2">订单号：</label>
             <div class="formControls col-xs-2 col-sm-2">
@@ -95,11 +96,13 @@
         <div class="row cl">
             <label class="form-label col-xs-2 col-sm-2">国内跟踪号：</label>
             <div class="formControls col-xs-2 col-sm-2">
-                <input type="text" name="trackNum" placeholder=" " class="input-text">
+                <input type="text" name="trackNum" placeholder=" " class="input-text"
+                       onkeyup="this.value=this.value.replace(/(^\s+)|(\s+$)/g,'')">
             </div>
             <label class="form-label col-xs-2 col-sm-2">国际跟踪号：</label>
             <div class="formControls col-xs-2 col-sm-2">
-                <input type="text" name="intlTrackNum" placeholder=" " class="input-text">
+                <input type="text" name="intlTrackNum" placeholder=" " class="input-text"
+                       onkeyup="this.value=this.value.replace(/(^\s+)|(\s+$)/g,'')">
             </div>
         </div>
         <input id="localStatus" type="hidden" name="localStatus" value="1">
@@ -322,7 +325,7 @@
                     if (data.code == 0) {
                         var data = data.data;
                         for (var i = 0; i < data.length; i++) {
-                            $("#salesSource").append($('<option value=' + data[i].SHOP_ID + '>' + data[i].SHOP_NAME + '</option>'));
+                            $("#salesSource").append($('<option value=' + data[i].MERCHANT_ID + '>' + data[i].SHOP_NAME + '</option>'));
                         }
                     }
                 },
@@ -371,16 +374,13 @@
             });
             $.ajax({
                 type: 'POST',
-                url: '<%=request.getContextPath()%>/system/selectShopsByCompany',
+                url: '<%=request.getContextPath()%>/shop/selectShopsById',
                 dataType: 'json',
-                data: {
-                    "id": companyId
-                },
                 success: function (data) {
                     if (data.code == 0) {
                         var data = data.data;
                         for (var i = 0; i < data.length; i++) {
-                            $("#salesSource").append($('<option value=' + data[i].SHOP_ID + '>' + data[i].SHOP_NAME + '</option>'));
+                            $("#salesSource").append($('<option value=' + data[i].MERCHANT_ID + '>' + data[i].SHOP_NAME + '</option>'));
                         }
                     }
                 },
@@ -394,11 +394,8 @@
     function initSalesSource() {
         $.ajax({
             type: 'POST',
-            url: '<%=request.getContextPath()%>/system/selectShopsByUser',
+            url: '<%=request.getContextPath()%>/shop/selectShopsById',
             dataType: 'json',
-            data: {
-                "id": userId
-            },
             success: function (data) {
                 if (data.code == 0) {
                     var data = data.data;

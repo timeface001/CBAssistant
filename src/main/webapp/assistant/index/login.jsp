@@ -23,9 +23,7 @@
             src="<%=request.getContextPath()%>/assistant/lib/DD_belatedPNG_0.0.8a-min.js"></script>
     <script>DD_belatedPNG.fix('*');</script>
     <![endif]-->
-    <title>后台登录 - H-ui.admin v3.1</title>
-    <meta name="keywords" content="H-ui.admin v3.1,H-ui网站后台模版,后台模版下载,后台管理系统模版,HTML后台模版下载">
-    <meta name="description" content="H-ui.admin v3.1，是一款由国人开发的轻量级扁平化网站后台模板，完全免费开源的网站后台管理系统模版，适合中小型CMS后台系统。">
+    <title>跨境助手</title>
 </head>
 <body>
 <input type="hidden" id="TenantId" name="TenantId" value=""/>
@@ -70,7 +68,7 @@
         </form>
     </div>
 </div>
-<div class="footer">Copyright 你的公司名称 by H-ui.admin v3.1</div>
+<div class="footer">Copyright@2018-2018 Borien 太原博瑞恩贸易有限公司 版权所有</div>
 <script type="text/javascript" src="<%=request.getContextPath()%>/assistant/lib/jquery/1.9.1/jquery.min.js"></script>
 <script type="text/javascript" src="<%=request.getContextPath()%>/assistant/lib/layer/2.4/layer.js"></script>
 <script type="text/javascript" src="<%=request.getContextPath()%>/assistant/static/h-ui/js/H-ui.min.js"></script>
@@ -82,6 +80,10 @@
         src="<%=request.getContextPath()%>/assistant/lib/jquery.validation/1.14.0/messages_zh.js"></script>
 <script type="text/javascript">
     $(function () {
+        history.pushState(null, null, document.URL);
+        window.addEventListener('popstate', function () {
+            history.pushState(null, null, document.URL);
+        });
         $("#loginForm").validate({
             rules: {
                 userName: {
@@ -109,8 +111,10 @@
                 if (data.code == 0) {
                     var data = data.data;
                     window.location.href = "<%=request.getContextPath()%>/common/selectMenus?userId=" + data.USER_ID + "&roleId=" + data.ROLE_ID;
+                } else if (data.code == 1) {
+                    layer.msg(data.msg, {icon: 1, time: 1000});
                 } else {
-                    layer.msg('登录失败!', {icon: 1, time: 1000});
+                    layer.msg('登录失败!', {icon: 2, time: 1000});
                 }
             },
             error: function (data) {

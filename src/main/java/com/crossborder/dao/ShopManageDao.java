@@ -19,4 +19,7 @@ public interface ShopManageDao {
     public int deleteShop(String id);
 
     public int updateShop(Map<String, Object> map);
+
+    public List<Map<String, Object>> selectShopsById(Map<String, Object> map);
+
 }

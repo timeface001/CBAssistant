@@ -86,6 +86,35 @@ public class ShopManageController {
     }
 
     /**
+     * 查询店铺
+     *
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "selectShopsById", produces = "text/plain;charset=UTF-8")
+    public String selectShopsById(HttpSession session) {
+        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> paramMap = new HashMap<>();
+        Map<String, Object> user = (Map<String, Object>) session.getAttribute("user");
+        if (user.get("ROLE_ID").equals("600")) {
+            paramMap.put("userId", user.get("USER_ID").toString());
+        } else if (user.get("ROLE_ID").equals("500")) {
+            paramMap.put("companyId", user.get("USER_COMPANY").toString());
+        }
+        try {
+            List<Map<String, Object>> list = shopManageService.selectShopsById(paramMap);
+            map.put("data", list);
+            map.put("code", "0");
+            map.put("msg", "查询成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("code", "-10");
+            map.put("msg", "查询失败");
+        }
+        return JSON.toJSONString(map);
+    }
+
+    /**
      * 修改店铺信息
      *
      * @param data

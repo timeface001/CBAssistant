@@ -14,6 +14,7 @@ import java.util.Map;
 public class ShopManageService {
     @Resource
     private ShopManageDao shopManageDao;
+
     public int addShop(Map<String, Object> map) {
         return shopManageDao.addShop(map);
     }
@@ -32,6 +33,10 @@ public class ShopManageService {
 
     public int updateShop(Map<String, Object> map) {
         return shopManageDao.updateShop(map);
+    }
+
+    public List<Map<String, Object>> selectShopsById(Map<String, Object> map) {
+        return shopManageDao.selectShopsById(map);
     }
 
 }

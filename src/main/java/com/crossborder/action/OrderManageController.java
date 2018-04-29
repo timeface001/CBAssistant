@@ -47,6 +47,7 @@ public class OrderManageController {
     private OrderManageService orderManageService;
     @Resource
     private ShopManageService shopManageService;
+    private static final String Order_Fulfillment_Fee = "_POST_ORDER_FULFILLMENT_DATA_";
 
     /*
      *下载订单
@@ -224,7 +225,7 @@ public class OrderManageController {
                 return 0;
             }
         });
-        request.setFeedType("");
+        request.setFeedType(Order_Fulfillment_Fee);
         request.setContentMD5("");
     }
 
