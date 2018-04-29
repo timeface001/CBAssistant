@@ -187,7 +187,7 @@
 
         </div>
 
-        <div class="layui-form-item" >
+        <div class="layui-form-item"  >
             <label class="layui-form-label">简要描述</label>
 
             <div class="layui-inline">
@@ -197,18 +197,20 @@
                 <input type="text" name="bulletPoint2" style="width: 300px" value="${points[1]}"  lay-verify="required"   placeholder="" autocomplete="off" class="layui-input">
             </div>
 
+            <div class="layui-inline" style="margin-left: 110px;margin-top: 10px;">
+                <input type="text" name="bulletPoint3" value="${points[2]}" style="width: 300px" lay-verify="required"  placeholder="" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-inline">
+                <input type="text" name="bulletPoint4" value="${points[3]}" style="width: 300px"  lay-verify="required"   placeholder="" autocomplete="off" class="layui-input">
+            </div>
+
         </div>
 
 
         <div class="layui-form-item" >
             <label class="layui-form-label"></label>
 
-            <div class="layui-inline">
-                <input type="text" name="bulletPoint3" value="${points[2]}" style="width: 300px" lay-verify="required"  placeholder="" autocomplete="off" class="layui-input">
-            </div>
-            <div class="layui-inline">
-                <input type="text" name="bulletPoint4" value="${points[3]}" style="width: 300px"  lay-verify="required"   placeholder="" autocomplete="off" class="layui-input">
-            </div>
+
 
         </div>
 
