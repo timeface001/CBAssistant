@@ -63,7 +63,7 @@
         <div class="layui-form-item">
             <label class="layui-form-label">产品标题</label>
             <div class="layui-inline">
-                <div class="layui-tab layui-tab-card" style="width: 650px;">
+                <div class="layui-tab layui-tab-card" style="width: 670px;">
                     <ul class="layui-tab-title">
                         <li class="layui-this">中文</li>
                         <li>英语</li>
@@ -85,7 +85,7 @@
                 </div>
             </div>
             <div class="layui-inline">
-                <button class="layui-btn" style="margin-bottom: 77px;">一键翻译</button>
+                <button class="layui-btn" style="margin-bottom: 75px;">一键翻译</button>
             </div>
 
             </div>
