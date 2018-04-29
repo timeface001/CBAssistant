@@ -204,22 +204,10 @@
                 <input type="text" name="bulletPoint4" value="${points[3]}" style="width: 300px"  lay-verify="required"   placeholder="" autocomplete="off" class="layui-input">
             </div>
 
-        </div>
-
-
-        <div class="layui-form-item" >
-            <label class="layui-form-label"></label>
-
-
-
-        </div>
-
-        <div class="layui-form-item" >
-            <label class="layui-form-label"></label>
-
             <div class="layui-inline">
                 <input type="text" name="bulletPoint5" value="${points[4]}" style="width: 300px"  lay-verify="required"   placeholder="" autocomplete="off" class="layui-input">
             </div>
+
         </div>
 
 
