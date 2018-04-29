@@ -179,7 +179,7 @@
                     "render": function (data, type, full) {
                         return( full.publishStatus!="2"?"<a style='text-decoration:none' title=''  onClick=\"publishProduct('" + full.id + "')\"')>发布</a>":"") +
                             "&nbsp;&nbsp;" +
-                            "<a style='text-decoration:none' title='删除'  onClick=\"editProduct('" + full.id + "')\"')>删除</a>" ;
+                            "<a style='text-decoration:none' title='删除'  onClick=\"deleteProduct('" + full.id + "')\"')>删除</a>" ;
                     }
                 }
             ],
@@ -284,6 +284,10 @@
 
     /*产品-删除*/
     function deleteProduct(id) {
+
+        alert("删除等等");
+        return
+            ;
         if(id==null||id==""){
             id=getIDs();
         }

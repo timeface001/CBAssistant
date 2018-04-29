@@ -210,7 +210,7 @@
                     "render": function (data, type, full) {
                         return( full.updateState=="1"?"<a style='text-decoration:none' title='移入待发布'  onClick=\"prePublish('" + full.id + "')\"')>移入待发布</a>":"") +
                             "&nbsp;&nbsp;" +
-                            "<a style='text-decoration:none' title='编辑'  onClick=\"deleteProduct('" + full.id + "')\"')>编辑</a>" ;
+                            "<a style='text-decoration:none' title='编辑'  onClick=\"editProduct('" + full.id + "')\"')>编辑</a>" ;
                     }
                 }
             ],
@@ -287,9 +287,7 @@
 
     /*产品-删除*/
     function deleteProduct(id) {
-        alert("删除等等");
-        return
-        ;
+
         if(id==null||id==""){
             id=getIDs();
         }
