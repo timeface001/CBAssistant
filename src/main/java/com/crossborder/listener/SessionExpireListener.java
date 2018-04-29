@@ -25,7 +25,6 @@ public class SessionExpireListener implements HttpSessionListener {
 	* @see javax.servlet.http.HttpSessionListener#sessionCreated(javax.servlet.http.HttpSessionEvent)
 	 */
 	public void sessionCreated(HttpSessionEvent sessionEnv) {
-		// TODO Auto-generated method stub
 		
 	}
 

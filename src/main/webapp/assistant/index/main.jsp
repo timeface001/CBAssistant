@@ -1,10 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page isELIgnored="false" %>
-<%
-    String userId = request.getParameter("userId");
-    String roleId = request.getParameter("roleId");
-%>
 <!DOCTYPE HTML>
 <html>
 <head>
@@ -34,9 +30,7 @@
             src="<%=request.getContextPath()%>/assistant/lib/DD_belatedPNG_0.0.8a-min.js"></script>
     <script>DD_belatedPNG.fix('*');</script>
     <![endif]-->
-    <title>H-ui.admin v3.1</title>
-    <meta name="keywords" content="H-ui.admin v3.1,H-ui网站后台模版,后台模版下载,后台管理系统模版,HTML后台模版下载">
-    <meta name="description" content="H-ui.admin v3.1，是一款由国人开发的轻量级扁平化网站后台模板，完全免费开源的网站后台管理系统模版，适合中小型CMS后台系统。">
+    <title>跨境助手</title>
 </head>
 <body>
 <header class="navbar-wrapper">
@@ -64,13 +58,14 @@
             </nav>
             <nav id="Hui-userbar" class="nav navbar-nav navbar-userbar hidden-xs">
                 <ul class="cl">
-                    <li>超级管理员</li>
+                    <li>${sessionScope.user.ROLE_NAME}</li>
                     <li class="dropDown dropDown_hover">
-                        <a href="#" class="dropDown_A">admin <i class="Hui-iconfont">&#xe6d5;</i></a>
+                        <a href="#" class="dropDown_A">${sessionScope.user.USER_NAME}<i class="Hui-iconfont">
+                            &#xe6d5;</i></a>
                         <ul class="dropDown-menu menu radius box-shadow">
                             <li><a href="javascript:;" onClick="myselfinfo()">个人信息</a></li>
-                            <li><a href="#">切换账户</a></li>
-                            <li><a href="#">退出</a></li>
+                            <li><a href="" onclick="logout()">切换账户</a></li>
+                            <li><a href="" onclick="logout()">退出</a></li>
                         </ul>
                     </li>
                     <li id="Hui-msg"><a href="#" title="消息"><span class="badge badge-danger">1</span><i
@@ -148,9 +143,11 @@
 <script type="text/javascript"
         src="<%=request.getContextPath()%>/assistant/lib/jquery.contextmenu/jquery.contextmenu.r2.js"></script>
 <script type="text/javascript">
-    var roleId = '<%=roleId%>';
     $(function () {
-
+        history.pushState(null, null, document.URL);
+        window.addEventListener('popstate', function () {
+            history.pushState(null, null, document.URL);
+        });
     });
     /*个人信息*/
     function myselfinfo() {
@@ -196,8 +193,23 @@
     function member_add(title, url, w, h) {
         layer_show(title, url, w, h);
     }
-
-
+    /*用户-登出*/
+    function logout() {
+        $.ajax({
+            type: 'POST',
+            url: '<%=request.getContextPath()%>/common/logout',
+            dataType: 'json',
+            success: function (data) {
+                console.log(data);
+                if (data.code == 0) {
+                    location.href = "<%=request.getContextPath()%>/assistant/index/login.jsp";
+                }
+            },
+            error: function (data) {
+                layer.msg(data.msg, {icon: 2, time: 1000});
+            }
+        });
+    }
 </script>
 </body>
 </html>

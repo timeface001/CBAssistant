@@ -38,4 +38,8 @@ public class CommonService {
     public List<Map<String, Object>> selectCountryByCode(String id) {
         return commonDao.selectCountryByCode(id);
     }
+
+    public int updateLogin(Map<String, Object> map) {
+        return commonDao.updateLogin(map);
+    }
 }

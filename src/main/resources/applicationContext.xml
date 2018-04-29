@@ -94,7 +94,7 @@
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="dataSource" ref="dataSource"></property>
         <property name="configLocation" value="classpath:mybatis-config.xml"></property>
-        <property name="mapperLocations" >
+        <property name="mapperLocations">
             <list>
                 <value>classpath*:com/crossborder/dao/**/*.xml</value>
             </list>
@@ -177,4 +177,14 @@
             </bean>
         </property>
     </bean>
+    <!-- 拦截器 -->
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <!-- 拦截全部地址 -->
+            <mvc:mapping path="/**"/>
+            <!-- 登录拦截类 -->
+            <bean id="loginInterceptor" class="com.crossborder.listener.LoginInterceptor">
+            </bean>
+        </mvc:interceptor>
+    </mvc:interceptors>
 </beans>
