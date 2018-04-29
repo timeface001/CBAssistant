@@ -9,6 +9,8 @@ import com.crossborder.utils.GeneralUtils;
 import com.crossborder.utils.ResponseGen;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.github.pagehelper.StringUtil;
+import org.apache.axis.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -63,28 +65,40 @@ public class ProductClaimController extends BaseController {
         PageInfo pageInfo = new PageInfo<>(list);
         result.put("data", list);
         result.put("recordsTotal", pageInfo.getTotal());
-        result.put("recordsFiltered", list.size());
+        result.put("recordsFiltered", pageInfo.getTotal());
         return JSON.toJSONString(result);
     }
 
     @RequestMapping(value = "/product/claim/save", produces = "text/plain;charset=UTF-8")
     @ResponseBody
-    public String save(ClaimProduct product, String saleStartTime, String saleEndTime) {
+    public String save(ClaimProduct product, String saleStartTime, String saleEndTime,String vars) {
 
-        productManagerService.save(product);
+
         List<ProductItemVar> list = new ArrayList<>();
-        if (product.getSkuType().equals("1")) {//单体保存
-            ProductItemVar var = new ProductItemVar();
-            var.setProductId(product.getId());
-            var.setPrice(product.getPrice());
-            var.setQuantity(product.getQuantity());
-            var.setSaleStartTime(GeneralUtils.getDateFromStr(saleStartTime));
-            var.setSaleEndTime(GeneralUtils.getDateFromStr(saleEndTime));
-            var.setSku(product.getSku());
-            list.add(var);
-        } else {
+
+        ProductItemVar var = new ProductItemVar();
+        var.setProductId(product.getId());
+        var.setPrice(product.getPrice());
+        var.setQuantity(product.getQuantity());
+        var.setSaleStartTime(GeneralUtils.getDateFromStr(saleStartTime));
+        var.setSaleEndTime(GeneralUtils.getDateFromStr(saleEndTime));
+        var.setSku(product.getSku());
+        list.add(var);
+        if (product.getSkuType().equals("2")) {//变体
+            if(org.apache.commons.lang3.StringUtils.isNotBlank(vars)){
+                list=JSON.parseArray(vars,ProductItemVar.class);
+                Integer totalInventory=0;
+                for (ProductItemVar va : list) {
+                    totalInventory+=va.getQuantity();
+                }
+
+                product.setQuantity(totalInventory);
+                var.setQuantity(totalInventory);
+            }
 
         }
+        list.add(var);
+        productManagerService.save(product);
         productSkuTypeService.save(list, product.getId());
         return JSON.toJSONString(ResponseGen.genSuccess());
     }
@@ -124,6 +138,19 @@ public class ProductClaimController extends BaseController {
             //todo 多变种回显
         }
         return view;
+    }
+
+    @RequestMapping(value = "/product/claim/prePublish", produces = "text/plain;charset=UTF-8")
+    @ResponseBody
+    public String prePublish(String id) {
+
+        try {
+            productManagerService.prePublishProduct(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return JSON.toJSONString(ResponseGen.genFail());
+        }
+        return ResponseGen.genSuccessData(null);
     }
 
 

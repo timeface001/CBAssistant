@@ -26,7 +26,7 @@
             src="<%=request.getContextPath()%>/assistant/lib/DD_belatedPNG_0.0.8a-min.js"></script>
     <script>DD_belatedPNG.fix('*');</script>
     <![endif]-->
-    <title>产品列表</title>
+    <title>产品发布列表</title>
 </head>
 <body>
 <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 产品管理 <span
@@ -35,7 +35,7 @@
         class="Hui-iconfont">&#xe68f;</i></a></nav>
 <div class="page-container">
     <form id="productForm" class="form form-horizontal">
-        <div class="row cl">
+        <%--<div class="row cl">
             <label class="form-label col-xs-1 col-sm-1">来源：</label>
             <div class="formControls col-xs-2 col-sm-2">
                 <select id="source" name="source" class="select" style="height: 32px">
@@ -56,16 +56,17 @@
                 <button id="search" class="btn btn-success" type="button"><i class="Hui-iconfont">&#xe665;</i>
                 </button>
             </div>
+
+        </div>--%>
             <input type="hidden" name="pState" id="pStatus" >
-        </div>
     </form>
     <div class="mt-20">
-        <div id="btn-div" class="row text-c">
+        <%--<div id="btn-div" class="row text-c">
             <a href="javascript:;" onclick="reloadTable(0)" class="btn btn-success radius">全部</a>
             <a href="javascript:;" onclick="reloadTable(1)" class="btn btn-default radius">未认领</a>
             <a href="javascript:;" onclick="reloadTable(2)" class="btn btn-default radius">已认领</a>
-        </div>
-        <div class="cl pd-5 bg-1 bk-gray" id="count-div"><span class="l"> <a href="javascript:;"
+        </div>--%>
+        <%--<div class="cl pd-5 bg-1 bk-gray" id="count-div"><span class="l"> <a href="javascript:;"
                                                                              onclick="deleteProduct(null)"
                                                                              class="btn btn-danger radius"><i
                 class="Hui-iconfont">
@@ -75,22 +76,18 @@
                class="btn btn-danger radius"><i
                     class="Hui-iconfont">
                 &#xe6e2;</i> 批量认领</a>
-            <a class="btn btn-primary radius" href="javascript:;"
-               onclick="addProduct('添加产品','<%=request.getContextPath()%>/assistant/index/product/product-add.jsp','800')"><i
-                    class="Hui-iconfont">
-                &#xe600;</i> 添加产品</a> </span></div>
+            </span></div>--%>
         <table id="productTable" class="table table-border table-bordered table-bg table-hover mt-10">
             <thead>
             <tr class="text-c">
                 <th width="25"><input type="checkbox" value="" name=""></th>
-                <th width="80">序号</th>
                 <th width="100">产品图</th>
-                <th width="100">来源</th>
+                <th width="60">国家</th>
                 <th width="150">标题</th>
-                <th width="150">描述</th>
                 <th width="60">售价</th>
-                <th width="100">认领记录</th>
-                <th width="100">创建时间</th>
+                <th width="100">库存</th>
+                <th width="150">发布状况描述</th>
+                <th width="100">时间</th>
                 <th width="100">操作</th>
             </tr>
             </thead>
@@ -151,7 +148,7 @@
         var table = $("#productTable").DataTable({
             "serverSide": true,
             "ajax": {
-                "url": "<%=request.getContextPath()%>/product/list",
+                "url": "<%=request.getContextPath()%>/product/publish/list",
                 "type": "POST",
                 "data": function (d) {
                     return $.extend({}, d, {
@@ -160,46 +157,42 @@
                 }
             },
             "columns": [
-                {"data": "ID"},
-                {"data": "ID"},
+                {"data": "id"},
                 {"data": function (val) {
-                    return val.MAIN_PATH==null?"":"<img width='100px' height='90px'  src='<%=request.getContextPath()%>/upload/"+val.MAIN_PATH+"'/>";
+                    return val.mainPath==null?"":"<img width='100px' height='90px'  src='<%=request.getContextPath()%>/upload/"+val.mainPath+"'/>";
                 }},
                 {"data": function (val) {
-                    return val.SOURCE==null?"":val.SOURCE;
+                    return getCountryName(val.languageId);
                 }},
                 {"data": function (val) {
-                    return val.NAME==null?"":val.NAME;}},
+                    return val.itemName==null?"":val.itemName;
+                }},
+                {"data": "standardPrice"},
                 {"data": function (val) {
-                    return val.INFO==null?"":val.INFO;
+                    return val.quantity==null?"":val.quantity;
                 }},
                 {"data": function (val) {
-                    return val.PRICE==null?"":val.PRICE;
+                    return "未发布";
                 }},
                 {"data": function (val) {
-                    return val.STATE_TIME==null?"":"在"+getMyDate(val.STATE_TIME)+"时被认领";
-                }},
-                {"data": function (val) {
-                    return getMyDate( val.CREATE_TIME);
+                    return "<p style='text-align: left'>创建:</p><p style='text-align: left'>"+getMyDate(val.createTime)+"</p>"+"<p style='text-align: left'>发布时间</p><p style='text-align: left'>"+getMyDate(val.updateTime)+"</p>";
                 }}
             ],
             "columnDefs": [
                 {
                     "targets": [0],
-                    "data": "ID",
+                    "data": "id",
                     "render": function (data, type, full) {
                         return "<input type='checkbox' value=" + full.ID + ">"
                     }
                 },
                 {
-                    "targets": [9],
-                    "data": "ID",
+                    "targets": [8],
+                    "data": "id",
                     "render": function (data, type, full) {
-                        return( full.P_STATE=="1"?"<a style='text-decoration:none' title='认领'  onClick=\"claimProduct('" + full.ID + "')\"')>认领</a>" +
-                                "&nbsp;&nbsp;" +
-                                "<a style='text-decoration:none' title='编辑'  onClick=\"editProduct('" + full.ID + "')\"')>编辑</a>":"") +
+                        return( full.publishStatus!="2"?"<a style='text-decoration:none' title=''  onClick=\"publishProduct('" + full.ID + "')\"')>发布</a>":"") +
                             "&nbsp;&nbsp;" +
-                            "<a style='text-decoration:none' title='删除'  onClick=\"deleteProduct('" + full.ID + "')\"')>删除</a>";
+                            "<a style='text-decoration:none' title='删除'  onClick=\"editProduct('" + full.id + "')\"')>删除</a>" ;
                     }
                 }
             ],
@@ -229,6 +222,34 @@
         });
         return table;
     }
+
+    function getCountryName(id) {
+        if(id==="GB"){
+            return "英国";
+        }
+        if(id==="JP"){
+            return "日本";
+        }
+        if(id==="CN"){
+            return "中国";
+        }
+        if(id==="DE"){
+            return "德国";
+        }
+        if(id==="FR"){
+            return "法国";
+        }
+        if(id==="ES"){
+            return "西班牙";
+        }
+        if(id==="IT"){
+            return "意大利";
+        }
+
+        return "";
+
+    }
+
     /*打开订单详情页*/
     function toDetail(amazonOrderId) {
         var index = layer.open({
@@ -240,7 +261,7 @@
     }
 
     function editProduct(id) {
-        layer_show("编辑产品", '<%=request.getContextPath()%>/assistant/index/product/product-add.jsp?id='+id, 800);
+        location.href='<%=request.getContextPath()%>/product/claim/detail?id='+id;
 
     }
 
@@ -264,11 +285,8 @@
             },
             success: function (data) {
                 if (data.success) {
-                    layer.msg(data.msg, {icon: 6, time: 1000});
-                    setTimeout(function () {
-                        document.getElementById("refresh").click();
-                    },1000);
-
+                    setTimeout(layer.msg(data.msg, {icon: 6, time: 1000}), 1000);
+                    document.getElementById("refresh").click();
                 }
             },
             error: function (data) {
@@ -290,11 +308,8 @@
                 data: {"data": id},
                 success: function (data) {
                     if (data.success) {
-                        layer.msg(data.msg, {icon: 6, time: 1000});
-                        setTimeout(function () {
-                            document.getElementById("refresh").click();
-                        }, 1000);
-
+                        setTimeout(layer.msg(data.msg, {icon: 6, time: 1000}), 1000);
+                        document.getElementById("refresh").click();
                     } else {
                         layer.msg('删除失败!', {icon: 5, time: 1000});
                     }
@@ -326,7 +341,7 @@
             oHour = oDate.getHours(),
             oMin = oDate.getMinutes(),
             oSen = oDate.getSeconds(),
-            oTime = oYear +'-'+ getzf(oMonth) +'-'+ getzf(oDay) +' '+ getzf(oHour) +':'+ getzf(oMin) +':'+getzf(oSen);//最后拼接时间
+            oTime = oYear +'-'+ getzf(oMonth) +'-'+ getzf(oDay) ;//+' '+ getzf(oHour) +':'+ getzf(oMin) +':'+getzf(oSen);//最后拼接时间
 
         return oTime;
     };

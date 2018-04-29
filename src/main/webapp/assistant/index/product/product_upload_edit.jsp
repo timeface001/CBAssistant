@@ -62,32 +62,8 @@
 
         <div class="layui-form-item">
             <label class="layui-form-label">产品标题</label>
-            <div class="layui-inline">
-                <div class="layui-tab layui-tab-card" style="width: 670px;">
-                    <ul class="layui-tab-title">
-                        <li class="layui-this">中文</li>
-                        <li>英语</li>
-                        <li>日语</li>
-                        <li>德语</li>
-                        <li>法语</li>
-                        <li>西班牙语</li>
-                        <li>意大利语</li>
-                    </ul>
-                    <div class="layui-tab-content" style="height: 50px;">
-                        <div class="layui-tab-item layui-show"><input type="text" name="title" value="${product.itemCn}"     lay-verify="required" placeholder=""  autocomplete="off" class="layui-input"></div>
-                        <div class="layui-tab-item"><input type="text" name="itemUk" value="${product.itemUk}"   lay-verify="required" placeholder=""  autocomplete="off" class="layui-input"></div>
-                        <div class="layui-tab-item"><input type="text" name="itemJp" value="${product.itemJp}"   lay-verify="required" placeholder=""  autocomplete="off" class="layui-input"></div>
-                        <div class="layui-tab-item"><input type="text" name="itemDe" value="${product.itemDe}"   lay-verify="required" placeholder=""  autocomplete="off" class="layui-input"></div>
-                        <div class="layui-tab-item"><input type="text" name="itemFr" value="${product.itemFr}"   lay-verify="required" placeholder=""  autocomplete="off" class="layui-input"></div>
-                        <div class="layui-tab-item"><input type="text" name="itemEs" value="${product.itemEs}"   lay-verify="required" placeholder=""  autocomplete="off" class="layui-input"></div>
-                        <div class="layui-tab-item"><input type="text" name="itemIt" value="${product.itemIt}"   lay-verify="required" placeholder=""  autocomplete="off" class="layui-input"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="layui-inline">
-                <button class="layui-btn" style="margin-bottom: 75px;">一键翻译</button>
-            </div>
-
+            <div class="layui-input-block">
+                <input type="text" name="title" value="${product.itemCn}"  id="pName" readonly="readonly"  lay-verify="required" placeholder=""  autocomplete="off" class="layui-input layui-disabled">
             </div>
         </div>
 
@@ -157,37 +133,13 @@
         <blockquote class="layui-elem-quote">描述信息</blockquote>
         <div class="layui-form-item" >
             <label class="layui-form-label">产品描述</label>
-            <div class="layui-inline">
-                <div class="layui-tab layui-tab-card" style="width: 670px;">
-                    <ul class="layui-tab-title">
-                        <li class="layui-this">中文</li>
-                        <li>英语</li>
-                        <li>日语</li>
-                        <li>德语</li>
-                        <li>法语</li>
-                        <li>西班牙语</li>
-                        <li>意大利语</li>
-                    </ul>
-                    <div class="layui-tab-content" style="height: 100px;">
-                        <div class="layui-tab-item layui-show"> <textarea name="productDescriptionCn" placeholder=""   class="layui-textarea">${product.productDescriptionCn}</textarea></div>
-                        <div class="layui-tab-item"> <textarea name="productDescriptionUk" placeholder=""   class="layui-textarea">${product.productDescriptionUk}</textarea></div>
-                        <div class="layui-tab-item "> <textarea name="productDescriptionJp" placeholder=""   class="layui-textarea">${product.productDescriptionJp}</textarea></div>
-                        <div class="layui-tab-item "> <textarea name="productDescriptionDe" placeholder=""   class="layui-textarea">${product.productDescriptionDe}</textarea></div>
-                        <div class="layui-tab-item "> <textarea name="productDescriptionFr" placeholder=""   class="layui-textarea">${product.productDescriptionFr}</textarea></div>
-                        <div class="layui-tab-item "> <textarea name="productDescriptionEs" placeholder=""   class="layui-textarea">${product.productDescriptionEs}</textarea></div>
-                        <div class="layui-tab-item "> <textarea name="productDescriptionIt" placeholder=""   class="layui-textarea">${product.productDescriptionIt}</textarea></div>
-
-                    </div>
-                </div>
+            <div class="layui-input-block">
+                <textarea name="pDesc" placeholder=""   class="layui-textarea">${product.productDescriptionCn}</textarea>
             </div>
-            <div class="layui-inline">
-                <button class="layui-btn" style="margin-bottom: 125px;">一键翻译</button>
-            </div>
-
 
         </div>
 
-        <div class="layui-form-item"  >
+        <div class="layui-form-item" >
             <label class="layui-form-label">简要描述</label>
 
             <div class="layui-inline">
@@ -197,17 +149,27 @@
                 <input type="text" name="bulletPoint2" style="width: 300px" value="${points[1]}"  lay-verify="required"   placeholder="" autocomplete="off" class="layui-input">
             </div>
 
-            <div class="layui-inline" style="margin-left: 110px;margin-top: 10px;">
+        </div>
+
+
+        <div class="layui-form-item" >
+            <label class="layui-form-label"></label>
+
+            <div class="layui-inline">
                 <input type="text" name="bulletPoint3" value="${points[2]}" style="width: 300px" lay-verify="required"  placeholder="" autocomplete="off" class="layui-input">
             </div>
             <div class="layui-inline">
                 <input type="text" name="bulletPoint4" value="${points[3]}" style="width: 300px"  lay-verify="required"   placeholder="" autocomplete="off" class="layui-input">
             </div>
 
+        </div>
+
+        <div class="layui-form-item" >
+            <label class="layui-form-label"></label>
+
             <div class="layui-inline">
                 <input type="text" name="bulletPoint5" value="${points[4]}" style="width: 300px"  lay-verify="required"   placeholder="" autocomplete="off" class="layui-input">
             </div>
-
         </div>
 
 
@@ -277,13 +239,6 @@
         var skuArr=[];
         singleSku();
         //日期
-
-
-        layui.use('element', function(){
-            var element = layui.element;
-
-            //…
-        });
 
         layui.use('laydate', function(){
             var laydate = layui.laydate;

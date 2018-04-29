@@ -43,7 +43,7 @@
     </insert>
 
     <insert id="updateProduct" parameterType="java.util.Map">
-        UPDATE  T_PRODUCT_ITEM SET NAME=#{name},IMAGE_PATH=#{imagePath},MAIN_PATH=#{mainPath},PRICE=#{price},INFO=#{info},UPDATE_TIME=CURRENT_DATE WHERE ID=#{id}
+        UPDATE  T_PRODUCT_ITEM SET NAME=#{name},IMAGE_PATH=#{imagePath},MAIN_PATH=#{mainPath},SOURCE=#{source},PRICE=#{price},INFO=#{info},UPDATE_TIME=CURRENT_DATE WHERE ID=#{id}
     </insert>
 
     <select id="selectList" parameterType="java.util.Map" resultType="java.util.Map">

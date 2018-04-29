@@ -35,29 +35,40 @@
         class="Hui-iconfont">&#xe68f;</i></a></nav>
 <div class="page-container">
     <form id="productForm" class="form form-horizontal">
-        <%--<div class="row cl">
-            <label class="form-label col-xs-1 col-sm-1">来源：</label>
+        <div class="row cl">
+            <label class="form-label col-xs-1 col-sm-1">分类：</label>
             <div class="formControls col-xs-2 col-sm-2">
                 <select id="source" name="source" class="select" style="height: 32px">
                     <option value="">请选择</option>
                 </select>
             </div>
-            <label class="form-label col-xs-2 col-sm-2">开始日期：</label>
+            <label class="form-label col-xs-2 col-sm-2">标题：</label>
             <div class="formControls col-xs-2 col-sm-2">
-                <input type="text" onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'logmax\')||\'%y-%M-%d\'}' })"
-                       name="startTime" class="input-text Wdate" id="logmin" readonly>
+                <input type="text" name="name" placeholder=" " class="input-text">
             </div>
-            <label class="form-label col-xs-2 col-sm-2">结束日期：</label>
+            <label class="form-label col-xs-2 col-sm-2">SKU：</label>
             <div class="formControls col-xs-2 col-sm-2">
-                <input type="text" onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'logmin\')}',maxDate:'%y-%M-%d' })"
-                       name="endTime" class="input-text Wdate" id="logmax" readonly>
+                <input type="text" name="sku" placeholder=" " class="input-text">
             </div>
+
             <div class="formControls col-xs-1 col-sm-1">
                 <button id="search" class="btn btn-success" type="button"><i class="Hui-iconfont">&#xe665;</i>
                 </button>
             </div>
 
-        </div>--%>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-1 col-sm-1">状态：</label>
+            <div class="formControls col-xs-2 col-sm-2">
+                <select id="typeId" name="source" class="select" style="height: 32px">
+                    <option value="">请选择</option>
+                    <option value="1">已加入预发布</option>
+                    <option value="0">未加入预发布</option>
+                </select>
+            </div>
+
+
+        </div>
             <input type="hidden" name="pState" id="pStatus" >
     </form>
     <div class="mt-20">
@@ -83,9 +94,12 @@
                 <th width="25"><input type="checkbox" value="" name=""></th>
                 <th width="100">产品图</th>
                 <th width="150">标题</th>
+                <th width="150">来源</th>
+                <th width="150">分类</th>
                 <th width="150">sku</th>
                 <th width="60">售价</th>
                 <th width="100">库存</th>
+                <th width="100">状态</th>
                 <th width="100">时间</th>
                 <th width="100">操作</th>
             </tr>
@@ -158,10 +172,16 @@
             "columns": [
                 {"data": "id"},
                 {"data": function (val) {
-                    return val.imagePath==null?"":"<img width='100px' height='90px'  src='<%=request.getContextPath()%>/upload/"+val.imagePath+"'/>";
+                    return val.languageId==null?"":"<img width='100px' height='90px'  src='<%=request.getContextPath()%>/upload/"+val.imagePath+"'/>";
                 }},
                 {"data": function (val) {
                     return val.itemCn==null?"":val.itemCn;
+                }},
+                {"data": function (val) {
+                    return val.source==null?"":val.source;
+                }},
+                {"data": function (val) {
+                    return val.typeId==null?"":val.typeId;
                 }},
                 {"data": function (val) {
                     return val.sku==null?"":val.sku;
@@ -171,7 +191,9 @@
                     return val.quantity==null?"":val.quantity;
                 }},
                 {"data": function (val) {
-                    console.log(getMyDate(val.createTime));
+                    return "未加入预发布";
+                }},
+                {"data": function (val) {
                     return "<p style='text-align: left'>创建</p><p style='text-align: left'>"+getMyDate(val.createTime)+"</p>"+(val.updateTime!=null?("<p style='text-align: left'>更新</p><p style='text-align: left'>"+getMyDate(val.updateTime)+"</p>"):"");
                 }}
             ],
@@ -184,10 +206,10 @@
                     }
                 },
                 {
-                    "targets": [7],
+                    "targets": [10],
                     "data": "id",
                     "render": function (data, type, full) {
-                        return( full.updateState=="1"?"<a style='text-decoration:none' title='移入待发布'  onClick=\"claimProduct('" + full.ID + "')\"')>移入待发布</a>":"") +
+                        return( full.updateState=="1"?"<a style='text-decoration:none' title='移入待发布'  onClick=\"prePublish('" + full.id + "')\"')>移入待发布</a>":"") +
                             "&nbsp;&nbsp;" +
                             "<a style='text-decoration:none' title='编辑'  onClick=\"editProduct('" + full.id + "')\"')>编辑</a>" ;
                     }
@@ -235,31 +257,31 @@
     }
 
     /**
-     * 认领操作
+     * 移入待发布
      * @param ids
      */
-    function claimProduct(ids) {
-        if(ids==null){
-            ids=getIDs();
-        }
+    function prePublish(ids) {
 
-        layer.confirm('确定认领商品吗？', function (index) {
+        layer.confirm('确定移入待发布吗？', function (index) {
         $.ajax({
             type: 'POST',
-            url: '<%=request.getContextPath()%>/product/state',
+            url: '<%=request.getContextPath()%>/product/claim/prePublish',
             dataType: 'json',
             data: {
-                "data": ids,
-                "type": 2
+                "id": ids
             },
             success: function (data) {
+                console.log(data);
                 if (data.success) {
-                    setTimeout(layer.msg(data.msg, {icon: 6, time: 1000}), 1000);
-                    document.getElementById("refresh").click();
+                    layer.msg(data.msg, {icon: 6, time: 1000});
+                    setTimeout(function () {
+                        document.getElementById("refresh").click();
+                    }, 1000);
+
                 }
             },
             error: function (data) {
-                layer.msg(data.msg, {icon: 2, time: 1000});
+                layer.msg("移入失败，请确认商品信息是否编辑完整。", {icon: 2, time: 1000});
             }
         }); });
     }
