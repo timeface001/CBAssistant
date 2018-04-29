@@ -20,7 +20,8 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
                              Object handle) throws Exception {
-        String requestUri = request.getRequestURI();
+        return true;
+        /*String requestUri = request.getRequestURI();
         if (requestUri.equals("/CBAssistant/common/login")) {
             return true;
         }
@@ -36,7 +37,7 @@ public class LoginInterceptor implements HandlerInterceptor {
             response.sendRedirect(request.getContextPath() + "/assistant/index/login.jsp");
             return false;
         }
-        return true;
+        return true;*/
     }
 
     @Override

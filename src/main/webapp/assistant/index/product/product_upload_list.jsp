@@ -157,7 +157,7 @@
                     if(val.publishStatus=="1"){
                         return "发布失败";
                     }
-                    if(val.publishStatus=="0"){
+                    if(val.publishStatus=="2"){
                         return "发布成功";
                     }
                 }},

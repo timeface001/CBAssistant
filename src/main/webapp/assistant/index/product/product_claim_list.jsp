@@ -193,7 +193,7 @@
                     return val.isPrepublish==1?"已加入待发布":"未加入待发布";
                 }},
                 {"data": function (val) {
-                    return "<p style='text-align: left'>创建</p><p style='text-align: left'>"+getMyDate(val.createTime)+"</p>"+(val.updateTime!=null?("<p style='text-align: left'>更新</p><p style='text-align: left'>"+getMyDate(val.updateTime)+"</p>"):"");
+                    return "<p style='text-align: left'>创建</p><p style='text-align: left'>"+getMyDate(val.createTime)+"</p>"+(val.publishTime!=null?("<p style='text-align: left'>更新</p><p style='text-align: left'>"+getMyDate(val.publishTime)+"</p>"):"");
                 }}
             ],
             "columnDefs": [
@@ -210,7 +210,7 @@
                     "render": function (data, type, full) {
                         return( full.updateState=="1"?"<a style='text-decoration:none' title='移入待发布'  onClick=\"prePublish('" + full.id + "')\"')>移入待发布</a>":"") +
                             "&nbsp;&nbsp;" +
-                            "<a style='text-decoration:none' title='编辑'  onClick=\"editProduct('" + full.id + "')\"')>编辑</a>" ;
+                            "<a style='text-decoration:none' title='编辑'  onClick=\"deleteProduct('" + full.id + "')\"')>编辑</a>" ;
                     }
                 }
             ],
@@ -287,6 +287,9 @@
 
     /*产品-删除*/
     function deleteProduct(id) {
+        alert("删除等等");
+        return
+        ;
         if(id==null||id==""){
             id=getIDs();
         }
