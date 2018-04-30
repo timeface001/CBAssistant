@@ -32,11 +32,14 @@
         left join T_COUNTRY t2
         on t2.id = t1.country_code
         WHERE 1=1
-        <if test="id !=null and id !=''">
+        <if test="id != null and id != '' and id != 'null'">
             AND t1.SHOP_ID = #{id,jdbcType=VARCHAR}
         </if>
         <if test="createUser !=null and createUser !=''">
             AND t1.CREATE_USER = #{createUser,jdbcType=VARCHAR}
+        </if>
+        <if test="shopName !=null and shopName !=''">
+            AND t1.SHOP_NAME = #{shopName,jdbcType=VARCHAR}
         </if>
         <if test="companyId !=null and companyId !=''">
             AND t1.CREATE_USER IN (SELECT USER_ID FROM T_USER_INFO WHERE user_company=#{companyId,jdbcType=VARCHAR})

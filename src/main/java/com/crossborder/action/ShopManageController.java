@@ -1,6 +1,11 @@
 package com.crossborder.action;
 
 import com.alibaba.fastjson.JSON;
+import com.amazonservices.mws.orders._2013_09_01.MarketplaceWebServiceOrdersClient;
+import com.amazonservices.mws.orders._2013_09_01.MarketplaceWebServiceOrdersConfig;
+import com.amazonservices.mws.orders._2013_09_01.model.ListOrdersRequest;
+import com.amazonservices.mws.orders._2013_09_01.model.ListOrdersResponse;
+import com.amazonservices.mws.orders._2013_09_01.model.Order;
 import com.crossborder.service.CommonService;
 import com.crossborder.service.ShopManageService;
 import org.springframework.stereotype.Controller;
@@ -9,9 +14,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
+import java.util.*;
 
 /**
  * Created by s on 2018/4/7.
@@ -39,19 +44,72 @@ public class ShopManageController {
         paramMap.put("createUser", user.get("USER_ID").toString());
         paramMap.put("shopName", paramMap.get("shopName") + "-" + user.get("USER_NAME").toString());
         try {
-            List<Map<String, Object>> list = commonService.selectCountryByCode(paramMap.get("countryCode").toString());
-            for (int i = 0; i < list.size(); i++) {
-                paramMap.put("countryCode", list.get(i).get("ID").toString());
-                shopManageService.addShop(paramMap);
+            List<Map<String, Object>> shops = shopManageService.selectShops(paramMap);
+            if (shops != null && shops.size() > 0) {
+                map.put("code", "1");
+                map.put("msg", "店铺名称已存在");
+            } else {
+                List<Map<String, Object>> list = commonService.selectCountryByCode(paramMap.get("countryCode").toString());
+                paramMap.put("marketPlaceId", list.get(0).get("MARKETPLACEID").toString());
+                paramMap.put("endPoint", list.get(0).get("ENDPOINT").toString());
+                if (validateShop(paramMap)) {
+                    for (int i = 0; i < list.size(); i++) {
+                        paramMap.put("countryCode", list.get(i).get("ID").toString());
+                        shopManageService.addShop(paramMap);
+                    }
+                    map.put("code", "0");
+                    map.put("msg", "授权成功");
+                } else {
+                    map.put("code", "-10");
+                    map.put("msg", "授权失败");
+                }
             }
-            map.put("code", "0");
-            map.put("msg", "添加成功");
         } catch (Exception e) {
             e.printStackTrace();
             map.put("code", "-10");
-            map.put("msg", "添加失败");
+            map.put("msg", "授权失败");
         }
         return JSON.toJSONString(map);
+    }
+
+    public boolean validateShop(Map<String, Object> shop) {
+        try {
+            MarketplaceWebServiceOrdersConfig config = new MarketplaceWebServiceOrdersConfig();
+            config.setServiceURL(shop.get("endPoint").toString());
+            MarketplaceWebServiceOrdersClient client = new MarketplaceWebServiceOrdersClient(shop.get("accesskeyId").toString(), shop.get("secretKey").toString(), config);
+            ListOrdersRequest request = new ListOrdersRequest();
+            request.setSellerId(shop.get("merchantId").toString());
+            request.setMWSAuthToken("");
+            GregorianCalendar cal = new GregorianCalendar();
+            XMLGregorianCalendar createdAfter = null;
+            XMLGregorianCalendar createdBefore = null;
+            try {
+                cal.setTime(new Date(new Date().getTime() - 2 * 24 * 60 * 60 * 1000));
+                createdAfter = DatatypeFactory.newInstance().newXMLGregorianCalendar(cal);
+                cal.setTime(new Date(new Date().getTime() - 24 * 60 * 60 * 1000));
+                createdBefore = DatatypeFactory.newInstance().newXMLGregorianCalendar(cal);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            request.setCreatedAfter(createdAfter);
+            request.setCreatedBefore(createdBefore);
+            List<String> marketplaceId = new ArrayList<String>();
+            marketplaceId.add(shop.get("marketPlaceId").toString());
+            request.setMarketplaceId(marketplaceId);
+            List<String> orderStatus = new ArrayList<String>();
+            orderStatus.add("Unshipped");
+            orderStatus.add("PartiallyShipped");
+            orderStatus.add("Shipped");
+            request.setOrderStatus(orderStatus);
+            ListOrdersResponse response = client.listOrders(request);
+            List<Order> orderList = response.getListOrdersResult().getOrders();
+            if (orderList != null) {
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     /**

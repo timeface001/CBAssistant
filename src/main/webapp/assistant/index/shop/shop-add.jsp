@@ -193,8 +193,12 @@
                 "data": JSON.stringify(getFormJson("#addShopForm"))
             },
             success: function (data) {
-                layer.msg(data.msg, {icon: 6, time: 1000});
-                layer_close();
+                if (data.code == 0) {
+                    layer.msg(data.msg, {icon: 6, time: 1000});
+                    layer_close();
+                } else {
+                    layer.msg(data.msg, {icon: 5, time: 1000});
+                }
             },
             error: function (data) {
                 layer.msg(data.msg, {icon: 5, time: 1000});

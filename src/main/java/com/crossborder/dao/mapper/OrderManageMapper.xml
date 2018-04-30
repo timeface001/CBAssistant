@@ -166,7 +166,7 @@
         trunc(sum(t2.itempricermb + t2.shippingPricermb),2) itemprice,
         trunc(sum(t2.cost),2) cost,
         trunc(sum(t2.refundment),2) refundment,
-        trunc(sum(t2.itempricermb - t2.cost - t2.refundment),2) profit
+        trunc(sum(t2.itempricermb - t2.cost - t2.refundment - t1.shippingPrice + t2.shippingPricermb),2) profit
         from T_ORDER t1
         left join t_order_item t2
         on t2.amazonorderid = t1.amazonorderid
@@ -229,7 +229,7 @@
         t2.smallImage,
         t3.exrate,
         t4.company_name
-        ORDER BY t1.id DESC
+        ORDER BY t1.purchaseDate DESC
     </select>
 
     <select id="selectLocalOrderItem" resultType="java.util.Map" parameterType="java.lang.String">

@@ -43,7 +43,7 @@
                     <input id="password" name="" type="password" placeholder="密码" class="input-text size-L">
                 </div>
             </div>
-            <div class="row cl">
+            <div class="row cl" style="display: none">
                 <div class="formControls col-xs-8 col-xs-offset-3">
                     <input class="input-text size-L" type="text" placeholder="验证码"
                            onblur="if(this.value==''){this.value='验证码:'}"

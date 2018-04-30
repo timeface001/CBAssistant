@@ -149,30 +149,30 @@
     <div class="panel-header">海关申报信息</div>
     <div class="panel-body">
         <div class="row cl">
-            <label class=" col-xs-1 col-sm-1 text-r">运输公司：</label>
+            <label class=" col-xs-1 col-sm-1 text-r"><span class="c-red">*</span>运输公司：</label>
             <div class=" col-xs-2 col-sm-2">
                 <select id="transportCompany" name="transportCompany" class="select" style="height: 32px"
                         onchange="loadShips(this.value)">
                     <option value="">请选择</option>
                 </select>
             </div>
-            <label class=" col-xs-2 col-sm-2 text-r">运输方式：</label>
+            <label class=" col-xs-2 col-sm-2 text-r"><span class="c-red">*</span>运输方式：</label>
             <div class=" col-xs-2 col-sm-2">
                 <select id="transType" name="transType" class="select" style="height: 32px">
                     <option value="">请选择</option>
                 </select>
             </div>
-            <label class=" col-xs-2 col-sm-2 text-r">客户单号：</label>
+            <label class=" col-xs-2 col-sm-2 text-r"><span class="c-red">*</span>客户单号：</label>
             <div class=" col-xs-2 col-sm-2">
                 <input type="text" id="amazonId" placeholder=" "
-                       class="input-text" readonly></div>
+                       class="input-text"></div>
         </div>
         <div class="row cl">
-            <label class=" col-xs-1 col-sm-1 text-r">货物重量(kg)：</label>
+            <label class=" col-xs-1 col-sm-1 text-r"><span class="c-red">*</span>货物重量(kg)：</label>
             <div class=" col-xs-2 col-sm-2">
                 <input type="text" id="weight" placeholder=" "
                        class="input-text"></div>
-            <label class=" col-xs-2 col-sm-2 text-r">包装件数：</label>
+            <label class=" col-xs-2 col-sm-2 text-r"><span class="c-red">*</span>包装件数：</label>
             <div class=" col-xs-2 col-sm-2">
                 <input type="text" id="count" placeholder=" "
                        class="input-text"></div>
@@ -200,30 +200,34 @@
                onclick="addRow()"><i
                     class="Hui-iconfont">
                 &#xe600;</i>添加一行</a></span></div>
-        <table id="customsTable" class="table table-border table-bordered table-bg table-hover">
-            <thead>
-            <tr class="text-c">
-                <th width="100"><span class="c-red">*</span>英文品名</th>
-                <th width="100"><span class="c-red">*</span>中文品名</th>
-                <th width="100"><span class="c-red">*</span>数量</th>
-                <th width="100">单位</th>
-                <th width="100"><span class="c-red">*</span>单价</th>
-                <th width="100">总价</th>
-                <th width="100"><span class="c-red">*</span>重量(kg)</th>
-                <th width="100">总重</th>
-                <th width="100">SKU</th>
-                <th width="100">海关协制编号</th>
-                <th width="100">配货信息</th>
-                <th width="100">销售地址</th>
-                <th width="50">操作</th>
-            </tr>
-            </thead>
-        </table>
+        <form class="form form-horizontal" id="tableForm">
+            <table id="customsTable" class="table table-border table-bordered table-bg table-hover">
+                <thead>
+                <tr class="text-c">
+                    <th width="100"><span class="c-red">*</span>英文品名</th>
+                    <th width="100"><span class="c-red">*</span>中文品名</th>
+                    <th width="100"><span class="c-red">*</span>数量</th>
+                    <th width="100">单位</th>
+                    <th width="100"><span class="c-red">*</span>单价</th>
+                    <th width="100">总价</th>
+                    <th width="100"><span class="c-red">*</span>重量(kg)</th>
+                    <th width="100">总重</th>
+                    <th width="100">SKU</th>
+                    <th width="100">海关协制编号</th>
+                    <th width="100">配货信息</th>
+                    <th width="100">销售地址</th>
+                    <th width="50">操作</th>
+                </tr>
+                </thead>
+            </table>
+        </form>
         <div class="row cl">
             <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
                 <button type="button" class="btn btn-success radius" id="delivery" name="delivery" onclick="delivery()">
-                    <i
-                            class="icon-ok"></i>发货
+                    <i class="icon-ok"></i>发货
+                </button>
+                <button type="button" class="btn btn-success radius" id="print" name="print" onclick="print()">
+                    <i class="icon-ok"></i>打印
                 </button>
             </div>
         </div>
@@ -555,8 +559,8 @@
             "searching": false,
             "bLengthChange": false,
             "columns": [
-                {"data": "CHNNAME"},
                 {"data": "ENNAME"},
+                {"data": "CHNNAME"},
                 {"data": "COUNT"},
                 {"data": "UNIT"},
                 {"data": "PRICE"},
@@ -572,85 +576,85 @@
             "columnDefs": [
                 {
                     "targets": [0],
-                    "data": "CHNNAME",
+                    "data": "ENNAME",
                     "render": function (data, type, full) {
-                        return "<input type='text' value=''  class='input-text'/>";
+                        return "<input type='text' value=''  class='input-text' name='enName'/>";
                     }
                 },
                 {
                     "targets": [1],
-                    "data": "ENNAME",
+                    "data": "CHNNAME",
                     "render": function (data, type, full) {
-                        return "<input type='text' value='' class='input-text'/>";
+                        return "<input type='text' value='' class='input-text' name='chnName'/>";
                     }
                 },
                 {
                     "targets": [2],
                     "data": "COUNT",
                     "render": function (data, type, full) {
-                        return "<input type='text' value=''  class='input-text'/>";
+                        return "<input type='text' value=''  class='input-text' name='count'/>";
                     }
                 },
                 {
                     "targets": [3],
                     "data": "UNIT",
                     "render": function (data, type, full) {
-                        return "<input type='text' value=''  class='input-text'/>";
+                        return "<input type='text' value=''  class='input-text' name='unit'/>";
                     }
                 },
                 {
                     "targets": [4],
                     "data": "PRICE",
                     "render": function (data, type, full) {
-                        return "<input type='text' value=''  class='input-text'/>";
+                        return "<input type='text' value=''  class='input-text' name='price'/>";
                     }
                 },
                 {
                     "targets": [5],
                     "data": "TOTALPRICE",
                     "render": function (data, type, full) {
-                        return "<input type='text' value=''  class='input-text'/>";
+                        return "<input type='text' value=''  class='input-text' name='address'totalPrice/>";
                     }
                 },
                 {
                     "targets": [6],
                     "data": "WEIGHT",
                     "render": function (data, type, full) {
-                        return "<input type='text' value=''  class='input-text'/>";
+                        return "<input type='text' value=''  class='input-text' name='weight'/>";
                     }
                 },
                 {
                     "targets": [7],
                     "data": "TOTALWEIGHT",
                     "render": function (data, type, full) {
-                        return "<input type='text' value=''  class='input-text'/>";
+                        return "<input type='text' value=''  class='input-text' name='totalWeight'/>";
                     }
                 },
                 {
                     "targets": [8],
                     "data": "SKU",
                     "render": function (data, type, full) {
-                        return "<input type='text' value=''  class='input-text'/>";
+                        return "<input type='text' value=''  class='input-text' name='sku'/>";
                     }
                 }, {
                     "targets": [9],
                     "data": "CODE",
                     "render": function (data, type, full) {
-                        return "<input type='text' value=''  class='input-text'/>";
+                        return "<input type='text' value=''  class='input-text' name='code'/>";
                     }
                 },
                 {
                     "targets": [10],
                     "data": "INFO",
                     "render": function (data, type, full) {
-                        return "<input type='text' value=''  class='input-text'/>";
+                        return "<input type='text' value=''  class='input-text' name='info'/>";
                     }
                 },
                 {
                     "targets": [11],
                     "data": "ADDRESS",
                     "render": function (data, type, full) {
-                        return "<input type='text' value=''  class='input-text'/>";
+                        return "<input type='text' value=''  class='input-text' name='address'/>";
                     }
                 },
                 {
@@ -666,6 +670,7 @@
             "info": false
         });
     }
+    var count = 0;
     function addRow() {
         customsTable.row.add([
             "",
@@ -681,10 +686,11 @@
             "",
             "",
             ""]).draw();
+        count += 1;
     }
     function removeRow(obj) {
         customsTable.row($(obj).parents('tr')).remove().draw();
-
+        count -= 1;
     }
     function initSelect() {
         $.ajax({
@@ -795,12 +801,27 @@
         });
     }
     function delivery() {
+        if ($("#amazonId").val() == null || $("#amazonId").val() == '' || $("#amazonId").val() == undefined) {
+            layer.msg('客户单号不能为空', {icon: 2, time: 2000});
+            return false;
+        }
+        if ($("#transType").val() == null || $("#transType").val() == '' || $("#transType").val() == undefined) {
+            layer.msg('运输方式不能为空', {icon: 2, time: 2000});
+            return false;
+        }
+        if ($("#count").val() == null || $("#count").val() == '' || $("#count").val() == undefined) {
+            layer.msg('包装件数不能为空', {icon: 2, time: 2000});
+            return false;
+        }
+        if ($("#weight").val() == null || $("#weight").val() == '' || $("#weight").val() == undefined) {
+            layer.msg('货物重量不能为空', {icon: 2, time: 2000});
+            return false;
+        }
         var wayBills = new Array();
         var wayBill = new Object();
         var ShippingInfo = new Object();
         var SenderInfo = new Object();
         var ApplicationInfos = new Array();
-        var applicationInfo = new Object();
         wayBill.WayBillNumber = $("#amazonId").val();
         wayBill.ShippingMethodCode = $("#transType").val();
         wayBill.Length = $("#length").val();
@@ -819,9 +840,29 @@
         ShippingInfo.ShippingState = $("#stateOrRegion").val();
         ShippingInfo.ShippingZip = $("#postalCode").val();
         ShippingInfo.ShippingPhone = $("#phone").val();
-        var nTrs = customsTable.rows[0];//fnGetNodes获取表格所有行，nTrs[i]表示第i行tr对象
-        console.log('[获取数据]' + nTrs);//fnGetData获取一行的数据
         wayBill.ShippingInfo = ShippingInfo;
+        var tableData = getFormJson("#tableForm");
+        console.log('[获取数据]' + tableData.enName.length);
+        if (count > 1) {
+            for (var i = 0; i < tableData.enName.length; i++) {
+                var applicationInfo = new Object();
+                applicationInfo.PickingName = tableData.chnName[i];
+                applicationInfo.ApplicationName = tableData.enName[i];
+                applicationInfo.Qty = tableData.count[i];
+                applicationInfo.UnitPrice = tableData.price[i];
+                applicationInfo.UnitWeight = tableData.weight[i];
+                ApplicationInfos.push(applicationInfo);
+            }
+        } else {
+            var applicationInfo = new Object();
+            applicationInfo.PickingName = tableData.chnName;
+            applicationInfo.ApplicationName = tableData.enName;
+            applicationInfo.Qty = tableData.count;
+            applicationInfo.UnitPrice = tableData.price;
+            applicationInfo.UnitWeight = tableData.weight;
+            ApplicationInfos.push(applicationInfo);
+        }
+        wayBill.ApplicationInfos = ApplicationInfos;
         wayBills.push(wayBill);
         $.ajax({
             type: 'POST',
@@ -831,10 +872,14 @@
                 "json": JSON.stringify(wayBills)
             },
             success: function (data) {
-                layer.msg('添加备注成功!', {icon: 1, time: 1000});
+                if (data.code == 0) {
+                    layer.msg('发货成功!', {icon: 1, time: 1000});
+                } else {
+                    layer.msg('发货失败!', {icon: 1, time: 1000});
+                }
             },
             error: function (data) {
-                layer.msg('添加备注失败!', {icon: 2, time: 1000});
+                layer.msg('发货失败!', {icon: 2, time: 1000});
             }
         });
     }
