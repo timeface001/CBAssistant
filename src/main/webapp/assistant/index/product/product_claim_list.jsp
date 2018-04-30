@@ -38,7 +38,7 @@
         <div class="row cl">
             <label class="form-label col-xs-1 col-sm-1">分类：</label>
             <div class="formControls col-xs-2 col-sm-2">
-                <select id="source" name="source" class="select" style="height: 32px">
+                <select id="typeId" name="typeId" class="select" style="height: 32px">
                     <option value="">请选择</option>
                 </select>
             </div>
@@ -60,7 +60,7 @@
         <div class="row cl">
             <label class="form-label col-xs-1 col-sm-1">状态：</label>
             <div class="formControls col-xs-2 col-sm-2">
-                <select id="typeId" name="source" class="select" style="height: 32px">
+                <select id="pStatus" name="pStatus" class="select" style="height: 32px">
                     <option value="">请选择</option>
                     <option value="1">已加入预发布</option>
                     <option value="0">未加入预发布</option>
@@ -69,7 +69,6 @@
 
 
         </div>
-            <input type="hidden" name="pState" id="pStatus" >
     </form>
     <div class="mt-20">
         <%--<div id="btn-div" class="row text-c">
@@ -191,10 +190,10 @@
                     return val.quantity==null?"":val.quantity;
                 }},
                 {"data": function (val) {
-                    return "未加入预发布";
+                    return val.isPrepublish==1?"已加入待发布":"未加入待发布";
                 }},
                 {"data": function (val) {
-                    return "<p style='text-align: left'>创建</p><p style='text-align: left'>"+getMyDate(val.createTime)+"</p>"+(val.updateTime!=null?("<p style='text-align: left'>更新</p><p style='text-align: left'>"+getMyDate(val.updateTime)+"</p>"):"");
+                    return "<p style='text-align: left'>创建</p><p style='text-align: left'>"+getMyDate(val.createTime)+"</p>"+(val.publishTime!=null?("<p style='text-align: left'>更新</p><p style='text-align: left'>"+getMyDate(val.publishTime)+"</p>"):"");
                 }}
             ],
             "columnDefs": [
@@ -288,6 +287,7 @@
 
     /*产品-删除*/
     function deleteProduct(id) {
+
         if(id==null||id==""){
             id=getIDs();
         }

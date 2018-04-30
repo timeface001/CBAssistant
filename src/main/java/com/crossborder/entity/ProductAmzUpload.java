@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 public class ProductAmzUpload {
-    private BigDecimal id;
+    private String id;
 
     private String languageId;
 
@@ -14,7 +14,7 @@ public class ProductAmzUpload {
 
     private String externalProductId;
 
-    private String externalProductIdType;
+    private String productimagePt02;
 
     private String itemName;
 
@@ -68,7 +68,7 @@ public class ProductAmzUpload {
 
     private String productimagePt01;
 
-    private String productimagePt02;
+    private String publishTime;
 
     private String productimagePt03;
 
@@ -122,12 +122,16 @@ public class ProductAmzUpload {
 
     private String attachPath;
 
-    public BigDecimal getId() {
+    private String websiteType;
+
+    private String externalProductIdType;
+
+    public String getId() {
         return id;
     }
 
-    public void setId(BigDecimal id) {
-        this.id = id;
+    public void setId(String id) {
+        this.id = id == null ? null : id.trim();
     }
 
     public String getLanguageId() {
@@ -162,12 +166,12 @@ public class ProductAmzUpload {
         this.externalProductId = externalProductId == null ? null : externalProductId.trim();
     }
 
-    public String getExternalProductIdType() {
-        return externalProductIdType;
+    public String getProductimagePt02() {
+        return productimagePt02;
     }
 
-    public void setExternalProductIdType(String externalProductIdType) {
-        this.externalProductIdType = externalProductIdType == null ? null : externalProductIdType.trim();
+    public void setProductimagePt02(String productimagePt02) {
+        this.productimagePt02 = productimagePt02 == null ? null : productimagePt02.trim();
     }
 
     public String getItemName() {
@@ -378,12 +382,12 @@ public class ProductAmzUpload {
         this.productimagePt01 = productimagePt01 == null ? null : productimagePt01.trim();
     }
 
-    public String getProductimagePt02() {
-        return productimagePt02;
+    public String getPublishTime() {
+        return publishTime;
     }
 
-    public void setProductimagePt02(String productimagePt02) {
-        this.productimagePt02 = productimagePt02 == null ? null : productimagePt02.trim();
+    public void setPublishTime(String publishTime) {
+        this.publishTime = publishTime == null ? null : publishTime.trim();
     }
 
     public String getProductimagePt03() {
@@ -592,5 +596,21 @@ public class ProductAmzUpload {
 
     public void setAttachPath(String attachPath) {
         this.attachPath = attachPath == null ? null : attachPath.trim();
+    }
+
+    public String getWebsiteType() {
+        return websiteType;
+    }
+
+    public void setWebsiteType(String websiteType) {
+        this.websiteType = websiteType == null ? null : websiteType.trim();
+    }
+
+    public String getExternalProductIdType() {
+        return externalProductIdType;
+    }
+
+    public void setExternalProductIdType(String externalProductIdType) {
+        this.externalProductIdType = externalProductIdType == null ? null : externalProductIdType.trim();
     }
 }

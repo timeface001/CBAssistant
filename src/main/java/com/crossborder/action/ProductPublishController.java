@@ -45,9 +45,9 @@ public class ProductPublishController extends BaseController {
      */
     @RequestMapping(value = "/product/publish/list", produces = "text/plain;charset=UTF-8")
     @ResponseBody
-    public String productList(String data, Integer start, Integer length,Integer draw) {
+    public String productList(String data, Integer start, Integer length, Integer draw) {
         Map<String, Object> params = JSON.parseObject(data, Map.class);
-        Map<String,Object> result=new HashMap<>();
+        Map<String, Object> result = new HashMap<>();
         PageHelper.startPage((start == null || start < 1) ? 1 : start, (length == null || length < 1) ? 10 : length);
         List<ProductAmzUpload> list = productManagerService.selectAmzUploadList(params);
         PageInfo pageInfo = new PageInfo<>(list);
@@ -58,6 +58,27 @@ public class ProductPublishController extends BaseController {
         result.put("recordsFiltered", pageInfo.getTotal());
         return JSON.toJSONString(result);
     }
+
+    /**
+     * 产品列表
+     *
+     * @return
+     */
+    @RequestMapping(value = "/product/publish/detail", produces = "text/plain;charset=UTF-8")
+    public ModelAndView detail(String id,HttpServletRequest request) {
+        ModelAndView view = new ModelAndView("forward:/assistant/index/product/product_upload_edit.jsp");
+        ProductAmzUpload product = productManagerService.selectAmzUploadProduct(id);
+        request.setAttribute("product",product);
+        return view;
+    }
+
+    @RequestMapping(value = "/product/publish", produces = "text/plain;charset=UTF-8")
+    @ResponseBody
+    public String publish(ProductAmzUpload product) {
+         productManagerService.uploadProduct(product);
+        return ResponseGen.genSuccessData(null);
+    }
+
 
 
 

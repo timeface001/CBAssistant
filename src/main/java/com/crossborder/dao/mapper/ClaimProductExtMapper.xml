@@ -13,11 +13,11 @@
                AND  a.IS_PREPUBLISH=#{pStatus}
            </if>
            <if test="sku!=null and sku!=''">
-               AND  a.SKU LIKE concat( '%' , #{sku},'%' )
+               AND  a.SKU LIKE #{sku}
            </if>
 
            <if test="name!=null and name!=''">
-               AND  a.ITEM_CN LIKE concat( '%' , #{name},'%' ) ;
+               AND  a.ITEM_CN LIKE #{name}
            </if>
        </where>
       ORDER BY a.CREATE_TIME DESC

@@ -35,30 +35,27 @@
         class="Hui-iconfont">&#xe68f;</i></a></nav>
 <div class="page-container">
     <form id="productForm" class="form form-horizontal">
-        <%--<div class="row cl">
-            <label class="form-label col-xs-1 col-sm-1">来源：</label>
+        <div class="row cl">
+            <label class="form-label col-xs-2 col-sm-2">标题：</label>
             <div class="formControls col-xs-2 col-sm-2">
-                <select id="source" name="source" class="select" style="height: 32px">
+                <input type="text" name="name" placeholder=" " class="input-text">
+            </div>
+            <label class="form-label col-xs-1 col-sm-1">状态：</label>
+            <div class="formControls col-xs-2 col-sm-2">
+                <select id="pStatus" name="pStatus" class="select" style="height: 32px">
                     <option value="">请选择</option>
+                    <option value="0">未发布</option>
+                    <option value="2">发布成功</option>
+                    <option value="1">发布失败</option>
                 </select>
             </div>
-            <label class="form-label col-xs-2 col-sm-2">开始日期：</label>
-            <div class="formControls col-xs-2 col-sm-2">
-                <input type="text" onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'logmax\')||\'%y-%M-%d\'}' })"
-                       name="startTime" class="input-text Wdate" id="logmin" readonly>
-            </div>
-            <label class="form-label col-xs-2 col-sm-2">结束日期：</label>
-            <div class="formControls col-xs-2 col-sm-2">
-                <input type="text" onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'logmin\')}',maxDate:'%y-%M-%d' })"
-                       name="endTime" class="input-text Wdate" id="logmax" readonly>
-            </div>
+
             <div class="formControls col-xs-1 col-sm-1">
                 <button id="search" class="btn btn-success" type="button"><i class="Hui-iconfont">&#xe665;</i>
                 </button>
             </div>
 
-        </div>--%>
-            <input type="hidden" name="pState" id="pStatus" >
+        </div>
     </form>
     <div class="mt-20">
         <%--<div id="btn-div" class="row text-c">
@@ -124,25 +121,7 @@
     function initSelect() {
 
     }
-    /*查询订单*/
-    function reloadTable(id) {
-        if (id == 0) {
-            document.getElementById('pStatus').value = "";
-        } else {
-            $("#pStatus").val(id);
-        }
 
-        productTable.ajax.reload();
-        var btnDiv = document.getElementById("btn-div");
-        var btns = btnDiv.getElementsByTagName("a");
-        for (var i = 0; i < btns.length; i++) {
-            if (i == id) {
-                btns[i].className = 'btn btn-success radius'
-            } else {
-                btns[i].className = 'btn btn-default radius'
-            }
-        }
-    }
     /*初始化table*/
     function initializeTable() {
         var table = $("#productTable").DataTable({
@@ -172,7 +151,15 @@
                     return val.quantity==null?"":val.quantity;
                 }},
                 {"data": function (val) {
-                    return "未发布";
+                    if(val.publishStatus=="0"){
+                        return "未发布";
+                    }
+                    if(val.publishStatus=="1"){
+                        return "发布失败";
+                    }
+                    if(val.publishStatus=="2"){
+                        return "发布成功";
+                    }
                 }},
                 {"data": function (val) {
                     return "<p style='text-align: left'>创建:</p><p style='text-align: left'>"+getMyDate(val.createTime)+"</p>"+"<p style='text-align: left'>发布时间</p><p style='text-align: left'>"+getMyDate(val.updateTime)+"</p>";
@@ -190,9 +177,9 @@
                     "targets": [8],
                     "data": "id",
                     "render": function (data, type, full) {
-                        return( full.publishStatus!="2"?"<a style='text-decoration:none' title=''  onClick=\"publishProduct('" + full.ID + "')\"')>发布</a>":"") +
+                        return( full.publishStatus!="2"?"<a style='text-decoration:none' title=''  onClick=\"publishProduct('" + full.id + "')\"')>发布</a>":"") +
                             "&nbsp;&nbsp;" +
-                            "<a style='text-decoration:none' title='删除'  onClick=\"editProduct('" + full.id + "')\"')>删除</a>" ;
+                            "<a style='text-decoration:none' title='删除'  onClick=\"deleteProduct('" + full.id + "')\"')>删除</a>" ;
                     }
                 }
             ],
@@ -297,6 +284,10 @@
 
     /*产品-删除*/
     function deleteProduct(id) {
+
+        alert("删除等等");
+        return
+            ;
         if(id==null||id==""){
             id=getIDs();
         }
@@ -327,6 +318,10 @@
             ids.push($(val).val());
         });
          return ids.join(",");
+    }
+    
+    function publishProduct(id) {
+        layer_show("发布", '<%=request.getContextPath()%>/product/publish/detail?id='+id, 800);
     }
 
     //将时间戳格式化

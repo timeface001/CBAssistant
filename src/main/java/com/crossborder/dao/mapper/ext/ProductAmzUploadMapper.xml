@@ -2,12 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.crossborder.dao.mapper.ext.ProductAmzUploadMapper">
   <resultMap id="BaseResultMap" type="com.crossborder.entity.ProductAmzUpload">
-    <id column="a_ID" jdbcType="DECIMAL" property="id" />
+    <id column="a_ID" jdbcType="VARCHAR" property="id" />
     <result column="a_LANGUAGE_ID" jdbcType="VARCHAR" property="languageId" />
     <result column="a_TEMPLATETYPE" jdbcType="VARCHAR" property="templatetype" />
     <result column="a_ITEM_SKU" jdbcType="VARCHAR" property="itemSku" />
     <result column="a_EXTERNAL_PRODUCT_ID" jdbcType="VARCHAR" property="externalProductId" />
-    <result column="a_EXTERNAL_PRODUCT_ID_TYPE" jdbcType="VARCHAR" property="externalProductIdType" />
+    <result column="a_PRODUCTIMAGE_PT02" jdbcType="VARCHAR" property="productimagePt02" />
     <result column="a_ITEM_NAME" jdbcType="VARCHAR" property="itemName" />
     <result column="a_BRAND_NAME" jdbcType="VARCHAR" property="brandName" />
     <result column="a_MANUFACTURER" jdbcType="VARCHAR" property="manufacturer" />
@@ -34,7 +34,7 @@
     <result column="a_GENERIC_KEYWORDS5" jdbcType="VARCHAR" property="genericKeywords5" />
     <result column="a_PRODUCTIMAGE_MAIN" jdbcType="VARCHAR" property="productimageMain" />
     <result column="a_PRODUCTIMAGE_PT01" jdbcType="VARCHAR" property="productimagePt01" />
-    <result column="a_PRODUCTIMAGE_PT02" jdbcType="VARCHAR" property="productimagePt02" />
+    <result column="a_PUBLISH_TIME" jdbcType="VARCHAR" property="publishTime" />
     <result column="a_PRODUCTIMAGE_PT03" jdbcType="VARCHAR" property="productimagePt03" />
     <result column="a_PRODUCTIMAGE_PT04" jdbcType="VARCHAR" property="productimagePt04" />
     <result column="a_PRODUCTIMAGE_PT05" jdbcType="VARCHAR" property="productimagePt05" />
@@ -61,10 +61,12 @@
     <result column="a_PRODUCT_AMZ_ID" jdbcType="VARCHAR" property="productAmzId" />
     <result column="a_MAIN_PATH" jdbcType="VARCHAR" property="mainPath" />
     <result column="a_ATTACH_PATH" jdbcType="VARCHAR" property="attachPath" />
+    <result column="a_WEBSITE_TYPE" jdbcType="VARCHAR" property="websiteType" />
+    <result column="a_EXTERNAL_PRODUCT_ID_TYPE" jdbcType="VARCHAR" property="externalProductIdType" />
   </resultMap>
   <sql id="Base_Column_List">
     a.ID as a_ID, a.LANGUAGE_ID as a_LANGUAGE_ID, a.TEMPLATETYPE as a_TEMPLATETYPE, a.ITEM_SKU as a_ITEM_SKU, 
-    a.EXTERNAL_PRODUCT_ID as a_EXTERNAL_PRODUCT_ID, a.EXTERNAL_PRODUCT_ID_TYPE as a_EXTERNAL_PRODUCT_ID_TYPE, 
+    a.EXTERNAL_PRODUCT_ID as a_EXTERNAL_PRODUCT_ID, a.PRODUCTIMAGE_PT02 as a_PRODUCTIMAGE_PT02, 
     a.ITEM_NAME as a_ITEM_NAME, a.BRAND_NAME as a_BRAND_NAME, a.MANUFACTURER as a_MANUFACTURER, 
     a.PART_NUMBER as a_PART_NUMBER, a.PRODUCT_DESCRIPTION as a_PRODUCT_DESCRIPTION, a.FEED_PRODUCT_TYPE as a_FEED_PRODUCT_TYPE, 
     a.UPDATE_DELETE as a_UPDATE_DELETE, a.STANDARD_PRICE as a_STANDARD_PRICE, a.QUANTITY as a_QUANTITY, 
@@ -74,31 +76,31 @@
     a.BROWSE_NODES as a_BROWSE_NODES, a.GENERIC_KEYWORDS1 as a_GENERIC_KEYWORDS1, a.GENERIC_KEYWORDS2 as a_GENERIC_KEYWORDS2, 
     a.GENERIC_KEYWORDS3 as a_GENERIC_KEYWORDS3, a.GENERIC_KEYWORDS4 as a_GENERIC_KEYWORDS4, 
     a.GENERIC_KEYWORDS5 as a_GENERIC_KEYWORDS5, a.PRODUCTIMAGE_MAIN as a_PRODUCTIMAGE_MAIN, 
-    a.PRODUCTIMAGE_PT01 as a_PRODUCTIMAGE_PT01, a.PRODUCTIMAGE_PT02 as a_PRODUCTIMAGE_PT02, 
-    a.PRODUCTIMAGE_PT03 as a_PRODUCTIMAGE_PT03, a.PRODUCTIMAGE_PT04 as a_PRODUCTIMAGE_PT04, 
-    a.PRODUCTIMAGE_PT05 as a_PRODUCTIMAGE_PT05, a.PRODUCTIMAGE_PT06 as a_PRODUCTIMAGE_PT06, 
-    a.PRODUCTIMAGE_PT07 as a_PRODUCTIMAGE_PT07, a.PRODUCTIMAGE_PT08 as a_PRODUCTIMAGE_PT08, 
-    a.PARENT_CHILD as a_PARENT_CHILD, a.PARENT_SKU as a_PARENT_SKU, a.RELATIONSHIP_TYPE as a_RELATIONSHIP_TYPE, 
-    a.VARIATION_THEME as a_VARIATION_THEME, a.COLOR_NAME as a_COLOR_NAME, a.COLOR_MAP as a_COLOR_MAP, 
-    a.SIZE_NAME as a_SIZE_NAME, a.SIZE_MAP as a_SIZE_MAP, a.P_STATE as a_P_STATE, a.MATERIAL_TYPE as a_MATERIAL_TYPE, 
+    a.PRODUCTIMAGE_PT01 as a_PRODUCTIMAGE_PT01, a.PUBLISH_TIME as a_PUBLISH_TIME, a.PRODUCTIMAGE_PT03 as a_PRODUCTIMAGE_PT03, 
+    a.PRODUCTIMAGE_PT04 as a_PRODUCTIMAGE_PT04, a.PRODUCTIMAGE_PT05 as a_PRODUCTIMAGE_PT05, 
+    a.PRODUCTIMAGE_PT06 as a_PRODUCTIMAGE_PT06, a.PRODUCTIMAGE_PT07 as a_PRODUCTIMAGE_PT07, 
+    a.PRODUCTIMAGE_PT08 as a_PRODUCTIMAGE_PT08, a.PARENT_CHILD as a_PARENT_CHILD, a.PARENT_SKU as a_PARENT_SKU, 
+    a.RELATIONSHIP_TYPE as a_RELATIONSHIP_TYPE, a.VARIATION_THEME as a_VARIATION_THEME, 
+    a.COLOR_NAME as a_COLOR_NAME, a.COLOR_MAP as a_COLOR_MAP, a.SIZE_NAME as a_SIZE_NAME, 
+    a.SIZE_MAP as a_SIZE_MAP, a.P_STATE as a_P_STATE, a.MATERIAL_TYPE as a_MATERIAL_TYPE, 
     a.ITEM_PACKAGE_QUANTITY as a_ITEM_PACKAGE_QUANTITY, a.SHOP_ID as a_SHOP_ID, a.SALE_PRICE as a_SALE_PRICE, 
     a.SALE_FROM_DATE as a_SALE_FROM_DATE, a.SALE_END_DATE as a_SALE_END_DATE, a.PUBLISH_STATUS as a_PUBLISH_STATUS, 
     a.CREATE_TIME as a_CREATE_TIME, a.PRODUCT_AMZ_ID as a_PRODUCT_AMZ_ID, a.MAIN_PATH as a_MAIN_PATH, 
-    a.ATTACH_PATH as a_ATTACH_PATH
+    a.ATTACH_PATH as a_ATTACH_PATH, a.WEBSITE_TYPE as a_WEBSITE_TYPE, a.EXTERNAL_PRODUCT_ID_TYPE as a_EXTERNAL_PRODUCT_ID_TYPE
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.math.BigDecimal" resultMap="BaseResultMap">
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from T_PRODUCT_ITEM_AMZ_UPLOAD a
-    where a.ID = #{id,jdbcType=DECIMAL}
+    where a.ID = #{id,jdbcType=VARCHAR}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.math.BigDecimal">
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from T_PRODUCT_ITEM_AMZ_UPLOAD
-    where ID = #{id,jdbcType=DECIMAL}
+    where ID = #{id,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.crossborder.entity.ProductAmzUpload">
     insert into T_PRODUCT_ITEM_AMZ_UPLOAD (ID, LANGUAGE_ID, TEMPLATETYPE, 
-      ITEM_SKU, EXTERNAL_PRODUCT_ID, EXTERNAL_PRODUCT_ID_TYPE, 
+      ITEM_SKU, EXTERNAL_PRODUCT_ID, PRODUCTIMAGE_PT02, 
       ITEM_NAME, BRAND_NAME, MANUFACTURER, 
       PART_NUMBER, PRODUCT_DESCRIPTION, FEED_PRODUCT_TYPE, 
       UPDATE_DELETE, STANDARD_PRICE, QUANTITY, 
@@ -107,7 +109,7 @@
       BULLET_POINT3, BULLET_POINT4, BULLET_POINT5, 
       BROWSE_NODES, GENERIC_KEYWORDS1, GENERIC_KEYWORDS2, 
       GENERIC_KEYWORDS3, GENERIC_KEYWORDS4, GENERIC_KEYWORDS5, 
-      PRODUCTIMAGE_MAIN, PRODUCTIMAGE_PT01, PRODUCTIMAGE_PT02, 
+      PRODUCTIMAGE_MAIN, PRODUCTIMAGE_PT01, PUBLISH_TIME, 
       PRODUCTIMAGE_PT03, PRODUCTIMAGE_PT04, PRODUCTIMAGE_PT05, 
       PRODUCTIMAGE_PT06, PRODUCTIMAGE_PT07, PRODUCTIMAGE_PT08, 
       PARENT_CHILD, PARENT_SKU, RELATIONSHIP_TYPE, 
@@ -116,9 +118,10 @@
       MATERIAL_TYPE, ITEM_PACKAGE_QUANTITY, SHOP_ID, 
       SALE_PRICE, SALE_FROM_DATE, SALE_END_DATE, 
       PUBLISH_STATUS, CREATE_TIME, PRODUCT_AMZ_ID, 
-      MAIN_PATH, ATTACH_PATH)
-    values (#{id,jdbcType=DECIMAL}, #{languageId,jdbcType=VARCHAR}, #{templatetype,jdbcType=VARCHAR}, 
-      #{itemSku,jdbcType=VARCHAR}, #{externalProductId,jdbcType=VARCHAR}, #{externalProductIdType,jdbcType=VARCHAR}, 
+      MAIN_PATH, ATTACH_PATH, WEBSITE_TYPE, 
+      EXTERNAL_PRODUCT_ID_TYPE)
+    values (#{id,jdbcType=VARCHAR}, #{languageId,jdbcType=VARCHAR}, #{templatetype,jdbcType=VARCHAR}, 
+      #{itemSku,jdbcType=VARCHAR}, #{externalProductId,jdbcType=VARCHAR}, #{productimagePt02,jdbcType=VARCHAR}, 
       #{itemName,jdbcType=VARCHAR}, #{brandName,jdbcType=VARCHAR}, #{manufacturer,jdbcType=VARCHAR}, 
       #{partNumber,jdbcType=VARCHAR}, #{productDescription,jdbcType=VARCHAR}, #{feedProductType,jdbcType=VARCHAR}, 
       #{updateDelete,jdbcType=VARCHAR}, #{standardPrice,jdbcType=DECIMAL}, #{quantity,jdbcType=DECIMAL}, 
@@ -127,7 +130,7 @@
       #{bulletPoint3,jdbcType=VARCHAR}, #{bulletPoint4,jdbcType=VARCHAR}, #{bulletPoint5,jdbcType=VARCHAR}, 
       #{browseNodes,jdbcType=VARCHAR}, #{genericKeywords1,jdbcType=VARCHAR}, #{genericKeywords2,jdbcType=VARCHAR}, 
       #{genericKeywords3,jdbcType=VARCHAR}, #{genericKeywords4,jdbcType=VARCHAR}, #{genericKeywords5,jdbcType=VARCHAR}, 
-      #{productimageMain,jdbcType=VARCHAR}, #{productimagePt01,jdbcType=VARCHAR}, #{productimagePt02,jdbcType=VARCHAR}, 
+      #{productimageMain,jdbcType=VARCHAR}, #{productimagePt01,jdbcType=VARCHAR}, #{publishTime,jdbcType=VARCHAR}, 
       #{productimagePt03,jdbcType=VARCHAR}, #{productimagePt04,jdbcType=VARCHAR}, #{productimagePt05,jdbcType=VARCHAR}, 
       #{productimagePt06,jdbcType=VARCHAR}, #{productimagePt07,jdbcType=VARCHAR}, #{productimagePt08,jdbcType=VARCHAR}, 
       #{parentChild,jdbcType=VARCHAR}, #{parentSku,jdbcType=VARCHAR}, #{relationshipType,jdbcType=VARCHAR}, 
@@ -136,7 +139,8 @@
       #{materialType,jdbcType=VARCHAR}, #{itemPackageQuantity,jdbcType=DECIMAL}, #{shopId,jdbcType=VARCHAR}, 
       #{salePrice,jdbcType=DECIMAL}, #{saleFromDate,jdbcType=DATE}, #{saleEndDate,jdbcType=DATE}, 
       #{publishStatus,jdbcType=CHAR}, #{createTime,jdbcType=DATE}, #{productAmzId,jdbcType=VARCHAR}, 
-      #{mainPath,jdbcType=VARCHAR}, #{attachPath,jdbcType=VARCHAR})
+      #{mainPath,jdbcType=VARCHAR}, #{attachPath,jdbcType=VARCHAR}, #{websiteType,jdbcType=VARCHAR}, 
+      #{externalProductIdType,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.crossborder.entity.ProductAmzUpload">
     insert into T_PRODUCT_ITEM_AMZ_UPLOAD
@@ -156,8 +160,8 @@
       <if test="externalProductId != null">
         EXTERNAL_PRODUCT_ID,
       </if>
-      <if test="externalProductIdType != null">
-        EXTERNAL_PRODUCT_ID_TYPE,
+      <if test="productimagePt02 != null">
+        PRODUCTIMAGE_PT02,
       </if>
       <if test="itemName != null">
         ITEM_NAME,
@@ -237,8 +241,8 @@
       <if test="productimagePt01 != null">
         PRODUCTIMAGE_PT01,
       </if>
-      <if test="productimagePt02 != null">
-        PRODUCTIMAGE_PT02,
+      <if test="publishTime != null">
+        PUBLISH_TIME,
       </if>
       <if test="productimagePt03 != null">
         PRODUCTIMAGE_PT03,
@@ -318,10 +322,16 @@
       <if test="attachPath != null">
         ATTACH_PATH,
       </if>
+      <if test="websiteType != null">
+        WEBSITE_TYPE,
+      </if>
+      <if test="externalProductIdType != null">
+        EXTERNAL_PRODUCT_ID_TYPE,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
-        #{id,jdbcType=DECIMAL},
+        #{id,jdbcType=VARCHAR},
       </if>
       <if test="languageId != null">
         #{languageId,jdbcType=VARCHAR},
@@ -335,8 +345,8 @@
       <if test="externalProductId != null">
         #{externalProductId,jdbcType=VARCHAR},
       </if>
-      <if test="externalProductIdType != null">
-        #{externalProductIdType,jdbcType=VARCHAR},
+      <if test="productimagePt02 != null">
+        #{productimagePt02,jdbcType=VARCHAR},
       </if>
       <if test="itemName != null">
         #{itemName,jdbcType=VARCHAR},
@@ -416,8 +426,8 @@
       <if test="productimagePt01 != null">
         #{productimagePt01,jdbcType=VARCHAR},
       </if>
-      <if test="productimagePt02 != null">
-        #{productimagePt02,jdbcType=VARCHAR},
+      <if test="publishTime != null">
+        #{publishTime,jdbcType=VARCHAR},
       </if>
       <if test="productimagePt03 != null">
         #{productimagePt03,jdbcType=VARCHAR},
@@ -497,6 +507,12 @@
       <if test="attachPath != null">
         #{attachPath,jdbcType=VARCHAR},
       </if>
+      <if test="websiteType != null">
+        #{websiteType,jdbcType=VARCHAR},
+      </if>
+      <if test="externalProductIdType != null">
+        #{externalProductIdType,jdbcType=VARCHAR},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.crossborder.entity.ProductAmzUpload">
@@ -514,8 +530,8 @@
       <if test="externalProductId != null">
         EXTERNAL_PRODUCT_ID = #{externalProductId,jdbcType=VARCHAR},
       </if>
-      <if test="externalProductIdType != null">
-        EXTERNAL_PRODUCT_ID_TYPE = #{externalProductIdType,jdbcType=VARCHAR},
+      <if test="productimagePt02 != null">
+        PRODUCTIMAGE_PT02 = #{productimagePt02,jdbcType=VARCHAR},
       </if>
       <if test="itemName != null">
         ITEM_NAME = #{itemName,jdbcType=VARCHAR},
@@ -595,8 +611,8 @@
       <if test="productimagePt01 != null">
         PRODUCTIMAGE_PT01 = #{productimagePt01,jdbcType=VARCHAR},
       </if>
-      <if test="productimagePt02 != null">
-        PRODUCTIMAGE_PT02 = #{productimagePt02,jdbcType=VARCHAR},
+      <if test="publishTime != null">
+        PUBLISH_TIME = #{publishTime,jdbcType=VARCHAR},
       </if>
       <if test="productimagePt03 != null">
         PRODUCTIMAGE_PT03 = #{productimagePt03,jdbcType=VARCHAR},
@@ -676,8 +692,14 @@
       <if test="attachPath != null">
         ATTACH_PATH = #{attachPath,jdbcType=VARCHAR},
       </if>
+      <if test="websiteType != null">
+        WEBSITE_TYPE = #{websiteType,jdbcType=VARCHAR},
+      </if>
+      <if test="externalProductIdType != null">
+        EXTERNAL_PRODUCT_ID_TYPE = #{externalProductIdType,jdbcType=VARCHAR},
+      </if>
     </set>
-    where ID = #{id,jdbcType=DECIMAL}
+    where ID = #{id,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.crossborder.entity.ProductAmzUpload">
     update T_PRODUCT_ITEM_AMZ_UPLOAD
@@ -685,7 +707,7 @@
       TEMPLATETYPE = #{templatetype,jdbcType=VARCHAR},
       ITEM_SKU = #{itemSku,jdbcType=VARCHAR},
       EXTERNAL_PRODUCT_ID = #{externalProductId,jdbcType=VARCHAR},
-      EXTERNAL_PRODUCT_ID_TYPE = #{externalProductIdType,jdbcType=VARCHAR},
+      PRODUCTIMAGE_PT02 = #{productimagePt02,jdbcType=VARCHAR},
       ITEM_NAME = #{itemName,jdbcType=VARCHAR},
       BRAND_NAME = #{brandName,jdbcType=VARCHAR},
       MANUFACTURER = #{manufacturer,jdbcType=VARCHAR},
@@ -712,7 +734,7 @@
       GENERIC_KEYWORDS5 = #{genericKeywords5,jdbcType=VARCHAR},
       PRODUCTIMAGE_MAIN = #{productimageMain,jdbcType=VARCHAR},
       PRODUCTIMAGE_PT01 = #{productimagePt01,jdbcType=VARCHAR},
-      PRODUCTIMAGE_PT02 = #{productimagePt02,jdbcType=VARCHAR},
+      PUBLISH_TIME = #{publishTime,jdbcType=VARCHAR},
       PRODUCTIMAGE_PT03 = #{productimagePt03,jdbcType=VARCHAR},
       PRODUCTIMAGE_PT04 = #{productimagePt04,jdbcType=VARCHAR},
       PRODUCTIMAGE_PT05 = #{productimagePt05,jdbcType=VARCHAR},
@@ -738,7 +760,9 @@
       CREATE_TIME = #{createTime,jdbcType=DATE},
       PRODUCT_AMZ_ID = #{productAmzId,jdbcType=VARCHAR},
       MAIN_PATH = #{mainPath,jdbcType=VARCHAR},
-      ATTACH_PATH = #{attachPath,jdbcType=VARCHAR}
-    where ID = #{id,jdbcType=DECIMAL}
+      ATTACH_PATH = #{attachPath,jdbcType=VARCHAR},
+      WEBSITE_TYPE = #{websiteType,jdbcType=VARCHAR},
+      EXTERNAL_PRODUCT_ID_TYPE = #{externalProductIdType,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
   </update>
 </mapper>
