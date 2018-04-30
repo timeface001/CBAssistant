@@ -87,6 +87,7 @@
                 <th width="100">产品图</th>
                 <th width="100">来源</th>
                 <th width="150">标题</th>
+                <th width="150">分类</th>
                 <th width="150">描述</th>
                 <th width="60">售价</th>
                 <th width="100">认领记录</th>
@@ -170,6 +171,8 @@
                 }},
                 {"data": function (val) {
                     return val.NAME==null?"":val.NAME;}},
+                {"data": function (val) {
+                    return "";}},
                 {"data": function (val) {
                     return val.INFO==null?"":val.INFO;
                 }},
