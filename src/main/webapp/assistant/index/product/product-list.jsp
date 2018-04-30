@@ -195,7 +195,7 @@
                     }
                 },
                 {
-                    "targets": [9],
+                    "targets": [10],
                     "data": "ID",
                     "render": function (data, type, full) {
                         return( full.P_STATE=="1"?"<a style='text-decoration:none' title='认领'  onClick=\"claimProduct('" + full.ID + "')\"')>认领</a>" +

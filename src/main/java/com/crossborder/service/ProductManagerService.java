@@ -274,7 +274,7 @@ public class ProductManagerService {
                 upload.setQuantity(var.getQuantity());
                 upload.setProductAmzId(product.getId());
                 upload.setCreateTime(new Date());
-                upload.setItemSku(var.getSku());
+                //upload.setItemSku(var.getSku());
 
                 i += productAmzUploadDao.insertSelective(upload);
 
@@ -329,6 +329,7 @@ public class ProductManagerService {
         //1发布失败 2发布成功
         product.setPublishStatus("2");
         product.setUpdateDelete("update");
+        product.setPublishTime(new Date());
 
 
         productAmzUploadDao.updateByPrimaryKeySelective(product);

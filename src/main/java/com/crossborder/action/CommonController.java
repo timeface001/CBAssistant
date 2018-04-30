@@ -47,10 +47,10 @@ public class CommonController {
             paramMap.put("password", password);
             List<Map<String, Object>> list = commonService.login(paramMap);
             if (list != null && list.size() == 1) {
-                if (list.get(0).get("ISLOGIN").toString().equals("1")) {
+                /*if (list.get(0).get("ISLOGIN").toString().equals("1")) {
                     map.put("code", "1");
                     map.put("msg", "当前用户已登录");
-                } else {
+                } else */{
                     paramMap.put("isLogin", 1);
                     commonService.updateLogin(paramMap);
                     session.setAttribute("user", list.get(0));
