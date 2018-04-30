@@ -21,7 +21,12 @@ public class LoginInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
                              Object handle) throws Exception {
         String requestUri = request.getRequestURI();
-        if (requestUri.equals("/CBAssistant/common/login")) {
+        if (requestUri.equals("/CBAssistant/common/login") ||
+                requestUri.equals("/CBAssistant/assistant/index/login.jsp") ||
+                requestUri.equals("/CBAssistant") ||
+                requestUri.contains("/CBAssistant/assistant/lib/") ||
+                requestUri.contains("/CBAssistant/assistant/static/") ||
+                requestUri.contains("/CBAssistant/assistant/common/")) {
             return true;
         }
         //创建session

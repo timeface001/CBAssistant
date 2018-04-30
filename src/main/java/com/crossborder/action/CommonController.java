@@ -57,7 +57,7 @@ public class CommonController {
                     map.put("data", list.get(0));
                     map.put("code", "0");
                     map.put("msg", "登录成功");
-                }
+               }
             } else {
                 map.put("code", "-10");
                 map.put("msg", "登录失败");
