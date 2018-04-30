@@ -68,7 +68,7 @@ public class ProductAmzUpload {
 
     private String productimagePt01;
 
-    private String publishTime;
+    private Date publishTime;
 
     private String productimagePt03;
 
@@ -382,12 +382,12 @@ public class ProductAmzUpload {
         this.productimagePt01 = productimagePt01 == null ? null : productimagePt01.trim();
     }
 
-    public String getPublishTime() {
+    public Date getPublishTime() {
         return publishTime;
     }
 
-    public void setPublishTime(String publishTime) {
-        this.publishTime = publishTime == null ? null : publishTime.trim();
+    public void setPublishTime(Date publishTime) {
+        this.publishTime = publishTime;
     }
 
     public String getProductimagePt03() {

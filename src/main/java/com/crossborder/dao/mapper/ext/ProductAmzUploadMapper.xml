@@ -34,7 +34,7 @@
     <result column="a_GENERIC_KEYWORDS5" jdbcType="VARCHAR" property="genericKeywords5" />
     <result column="a_PRODUCTIMAGE_MAIN" jdbcType="VARCHAR" property="productimageMain" />
     <result column="a_PRODUCTIMAGE_PT01" jdbcType="VARCHAR" property="productimagePt01" />
-    <result column="a_PUBLISH_TIME" jdbcType="VARCHAR" property="publishTime" />
+    <result column="a_PUBLISH_TIME" jdbcType="DATE" property="publishTime" />
     <result column="a_PRODUCTIMAGE_PT03" jdbcType="VARCHAR" property="productimagePt03" />
     <result column="a_PRODUCTIMAGE_PT04" jdbcType="VARCHAR" property="productimagePt04" />
     <result column="a_PRODUCTIMAGE_PT05" jdbcType="VARCHAR" property="productimagePt05" />
@@ -130,7 +130,7 @@
       #{bulletPoint3,jdbcType=VARCHAR}, #{bulletPoint4,jdbcType=VARCHAR}, #{bulletPoint5,jdbcType=VARCHAR}, 
       #{browseNodes,jdbcType=VARCHAR}, #{genericKeywords1,jdbcType=VARCHAR}, #{genericKeywords2,jdbcType=VARCHAR}, 
       #{genericKeywords3,jdbcType=VARCHAR}, #{genericKeywords4,jdbcType=VARCHAR}, #{genericKeywords5,jdbcType=VARCHAR}, 
-      #{productimageMain,jdbcType=VARCHAR}, #{productimagePt01,jdbcType=VARCHAR}, #{publishTime,jdbcType=VARCHAR}, 
+      #{productimageMain,jdbcType=VARCHAR}, #{productimagePt01,jdbcType=VARCHAR}, #{publishTime,jdbcType=DATE}, 
       #{productimagePt03,jdbcType=VARCHAR}, #{productimagePt04,jdbcType=VARCHAR}, #{productimagePt05,jdbcType=VARCHAR}, 
       #{productimagePt06,jdbcType=VARCHAR}, #{productimagePt07,jdbcType=VARCHAR}, #{productimagePt08,jdbcType=VARCHAR}, 
       #{parentChild,jdbcType=VARCHAR}, #{parentSku,jdbcType=VARCHAR}, #{relationshipType,jdbcType=VARCHAR}, 
@@ -427,7 +427,7 @@
         #{productimagePt01,jdbcType=VARCHAR},
       </if>
       <if test="publishTime != null">
-        #{publishTime,jdbcType=VARCHAR},
+        #{publishTime,jdbcType=DATE},
       </if>
       <if test="productimagePt03 != null">
         #{productimagePt03,jdbcType=VARCHAR},
@@ -612,7 +612,7 @@
         PRODUCTIMAGE_PT01 = #{productimagePt01,jdbcType=VARCHAR},
       </if>
       <if test="publishTime != null">
-        PUBLISH_TIME = #{publishTime,jdbcType=VARCHAR},
+        PUBLISH_TIME = #{publishTime,jdbcType=DATE},
       </if>
       <if test="productimagePt03 != null">
         PRODUCTIMAGE_PT03 = #{productimagePt03,jdbcType=VARCHAR},
@@ -734,7 +734,7 @@
       GENERIC_KEYWORDS5 = #{genericKeywords5,jdbcType=VARCHAR},
       PRODUCTIMAGE_MAIN = #{productimageMain,jdbcType=VARCHAR},
       PRODUCTIMAGE_PT01 = #{productimagePt01,jdbcType=VARCHAR},
-      PUBLISH_TIME = #{publishTime,jdbcType=VARCHAR},
+      PUBLISH_TIME = #{publishTime,jdbcType=DATE},
       PRODUCTIMAGE_PT03 = #{productimagePt03,jdbcType=VARCHAR},
       PRODUCTIMAGE_PT04 = #{productimagePt04,jdbcType=VARCHAR},
       PRODUCTIMAGE_PT05 = #{productimagePt05,jdbcType=VARCHAR},

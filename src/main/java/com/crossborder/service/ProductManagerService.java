@@ -1,6 +1,7 @@
 package com.crossborder.service;
 
 import com.alibaba.fastjson.JSON;
+import com.amazonservices.mws.orders._2013_09_01.MarketplaceWebServiceOrdersClient;
 import com.crossborder.dao.ProductAmzUploadDao;
 import com.crossborder.dao.ProductClaimDao;
 import com.crossborder.dao.ProductManagerDao;
@@ -273,7 +274,7 @@ public class ProductManagerService {
                 upload.setQuantity(var.getQuantity());
                 upload.setProductAmzId(product.getId());
                 upload.setCreateTime(new Date());
-                upload.setItemSku(var.getSku());
+                //upload.setItemSku(var.getSku());
 
                 i += productAmzUploadDao.insertSelective(upload);
 
@@ -323,9 +324,12 @@ public class ProductManagerService {
     public void uploadProduct(ProductAmzUpload product) {
         //todo 上传亚马逊
 
+        MarketplaceWebServiceOrdersClient client=new MarketplaceWebServiceOrdersClient("","","","");
+
         //1发布失败 2发布成功
         product.setPublishStatus("2");
         product.setUpdateDelete("update");
+        product.setPublishTime(new Date());
 
 
         productAmzUploadDao.updateByPrimaryKeySelective(product);

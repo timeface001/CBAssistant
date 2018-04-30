@@ -50,7 +50,11 @@ public class CommonController {
                 /*if (list.get(0).get("ISLOGIN").toString().equals("1")) {
                     map.put("code", "1");
                     map.put("msg", "当前用户已登录");
+<<<<<<< HEAD
                 } else {*/
+=======
+                } else */{
+>>>>>>> 6fc3d26b18bedd5072f7b479a0a9ffaccc1759a2
                     paramMap.put("isLogin", 1);
                     commonService.updateLogin(paramMap);
                     session.setAttribute("user", list.get(0));

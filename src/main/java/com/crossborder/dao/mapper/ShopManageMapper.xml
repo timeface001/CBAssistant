@@ -35,6 +35,9 @@
         <if test="id != null and id != '' and id != 'null'">
             AND t1.SHOP_ID = #{id,jdbcType=VARCHAR}
         </if>
+        <if test="status !=null and status !=''">
+            AND t1.SHOP_STATE = #{status}
+        </if>
         <if test="createUser !=null and createUser !=''">
             AND t1.CREATE_USER = #{createUser,jdbcType=VARCHAR}
         </if>

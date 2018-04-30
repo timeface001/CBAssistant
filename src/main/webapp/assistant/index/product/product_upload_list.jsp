@@ -162,7 +162,7 @@
                     }
                 }},
                 {"data": function (val) {
-                    return "<p style='text-align: left'>创建:</p><p style='text-align: left'>"+getMyDate(val.createTime)+"</p>"+"<p style='text-align: left'>发布时间</p><p style='text-align: left'>"+getMyDate(val.updateTime)+"</p>";
+                    return "<p style='text-align: left'>创建:</p><p style='text-align: left'>"+getMyDate(val.createTime)+"</p>"+"<p style='text-align: left'>发布时间</p><p style='text-align: left'>"+getMyDate(val.publishTime)+"</p>";
                 }}
             ],
             "columnDefs": [
@@ -177,7 +177,7 @@
                     "targets": [8],
                     "data": "id",
                     "render": function (data, type, full) {
-                        return( full.publishStatus!="2"?"<a style='text-decoration:none' title=''  onClick=\"publishProduct('" + full.id + "')\"')>发布</a>":"") +
+                        return( "<a style='text-decoration:none' title=''  onClick=\"publishProduct('" + full.id + "')\"')>发布</a>") +
                             "&nbsp;&nbsp;" +
                             "<a style='text-decoration:none' title='删除'  onClick=\"deleteProduct('" + full.id + "')\"')>删除</a>" ;
                     }

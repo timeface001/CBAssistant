@@ -41,9 +41,33 @@
 <body>
 <article class="page-container">
 
-    <blockquote class="layui-elem-quote">产品信息</blockquote>
     <form class="layui-form" action="" id="addProductForm">
+
+    <blockquote class="layui-elem-quote">店铺信息</blockquote>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">店铺</label>
+
+        <div class="layui-inline">
+            <select required name="shopId" id="shopId">
+                <option value="">请选择</option>
+                <c:forEach var="keys" items="${maps}">
+                    <optgroup label="${keys.key}">
+                     <c:set value="${keys.value}" var="keysName"/>
+                      <c:forEach var="keyName" items="${keysName}">
+                          <option value="${keyName.key}">${keyName.value}</option>
+                      </c:forEach>
+
+                    </optgroup>
+                </c:forEach>
+            </select>
+        </div>
+    </div>
+
+    <blockquote class="layui-elem-quote">产品信息</blockquote>
+
         <input name="id" type="hidden" value="${product.id}"/>
+
 
         <div class="layui-form-item">
             <label class="layui-form-label">ParentSKU</label>
@@ -175,6 +199,23 @@
                 elem: '.saleEnd' //促销结束时间
             });
         });
+
+
+        $("#shopId").val('${product.shopId}');
+
+        $("input[name='websiteType']").each(function (i,val) {
+            if($(val).val()=='${product.websiteType}'){
+
+                $(val).click();
+            }
+        })
+
+
+        $("#externalProductIdType option").each(function (i,val) {
+            if($(val).text()=='${product.externalProductIdType}'){
+                $(val).attr("selected","true");
+            }
+        })
 
         layui.use('form', function () {
             var form = layui.form;
