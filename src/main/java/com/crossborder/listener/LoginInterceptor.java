@@ -20,7 +20,6 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
                              Object handle) throws Exception {
-<<<<<<< HEAD
         String requestUri = request.getRequestURI();
         if (requestUri.equals("/CBAssistant/common/login") ||
                 requestUri.equals("/CBAssistant/assistant/index/login.jsp") ||
@@ -28,11 +27,6 @@ public class LoginInterceptor implements HandlerInterceptor {
                 requestUri.contains("/CBAssistant/assistant/lib/") ||
                 requestUri.contains("/CBAssistant/assistant/static/") ||
                 requestUri.contains("/CBAssistant/assistant/common/")) {
-=======
-        return true;
-        /*String requestUri = request.getRequestURI();
-        if (requestUri.equals("/CBAssistant/common/login")) {
->>>>>>> a8c49818cbbfeadfe869b9977240861d995bae12
             return true;
         }
         //创建session
@@ -47,7 +41,7 @@ public class LoginInterceptor implements HandlerInterceptor {
             response.sendRedirect(request.getContextPath() + "/assistant/index/login.jsp");
             return false;
         }
-        return true;*/
+        return true;
     }
 
     @Override
