@@ -328,8 +328,8 @@ public class ProductManagerService {
 
         MarketplaceWebServiceOrdersClient client=new MarketplaceWebServiceOrdersClient("","","","");
 
-        //1发布失败 2发布成功
-        product.setPublishStatus("2");
+        //1发布失败 2发布成功 3发布中
+        product.setPublishStatus("3");
         product.setUpdateDelete("update");
         product.setPublishTime(new Date());
 

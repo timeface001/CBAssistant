@@ -75,7 +75,7 @@
                         <li>意大利语</li>
                     </ul>
                     <div class="layui-tab-content" style="height: 50px;">
-                        <div class="layui-tab-item layui-show"><input type="text" name="title" value="${product.itemCn}"
+                        <div class="layui-tab-item layui-show"><input type="text" name="itemCn" value="${product.itemCn}"
                                                                       lay-verify="required" placeholder=""
                                                                       autocomplete="off" class="layui-input"></div>
                         <div class="layui-tab-item"><input type="text" name="itemUk" value="${product.itemUk}"

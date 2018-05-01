@@ -45,6 +45,7 @@
                 <select id="pStatus" name="pStatus" class="select" style="height: 32px">
                     <option value="">请选择</option>
                     <option value="0">未发布</option>
+                    <option value="3">发布中</option>
                     <option value="2">发布成功</option>
                     <option value="1">发布失败</option>
                 </select>
@@ -163,6 +164,9 @@
                     }
                     if(val.publishStatus=="2"){
                         return "发布成功";
+                    }
+                    if(val.publishStatus=="3"){
+                        return "发布中";
                     }
                 }},
                 {"data": function (val) {
