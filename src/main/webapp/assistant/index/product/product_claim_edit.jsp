@@ -216,7 +216,7 @@
                 </div>
             </div>
             <div class="layui-inline">
-                <button class="layui-btn translate" style="margin-bottom: 125px;">一键翻译</button>
+                <button class="layui-btn translate"  type="button" style="margin-bottom: 125px;">一键翻译</button>
             </div>
 
 
@@ -1175,10 +1175,22 @@
         var vArr=[];
 
         var isContainsEmpty=false;
-        for(var i=0;i<inputs.length;i++){
-            vArr.push($(inputs[i]).val());
-            if($(inputs[i]).val()==null||$.trim($(inputs[i]).val()).length==0){
-                isContainsEmpty=true;
+        if(inputs.length>0){
+            for(var i=0;i<inputs.length;i++){
+
+                vArr.push($(inputs[i]).val());
+                if($(inputs[i]).val()==null||$.trim($(inputs[i]).val()).length==0){
+                    isContainsEmpty=true;
+                }
+            }
+        }else{
+            var areas=$(this).parent().prev().find(".layui-show textarea");
+            for(var i=0;i<areas.length;i++){
+console.log($(areas[i]).val());
+                vArr.push($(areas[i]).val());
+                if($(areas[i]).val()==null||$.trim($(areas[i]).val()).length==0){
+                    isContainsEmpty=true;
+                }
             }
         }
         if(isContainsEmpty){
@@ -1187,17 +1199,53 @@
         }
 
         var content=$(this).parent().prev().find(".layui-tab-content");
-        console.log(vArr);
         if(currentLanguage==="中文"){
+            valueDisplay("cn",content,vArr);
+        }else if(currentLanguage==="英语"){
+            valueDisplay("uk",content,vArr);
+        }else if(currentLanguage==="日语"){
+            valueDisplay("jp",content,vArr);
+        }else if(currentLanguage==="德语"){
+            valueDisplay("de",content,vArr);
+        }else if(currentLanguage==="法语"){
+            valueDisplay("fr",content,vArr);
+        }else if(currentLanguage==="西班牙语"){
+            valueDisplay("es",content,vArr);
+        }else if(currentLanguage==="意大利语"){
+            valueDisplay("it",content,vArr);
+        }
+
+    });
+
+        function  valueDisplay(language,$content,arrv) {
+
             $.ajax({
                 type: 'POST',
                 url: '<%=request.getContextPath()%>/product/translate',
                 dataType: 'json',
-                data: {"data": JSON.stringify(vArr),language:"cn"},
+                data: {"data": JSON.stringify(arrv),language:language},
                 success: function (data) {
 
                     if (data.success) {
-                        valueDisplay(data.data,content);
+                        var arr=data.data;
+                        console.log(data);
+                        $content.children("div ").each(function (i,val) {
+                            var isSingle=arr.length==1,isContainsTextarea=$(val).find("textarea").length>0;
+                            if(isSingle){
+                                console.log(isContainsTextarea);
+                                if(isContainsTextarea){
+                                    $(val).find("textarea").eq(0).val(getSingleValue(arr[0],i));
+                                }else{
+                                    $(val).find("input").eq(0).val(getSingleValue(arr[0],i));
+                                }
+                            }else{
+                                $(val).find("div input").eq(0).val(getSingleValue(arr[0],i));
+                                $(val).find("div input").eq(1).val(getSingleValue(arr[1],i));
+                                $(val).find("div input").eq(2).val(getSingleValue(arr[2],i));
+                                $(val).find("div input").eq(3).val(getSingleValue(arr[3],i));
+                                $(val).find("div input").eq(4).val(getSingleValue(arr[4],i));
+                            }
+                        });
                     } else {
                         layer.msg('翻译失败!', {icon: 5, time: 1000});
 
@@ -1207,35 +1255,7 @@
                     layer.msg('翻译失败!', {icon: 5, time: 1000});
                 }
             });
-        }else if(currentLanguage==="英语"){
 
-        }else if(currentLanguage==="日语"){
-
-        }else if(currentLanguage==="德语"){
-
-        }else if(currentLanguage==="法语"){
-
-        }else if(currentLanguage==="西班牙语"){
-
-        }else if(currentLanguage==="意大利语"){
-
-        }
-
-    });
-
-        function  valueDisplay(arr,$content) {
-            $content.children("div ").each(function (i,val) {
-               var isSingle=arr.length==1;
-                if(isSingle){
-                    $(val).find("input").eq(0).val(getSingleValue(arr[0],i));
-                }else{
-                    $(val).find("div input").eq(0).val(getSingleValue(arr[0],i));
-                    $(val).find("div input").eq(1).val(getSingleValue(arr[1],i));
-                    $(val).find("div input").eq(2).val(getSingleValue(arr[2],i));
-                    $(val).find("div input").eq(3).val(getSingleValue(arr[3],i));
-                    $(val).find("div input").eq(4).val(getSingleValue(arr[4],i));
-                }
-            });
         }
 
         function getSingleValue(dto,i) {

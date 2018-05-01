@@ -182,32 +182,32 @@ public class ProductClaimController extends BaseController {
                 for(String s:dataList){
                     midList.add(api.uk2Zh(s));
                 }
-                resultList=getTanslateList(dataList);
+                resultList=getTanslateList(midList);
             }else if(language.equals("de")){
                 for(String s:dataList){
                     midList.add(api.de2Zh(s));
                 }
-                resultList=getTanslateList(dataList);
+                resultList=getTanslateList(midList);
             }else if(language.equals("jp")){
                 for(String s:dataList){
                     midList.add(api.jp2Zh(s));
                 }
-                resultList=getTanslateList(dataList);
+                resultList=getTanslateList(midList);
             }else if(language.equals("it")){
                 for(String s:dataList){
                     midList.add(api.it2Zh(s));
                 }
-                resultList=getTanslateList(dataList);
+                resultList=getTanslateList(midList);
             }else if(language.equals("es")){
                 for(String s:dataList){
                     midList.add(api.es2Zh(s));
                 }
-                resultList=getTanslateList(dataList);
+                resultList=getTanslateList(midList);
             }else if(language.equals("fr")){
                 for(String s:dataList){
                     midList.add(api.fr2Zh(s));
                 }
-                resultList=getTanslateList(dataList);
+                resultList=getTanslateList(midList);
             }
         } catch (Exception e) {
             e.printStackTrace();
