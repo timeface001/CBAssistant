@@ -614,8 +614,8 @@
         <div class="layui-form-item">
             <div class="layui-input-block">
                 <button class="layui-btn" lay-submit lay-filter="formDemo">保存</button>
-                <a type="button" class="layui-btn layui-btn-primary"
-                        href="<%=request.getContextPath()%>/assistant/index/product/product_claim_list.jsp'">
+                <a type="button" class="layui-btn layui-btn-primary" onclick="location.href='<%=request.getContextPath()%>/assistant/index/product/product_claim_list.jsp'"
+                        href="javascript:void(0);">
                     返回
                 </a>
             </div>
