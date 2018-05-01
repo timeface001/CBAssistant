@@ -89,13 +89,15 @@
         <div class="layui-form-item">
             <label class="layui-form-label">产品分类</label>
             <div class="layui-inline">
-                <input type="text" name="productType" value="${product.externalProductId}" id="productType"
+                <input type="text" name="productType" value="" id="productType"
                        lay-verify="required" placeholder="" autocomplete="off" class="layui-input ">
             </div>
             <div class="layui-inline">
                 <label class="layui-form-label">分类类型</label>
-                <input type="text" name="externalProductId" value="${product.externalProductId}" id="type"
+                <div class="layui-input-inline" style="width: 100px;">
+                <input type="text" name="externalProductId" value="" id="type"
                        lay-verify="required" placeholder="" autocomplete="off" class="layui-input ">
+                </div>
             </div>
         </div>
 
