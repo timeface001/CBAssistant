@@ -1,6 +1,11 @@
 package com.crossborder.action;
 
 import com.alibaba.fastjson.JSON;
+import com.amazonaws.mws.MarketplaceWebService;
+import com.amazonaws.mws.MarketplaceWebServiceClient;
+import com.amazonaws.mws.MarketplaceWebServiceConfig;
+import com.amazonaws.mws.MarketplaceWebServiceException;
+import com.amazonaws.mws.model.*;
 import com.crossborder.entity.ProductAmzUpload;
 import com.crossborder.service.ProductManagerService;
 import com.crossborder.service.ShopManageService;
@@ -15,10 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * 预发布产品--
@@ -109,6 +111,7 @@ public class ProductPublishController extends BaseController {
          productManagerService.uploadProduct(product);
         return ResponseGen.genSuccessData(null);
     }
+
 
 
 

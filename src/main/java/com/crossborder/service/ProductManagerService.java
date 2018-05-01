@@ -92,6 +92,8 @@ public class ProductManagerService {
                 claimProduct.setCreateTime(new Date());
                 claimProduct.setCreateUser(GeneralUtils.getUserId());
                 claimProduct.setSkuType("1");
+                claimProduct.setSource(product.get("SOURCE")!=null?product.get("SOURCE").toString():"");
+                claimProduct.setImagePath(product.get("IMAGE_PATH")!=null?product.get("IMAGE_PATH").toString():"");
                 claimProductExtMapper.insertSelective(claimProduct);
 
             }
@@ -274,7 +276,7 @@ public class ProductManagerService {
                 upload.setQuantity(var.getQuantity());
                 upload.setProductAmzId(product.getId());
                 upload.setCreateTime(new Date());
-                //upload.setItemSku(var.getSku());
+                upload.setAmzSku(product.getSku());
 
                 i += productAmzUploadDao.insertSelective(upload);
 

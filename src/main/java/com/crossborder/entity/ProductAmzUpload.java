@@ -126,6 +126,8 @@ public class ProductAmzUpload {
 
     private String externalProductIdType;
 
+    private String amzSku;
+
     public String getId() {
         return id;
     }
@@ -612,5 +614,13 @@ public class ProductAmzUpload {
 
     public void setExternalProductIdType(String externalProductIdType) {
         this.externalProductIdType = externalProductIdType == null ? null : externalProductIdType.trim();
+    }
+
+    public String getAmzSku() {
+        return amzSku;
+    }
+
+    public void setAmzSku(String amzSku) {
+        this.amzSku = amzSku == null ? null : amzSku.trim();
     }
 }

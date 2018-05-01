@@ -14,69 +14,71 @@
         ORDER BY a.CREATE_TIME DESC
     </select>
 
+
     <resultMap id="BaseResultMap" type="com.crossborder.entity.ProductAmzUpload">
-        <id column="a_ID" jdbcType="VARCHAR" property="id" />
-        <result column="a_LANGUAGE_ID" jdbcType="VARCHAR" property="languageId" />
-        <result column="a_TEMPLATETYPE" jdbcType="VARCHAR" property="templatetype" />
-        <result column="a_ITEM_SKU" jdbcType="VARCHAR" property="itemSku" />
-        <result column="a_EXTERNAL_PRODUCT_ID" jdbcType="VARCHAR" property="externalProductId" />
-        <result column="a_PRODUCTIMAGE_PT02" jdbcType="VARCHAR" property="productimagePt02" />
-        <result column="a_ITEM_NAME" jdbcType="VARCHAR" property="itemName" />
-        <result column="a_BRAND_NAME" jdbcType="VARCHAR" property="brandName" />
-        <result column="a_MANUFACTURER" jdbcType="VARCHAR" property="manufacturer" />
-        <result column="a_PART_NUMBER" jdbcType="VARCHAR" property="partNumber" />
-        <result column="a_PRODUCT_DESCRIPTION" jdbcType="VARCHAR" property="productDescription" />
-        <result column="a_FEED_PRODUCT_TYPE" jdbcType="VARCHAR" property="feedProductType" />
-        <result column="a_UPDATE_DELETE" jdbcType="VARCHAR" property="updateDelete" />
-        <result column="a_STANDARD_PRICE" jdbcType="DECIMAL" property="standardPrice" />
-        <result column="a_QUANTITY" jdbcType="DECIMAL" property="quantity" />
-        <result column="a_CONDITION_TYPE" jdbcType="VARCHAR" property="conditionType" />
-        <result column="a_ITEM_WEIGHT" jdbcType="DECIMAL" property="itemWeight" />
-        <result column="a_WEBSITE_SHIPPING_WEIGHT" jdbcType="DECIMAL" property="websiteShippingWeight" />
-        <result column="a_WEIGHT_UNIT" jdbcType="VARCHAR" property="weightUnit" />
-        <result column="a_BULLET_POINT1" jdbcType="VARCHAR" property="bulletPoint1" />
-        <result column="a_BULLET_POINT2" jdbcType="VARCHAR" property="bulletPoint2" />
-        <result column="a_BULLET_POINT3" jdbcType="VARCHAR" property="bulletPoint3" />
-        <result column="a_BULLET_POINT4" jdbcType="VARCHAR" property="bulletPoint4" />
-        <result column="a_BULLET_POINT5" jdbcType="VARCHAR" property="bulletPoint5" />
-        <result column="a_BROWSE_NODES" jdbcType="VARCHAR" property="browseNodes" />
-        <result column="a_GENERIC_KEYWORDS1" jdbcType="VARCHAR" property="genericKeywords1" />
-        <result column="a_GENERIC_KEYWORDS2" jdbcType="VARCHAR" property="genericKeywords2" />
-        <result column="a_GENERIC_KEYWORDS3" jdbcType="VARCHAR" property="genericKeywords3" />
-        <result column="a_GENERIC_KEYWORDS4" jdbcType="VARCHAR" property="genericKeywords4" />
-        <result column="a_GENERIC_KEYWORDS5" jdbcType="VARCHAR" property="genericKeywords5" />
-        <result column="a_PRODUCTIMAGE_MAIN" jdbcType="VARCHAR" property="productimageMain" />
-        <result column="a_PRODUCTIMAGE_PT01" jdbcType="VARCHAR" property="productimagePt01" />
-        <result column="a_PUBLISH_TIME" jdbcType="DATE" property="publishTime" />
-        <result column="a_PRODUCTIMAGE_PT03" jdbcType="VARCHAR" property="productimagePt03" />
-        <result column="a_PRODUCTIMAGE_PT04" jdbcType="VARCHAR" property="productimagePt04" />
-        <result column="a_PRODUCTIMAGE_PT05" jdbcType="VARCHAR" property="productimagePt05" />
-        <result column="a_PRODUCTIMAGE_PT06" jdbcType="VARCHAR" property="productimagePt06" />
-        <result column="a_PRODUCTIMAGE_PT07" jdbcType="VARCHAR" property="productimagePt07" />
-        <result column="a_PRODUCTIMAGE_PT08" jdbcType="VARCHAR" property="productimagePt08" />
-        <result column="a_PARENT_CHILD" jdbcType="VARCHAR" property="parentChild" />
-        <result column="a_PARENT_SKU" jdbcType="VARCHAR" property="parentSku" />
-        <result column="a_RELATIONSHIP_TYPE" jdbcType="VARCHAR" property="relationshipType" />
-        <result column="a_VARIATION_THEME" jdbcType="VARCHAR" property="variationTheme" />
-        <result column="a_COLOR_NAME" jdbcType="VARCHAR" property="colorName" />
-        <result column="a_COLOR_MAP" jdbcType="VARCHAR" property="colorMap" />
-        <result column="a_SIZE_NAME" jdbcType="VARCHAR" property="sizeName" />
-        <result column="a_SIZE_MAP" jdbcType="VARCHAR" property="sizeMap" />
-        <result column="a_P_STATE" jdbcType="CHAR" property="pState" />
-        <result column="a_MATERIAL_TYPE" jdbcType="VARCHAR" property="materialType" />
-        <result column="a_ITEM_PACKAGE_QUANTITY" jdbcType="DECIMAL" property="itemPackageQuantity" />
-        <result column="a_SHOP_ID" jdbcType="VARCHAR" property="shopId" />
-        <result column="a_SALE_PRICE" jdbcType="DECIMAL" property="salePrice" />
-        <result column="a_SALE_FROM_DATE" jdbcType="DATE" property="saleFromDate" />
-        <result column="a_SALE_END_DATE" jdbcType="DATE" property="saleEndDate" />
-        <result column="a_PUBLISH_STATUS" jdbcType="CHAR" property="publishStatus" />
-        <result column="a_CREATE_TIME" jdbcType="DATE" property="createTime" />
-        <result column="a_PRODUCT_AMZ_ID" jdbcType="VARCHAR" property="productAmzId" />
-        <result column="a_MAIN_PATH" jdbcType="VARCHAR" property="mainPath" />
-        <result column="a_ATTACH_PATH" jdbcType="VARCHAR" property="attachPath" />
-        <result column="a_WEBSITE_TYPE" jdbcType="VARCHAR" property="websiteType" />
-        <result column="a_EXTERNAL_PRODUCT_ID_TYPE" jdbcType="VARCHAR" property="externalProductIdType" />
-    </resultMap>
+    <id column="a_ID" jdbcType="VARCHAR" property="id" />
+    <result column="a_LANGUAGE_ID" jdbcType="VARCHAR" property="languageId" />
+    <result column="a_TEMPLATETYPE" jdbcType="VARCHAR" property="templatetype" />
+    <result column="a_ITEM_SKU" jdbcType="VARCHAR" property="itemSku" />
+    <result column="a_EXTERNAL_PRODUCT_ID" jdbcType="VARCHAR" property="externalProductId" />
+    <result column="a_PRODUCTIMAGE_PT02" jdbcType="VARCHAR" property="productimagePt02" />
+    <result column="a_ITEM_NAME" jdbcType="VARCHAR" property="itemName" />
+    <result column="a_BRAND_NAME" jdbcType="VARCHAR" property="brandName" />
+    <result column="a_MANUFACTURER" jdbcType="VARCHAR" property="manufacturer" />
+    <result column="a_PART_NUMBER" jdbcType="VARCHAR" property="partNumber" />
+    <result column="a_PRODUCT_DESCRIPTION" jdbcType="VARCHAR" property="productDescription" />
+    <result column="a_FEED_PRODUCT_TYPE" jdbcType="VARCHAR" property="feedProductType" />
+    <result column="a_UPDATE_DELETE" jdbcType="VARCHAR" property="updateDelete" />
+    <result column="a_STANDARD_PRICE" jdbcType="DECIMAL" property="standardPrice" />
+    <result column="a_QUANTITY" jdbcType="DECIMAL" property="quantity" />
+    <result column="a_CONDITION_TYPE" jdbcType="VARCHAR" property="conditionType" />
+    <result column="a_ITEM_WEIGHT" jdbcType="DECIMAL" property="itemWeight" />
+    <result column="a_WEBSITE_SHIPPING_WEIGHT" jdbcType="DECIMAL" property="websiteShippingWeight" />
+    <result column="a_WEIGHT_UNIT" jdbcType="VARCHAR" property="weightUnit" />
+    <result column="a_BULLET_POINT1" jdbcType="VARCHAR" property="bulletPoint1" />
+    <result column="a_BULLET_POINT2" jdbcType="VARCHAR" property="bulletPoint2" />
+    <result column="a_BULLET_POINT3" jdbcType="VARCHAR" property="bulletPoint3" />
+    <result column="a_BULLET_POINT4" jdbcType="VARCHAR" property="bulletPoint4" />
+    <result column="a_BULLET_POINT5" jdbcType="VARCHAR" property="bulletPoint5" />
+    <result column="a_BROWSE_NODES" jdbcType="VARCHAR" property="browseNodes" />
+    <result column="a_GENERIC_KEYWORDS1" jdbcType="VARCHAR" property="genericKeywords1" />
+    <result column="a_GENERIC_KEYWORDS2" jdbcType="VARCHAR" property="genericKeywords2" />
+    <result column="a_GENERIC_KEYWORDS3" jdbcType="VARCHAR" property="genericKeywords3" />
+    <result column="a_GENERIC_KEYWORDS4" jdbcType="VARCHAR" property="genericKeywords4" />
+    <result column="a_GENERIC_KEYWORDS5" jdbcType="VARCHAR" property="genericKeywords5" />
+    <result column="a_PRODUCTIMAGE_MAIN" jdbcType="VARCHAR" property="productimageMain" />
+    <result column="a_PRODUCTIMAGE_PT01" jdbcType="VARCHAR" property="productimagePt01" />
+    <result column="a_PUBLISH_TIME" jdbcType="DATE" property="publishTime" />
+    <result column="a_PRODUCTIMAGE_PT03" jdbcType="VARCHAR" property="productimagePt03" />
+    <result column="a_PRODUCTIMAGE_PT04" jdbcType="VARCHAR" property="productimagePt04" />
+    <result column="a_PRODUCTIMAGE_PT05" jdbcType="VARCHAR" property="productimagePt05" />
+    <result column="a_PRODUCTIMAGE_PT06" jdbcType="VARCHAR" property="productimagePt06" />
+    <result column="a_PRODUCTIMAGE_PT07" jdbcType="VARCHAR" property="productimagePt07" />
+    <result column="a_PRODUCTIMAGE_PT08" jdbcType="VARCHAR" property="productimagePt08" />
+    <result column="a_PARENT_CHILD" jdbcType="VARCHAR" property="parentChild" />
+    <result column="a_PARENT_SKU" jdbcType="VARCHAR" property="parentSku" />
+    <result column="a_RELATIONSHIP_TYPE" jdbcType="VARCHAR" property="relationshipType" />
+    <result column="a_VARIATION_THEME" jdbcType="VARCHAR" property="variationTheme" />
+    <result column="a_COLOR_NAME" jdbcType="VARCHAR" property="colorName" />
+    <result column="a_COLOR_MAP" jdbcType="VARCHAR" property="colorMap" />
+    <result column="a_SIZE_NAME" jdbcType="VARCHAR" property="sizeName" />
+    <result column="a_SIZE_MAP" jdbcType="VARCHAR" property="sizeMap" />
+    <result column="a_P_STATE" jdbcType="CHAR" property="pState" />
+    <result column="a_MATERIAL_TYPE" jdbcType="VARCHAR" property="materialType" />
+    <result column="a_ITEM_PACKAGE_QUANTITY" jdbcType="DECIMAL" property="itemPackageQuantity" />
+    <result column="a_SHOP_ID" jdbcType="VARCHAR" property="shopId" />
+    <result column="a_SALE_PRICE" jdbcType="DECIMAL" property="salePrice" />
+    <result column="a_SALE_FROM_DATE" jdbcType="DATE" property="saleFromDate" />
+    <result column="a_SALE_END_DATE" jdbcType="DATE" property="saleEndDate" />
+    <result column="a_PUBLISH_STATUS" jdbcType="CHAR" property="publishStatus" />
+    <result column="a_CREATE_TIME" jdbcType="DATE" property="createTime" />
+    <result column="a_PRODUCT_AMZ_ID" jdbcType="VARCHAR" property="productAmzId" />
+    <result column="a_MAIN_PATH" jdbcType="VARCHAR" property="mainPath" />
+    <result column="a_ATTACH_PATH" jdbcType="VARCHAR" property="attachPath" />
+    <result column="a_WEBSITE_TYPE" jdbcType="VARCHAR" property="websiteType" />
+    <result column="a_EXTERNAL_PRODUCT_ID_TYPE" jdbcType="VARCHAR" property="externalProductIdType" />
+    <result column="a_AMZ_SKU" jdbcType="VARCHAR" property="amzSku" />
+</resultMap>
     <sql id="Base_Column_List">
         a.ID as a_ID, a.LANGUAGE_ID as a_LANGUAGE_ID, a.TEMPLATETYPE as a_TEMPLATETYPE, a.ITEM_SKU as a_ITEM_SKU,
         a.EXTERNAL_PRODUCT_ID as a_EXTERNAL_PRODUCT_ID, a.PRODUCTIMAGE_PT02 as a_PRODUCTIMAGE_PT02,
@@ -99,7 +101,8 @@
         a.ITEM_PACKAGE_QUANTITY as a_ITEM_PACKAGE_QUANTITY, a.SHOP_ID as a_SHOP_ID, a.SALE_PRICE as a_SALE_PRICE,
         a.SALE_FROM_DATE as a_SALE_FROM_DATE, a.SALE_END_DATE as a_SALE_END_DATE, a.PUBLISH_STATUS as a_PUBLISH_STATUS,
         a.CREATE_TIME as a_CREATE_TIME, a.PRODUCT_AMZ_ID as a_PRODUCT_AMZ_ID, a.MAIN_PATH as a_MAIN_PATH,
-        a.ATTACH_PATH as a_ATTACH_PATH, a.WEBSITE_TYPE as a_WEBSITE_TYPE, a.EXTERNAL_PRODUCT_ID_TYPE as a_EXTERNAL_PRODUCT_ID_TYPE
+        a.ATTACH_PATH as a_ATTACH_PATH, a.WEBSITE_TYPE as a_WEBSITE_TYPE, a.EXTERNAL_PRODUCT_ID_TYPE as a_EXTERNAL_PRODUCT_ID_TYPE,
+        a.AMZ_SKU as a_AMZ_SKU
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
         select
@@ -132,7 +135,7 @@
         SALE_PRICE, SALE_FROM_DATE, SALE_END_DATE,
         PUBLISH_STATUS, CREATE_TIME, PRODUCT_AMZ_ID,
         MAIN_PATH, ATTACH_PATH, WEBSITE_TYPE,
-        EXTERNAL_PRODUCT_ID_TYPE)
+        EXTERNAL_PRODUCT_ID_TYPE, AMZ_SKU)
         values (SEQ_PRODUCT_AMZ_UPLOAD_ID.nextval, #{languageId,jdbcType=VARCHAR}, #{templatetype,jdbcType=VARCHAR},
         #{itemSku,jdbcType=VARCHAR}, #{externalProductId,jdbcType=VARCHAR}, #{productimagePt02,jdbcType=VARCHAR},
         #{itemName,jdbcType=VARCHAR}, #{brandName,jdbcType=VARCHAR}, #{manufacturer,jdbcType=VARCHAR},
@@ -153,12 +156,12 @@
         #{salePrice,jdbcType=DECIMAL}, #{saleFromDate,jdbcType=DATE}, #{saleEndDate,jdbcType=DATE},
         #{publishStatus,jdbcType=CHAR}, #{createTime,jdbcType=DATE}, #{productAmzId,jdbcType=VARCHAR},
         #{mainPath,jdbcType=VARCHAR}, #{attachPath,jdbcType=VARCHAR}, #{websiteType,jdbcType=VARCHAR},
-        #{externalProductIdType,jdbcType=VARCHAR})
+        #{externalProductIdType,jdbcType=VARCHAR}, #{amzSku,jdbcType=VARCHAR})
     </insert>
     <insert id="insertSelective" parameterType="com.crossborder.entity.ProductAmzUpload">
         insert into T_PRODUCT_ITEM_AMZ_UPLOAD
         <trim prefix="(" suffix=")" suffixOverrides=",">
-                ID,
+            ID,
             <if test="languageId != null">
                 LANGUAGE_ID,
             </if>
@@ -338,6 +341,9 @@
             </if>
             <if test="externalProductIdType != null">
                 EXTERNAL_PRODUCT_ID_TYPE,
+            </if>
+            <if test="amzSku != null">
+                AMZ_SKU,
             </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -521,6 +527,9 @@
             </if>
             <if test="externalProductIdType != null">
                 #{externalProductIdType,jdbcType=VARCHAR},
+            </if>
+            <if test="amzSku != null">
+                #{amzSku,jdbcType=VARCHAR},
             </if>
         </trim>
     </insert>
@@ -707,71 +716,75 @@
             <if test="externalProductIdType != null">
                 EXTERNAL_PRODUCT_ID_TYPE = #{externalProductIdType,jdbcType=VARCHAR},
             </if>
+            <if test="amzSku != null">
+                AMZ_SKU = #{amzSku,jdbcType=VARCHAR},
+            </if>
         </set>
         where ID = #{id,jdbcType=VARCHAR}
     </update>
     <update id="updateByPrimaryKey" parameterType="com.crossborder.entity.ProductAmzUpload">
-        update T_PRODUCT_ITEM_AMZ_UPLOAD
-        set LANGUAGE_ID = #{languageId,jdbcType=VARCHAR},
-        TEMPLATETYPE = #{templatetype,jdbcType=VARCHAR},
-        ITEM_SKU = #{itemSku,jdbcType=VARCHAR},
-        EXTERNAL_PRODUCT_ID = #{externalProductId,jdbcType=VARCHAR},
-        PRODUCTIMAGE_PT02 = #{productimagePt02,jdbcType=VARCHAR},
-        ITEM_NAME = #{itemName,jdbcType=VARCHAR},
-        BRAND_NAME = #{brandName,jdbcType=VARCHAR},
-        MANUFACTURER = #{manufacturer,jdbcType=VARCHAR},
-        PART_NUMBER = #{partNumber,jdbcType=VARCHAR},
-        PRODUCT_DESCRIPTION = #{productDescription,jdbcType=VARCHAR},
-        FEED_PRODUCT_TYPE = #{feedProductType,jdbcType=VARCHAR},
-        UPDATE_DELETE = #{updateDelete,jdbcType=VARCHAR},
-        STANDARD_PRICE = #{standardPrice,jdbcType=DECIMAL},
-        QUANTITY = #{quantity,jdbcType=DECIMAL},
-        CONDITION_TYPE = #{conditionType,jdbcType=VARCHAR},
-        ITEM_WEIGHT = #{itemWeight,jdbcType=DECIMAL},
-        WEBSITE_SHIPPING_WEIGHT = #{websiteShippingWeight,jdbcType=DECIMAL},
-        WEIGHT_UNIT = #{weightUnit,jdbcType=VARCHAR},
-        BULLET_POINT1 = #{bulletPoint1,jdbcType=VARCHAR},
-        BULLET_POINT2 = #{bulletPoint2,jdbcType=VARCHAR},
-        BULLET_POINT3 = #{bulletPoint3,jdbcType=VARCHAR},
-        BULLET_POINT4 = #{bulletPoint4,jdbcType=VARCHAR},
-        BULLET_POINT5 = #{bulletPoint5,jdbcType=VARCHAR},
-        BROWSE_NODES = #{browseNodes,jdbcType=VARCHAR},
-        GENERIC_KEYWORDS1 = #{genericKeywords1,jdbcType=VARCHAR},
-        GENERIC_KEYWORDS2 = #{genericKeywords2,jdbcType=VARCHAR},
-        GENERIC_KEYWORDS3 = #{genericKeywords3,jdbcType=VARCHAR},
-        GENERIC_KEYWORDS4 = #{genericKeywords4,jdbcType=VARCHAR},
-        GENERIC_KEYWORDS5 = #{genericKeywords5,jdbcType=VARCHAR},
-        PRODUCTIMAGE_MAIN = #{productimageMain,jdbcType=VARCHAR},
-        PRODUCTIMAGE_PT01 = #{productimagePt01,jdbcType=VARCHAR},
-        PUBLISH_TIME = #{publishTime,jdbcType=DATE},
-        PRODUCTIMAGE_PT03 = #{productimagePt03,jdbcType=VARCHAR},
-        PRODUCTIMAGE_PT04 = #{productimagePt04,jdbcType=VARCHAR},
-        PRODUCTIMAGE_PT05 = #{productimagePt05,jdbcType=VARCHAR},
-        PRODUCTIMAGE_PT06 = #{productimagePt06,jdbcType=VARCHAR},
-        PRODUCTIMAGE_PT07 = #{productimagePt07,jdbcType=VARCHAR},
-        PRODUCTIMAGE_PT08 = #{productimagePt08,jdbcType=VARCHAR},
-        PARENT_CHILD = #{parentChild,jdbcType=VARCHAR},
-        PARENT_SKU = #{parentSku,jdbcType=VARCHAR},
-        RELATIONSHIP_TYPE = #{relationshipType,jdbcType=VARCHAR},
-        VARIATION_THEME = #{variationTheme,jdbcType=VARCHAR},
-        COLOR_NAME = #{colorName,jdbcType=VARCHAR},
-        COLOR_MAP = #{colorMap,jdbcType=VARCHAR},
-        SIZE_NAME = #{sizeName,jdbcType=VARCHAR},
-        SIZE_MAP = #{sizeMap,jdbcType=VARCHAR},
-        P_STATE = #{pState,jdbcType=CHAR},
-        MATERIAL_TYPE = #{materialType,jdbcType=VARCHAR},
-        ITEM_PACKAGE_QUANTITY = #{itemPackageQuantity,jdbcType=DECIMAL},
-        SHOP_ID = #{shopId,jdbcType=VARCHAR},
-        SALE_PRICE = #{salePrice,jdbcType=DECIMAL},
-        SALE_FROM_DATE = #{saleFromDate,jdbcType=DATE},
-        SALE_END_DATE = #{saleEndDate,jdbcType=DATE},
-        PUBLISH_STATUS = #{publishStatus,jdbcType=CHAR},
-        CREATE_TIME = #{createTime,jdbcType=DATE},
-        PRODUCT_AMZ_ID = #{productAmzId,jdbcType=VARCHAR},
-        MAIN_PATH = #{mainPath,jdbcType=VARCHAR},
-        ATTACH_PATH = #{attachPath,jdbcType=VARCHAR},
-        WEBSITE_TYPE = #{websiteType,jdbcType=VARCHAR},
-        EXTERNAL_PRODUCT_ID_TYPE = #{externalProductIdType,jdbcType=VARCHAR}
-        where ID = #{id,jdbcType=VARCHAR}
+    update T_PRODUCT_ITEM_AMZ_UPLOAD
+    set LANGUAGE_ID = #{languageId,jdbcType=VARCHAR},
+    TEMPLATETYPE = #{templatetype,jdbcType=VARCHAR},
+    ITEM_SKU = #{itemSku,jdbcType=VARCHAR},
+    EXTERNAL_PRODUCT_ID = #{externalProductId,jdbcType=VARCHAR},
+    PRODUCTIMAGE_PT02 = #{productimagePt02,jdbcType=VARCHAR},
+    ITEM_NAME = #{itemName,jdbcType=VARCHAR},
+    BRAND_NAME = #{brandName,jdbcType=VARCHAR},
+    MANUFACTURER = #{manufacturer,jdbcType=VARCHAR},
+    PART_NUMBER = #{partNumber,jdbcType=VARCHAR},
+    PRODUCT_DESCRIPTION = #{productDescription,jdbcType=VARCHAR},
+    FEED_PRODUCT_TYPE = #{feedProductType,jdbcType=VARCHAR},
+    UPDATE_DELETE = #{updateDelete,jdbcType=VARCHAR},
+    STANDARD_PRICE = #{standardPrice,jdbcType=DECIMAL},
+    QUANTITY = #{quantity,jdbcType=DECIMAL},
+    CONDITION_TYPE = #{conditionType,jdbcType=VARCHAR},
+    ITEM_WEIGHT = #{itemWeight,jdbcType=DECIMAL},
+    WEBSITE_SHIPPING_WEIGHT = #{websiteShippingWeight,jdbcType=DECIMAL},
+    WEIGHT_UNIT = #{weightUnit,jdbcType=VARCHAR},
+    BULLET_POINT1 = #{bulletPoint1,jdbcType=VARCHAR},
+    BULLET_POINT2 = #{bulletPoint2,jdbcType=VARCHAR},
+    BULLET_POINT3 = #{bulletPoint3,jdbcType=VARCHAR},
+    BULLET_POINT4 = #{bulletPoint4,jdbcType=VARCHAR},
+    BULLET_POINT5 = #{bulletPoint5,jdbcType=VARCHAR},
+    BROWSE_NODES = #{browseNodes,jdbcType=VARCHAR},
+    GENERIC_KEYWORDS1 = #{genericKeywords1,jdbcType=VARCHAR},
+    GENERIC_KEYWORDS2 = #{genericKeywords2,jdbcType=VARCHAR},
+    GENERIC_KEYWORDS3 = #{genericKeywords3,jdbcType=VARCHAR},
+    GENERIC_KEYWORDS4 = #{genericKeywords4,jdbcType=VARCHAR},
+    GENERIC_KEYWORDS5 = #{genericKeywords5,jdbcType=VARCHAR},
+    PRODUCTIMAGE_MAIN = #{productimageMain,jdbcType=VARCHAR},
+    PRODUCTIMAGE_PT01 = #{productimagePt01,jdbcType=VARCHAR},
+    PUBLISH_TIME = #{publishTime,jdbcType=DATE},
+    PRODUCTIMAGE_PT03 = #{productimagePt03,jdbcType=VARCHAR},
+    PRODUCTIMAGE_PT04 = #{productimagePt04,jdbcType=VARCHAR},
+    PRODUCTIMAGE_PT05 = #{productimagePt05,jdbcType=VARCHAR},
+    PRODUCTIMAGE_PT06 = #{productimagePt06,jdbcType=VARCHAR},
+    PRODUCTIMAGE_PT07 = #{productimagePt07,jdbcType=VARCHAR},
+    PRODUCTIMAGE_PT08 = #{productimagePt08,jdbcType=VARCHAR},
+    PARENT_CHILD = #{parentChild,jdbcType=VARCHAR},
+    PARENT_SKU = #{parentSku,jdbcType=VARCHAR},
+    RELATIONSHIP_TYPE = #{relationshipType,jdbcType=VARCHAR},
+    VARIATION_THEME = #{variationTheme,jdbcType=VARCHAR},
+    COLOR_NAME = #{colorName,jdbcType=VARCHAR},
+    COLOR_MAP = #{colorMap,jdbcType=VARCHAR},
+    SIZE_NAME = #{sizeName,jdbcType=VARCHAR},
+    SIZE_MAP = #{sizeMap,jdbcType=VARCHAR},
+    P_STATE = #{pState,jdbcType=CHAR},
+    MATERIAL_TYPE = #{materialType,jdbcType=VARCHAR},
+    ITEM_PACKAGE_QUANTITY = #{itemPackageQuantity,jdbcType=DECIMAL},
+    SHOP_ID = #{shopId,jdbcType=VARCHAR},
+    SALE_PRICE = #{salePrice,jdbcType=DECIMAL},
+    SALE_FROM_DATE = #{saleFromDate,jdbcType=DATE},
+    SALE_END_DATE = #{saleEndDate,jdbcType=DATE},
+    PUBLISH_STATUS = #{publishStatus,jdbcType=CHAR},
+    CREATE_TIME = #{createTime,jdbcType=DATE},
+    PRODUCT_AMZ_ID = #{productAmzId,jdbcType=VARCHAR},
+    MAIN_PATH = #{mainPath,jdbcType=VARCHAR},
+    ATTACH_PATH = #{attachPath,jdbcType=VARCHAR},
+    WEBSITE_TYPE = #{websiteType,jdbcType=VARCHAR},
+    EXTERNAL_PRODUCT_ID_TYPE = #{externalProductIdType,jdbcType=VARCHAR},
+    AMZ_SKU = #{amzSku,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
     </update>
 </mapper>

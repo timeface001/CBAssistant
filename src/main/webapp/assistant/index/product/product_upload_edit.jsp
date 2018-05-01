@@ -70,7 +70,7 @@
 
 
         <div class="layui-form-item">
-            <label class="layui-form-label">ParentSKU</label>
+            <label class="layui-form-label">SKU前缀</label>
             <div class="layui-input-block">
                 <input type="text" name="itemSku" lay-verify="required" placeholder="" autocomplete="off"
                        class="layui-input" value="${product.itemSku}">
@@ -83,6 +83,19 @@
             <div class="layui-input-block">
                 <input type="text" name="itemName" value="${product.itemName}" id="itemName"
                        lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">产品分类</label>
+            <div class="layui-inline">
+                <input type="text" name="productType" value="${product.externalProductId}" id="productType"
+                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input ">
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">分类类型</label>
+                <input type="text" name="externalProductId" value="${product.externalProductId}" id="type"
+                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input ">
             </div>
         </div>
 

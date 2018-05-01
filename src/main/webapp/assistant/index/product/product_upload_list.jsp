@@ -30,7 +30,7 @@
 </head>
 <body>
 <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 产品管理 <span
-        class="c-gray en">&gt;</span> 产品列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" id="refresh"
+        class="c-gray en">&gt;</span> 预发布列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" id="refresh"
                                               href="javascript:location.replace(location.href);" title="刷新"><i
         class="Hui-iconfont">&#xe68f;</i></a></nav>
 <div class="page-container">
@@ -79,8 +79,9 @@
             <tr class="text-c">
                 <th width="25"><input type="checkbox" value="" name=""></th>
                 <th width="100">产品图</th>
-                <th width="60">国家</th>
+                <th width="60">语言</th>
                 <th width="150">标题</th>
+                <th width="100">SKU</th>
                 <th width="60">售价</th>
                 <th width="100">库存</th>
                 <th width="150">发布状况描述</th>
@@ -146,6 +147,9 @@
                 {"data": function (val) {
                     return val.itemName==null?"":val.itemName;
                 }},
+                {"data": function (val) {
+                    return val.itemSku==null?"":val.itemSku;
+                }},
                 {"data": "standardPrice"},
                 {"data": function (val) {
                     return val.quantity==null?"":val.quantity;
@@ -174,7 +178,7 @@
                     }
                 },
                 {
-                    "targets": [8],
+                    "targets": [9],
                     "data": "id",
                     "render": function (data, type, full) {
                         return( "<a style='text-decoration:none' title=''  onClick=\"publishProduct('" + full.id + "')\"')>发布</a>") +
