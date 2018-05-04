@@ -711,6 +711,7 @@
                 $("#skuRender").append(genSkuTypeDom($("#skuMutiDiv option:selected").text()));
 
                 $(".skuBtn").on("click", function () {
+                    var $this=$(this);
                     var text = $(this).parent().parent().find("input").val();
                     if (text != null && $.trim(text).length > 0) {
                         text = $.trim(text);
@@ -729,6 +730,7 @@
                             refrehSKuPath();
                             form.render(null, "skuMutiPath");
                             form.render(null, "skuTable");
+                            $this.parent().parent().find("input").val('');
                         }
 
                     }
@@ -1103,9 +1105,9 @@
                     elem: ".skuMainPath" //绑定元素
                     , url: '<%=request.getContextPath()%>/upload/image' //上传接口
                     , done: function (res) {
-                        var $this = $($(this)[0].elem[0]);
+                        var $this = $($(this)[0].item[0]);
                         var key = $this.parent().prev().attr("val");
-                        $this.parent().next().html("<img width='100px' height='90px' src=<%=request.getContextPath()%>/upload/" + res.data + " />");
+                        $this.parent().next().html("<div style='width:100px;height:110px;'><img width='100px' height='90px' src=<%=request.getContextPath()%>/upload/" + res.data + " /><i class='layui-icon delImageMain' style='font-size:20px;margin-left:35px;'>&#xe640;</i>  </div>");
                         $("#skuTable tbody tr").each(function (i, val) {
 
                             if ($(val).attr("val") == key) {
@@ -1113,6 +1115,20 @@
                             }
 
                         });
+
+                        $(".delImageMain").on("click",function () {
+                            $("#skuTable tbody tr").each(function (i, val) {
+
+                                if ($(val).attr("val") == key) {
+                                    $(val).find(".trMainPath").val("");
+                                }
+
+                            });
+                            var pprent=$(this).parent().parent();
+                            $(this).parent().remove();
+                            pprent.append("<img src='http://bpic.588ku.com/element_origin_min_pic/01/47/02/12574338a640011.jpg!r650' width='100' height='90' />");
+                        })
+
                         //上传完毕回调
                     }
                     , error: function () {
@@ -1128,14 +1144,17 @@
                     multiple: true
                     , number: 9
                     , url: '<%=request.getContextPath()%>/upload/image' //上传接口
-                    , done: function (res) {
-                        var $this = $($(this)[0].elem[0]);
-                        var key = $this.parent().prev().attr("val");
+                    , done: function (res,index,upload) {
+
+                        var $this = $($(this)[0].item[0]);
+
+                        var key = $this.parent().prev().prev().prev().attr("val");
                         $this.parent().next().find(".pathDemo").remove();
-                        $this.parent().next().append("<img width='100px' height='90px' style='padding-right:5px;' src=<%=request.getContextPath()%>/upload/" + res.data + " />");
+                        $this.parent().next().append("<div style='width:100px;height:110px;margin-left:2px;float:left;'><img width='100px' height='90px' style='padding-right:5px;' src=<%=request.getContextPath()%>/upload/" + res.data + " /><i class='layui-icon delImage' style='font-size:20px;margin-left:35px;'>&#xe640;</i></div>");
                         $("#skuTable tbody tr").each(function (i, val) {
                             if ($(val).attr("val") == key) {
                                 var exVal = $(val).find(".trOtherPath").val();
+                                console.log("val:"+exVal);
                                 $(val).find(".trOtherPath").val((exVal == null || exVal == "") ? res.data : (exVal += "," + res.data));
                             }
 
@@ -1148,12 +1167,38 @@
                                 }
                             });
                         }
+
+                        $(".delImage").on("click",function () {
+                            $("#skuTable tbody tr").each(function (i, val) {
+
+                                var exVal = $(val).find(".trOtherPath").val();
+                                var delVals=[];
+                                if(exVal!=null&&exVal!=""){
+                                    var exArr=exVal.split(",");
+                                    for(var i=0;i<exArr.length;i++){
+                                        if(exArr[i]!=""){
+                                            delVals.push(exArr[i]);
+                                        }
+                                    }
+                                }
+
+                                $(val).find(".trOtherPath").val(delVals.join(","));
+
+                            });
+                            var pprent=$(this).parent().parent();
+                            $(this).parent().remove();
+                            if(pprent.find("div").length==0){
+                                pprent.append("<img class='pathDemo' src='http://bpic.588ku.com/element_origin_min_pic/01/47/02/12574338a640011.jpg!r650' width='100' height='90' />");
+                            }
+                        })
                     }
                     , error: function () {
                         //请求异常回调
                     }
                 });
             });
+
+
 
         }
 
@@ -1186,7 +1231,6 @@
         }else{
             var areas=$(this).parent().prev().find(".layui-show textarea");
             for(var i=0;i<areas.length;i++){
-console.log($(areas[i]).val());
                 vArr.push($(areas[i]).val());
                 if($(areas[i]).val()==null||$.trim($(areas[i]).val()).length==0){
                     isContainsEmpty=true;
@@ -1228,11 +1272,9 @@ console.log($(areas[i]).val());
 
                     if (data.success) {
                         var arr=data.data;
-                        console.log(data);
                         $content.children("div ").each(function (i,val) {
                             var isSingle=arr.length==1,isContainsTextarea=$(val).find("textarea").length>0;
                             if(isSingle){
-                                console.log(isContainsTextarea);
                                 if(isContainsTextarea){
                                     $(val).find("textarea").eq(0).val(getSingleValue(arr[0],i));
                                 }else{
