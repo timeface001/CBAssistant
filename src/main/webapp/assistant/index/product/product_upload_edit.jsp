@@ -257,6 +257,7 @@
                             $("#externalProductId").val(data.data.productId);
                         }else{
                             layer.msg("该类型产品ID库中都已使用完", {icon: 5, time: 1000});
+                            $("#externalProductId").val("");
                         }
                     } else {
                         layer.msg(data.msg, {icon: 5, time: 1000});
