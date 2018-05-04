@@ -91,9 +91,9 @@
             <thead>
             <tr class="text-c">
                 <th width="25"><input type="checkbox" value="" name=""></th>
-                <th width="100">产品图</th>
+
                 <th width="150">标题</th>
-                <th width="150">来源</th>
+
                 <th width="150">分类</th>
                 <th width="150">sku</th>
                 <th width="60">售价</th>
@@ -171,14 +171,9 @@
             "columns": [
                 {"data": "id"},
                 {"data": function (val) {
-                    return val.languageId==null?"":"<img width='100px' height='90px'  src='<%=request.getContextPath()%>/upload/"+val.imagePath+"'/>";
-                }},
-                {"data": function (val) {
                     return val.itemCn==null?"":val.itemCn;
                 }},
-                {"data": function (val) {
-                    return val.source==null?"":val.source;
-                }},
+
                 {"data": function (val) {
                     return val.typeId==null?"":val.typeId;
                 }},
@@ -205,7 +200,7 @@
                     }
                 },
                 {
-                    "targets": [10],
+                    "targets": [8],
                     "data": "id",
                     "render": function (data, type, full) {
                         return( full.updateState=="1"?"<a style='text-decoration:none' title='移入待发布'  onClick=\"prePublish('" + full.id + "')\"')>移入待发布</a>":"") +
