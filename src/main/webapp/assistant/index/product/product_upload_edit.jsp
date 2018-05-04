@@ -49,7 +49,7 @@
         <label class="layui-form-label">店铺</label>
 
         <div class="layui-inline">
-            <select required name="shopId" id="shopId" >
+            <select required name="shopId" id="shopId" lay-filter="shop" >
                 <option value="">请选择</option>
                 <c:forEach var="keys" items="${maps}">
                     <optgroup label="${keys.key}">
@@ -108,7 +108,7 @@
                        lay-verify="required" placeholder="" autocomplete="off" class="layui-input ">
             </div>
             <div class="layui-inline">
-                <select name="externalProductIdType" lay-verify="required" id="externalProductIdType">
+                <select name="externalProductIdType" lay-verify="required" lay id="externalProductIdType">
                         <option value="">--</option>
                         <option value="ISBN">ISBN</option>
                         <option value="UPC">UPC</option>
@@ -121,7 +121,7 @@
             </div>
 
             <div class="layui-inline">
-                <button class="layui-btn" id="genPid">一键生成</button>
+                <button class="layui-btn" type="button" id="genPid">一键生成</button>
             </div>
         </div>
 
@@ -240,33 +240,6 @@
             if($(val).text()=='${product.externalProductIdType}'){
                 $(val).attr("selected","true");
             }
-        })
-
-        $("#genPid").click(function () {
-            $.ajax({
-                type: 'POST',
-                url: '<%=request.getContextPath()%>/productid/use',
-                dataType: 'json',
-                data: {
-                    "type": $("#externalProductIdType").val()
-                },
-                success: function (data) {
-                    if (data.success) {
-                        if(data.data!=null){
-                            $("#externalProductIdType").val(data.data.type);
-                            $("#externalProductId").val(data.data.productId);
-                        }else{
-                            layer.msg("该类型产品ID库中都已使用完", {icon: 5, time: 1000});
-                            $("#externalProductId").val("");
-                        }
-                    } else {
-                        layer.msg(data.msg, {icon: 5, time: 1000});
-                    }
-                },
-                error: function (data) {
-                    layer.msg(data.msg, {icon: 5, time: 1000});
-                }
-            });
         });
 
         layui.use('form', function () {
@@ -296,6 +269,41 @@
                     }
                 });
 
+            });
+
+            form.on('select(shop)', function(data){
+            console.log(data.elem); //得到select原始DOM对象
+            console.log(data.value); //得到被选中的值
+            console.log(data.othis); //得到美化后的DOM对象
+           });
+
+            $("#genPid").click(function () {
+                $.ajax({
+                    type: 'POST',
+                    url: '<%=request.getContextPath()%>/productid/use',
+                    dataType: 'json',
+                    data: {
+                        "type": $("#externalProductIdType").val()
+                    },
+                    success: function (data) {
+                        if (data.success) {
+                            if(data.data!=null){
+                                $("#externalProductIdType").val(data.data.type);
+                                $("#externalProductId").val(data.data.productId);
+                            }else{
+                                layer.msg("该类型产品ID库中都已使用完", {icon: 5, time: 1000});
+                                $("#externalProductId").val("");
+                            }
+
+                            form.render("select");
+                        } else {
+                            layer.msg(data.msg, {icon: 5, time: 1000});
+                        }
+                    },
+                    error: function (data) {
+                        layer.msg(data.msg, {icon: 5, time: 1000});
+                    }
+                });
             });
         });
     });
