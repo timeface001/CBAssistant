@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crossborder.dao.mapper.ext.ProductIdGenMapper">
+  <resultMap id="BaseResultMap" type="com.crossborder.entity.ProductIdGen">
+    <id column="a_ID" jdbcType="DECIMAL" property="id" />
+    <result column="a_PRODUCT_ID" jdbcType="VARCHAR" property="productId" />
+    <result column="a_TYPE" jdbcType="VARCHAR" property="type" />
+    <result column="a_USE_STATUS" jdbcType="CHAR" property="useStatus" />
+    <result column="a_CREATE_TIME" jdbcType="DATE" property="createTime" />
+    <result column="a_AMZ_UPLOAD_ID" jdbcType="VARCHAR" property="amzUploadId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    a.ID as a_ID, a.PRODUCT_ID as a_PRODUCT_ID, a.TYPE as a_TYPE, a.USE_STATUS as a_USE_STATUS, 
+    a.CREATE_TIME as a_CREATE_TIME, a.AMZ_UPLOAD_ID as a_AMZ_UPLOAD_ID
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from T_PRODUCT_ID a
+    where a.ID = #{id,jdbcType=DECIMAL}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from T_PRODUCT_ID
+    where ID = #{id,jdbcType=DECIMAL}
+  </delete>
+  <insert id="insert" parameterType="com.crossborder.entity.ProductIdGen">
+    insert into T_PRODUCT_ID (ID, PRODUCT_ID, TYPE, 
+      USE_STATUS, CREATE_TIME, AMZ_UPLOAD_ID
+      )
+    values (#{id,jdbcType=DECIMAL}, #{productId,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, 
+      #{useStatus,jdbcType=CHAR}, #{createTime,jdbcType=DATE}, #{amzUploadId,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.crossborder.entity.ProductIdGen">
+    insert into T_PRODUCT_ID
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="productId != null">
+        PRODUCT_ID,
+      </if>
+      <if test="type != null">
+        TYPE,
+      </if>
+      <if test="useStatus != null">
+        USE_STATUS,
+      </if>
+      <if test="createTime != null">
+        CREATE_TIME,
+      </if>
+      <if test="amzUploadId != null">
+        AMZ_UPLOAD_ID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=DECIMAL},
+      </if>
+      <if test="productId != null">
+        #{productId,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="useStatus != null">
+        #{useStatus,jdbcType=CHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=DATE},
+      </if>
+      <if test="amzUploadId != null">
+        #{amzUploadId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.crossborder.entity.ProductIdGen">
+    update T_PRODUCT_ID
+    <set>
+      <if test="productId != null">
+        PRODUCT_ID = #{productId,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        TYPE = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="useStatus != null">
+        USE_STATUS = #{useStatus,jdbcType=CHAR},
+      </if>
+      <if test="createTime != null">
+        CREATE_TIME = #{createTime,jdbcType=DATE},
+      </if>
+      <if test="amzUploadId != null">
+        AMZ_UPLOAD_ID = #{amzUploadId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.crossborder.entity.ProductIdGen">
+    update T_PRODUCT_ID
+    set PRODUCT_ID = #{productId,jdbcType=VARCHAR},
+      TYPE = #{type,jdbcType=VARCHAR},
+      USE_STATUS = #{useStatus,jdbcType=CHAR},
+      CREATE_TIME = #{createTime,jdbcType=DATE},
+      AMZ_UPLOAD_ID = #{amzUploadId,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+</mapper>

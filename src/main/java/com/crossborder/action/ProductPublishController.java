@@ -72,6 +72,7 @@ public class ProductPublishController extends BaseController {
         request.setAttribute("product",product);
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("status", 1);
+        params.put("user",GeneralUtils.getUserId());
         List<Map<String, Object>> result = shopManageService.selectShops(params);
 
         Map<String, Object> shopKey = new HashMap<>();

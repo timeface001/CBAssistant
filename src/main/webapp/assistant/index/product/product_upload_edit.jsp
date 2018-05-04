@@ -49,7 +49,7 @@
         <label class="layui-form-label">店铺</label>
 
         <div class="layui-inline">
-            <select required name="shopId" id="shopId">
+            <select required name="shopId" id="shopId" >
                 <option value="">请选择</option>
                 <c:forEach var="keys" items="${maps}">
                     <optgroup label="${keys.key}">
@@ -118,6 +118,10 @@
                         <option value="GCID">GCID</option>
                         <option value="PZN">PZN</option>
                     </select>
+            </div>
+
+            <div class="layui-inline">
+                <button class="layui-btn" id="genPid">一键生成</button>
             </div>
         </div>
 
@@ -216,6 +220,12 @@
         });
 
 
+        /*form.on('select(shopId)', function(data){
+            console.log(data.elem); //得到select原始DOM对象
+            console.log(data.value); //得到被选中的值
+            console.log(data.othis); //得到美化后的DOM对象
+        });*/
+
         $("#shopId").val('${product.shopId}');
 
         $("input[name='websiteType']").each(function (i,val) {
@@ -231,6 +241,32 @@
                 $(val).attr("selected","true");
             }
         })
+
+        $("#genPid").click(function () {
+            $.ajax({
+                type: 'POST',
+                url: '<%=request.getContextPath()%>/productid/use',
+                dataType: 'json',
+                data: {
+                    "type": $("#externalProductIdType").val()
+                },
+                success: function (data) {
+                    if (data.success) {
+                        if(data.data!=null){
+                            $("#externalProductIdType").val(data.data.type);
+                            $("#externalProductId").val(data.data.productId);
+                        }else{
+                            layer.msg("该类型产品ID库中都已使用完", {icon: 5, time: 1000});
+                        }
+                    } else {
+                        layer.msg(data.msg, {icon: 5, time: 1000});
+                    }
+                },
+                error: function (data) {
+                    layer.msg(data.msg, {icon: 5, time: 1000});
+                }
+            });
+        });
 
         layui.use('form', function () {
             var form = layui.form;

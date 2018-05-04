@@ -4,9 +4,11 @@ import com.alibaba.fastjson.JSON;
 import com.amazonservices.mws.orders._2013_09_01.MarketplaceWebServiceOrdersClient;
 import com.crossborder.dao.ProductAmzUploadDao;
 import com.crossborder.dao.ProductClaimDao;
+import com.crossborder.dao.ProductIdGenDao;
 import com.crossborder.dao.ProductManagerDao;
 import com.crossborder.entity.ClaimProduct;
 import com.crossborder.entity.ProductAmzUpload;
+import com.crossborder.entity.ProductIdGen;
 import com.crossborder.entity.ProductItemVar;
 import com.crossborder.utils.BaiduTranApi;
 import com.crossborder.utils.GeneralUtils;
@@ -336,5 +338,32 @@ public class ProductManagerService {
 
         productAmzUploadDao.updateByPrimaryKeySelective(product);
 
+    }
+
+    @Resource
+    private ProductIdGenDao productIdGenDao;
+
+    public List<ProductIdGen> selectProductIdGenList(Map<String, Object> params) {
+        return productIdGenDao.selectProductIdGenList(params);
+    }
+
+    public boolean saveProductId(String type, List<String> ids) {
+
+        for (String id : ids) {
+            ProductIdGen gen = new ProductIdGen();
+            gen.setProductId(id);
+            gen.setType(type);
+            gen.setCreateTime(new Date());
+            if (productIdGenDao.selectProductIdExist(type, id) > 0L) {
+                productIdGenDao.insertSelective(gen);
+
+            }
+        }
+
+        return true;
+    }
+
+    public ProductIdGen selectProductIdForUse(String type) {
+        return productIdGenDao.selectProductIdForUse(type);
     }
 }
