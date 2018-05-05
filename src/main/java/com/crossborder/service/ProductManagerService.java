@@ -354,7 +354,7 @@ public class ProductManagerService {
             gen.setProductId(id);
             gen.setType(type);
             gen.setCreateTime(new Date());
-            if (productIdGenDao.selectProductIdExist(type, id) > 0L) {
+            if (productIdGenDao.selectProductIdExist(type, id) == 0L) {
                 productIdGenDao.insertSelective(gen);
 
             }
