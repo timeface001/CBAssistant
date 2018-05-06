@@ -167,7 +167,7 @@
                     return val.MAIN_PATH==null?"":"<img width='100px' height='90px'  src='<%=request.getContextPath()%>/upload/"+val.MAIN_PATH+"'/>";
                 }},
                 {"data": function (val) {
-                    return val.SOURCE==null?"":val.SOURCE;
+                    return val.SOURCE==null?"":"<a target='_blank' href='"+val.SOURCE+"'>"+val.SOURCE+"</a>";
                 }},
                 {"data": function (val) {
                     return val.NAME==null?"":val.NAME;}},
