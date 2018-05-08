@@ -34,4 +34,6 @@ public interface OrderManageDao {
     public int insertAddress(AddressInfo addressInfo);
 
     public List<Map<String, Object>> selectAddress(String amazonOrderId);
+
+    public List<Map<String, Object>> selectFees(Map<String, Object> map);
 }

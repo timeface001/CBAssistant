@@ -1,6 +1,7 @@
 package com.crossborder.action;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.amazonaws.mws.MarketplaceWebServiceClient;
 import com.amazonaws.mws.MarketplaceWebServiceConfig;
 import com.amazonaws.mws.model.*;
@@ -10,10 +11,7 @@ import com.amazonservices.mws.orders._2013_09_01.MarketplaceWebServiceOrdersConf
 import com.amazonservices.mws.orders._2013_09_01.model.*;
 import com.amazonservices.mws.products.MarketplaceWebServiceProductsClient;
 import com.amazonservices.mws.products.MarketplaceWebServiceProductsConfig;
-import com.amazonservices.mws.products.model.GetMatchingProductForIdRequest;
-import com.amazonservices.mws.products.model.GetMatchingProductForIdResponse;
-import com.amazonservices.mws.products.model.IdListType;
-import com.amazonservices.mws.products.model.Product;
+import com.amazonservices.mws.products.model.*;
 import com.crossborder.entity.AddressInfo;
 import com.crossborder.entity.LocalOrder;
 import com.crossborder.entity.LocalOrderItem;
@@ -34,6 +32,7 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -105,7 +104,7 @@ public class OrderManageController {
             Map<String, Object> map = new HashMap<>();
             map.put("code", "1");
             map.put("msg", "您还未授权店铺，快去授权吧！");
-            return JSON.toJSONString(map);
+            return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
         }
     }
 
@@ -146,6 +145,7 @@ public class OrderManageController {
                 localOrder.setRunningTime(Tools.timeDifference(createDate.getTime(), new Date().getTime()));
                 localOrder.setOrderType(order.getOrderType());
                 localOrder.setShippingPrice(0);
+                localOrder.setIntlTrackNum(Tools.createIntlTrackNum());
                 orderManageService.insertOrders(localOrder);
                 AddressInfo addressInfo = new AddressInfo();
                 addressInfo.setAmazonOrderId(order.getAmazonOrderId());
@@ -165,7 +165,8 @@ public class OrderManageController {
                 List<OrderItem> orderItemList = getOrderItem(order.getAmazonOrderId(), shop);
                 for (int j = 0; j < orderItemList.size(); j++) {
                     OrderItem orderItem = orderItemList.get(j);
-                    Product product = getProduct(orderItem.getASIN(), shop);
+                    //FeesEstimateResult feesEstimateResult = getProduct(orderItem, shop);
+                    /*Product product = getProduct(orderItem, shop);*/
                     LocalOrderItem localOrderItem = new LocalOrderItem();
                     /*for (Object obj : product.getAttributeSets().getAny()) {
                         Node nd = (Node) obj;
@@ -205,7 +206,7 @@ public class OrderManageController {
             map.put("code", "-10");
             map.put("msg", "下载失败");
         }
-        return JSON.toJSONString(map);
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
     public void updateOrderStatus(String amazonOrderId, Map<String, Object> shop) {
@@ -260,8 +261,32 @@ public class OrderManageController {
         return response.getListOrderItemsResult().getOrderItems();
     }
 
-    public Product getProduct(String asin, Map<String, Object> shop) {
+    public FeesEstimateResult getProduct(OrderItem orderItem, Map<String, Object> shop) {
+        List<FeesEstimateRequest> feesEstimateRequests = new ArrayList<>();
+        FeesEstimateRequest feesEstimateRequest = new FeesEstimateRequest();
+        feesEstimateRequest.setMarketplaceId(shop.get("MARKETPLACEID").toString());
+        feesEstimateRequest.setIdType("ASIN");
+        feesEstimateRequest.setIdValue(orderItem.getASIN());
+        PriceToEstimateFees priceToEstimateFees = new PriceToEstimateFees();
+        MoneyType listingPrice = new MoneyType();
+        listingPrice.setAmount(new BigDecimal(orderItem.getItemPrice().getAmount()));
+        listingPrice.setCurrencyCode(orderItem.getItemPrice().getCurrencyCode());
+        priceToEstimateFees.setListingPrice(listingPrice);
+        feesEstimateRequest.setPriceToEstimateFees(priceToEstimateFees);
+        feesEstimateRequest.setIdentifier("00001");
+        feesEstimateRequest.setIsAmazonFulfilled(true);
+        feesEstimateRequests.add(feesEstimateRequest);
         MarketplaceWebServiceProductsConfig config = new MarketplaceWebServiceProductsConfig();
+        config.setServiceURL(shop.get("ENDPOINT").toString());
+        MarketplaceWebServiceProductsClient client = new MarketplaceWebServiceProductsClient(shop.get("ACCESSKEY_ID").toString(), shop.get("SECRET_KEY").toString(), config);
+        GetMyFeesEstimateRequest request = new GetMyFeesEstimateRequest();
+        request.setSellerId(shop.get("MERCHANT_ID").toString());
+        request.setMWSAuthToken("");
+        FeesEstimateRequestList feesEstimateRequestList = new FeesEstimateRequestList();
+        feesEstimateRequestList.setFeesEstimateRequest(feesEstimateRequests);
+        request.setFeesEstimateRequestList(feesEstimateRequestList);
+        GetMyFeesEstimateResponse response = client.getMyFeesEstimate(request);
+        /*MarketplaceWebServiceProductsConfig config = new MarketplaceWebServiceProductsConfig();
         config.setServiceURL(shop.get("ENDPOINT").toString());
         MarketplaceWebServiceProductsClient client = new MarketplaceWebServiceProductsClient(shop.get("ACCESSKEY_ID").toString(), shop.get("SECRET_KEY").toString(), config);
         GetMatchingProductForIdRequest request = new GetMatchingProductForIdRequest();
@@ -271,11 +296,12 @@ public class OrderManageController {
         request.setIdType("ASIN");
         IdListType idList = new IdListType();
         List<String> asins = new ArrayList<>();
-        asins.add(asin);
+        asins.add(orderItem.getASIN());
         idList.setId(asins);
         request.setIdList(idList);
         GetMatchingProductForIdResponse response = client.getMatchingProductForId(request);
-        return response.getGetMatchingProductForIdResult().get(0).getProducts().getProduct().get(0);
+        response.getGetMatchingProductForIdResult().get(0).getProducts().getProduct().get(0);*/
+        return response.getGetMyFeesEstimateResult().getFeesEstimateResultList().getFeesEstimateResult().get(0);
     }
 
     /**
@@ -289,9 +315,9 @@ public class OrderManageController {
         Map<String, Object> map = new HashMap<>();
         Map<String, Object> paramMap = JSON.parseObject(data, Map.class);
         List<Map<String, Object>> localOrderList = new ArrayList<>();
-        if (paramMap.get("localStatus").toString().equals("0")) {
+        /*if (paramMap.get("localStatus").toString().equals("0")) {
             paramMap.put("localStatus", "");
-        }
+        }*/
         paramMap.put("logmin", paramMap.get("logmin").toString() + " 00:00:00");
         paramMap.put("logmax", paramMap.get("logmax").toString() + " 23:59:59");
         try {
@@ -309,7 +335,7 @@ public class OrderManageController {
             map.put("code", "-10");
             map.put("msg", "查询失败");
         }
-        return JSON.toJSONString(map);
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
     /**
@@ -334,12 +360,36 @@ public class OrderManageController {
             map.put("code", "-10");
             map.put("msg", "查询失败");
         }
-        return JSON.toJSONString(map);
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
+    }
+
+    /**
+     * 查询总费用明细
+     *
+     * @param data
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "selectFees", produces = "text/plain;charset=UTF-8")
+    public String selectFees(String data) {
+        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> paramMap = JSON.parseObject(data, Map.class);
+        try {
+            map.put("data", orderManageService.selectFees(paramMap).get(0));
+            map.put("code", "0");
+            map.put("msg", "查询成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("code", "-10");
+            map.put("msg", "查询失败");
+        }
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
     /**
      * 查询订单详情
      *
+     * @param amazonOrderId
      * @return
      */
     @ResponseBody
@@ -358,7 +408,7 @@ public class OrderManageController {
             map.put("code", "-10");
             map.put("msg", "查询失败");
         }
-        return JSON.toJSONString(map);
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
     /**
@@ -391,7 +441,7 @@ public class OrderManageController {
                 map.put("msg", "更新失败");
             }
         }
-        return JSON.toJSONString(map);
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
     /**
@@ -401,7 +451,7 @@ public class OrderManageController {
      */
     @ResponseBody
     @RequestMapping(value = "updateOrderInfo", produces = "text/plain;charset=UTF-8")
-    public String updateOrderInfo(String amazonOrderId, String status, String sku, String cost, String refundment, String trackNum, String purchaseNum, String shippingPrice) {
+    public String updateOrderInfo(String amazonOrderId, String preStatus, String status, String sku, String cost, String refundment, String trackNum, String purchaseNum, String shippingPrice, HttpSession session) {
         Map<String, Object> map = new HashMap<>();
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("status", status);
@@ -412,10 +462,11 @@ public class OrderManageController {
         paramMap.put("trackNum", trackNum);
         paramMap.put("purchaseNum", purchaseNum);
         paramMap.put("shippingPrice", shippingPrice);
+        Map<String, Object> user = (Map<String, Object>) session.getAttribute("user");
         try {
             orderManageService.updateOrder(paramMap);
             orderManageService.updateOrderItem(paramMap);
-            insertOperationLog(amazonOrderId, status);
+            insertOperationLog(amazonOrderId, preStatus, status, user.get("USER_ID").toString(), cost);
             map.put("code", "0");
             map.put("msg", "更新成功");
         } catch (Exception e) {
@@ -423,7 +474,7 @@ public class OrderManageController {
             map.put("code", "-10");
             map.put("msg", "更新失败");
         }
-        return JSON.toJSONString(map);
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
     /**
@@ -435,14 +486,15 @@ public class OrderManageController {
      */
     @ResponseBody
     @RequestMapping(value = "updateOrderRemark", produces = "text/plain;charset=UTF-8")
-    public String updateOrderRemark(String remark, String amazonOrderId) {
+    public String updateOrderRemark(String remark, String amazonOrderId, HttpSession session) {
         Map<String, Object> map = new HashMap<>();
         Map<String, Object> paramMap = new HashMap<>();
+        Map<String, Object> user = (Map<String, Object>) session.getAttribute("user");
         paramMap.put("remark", remark);
         paramMap.put("amazonOrderId", amazonOrderId);
         try {
             orderManageService.updateOrderRemark(paramMap);
-            insertOperationLog(amazonOrderId, "0");
+            insertOperationLog(amazonOrderId, "", "0", user.get("USER_ID").toString(), "");
             map.put("code", "0");
             map.put("msg", "更新成功");
         } catch (Exception e) {
@@ -450,7 +502,7 @@ public class OrderManageController {
             map.put("code", "-10");
             map.put("msg", "更新失败");
         }
-        return JSON.toJSONString(map);
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
     /**
@@ -473,34 +525,42 @@ public class OrderManageController {
             map.put("code", "-10");
             map.put("msg", "查询失败");
         }
-        return JSON.toJSONString(map);
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
-    public void insertOperationLog(String amazonOrderId, String type) {
+    public void insertOperationLog(String amazonOrderId, String preStatus, String type, String userId, String cost) {
         Map<String, Object> operationMap = new HashMap<>();
-        operationMap.put("user", "libing");
+        operationMap.put("user", userId);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         operationMap.put("time", simpleDateFormat.format(new Date()));
         operationMap.put("amazonOrderId", amazonOrderId);
         operationMap.put("type", type);
         if (type.equals("0")) {
             operationMap.put("info", "产品" + amazonOrderId + "添加了备注");
-        } else if (type.equals("2")) {
-            operationMap.put("info", "产品" + amazonOrderId + "状态由【新单】变为【备货】；成本由【0.00】变为【】");
-        } else if (type.equals("3")) {
-            operationMap.put("info", "产品" + amazonOrderId + "状态由【新单】变为【缺货】；成本由【0.00】变为【】");
-        } else if (type.equals("4")) {
-            operationMap.put("info", "产品" + amazonOrderId + "状态由【新单】变为【发货】；成本由【0.00】变为【】");
-        } else if (type.equals("5")) {
-            operationMap.put("info", "产品" + amazonOrderId + "状态由【新单】变为【问题】；成本由【0.00】变为【】");
-        } else if (type.equals("6")) {
-            operationMap.put("info", "产品" + amazonOrderId + "状态由【新单】变为【退款】；成本由【0.00】变为【】");
-        } else if (type.equals("7")) {
-            operationMap.put("info", "产品" + amazonOrderId + "状态由【新单】变为【妥投】；成本由【0.00】变为【】");
-        } else if (type.equals("8")) {
-            operationMap.put("info", "产品" + amazonOrderId + "状态由【新单】变为【代发】；成本由【0.00】变为【】");
+        } else {
+            operationMap.put("info", "产品" + amazonOrderId + "状态由【" + getStatusStr(preStatus) + "】变为【" + getStatusStr(type) + "】；成本由【0.00】变为【" + cost + "】");
         }
         orderManageService.inserOperationLog(operationMap);
     }
 
+    public String getStatusStr(String status) {
+        if (status.equals("1")) {
+            return "新单";
+        } else if (status.equals("2")) {
+            return "备货";
+        } else if (status.equals("3")) {
+            return "缺货";
+        } else if (status.equals("4")) {
+            return "发货";
+        } else if (status.equals("5")) {
+            return "问题";
+        } else if (status.equals("6")) {
+            return "退款";
+        } else if (status.equals("7")) {
+            return "妥投";
+        } else if (status.equals("8")) {
+            return "代发";
+        }
+        return "";
+    }
 }

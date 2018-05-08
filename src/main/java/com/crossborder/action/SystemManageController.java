@@ -1,6 +1,7 @@
 package com.crossborder.action;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.crossborder.service.SystemManageService;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -42,7 +43,7 @@ public class SystemManageController {
             map.put("code", "-10");
             map.put("msg", "添加失败");
         }
-        return JSON.toJSONString(map);
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
     /**
@@ -66,7 +67,7 @@ public class SystemManageController {
             map.put("code", "-10");
             map.put("msg", "查询失败");
         }
-        return JSON.toJSONString(map);
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
     /**
@@ -90,7 +91,7 @@ public class SystemManageController {
             map.put("code", "-10");
             map.put("msg", "查询失败");
         }
-        return JSON.toJSONString(map);
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
     /**
@@ -114,7 +115,7 @@ public class SystemManageController {
             map.put("code", "-10");
             map.put("msg", "更新失败");
         }
-        return JSON.toJSONString(map);
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
     /**
@@ -141,7 +142,7 @@ public class SystemManageController {
             map.put("code", "-10");
             map.put("msg", "更新失败");
         }
-        return JSON.toJSONString(map);
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
     /**
@@ -164,7 +165,7 @@ public class SystemManageController {
             map.put("code", "-10");
             map.put("msg", "删除失败");
         }
-        return JSON.toJSONString(map);
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
     /**
@@ -198,7 +199,7 @@ public class SystemManageController {
             map.put("code", "-10");
             map.put("msg", "添加失败");
         }
-        return JSON.toJSONString(map);
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
     /**
@@ -222,7 +223,7 @@ public class SystemManageController {
             map.put("code", "-10");
             map.put("msg", "查询失败");
         }
-        return JSON.toJSONString(map);
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
     /**
@@ -246,7 +247,7 @@ public class SystemManageController {
             map.put("code", "-10");
             map.put("msg", "更新失败");
         }
-        return JSON.toJSONString(map);
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
     /**
@@ -273,7 +274,7 @@ public class SystemManageController {
             map.put("code", "-10");
             map.put("msg", "更新失败");
         }
-        return JSON.toJSONString(map);
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
     /**
@@ -296,7 +297,7 @@ public class SystemManageController {
             map.put("code", "-10");
             map.put("msg", "删除失败");
         }
-        return JSON.toJSONString(map);
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
     /**
@@ -320,7 +321,7 @@ public class SystemManageController {
             map.put("code", "-10");
             map.put("msg", "添加失败");
         }
-        return JSON.toJSONString(map);
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
     /**
@@ -345,7 +346,7 @@ public class SystemManageController {
             map.put("code", "-10");
             map.put("msg", "查询失败");
         }
-        return JSON.toJSONString(map);
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
     /**
@@ -369,7 +370,7 @@ public class SystemManageController {
             map.put("code", "-10");
             map.put("msg", "更新失败");
         }
-        return JSON.toJSONString(map);
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
     /**
@@ -396,7 +397,7 @@ public class SystemManageController {
             map.put("code", "-10");
             map.put("msg", "更新失败");
         }
-        return JSON.toJSONString(map);
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
     /**
@@ -419,7 +420,7 @@ public class SystemManageController {
             map.put("code", "-10");
             map.put("msg", "删除失败");
         }
-        return JSON.toJSONString(map);
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
     /**
@@ -457,7 +458,7 @@ public class SystemManageController {
             map.put("code", "-10");
             map.put("msg", "添加失败");
         }
-        return JSON.toJSONString(map);
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
     /**
@@ -485,7 +486,7 @@ public class SystemManageController {
             map.put("code", "-10");
             map.put("msg", "查询失败");
         }
-        return JSON.toJSONString(map);
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
     /**
@@ -522,7 +523,7 @@ public class SystemManageController {
             map.put("code", "-10");
             map.put("msg", "更新失败");
         }
-        return JSON.toJSONString(map);
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
     /**
@@ -549,7 +550,7 @@ public class SystemManageController {
             map.put("code", "-10");
             map.put("msg", "更新失败");
         }
-        return JSON.toJSONString(map);
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
     /**
@@ -572,6 +573,6 @@ public class SystemManageController {
             map.put("code", "-10");
             map.put("msg", "删除失败");
         }
-        return JSON.toJSONString(map);
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 }

@@ -61,4 +61,8 @@ public class OrderManageService {
     public List<Map<String, Object>> selectAddress(String amazonOrderId) {
         return orderManageDao.selectAddress(amazonOrderId);
     }
+
+    public List<Map<String, Object>> selectFees(Map<String, Object> map) {
+        return orderManageDao.selectFees(map);
+    }
 }

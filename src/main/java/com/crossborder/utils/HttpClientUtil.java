@@ -24,7 +24,7 @@ public class HttpClientUtil {
         HttpGet httpGet = new HttpGet(url);
         httpGet.setHeader("Accept", "text/json");
         httpGet.setHeader("Accept-Language", "zh-cn");
-        String token = "C88888&JCJaDQ68amA=";
+        String token = "C98031&HHTGPrA8drI=";
         httpGet.setHeader("Authorization","Basic "+ Base64.encode(token.getBytes()));
         HttpResponse response = client.execute(httpGet);
         StringBuilder buffer = new StringBuilder();
@@ -44,7 +44,7 @@ public class HttpClientUtil {
         HttpPost httpPost = new HttpPost(url);
         httpPost.setHeader("Accept", "text/json");
         httpPost.setHeader("Accept-Language", "zh-cn");
-        String token = "C88888&JCJaDQ68amA=";
+        String token = "C98031&HHTGPrA8drI=";
         httpPost.setHeader("Authorization","Basic "+ Base64.encode(token.getBytes()));
         StringEntity entity = new StringEntity(json, HTTP.UTF_8);
         httpPost.setEntity(entity);

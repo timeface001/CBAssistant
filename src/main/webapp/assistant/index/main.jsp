@@ -92,13 +92,23 @@
     <div class="menu_dropdown bk_2">
         <c:forEach var="menu" items="${menus}">
             <dl>
-                <dt><i class="Hui-iconfont">${menu.iconPath}</i> ${menu.menuName}<i
-                        class="Hui-iconfont menu_dropdown-arrow">
-                    &#xe6d5;</i></dt>
-                <dd>
+                <c:choose>
+                    <c:when test="${menu.menuId == '100'}">
+                        <dt class="selected"><i class="Hui-iconfont">${menu.iconPath}</i>${menu.menuName}<i
+                                class="Hui-iconfont menu_dropdown-arrow">
+                            &#xe6d5;</i></dt>
+                        <dd style="display: block">
+                    </c:when>
+                    <c:otherwise>
+                        <dt><i class="Hui-iconfont">${menu.iconPath}</i>${menu.menuName}<i
+                                class="Hui-iconfont menu_dropdown-arrow">
+                            &#xe6d5;</i></dt>
+                        <dd style="display: none">
+                    </c:otherwise>
+                </c:choose>
                     <ul>
                         <c:forEach var="subMenu" items="${menu.menuList}">
-                            <li><a data-href="<%=request.getContextPath()%>/assistant/index/${menu.path}${subMenu.path}"
+                            <li><a id="${subMenu.menuId}" data-href="<%=request.getContextPath()%>/assistant/index/${menu.path}${subMenu.path}"
                                    data-title="${subMenu.menuName}" href="javascript:void(0)">${subMenu.menuName}</a>
                             </li>
                         </c:forEach>
@@ -114,9 +124,9 @@
     <div id="Hui-tabNav" class="Hui-tabNav hidden-xs">
         <div class="Hui-tabNav-wp">
             <ul id="min_title_list" class="acrossTab cl">
-                <li class="active">
+                <%--<li class="active">
                     <span title="我的桌面" data-href="<%=request.getContextPath()%>/assistant/index/welcome.jsp">我的桌面</span>
-                    <em></em></li>
+                    <em></em></li>--%>
             </ul>
         </div>
         <div class="Hui-tabNav-more btn-group"><a id="js-tabNav-prev" class="btn radius btn-default size-S"
@@ -125,11 +135,11 @@
             &#xe6d7;</i></a></div>
     </div>
     <div id="iframe_box" class="Hui-article">
-        <div class="show_iframe">
+        <%--<div class="show_iframe">
             <div style="display:none" class="loading"></div>
             <iframe scrolling="yes" frameborder="0"
                     src="<%=request.getContextPath()%>/assistant/index/welcome.jsp"></iframe>
-        </div>
+        </div>--%>
     </div>
 </section>
 <!--_footer 作为公共模版分离出去-->
@@ -144,6 +154,7 @@
         src="<%=request.getContextPath()%>/assistant/lib/jquery.contextmenu/jquery.contextmenu.r2.js"></script>
 <script type="text/javascript">
     $(function () {
+        $("#101").trigger('click')
         history.pushState(null, null, document.URL);
         window.addEventListener('popstate', function () {
             history.pushState(null, null, document.URL);

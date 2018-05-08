@@ -2,6 +2,7 @@
 <%
     String amazonOrderId = request.getParameter("amazonOrderId");
     String sku = request.getParameter("sku");
+    String preStatus = request.getParameter("preStatus");
 %>
 <!DOCTYPE HTML>
 <html>
@@ -31,6 +32,7 @@
             <input type="hidden" value="<%=amazonOrderId%>" name="amazonOrderId">
             <input type="hidden" value="<%=sku%>" name="sku">
             <input type="hidden" value="6" name="status">
+            <input type="hidden" value="<%=preStatus%>" name="preStatus">
             <div class="row cl">
                 <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>运费：</label>
                 <div class="formControls col-xs-8 col-sm-9">
@@ -67,7 +69,6 @@
             submitHandler: function (form) {
                 $(form).ajaxSubmit();
                 var index = parent.layer.getFrameIndex(window.name);
-                //parent.$('.btn-refresh').click();
                 parent.layer.close(index);
             }
         });

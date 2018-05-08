@@ -3,11 +3,10 @@ package com.crossborder.action;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.crossborder.entity.Menu;
-import com.crossborder.entity.SenderInfo;
-import com.crossborder.entity.ShippingInfo;
-import com.crossborder.entity.WayBill;
 import com.crossborder.service.CommonService;
+import com.crossborder.service.OrderManageService;
 import com.crossborder.utils.HttpClientUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,10 +15,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * Created by s on 2018/4/2.
@@ -29,6 +26,8 @@ import java.util.Map;
 public class CommonController {
     @Resource
     private CommonService commonService;
+    @Resource
+    private OrderManageService orderManageService;
 
     /**
      * 登录
@@ -51,12 +50,12 @@ public class CommonController {
                     map.put("code", "1");
                     map.put("msg", "当前用户已登录");
                 } else {*/
-                    paramMap.put("isLogin", 1);
-                    commonService.updateLogin(paramMap);
-                    session.setAttribute("user", list.get(0));
-                    map.put("data", list.get(0));
-                    map.put("code", "0");
-                    map.put("msg", "登录成功");
+                paramMap.put("isLogin", 1);
+                commonService.updateLogin(paramMap);
+                session.setAttribute("user", list.get(0));
+                map.put("data", list.get(0));
+                map.put("code", "0");
+                map.put("msg", "登录成功");
                /* }*/
             } else {
                 map.put("code", "-10");
@@ -67,7 +66,7 @@ public class CommonController {
             map.put("code", "-10");
             map.put("msg", "登录失败");
         }
-        return JSON.toJSONString(map);
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
     /**
@@ -94,7 +93,7 @@ public class CommonController {
             map.put("code", "-10");
             map.put("msg", "退出失败");
         }
-        return JSON.toJSONString(map);
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
     /**
@@ -162,7 +161,7 @@ public class CommonController {
             map.put("code", "-10");
             map.put("msg", "查询失败");
         }
-        return JSON.toJSONString(map);
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
     /**
@@ -210,27 +209,32 @@ public class CommonController {
             map.put("code", "-10");
             map.put("msg", "查询失败");
         }
-        return JSON.toJSONString(map);
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
-    @ResponseBody
-    @RequestMapping(value = "getShipTypes", produces = "text/plain;charset=UTF-8")
-    public String getShipTypes(String countryCode) {
-        //http://www.sendfromchina.com/shipfee/ship_type_list
-        Map<String, Object> map = new HashMap<>();
-        Map<String, String> paramMap = new HashMap<>();
-        try {
-            String result = HttpClientUtil.doGetRequest("http://120.76.199.53:8034/LMS.API/api/lms/Get?countryCode=" + countryCode);
-            /*JSONObject jsonObject = XmlUtil.xml2JSON(result.getBytes());
-            JSONArray res = jsonObject.getJSONObject("GetShipTypesListResponse").getJSONArray("shiptypes").getJSONObject(0).getJSONArray("shiptype");*/
+    /*@ResponseBody
+     @RequestMapping(value = "getShipTypes", produces = "text/plain;charset=UTF-8")
+     public String getShipTypes(String companyId) {
+         //http://www.sendfromchina.com/shipfee/ship_type_list
+         Map<String, Object> map = new HashMap<>();
+         Map<String, String> paramMap = new HashMap<>();
+         try {
+             String result = HttpClientUtil.doGetRequest("http://api.yunexpress.com/LMS.API/api/lms/Get");
+             *//*JSONObject jsonObject = XmlUtil.xml2JSON(result.getBytes());
+            JSONArray res = jsonObject.getJSONObject("GetShipTypesListResponse").getJSONArray("shiptypes").getJSONObject(0).getJSONArray("shiptype");*//*
             JSONObject jsonObject = JSONObject.parseObject(result);
             JSONArray jsonArray = jsonObject.getJSONArray("Item");
             List<Map<String, String>> ships = new ArrayList<>();
             for (int i = 0; i < jsonArray.size(); i++) {
-                Map<String, String> shipMap = new HashMap<>();
+                Map<String, Object> jsonMap = (Map<String, Object>) jsonArray.get(i);
+                jsonMap.put("state","1");
+                jsonMap.put("countryId","");
+                jsonMap.put("companyId","YT");
+                commonService.insertShips(jsonMap);
+               *//* Map<String, String> shipMap = new HashMap<>();
                 shipMap.put("code", jsonArray.getJSONObject(i).getString("Code"));
                 shipMap.put("name", jsonArray.getJSONObject(i).getString("FullName"));
-                ships.add(shipMap);
+                ships.add(shipMap);*//*
             }
             map.put("data", ships);
             map.put("code", "0");
@@ -240,22 +244,128 @@ public class CommonController {
             map.put("code", "-10");
             map.put("msg", "查询失败");
         }
-        return JSON.toJSONString(map);
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
+    }*/
+    @ResponseBody
+    @RequestMapping(value = "getShipTypes", produces = "text/plain;charset=UTF-8")
+    public String getShipTypes(String companyId) {
+        Map<String, Object> map = new HashMap<>();
+        Map<String, String> paramMap = new HashMap<>();
+        paramMap.put("companyId", companyId);
+        try {
+            List<Map<String, String>> ships = commonService.getShipTypes(paramMap);
+            map.put("data", ships);
+            map.put("code", "0");
+            map.put("msg", "查询成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("code", "-10");
+            map.put("msg", "查询失败");
+        }
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
     @ResponseBody
     @RequestMapping(value = "confirmOrder", produces = "text/plain;charset=UTF-8")
-    public String confirmOrder(String json) {
+    public String confirmOrder(String amazonOrderId, String json, HttpSession session) {
+        Map<String, Object> user = (Map<String, Object>) session.getAttribute("user");
         Map<String, Object> map = new HashMap<>();
-        WayBill wayBill = new WayBill();
-        ShippingInfo shippingInfo = new ShippingInfo();
-        SenderInfo senderInfo = new SenderInfo();
+        JSONObject jsonObject = JSONObject.parseArray(json).getJSONObject(0);
+        JSONObject shippingObject = jsonObject.getJSONObject("ShippingInfo");
+        Map<String, Object> shippingMap = shippingObject;
+        shippingMap.put("amazonOrderId", amazonOrderId);
         try {
-            String result = HttpClientUtil.doPostRequest("http://120.76.199.53:8034/LMS.API/api/WayBill/BatchAdd", json);
-            map.put("data", result);
+            String result = HttpClientUtil.doPostRequest("http://api.yunexpress.com/LMS.API/api/WayBill/BatchAdd", json);
+            JSONObject resultObject = JSONObject.parseObject(result);
+            if (resultObject.getString("ResultCode").equals("0000")) {
+                commonService.updateAddress(shippingMap);
+                Map<String, Object> paramMap = new HashMap<>();
+                paramMap.put("amazonOrderId", amazonOrderId);
+                paramMap.put("status", "4");
+                paramMap.put("transportcompany", jsonObject.getString("transportcompany"));
+                orderManageService.updateOrder(paramMap);
+                orderManageService.updateOrderItem(paramMap);
+                insertOperationLog(amazonOrderId, "4", user.get("USER_ID").toString());
+                Map<String, Object> shipMap = new HashMap<>();
+                shipMap.put("amazonOrderId", amazonOrderId);
+                shipMap.put("companyId", jsonObject.getString("transportCompany"));
+                shipMap.put("typeId", jsonObject.getString("ShippingMethodCode"));
+                shipMap.put("custId", jsonObject.getString("OrderNumber"));
+                shipMap.put("length", jsonObject.getString("Length"));
+                shipMap.put("width", jsonObject.getString("Width"));
+                shipMap.put("height", jsonObject.getString("Height"));
+                shipMap.put("packages", jsonObject.getString("PackageNumber"));
+                shipMap.put("weight", jsonObject.getString("Weight"));
+                shipMap.put("trackNum", jsonObject.getString("trackNum"));
+                commonService.insertShipMent(shipMap);
+                JSONArray jsonArray = jsonObject.getJSONArray("ApplicationInfos");
+                for (int i = 0; i < jsonArray.size(); i++) {
+                    Map<String, Object> customsInfo = jsonArray.getJSONObject(i);
+                    customsInfo.put("custId", jsonObject.getString("OrderNumber"));
+                    commonService.insertCustomsInfo(customsInfo);
+                }
+                map.put("data", result);
+                map.put("code", "0");
+                map.put("msg", "发货成功");
+            } else {
+                map.put("code", "-10");
+                map.put("msg", "发货失败");
+            }
         } catch (Exception e) {
             e.printStackTrace();
+            map.put("code", "-10");
+            map.put("msg", "发货失败");
         }
-        return JSON.toJSONString(map);
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "print", produces = "text/plain;charset=UTF-8")
+    public String print(String orderNumbers) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            String result = HttpClientUtil.doPostRequest("http://api.yunexpress.com/LMS.API.Lable/Api/PrintUrl", orderNumbers);
+            JSONObject jsonObject = JSONObject.parseObject(result);
+            if (jsonObject.getString("ResultCode").equals("0000")) {
+                map.put("data", result);
+                map.put("code", "0");
+                map.put("msg", "打印成功");
+            } else {
+                map.put("code", "-10");
+                map.put("msg", "打印失败");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("code", "-10");
+            map.put("msg", "打印失败");
+        }
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
+    }
+
+    public void insertOperationLog(String amazonOrderId, String type, String userId) {
+        Map<String, Object> operationMap = new HashMap<>();
+        operationMap.put("user", userId);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        operationMap.put("time", simpleDateFormat.format(new Date()));
+        operationMap.put("amazonOrderId", amazonOrderId);
+        operationMap.put("type", type);
+        if (type.equals("0")) {
+            operationMap.put("info", "产品" + amazonOrderId + "添加了备注");
+        } else if (type.equals("2")) {
+            operationMap.put("info", "产品" + amazonOrderId + "状态由【新单】变为【备货】；成本由【0.00】变为【】");
+        } else if (type.equals("3")) {
+            operationMap.put("info", "产品" + amazonOrderId + "状态由【新单】变为【缺货】；成本由【0.00】变为【】");
+        } else if (type.equals("4")) {
+            operationMap.put("info", "产品" + amazonOrderId + "状态由【新单】变为【发货】；成本由【0.00】变为【】");
+        } else if (type.equals("5")) {
+            operationMap.put("info", "产品" + amazonOrderId + "状态由【新单】变为【问题】；成本由【0.00】变为【】");
+        } else if (type.equals("6")) {
+            operationMap.put("info", "产品" + amazonOrderId + "状态由【新单】变为【退款】；成本由【0.00】变为【】");
+        } else if (type.equals("7")) {
+            operationMap.put("info", "产品" + amazonOrderId + "状态由【新单】变为【妥投】；成本由【0.00】变为【】");
+        } else if (type.equals("8")) {
+            operationMap.put("info", "产品" + amazonOrderId + "状态由【新单】变为【代发】；成本由【0.00】变为【】");
+        }
+        orderManageService.inserOperationLog(operationMap);
     }
 }

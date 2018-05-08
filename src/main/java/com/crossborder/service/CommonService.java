@@ -42,4 +42,24 @@ public class CommonService {
     public int updateLogin(Map<String, Object> map) {
         return commonDao.updateLogin(map);
     }
+
+    public int updateAddress(Map<String, Object> map) {
+        return commonDao.updateAddress(map);
+    }
+
+    public int insertShips(Map<String, Object> map) {
+        return commonDao.insertShips(map);
+    }
+
+    public List<Map<String, String>> getShipTypes(Map<String, String> map) {
+        return commonDao.getShipTypes(map);
+    }
+
+    public int insertShipMent(Map<String, Object> map) {
+        return commonDao.insertShipMent(map);
+    }
+
+    public int insertCustomsInfo(Map<String, Object> map) {
+        return commonDao.insertCustomsInfo(map);
+    }
 }
