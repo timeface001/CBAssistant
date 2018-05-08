@@ -199,41 +199,53 @@ public class ProductManagerService {
      * @return
      */
     @Transactional(rollbackFor = Exception.class)
-    public void prePublishProduct(String id) throws Exception {
+    public void prePublishProduct(String id,String language) throws Exception {
         ClaimProduct product = claimProductExtMapper.selectByPrimaryKey(id);
         if (product != null) {
 
             List<ProductItemVar> vars = productSkuTypeService.selectListByProductId(id);
 
 
-            //GB 英国
-            ProductAmzUpload uploadGB = generateCommonProperties(product, "GB", product.getBulletPointUk(), product.getItemUk(), product.getProductDescriptionUk(), product.getKeywordsUk());
-            //JP 日本
-            ProductAmzUpload uploadJP = generateCommonProperties(product, "JP", product.getBulletPointJp(), product.getItemJp(), product.getProductDescriptionJp(), product.getKeywordsJp());
-            //CN
-            ProductAmzUpload uploadCN = generateCommonProperties(product, "CN", product.getBulletPointCn(), product.getItemCn(), product.getProductDescriptionCn(), product.getKeywordsCn());
-            //DE 德国
-            ProductAmzUpload uploadDE = generateCommonProperties(product, "DE", product.getBulletPointDe(), product.getItemDe(), product.getProductDescriptionDe(), product.getKeywordsDe());
-            //FR 法国
-            ProductAmzUpload uploadFR = generateCommonProperties(product, "FR", product.getBulletPointFr(), product.getItemFr(), product.getProductDescriptionFr(), product.getKeywordsFr());
-            //ES 西班牙
-            ProductAmzUpload uploadES = generateCommonProperties(product, "ES", product.getBulletPointEs(), product.getItemEs(), product.getProductDescriptionEs(), product.getKeywordsEs());
-            //IT意大利
-            ProductAmzUpload uploadIT = generateCommonProperties(product, "IT", product.getBulletPointIt(), product.getItemIt(), product.getProductDescriptionIt(), product.getKeywordsIt());
+            if(language.equals("GB")){
+                //GB 英国
+                ProductAmzUpload uploadGB = generateCommonProperties(product, "GB", product.getBulletPointUk(), product.getItemUk(), product.getProductDescriptionUk(), product.getKeywordsUk());
+                saveAmzUploadBySku(uploadGB, product, vars);
+            }
 
+            if(language.equals("JP")){
+                //JP 日本
+                ProductAmzUpload uploadJP = generateCommonProperties(product, "JP", product.getBulletPointJp(), product.getItemJp(), product.getProductDescriptionJp(), product.getKeywordsJp());
+                saveAmzUploadBySku(uploadJP, product, vars);
+            }
 
-            int i = 0;
-            i += saveAmzUploadBySku(uploadGB, product, vars);
-            i += saveAmzUploadBySku(uploadJP, product, vars);
-            i += saveAmzUploadBySku(uploadCN, product, vars);
-            i += saveAmzUploadBySku(uploadDE, product, vars);
-            i += saveAmzUploadBySku(uploadFR, product, vars);
-            i += saveAmzUploadBySku(uploadES, product, vars);
-            i += saveAmzUploadBySku(uploadIT, product, vars);
+            if(language.equals("CN")){
+                //CN
+                ProductAmzUpload uploadCN = generateCommonProperties(product, "CN", product.getBulletPointCn(), product.getItemCn(), product.getProductDescriptionCn(), product.getKeywordsCn());
+                saveAmzUploadBySku(uploadCN, product, vars);
+            }
 
+            if(language.equals("DE")){
+                //DE 德国
+                ProductAmzUpload uploadDE = generateCommonProperties(product, "DE", product.getBulletPointDe(), product.getItemDe(), product.getProductDescriptionDe(), product.getKeywordsDe());
+                saveAmzUploadBySku(uploadDE, product, vars);
+            }
 
-            if (i < (vars.size() * 7)) {
-                throw new Exception("pre publish insert failed.");
+            if(language.equals("FR")){
+                //FR 法国
+                ProductAmzUpload uploadFR = generateCommonProperties(product, "FR", product.getBulletPointFr(), product.getItemFr(), product.getProductDescriptionFr(), product.getKeywordsFr());
+                saveAmzUploadBySku(uploadFR, product, vars);
+            }
+
+            if(language.equals("ES")){
+                //ES 西班牙
+                ProductAmzUpload uploadES = generateCommonProperties(product, "ES", product.getBulletPointEs(), product.getItemEs(), product.getProductDescriptionEs(), product.getKeywordsEs());
+                saveAmzUploadBySku(uploadES, product, vars);
+            }
+
+            if(language.equals("IT")){
+                //IT意大利
+                ProductAmzUpload uploadIT = generateCommonProperties(product, "IT", product.getBulletPointIt(), product.getItemIt(), product.getProductDescriptionIt(), product.getKeywordsIt());
+                saveAmzUploadBySku(uploadIT, product, vars);
             }
 
             ClaimProduct update=new ClaimProduct();

@@ -36,6 +36,19 @@
 <div class="page-container">
     <form id="productForm" class="form form-horizontal">
         <div class="row cl">
+            <label class="form-label col-xs-2 col-sm-2">语言：</label>
+            <div class="formControls col-xs-2 col-sm-2">
+                <select id="language" name="language" class="select" style="height: 32px">
+                    <option value="">请选择</option>
+                    <option value="CN">中国</option>
+                    <option value="GB">英国</option>
+                    <option value="JP">日本</option>
+                    <option value="DE">德国</option>
+                    <option value="FR">法国</option>
+                    <option value="ES">西班牙</option>
+                    <option value="IT">意大利</option>
+                </select>
+            </div>
             <label class="form-label col-xs-2 col-sm-2">标题：</label>
             <div class="formControls col-xs-2 col-sm-2">
                 <input type="text" name="name" placeholder=" " class="input-text">
@@ -329,7 +342,7 @@
     }
     
     function publishProduct(id) {
-        layer_show("发布", '<%=request.getContextPath()%>/product/publish/detail?id='+id, 800);
+        layer_show("发布", '<%=request.getContextPath()%>/product/publish/detail?id='+id+"&type=1", 800);
     }
 
     //将时间戳格式化

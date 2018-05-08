@@ -203,7 +203,7 @@
                     "targets": [8],
                     "data": "id",
                     "render": function (data, type, full) {
-                        return( full.updateState=="1"?"<a style='text-decoration:none' title='移入待发布'  onClick=\"prePublish('" + full.id + "')\"')>移入待发布</a>":"") +
+                        return( full.updateState=="1"?"<a style='text-decoration:none' title='发布'  onClick=\"prePublish('" + full.id + "')\"')>发布</a>":"") +
                             "&nbsp;&nbsp;" +
                             "<a style='text-decoration:none' title='编辑'  onClick=\"editProduct('" + full.id + "')\"')>编辑</a>" ;
                     }
@@ -254,30 +254,9 @@
      * 移入待发布
      * @param ids
      */
-    function prePublish(ids) {
+    function prePublish(id) {
 
-        layer.confirm('确定移入待发布吗？', function (index) {
-        $.ajax({
-            type: 'POST',
-            url: '<%=request.getContextPath()%>/product/claim/prePublish',
-            dataType: 'json',
-            data: {
-                "id": ids
-            },
-            success: function (data) {
-                console.log(data);
-                if (data.success) {
-                    layer.msg(data.msg, {icon: 6, time: 1000});
-                    setTimeout(function () {
-                        document.getElementById("refresh").click();
-                    }, 1000);
-
-                }
-            },
-            error: function (data) {
-                layer.msg("移入失败，请确认商品信息是否编辑完整。", {icon: 2, time: 1000});
-            }
-        }); });
+        layer_show("发布", '<%=request.getContextPath()%>/product/publish/detail?id='+id+"&type=0", 800);
     }
 
     /*产品-删除*/

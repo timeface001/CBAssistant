@@ -11,6 +11,10 @@
         <if test="name!=null and name!=''">
             AND  a.ITEM_NAME=#{name}
         </if>
+
+        <if test="language!=null and language!=''">
+            AND  a.LANGUAGE_ID=#{language}
+        </if>
         ORDER BY a.CREATE_TIME DESC
     </select>
 

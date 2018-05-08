@@ -17,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+import sun.applet.resources.MsgAppletViewer;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -108,8 +109,21 @@ public class ProductPublishController extends BaseController {
 
     @RequestMapping(value = "/product/publish", produces = "text/plain;charset=UTF-8")
     @ResponseBody
-    public String publish(ProductAmzUpload product) {
-         productManagerService.uploadProduct(product);
+    public String publish(ProductAmzUpload product,String type) {
+        if(type.equals("1")){
+            productManagerService.uploadProduct(product);
+        }else{//认领列表直接发布
+            Map<String,Object> params=new HashMap<>();
+            params.put("shopId",product.getShopId());
+            List<Map<String,Object>> list= shopManageService.selectShopsById(params);
+            try {
+                productManagerService.prePublishProduct(product.getId(),list.get(0).get("COUNTRY_CODE").toString());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            product.setId(null);
+            productManagerService.uploadProduct(product);
+        }
         return ResponseGen.genSuccessData(null);
     }
 

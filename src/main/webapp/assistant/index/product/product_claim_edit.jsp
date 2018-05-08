@@ -47,7 +47,7 @@
         <div class="layui-form-item">
             <label class="layui-form-label">售卖形式</label>
             <div class="layui-input-block">
-                <input type="radio" name="skuType" lay-filter="skuType" value="1" title="单体" checked="checked">
+                <input type="radio" name="skuType" lay-filter="skuType" value="1" title="单体" >
                 <input type="radio" name="skuType" lay-filter="skuType" value="2" title="多变种">
             </div>
         </div>
@@ -111,7 +111,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">变种主题</label>
                 <div class="layui-input-block">
-                    <select name="skuMuti" lay-filter="skuMuti">
+                    <select name="skuMuti" lay-filter="skuMuti" id="selectMuti">
                         <option value=""></option>
                         <c:forEach items="${typeList}" var="type">
                             <option value="${type.variationType}">${type.variationName}</option>
@@ -644,8 +644,17 @@
     $(function () {
 
         var skuArr = [];
-        singleSku();
+        //singleSku();
         //日期
+        initSku('${product}')
+
+
+        var skuType='${skuType}';
+
+
+        function initSku() {
+
+        }
 
 
         layui.use('element', function () {
@@ -691,6 +700,7 @@
         layui.use('form', function () {
             var form = layui.form;
             form.on('radio(skuType)', function (data) {//切换变体类型
+
                 if ($(this).val() == "2") {//选中多变体
                     mutiSku();
 
@@ -698,6 +708,175 @@
                     singleSku();
                 }
             });
+
+
+
+            if (skuType == "2") {//选中多变体
+                mutiSku();
+                $("input[name='skuType']").eq(1).attr("checked",'checked');
+                $("input[name='skuType']").eq(0).removeAttr("checked");
+
+                var vars=JSON.parse('${productVars}');
+                $("#selectMuti").val("Color");
+                form.render("select", "skuMuti");
+                selectValue = vars[0].variationType;
+                $("#skuRender").html("");
+                $("#skuRender").append(genSkuTypeDom($("#skuMutiDiv option:selected").text()));
+
+                $(".skuBtn").on("click", function () {
+                    var $this=$(this);
+                    var text = $(this).parent().parent().find("input").val();
+                    if (text != null && $.trim(text).length > 0) {
+                        text = $.trim(text);
+                        var $skuCheclk = $(this).parent().parent().prev().find(".skuCheckbox").eq(0);
+                        var skarr = $skuCheclk.find("input[type='checkbox']");
+                        var isExist = false;
+                        for (var i = 0; i < skarr.length; i++) {
+                            if ($(skarr[i]).next().find("span").text() == text) {
+                                isExist = true;
+                                break;
+                            }
+                        }
+                        if (!isExist) {
+                            $skuCheclk.append("<input type=\"checkbox\" lay-filter='skuMutiCheck' name=\"\" title=" + text + " lay-skin=\"primary\" checked>");
+                            form.render('checkbox');
+                            refrehSKuPath();
+                            form.render(null, "skuMutiPath");
+                            form.render(null, "skuTable");
+                            $this.parent().parent().find("input").val('');
+                        }
+
+                    }
+                });
+
+
+                for(var i=0;i<vars.length;i++){
+
+                    var vvType=vars[i].variationType;
+                    console.log(vvType);
+                    if(vvType!=null && vvType!='undefined'){
+                        console.log(vars[i]);
+                        if(vvType='Color'){
+                            $("#skuRender button").parent().prev().find('input').val(vars[i].colorMap);
+
+                        }
+
+                        $(".skuBtn").click();
+                        form.render(null, 'skuRender');
+                        form.render('checkbox');
+
+                    }
+
+                }
+
+                var index=0;
+
+                for(var i=0;i<vars.length;i++){
+                    var vvType=vars[i].variationType;
+                    if(vvType!=null && vvType!='undefined'){
+
+                         var ttImages=(vars[i].mainPath+","+vars[i].attachPath).split(",");
+                         var ttHtml='';
+                         for(var j=0;j< ttImages.length;j++){
+                             ttHtml+="<div style='width:100px;height:110px;margin-left:2px;float:left;'><img width='100px' height='90px' style='padding-right:5px;' src=<%=request.getContextPath()%>/upload/" + ttImages[j] + " /><i class='layui-icon delImage' style='font-size:20px;margin-left:35px;'>&#xe640;</i></div>";
+                         }
+
+
+                        $("#skuMutiPath > div :eq("+(index*3+2)+")").html(ttHtml);
+
+
+                        $("#skuTable> tbody tr").eq(index).find("td").each(function (ii,val) {
+                            var isTwo=$(val).parent().attr("val").indexOf(":")>0;
+                            if(ii==0){
+                               $(val).find(".trOtherPath").val(ttImages.join(","));
+                            }
+
+                            if(isTwo){
+                               if(ii==3){
+                                   $(val).find("input").val(vars[i].price);
+                               }
+                                if(ii==4){
+                                    $(val).find("input").val(vars[i].salePrice);
+                                }
+
+                                if(ii==5){
+                                    $(val).find("input:eq(0)").val(getMyDate(vars[i].saleStartTime));
+                                    $(val).find("input:eq(1)").val(getMyDate(vars[i].saleEndTime));
+                                }
+
+                                if(ii==6){
+                                    $(val).find("input").val(vars[i].quantity);
+                                }
+                            }else{
+                                if(ii==2){
+                                    $(val).find("input").val(vars[i].price);
+                                }
+
+                                if(ii==3){
+                                    $(val).find("input").val(vars[i].salePrice);
+                                }
+
+                                if(ii==4){
+                                    $(val).find("input:eq(0)").val(getMyDate(vars[i].saleStartTime));
+                                    $(val).find("input:eq(1)").val(getMyDate(vars[i].saleEndTime));
+                                }
+
+                                if(ii==5){
+                                    $(val).find("input").val(vars[i].quantity);
+                                }
+                            }
+                        });
+
+
+                        index++;
+                    }
+
+                }
+
+
+
+                $(".delImage").on("click",function () {
+
+                    var pprent=$(this).parent().parent();
+
+                    var ppKey=$(this).prev().attr("src").substring(8);
+                    $("#skuTable tbody tr").each(function (i, val) {
+
+                        var exVal = $(val).find(".trOtherPath").val();
+                        var delVals=[];
+
+                        if(exVal!=null&&exVal!=""){
+                            var exArr=exVal.split(",");
+                            for(var i=0;i<exArr.length;i++){
+                                if(exArr[i]!=""&&ppKey!=exArr[i]){
+                                    delVals.push(exArr[i]);
+                                }
+                            }
+                        }
+
+                        $(val).find(".trOtherPath").val(delVals.join(","));
+
+                    });
+                    $(this).parent().remove();
+                    if(pprent.find("div").length==0){
+                        pprent.append("<img class='pathDemo' src='http://bpic.588ku.com/element_origin_min_pic/01/47/02/12574338a640011.jpg!r650' width='100' height='90' />");
+                    }
+                })
+
+
+
+
+            } else {//单体
+                singleSku();
+                $("input[name='skuType']").eq(0).attr("checked",'checked');
+                $("input[name='skuType']").eq(1).removeAttr("checked");
+
+
+            }
+
+            form.render("radio");
+
+
 
             form.on('checkbox(skuMutiCheck)', function (data) {//切换变体类型
 
@@ -742,7 +921,7 @@
             });
 
             form.on('submit', function (data) {
-                var skuType = data.field.skuType;
+                var skuTypeA = data.field.skuType;
                 //组合关键词和简要描述
 
                 data.field["bulletPointCn"] = getContentByLanguage("pointsCn");
@@ -761,7 +940,7 @@
                 data.field["keywordsEs"] = getContentByLanguage("keywordsEs");
                 data.field["keywordsIt"] = getContentByLanguage("keywordsIt");
                 data.field["keywordsUk"] = getContentByLanguage("keywordsUk");
-                if (skuType == 1) {//单体
+                if (skuTypeA == 1) {//单体
 
                 } else {//多变中
                     if (selectValue == null || selectValue == "") {
@@ -771,11 +950,18 @@
 
 
                     var skuVar = [];
+                    var isItemImags=true;
                     $("#skuTable tbody tr").each(function (i, val) {
                         var item = {};
+                        var itemImgs= $(val).eq(0).find(".trOtherPath").val().split(",");
+                        console.log(itemImgs);
+                        console.log($(val).eq(0).find(".trOtherPath").val());
+                        if(itemImgs.length<9){
+                            isItemImags=false;
+                        }
                         item["productId"] = $("input[name='id']").val();
-                        item["mainPath"] = $(val).eq(0).find(".trMainPath").val();
-                        item["attachPath"] = $(val).eq(0).find(".trOtherPath").val();
+                        item["mainPath"] = itemImgs[0];
+                        item["attachPath"] = itemImgs.slice(1).join(",");
                         item["sku"] = $(val).eq(0).find("input[type='text']").val();
                         item["price"] = $(val).find(".price").val();
                         item["salePrice"] = $(val).find(".salePrice").val();
@@ -828,6 +1014,11 @@
 
                     });
 
+                    if(!isItemImags){
+                        layer.msg("每种变体图片需传满9张！", {icon: 5, time: 1000});
+                        return false;
+                    }
+
 
                 }
 
@@ -869,6 +1060,7 @@
                 return;
             }
 
+            console.log(111);
             //做多2中sku组合 暂时不考虑
             var first = [];
             var second = [];
@@ -1031,16 +1223,16 @@
                 dom += "<div class=\"layui-input-block\" val=" + (arr[i].substring(arr[i].indexOf(":") + 1)) + ">" +
                     "    <div class='layui-inline layui-bg-gray' style='margin-top: 10px;'>变种属性    " + arr[i] + "</div>" +
                     "            </div>" +
-                    "            <div class=\"layui-input-block\">\n" +
+                    /*"            <div class=\"layui-input-block\">\n" +
                     "                <button id=" + id + " type=\"button\" class=\"layui-btn skuMainPath\" >\n" +
                     "            <i class=\"layui-icon\">&#xe67c;</i>上传主图\n" +
                     "        </button>" +
-                    "            </div>\n" +
+                    "            </div>\n" +*/
 
 
-                    "            <div class=\"layui-input-block\" style='margin-top: 5px'>" +
+                  /*  "            <div class=\"layui-input-block\" style='margin-top: 5px'>" +
                     "<img src='http://bpic.588ku.com/element_origin_min_pic/01/47/02/12574338a640011.jpg!r650' width='100' height='90' />" +
-                    "                     </div>" +
+                    "                     </div>" +*/
 
 
                     "            <div class=\"layui-input-block\" style='margin-top: 10px;'>\n" +
@@ -1048,7 +1240,7 @@
                     "            <i class=\"layui-icon\">&#xe67c;</i>上传附图\n" +
                     "        </button>" +
                     "            </div>" +
-                    "            <div class=\"layui-input-block\" style='margin-top: 5px'>" +
+                    "            <div class=\"layui-input-block\" style='margin-top: 5px;height: 110px;'>" +
                     "<img class=\"pathDemo\" src='http://bpic.588ku.com/element_origin_min_pic/01/47/02/12574338a640011.jpg!r650' width='100' height='90' />" +
                     "                     </div>";
 
@@ -1148,27 +1340,41 @@
 
                         var $this = $($(this)[0].item[0]);
 
-                        var key = $this.parent().prev().prev().prev().attr("val");
+                        var key = $this.parent().prev().attr("val");
                         $this.parent().next().find(".pathDemo").remove();
+                        console.log($this);
                         $this.parent().next().append("<div style='width:100px;height:110px;margin-left:2px;float:left;'><img width='100px' height='90px' style='padding-right:5px;' src=<%=request.getContextPath()%>/upload/" + res.data + " /><i class='layui-icon delImage' style='font-size:20px;margin-left:35px;'>&#xe640;</i></div>");
+
                         $("#skuTable tbody tr").each(function (i, val) {
                             if ($(val).attr("val") == key) {
+
                                 var exVal = $(val).find(".trOtherPath").val();
-                                console.log("val:"+exVal);
-                                $(val).find(".trOtherPath").val((exVal == null || exVal == "") ? res.data : (exVal += "," + res.data));
+                                var exVals="";
+                                if(exVal == null || exVal == ""){
+                                    exVals=res.data;
+                                }else if(exVal.split(",").length<9){
+                                    exVals=exVal += "," + res.data;
+                                }else{
+                                    exVals=exVal;
+                                }
+                                $(val).find(".trOtherPath").val( exVals);
+
                             }
 
                         });
                         //上传完毕回调
                         if ($this.parent().next().find("img").length > 9) {//最多上传9张
                             $this.parent().next().find("img").each(function (i, val) {
-                                if (i > 8) {
-                                    $(val).remove();
+                                if (i > 9) {
+                                    $(val).parent().remove();
                                 }
                             });
                         }
 
                         $(".delImage").on("click",function () {
+
+                            var pprent=$(this).parent().parent();
+                            var ppKey=$(this).prev().attr("src").substring(8);
                             $("#skuTable tbody tr").each(function (i, val) {
 
                                 var exVal = $(val).find(".trOtherPath").val();
@@ -1176,7 +1382,7 @@
                                 if(exVal!=null&&exVal!=""){
                                     var exArr=exVal.split(",");
                                     for(var i=0;i<exArr.length;i++){
-                                        if(exArr[i]!=""){
+                                        if(exArr[i]!=""&&ppKey!=exArr[i]){
                                             delVals.push(exArr[i]);
                                         }
                                     }
@@ -1185,7 +1391,6 @@
                                 $(val).find(".trOtherPath").val(delVals.join(","));
 
                             });
-                            var pprent=$(this).parent().parent();
                             $(this).parent().remove();
                             if(pprent.find("div").length==0){
                                 pprent.append("<img class='pathDemo' src='http://bpic.588ku.com/element_origin_min_pic/01/47/02/12574338a640011.jpg!r650' width='100' height='90' />");
@@ -1194,6 +1399,7 @@
                     }
                     , error: function () {
                         //请求异常回调
+                        console.log(1);
                     }
                 });
             });
@@ -1327,6 +1533,31 @@
 
     });
 
+
+    //将时间戳格式化
+    function getMyDate(time){
+        if(typeof(time)=="undefined"){
+            return "";
+        }
+        var oDate = new Date(time),
+            oYear = oDate.getFullYear(),
+            oMonth = oDate.getMonth()+1,
+            oDay = oDate.getDate(),
+            oHour = oDate.getHours(),
+            oMin = oDate.getMinutes(),
+            oSen = oDate.getSeconds(),
+            oTime = oYear +'-'+ getzf(oMonth) +'-'+ getzf(oDay) ;//+' '+ getzf(oHour) +':'+ getzf(oMin) +':'+getzf(oSen);//最后拼接时间
+
+        return oTime;
+    };
+
+    //补0操作,当时间数据小于10的时候，给该数据前面加一个0
+    function getzf(num){
+        if(parseInt(num) < 10){
+            num = '0'+num;
+        }
+        return num;
+    }
 
 
 </script>

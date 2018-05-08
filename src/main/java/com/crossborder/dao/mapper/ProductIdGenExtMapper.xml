@@ -66,7 +66,7 @@
         USE_STATUS, CREATE_TIME, AMZ_UPLOAD_ID
         )
         values (SEQ_PRODUCT_ID_GEN.nextval, #{productId,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR},
-        #{useStatus,jdbcType=CHAR}, #{createTime,jdbcType=DATE}, #{amzUploadId,jdbcType=VARCHAR}
+        #{useStatus,jdbcType=CHAR}, CURRENT_DATE, #{amzUploadId,jdbcType=VARCHAR}
         )
     </insert>
     <insert id="insertSelective" parameterType="com.crossborder.entity.ProductIdGen">
@@ -101,7 +101,7 @@
                 #{useStatus,jdbcType=CHAR},
             </if>
             <if test="createTime != null">
-                #{createTime,jdbcType=DATE},
+                CURRENT_DATE,
             </if>
             <if test="amzUploadId != null">
                 #{amzUploadId,jdbcType=VARCHAR},

@@ -196,7 +196,15 @@
 <script type="text/javascript">
     var id = '';
     $(function () {
-
+        function getParam(paramName) {
+            paramValue = "", isFound = !1;
+            console.log(this.location);
+            if (this.location.search.indexOf("?") == 0 && this.location.search.indexOf("=") > 1) {
+                arrSource = unescape(this.location.search).substring(1, this.location.search.length).split("&"), i = 0;
+                while (i < arrSource.length && !isFound) arrSource[i].indexOf("=") > 0 && arrSource[i].split("=")[0].toLowerCase() == paramName.toLowerCase() && (paramValue = arrSource[i].split("=")[1], isFound = !0), i++
+            }
+            return paramValue == "" && (paramValue = null), paramValue
+        }
         var skuArr = [];
         //日期
 
@@ -233,7 +241,7 @@
 
                 $(val).click();
             }
-        })
+        });
 
 
         $("#externalProductIdType option").each(function (i,val) {
@@ -246,8 +254,7 @@
             var form = layui.form;
 
             form.on('submit', function (data) {
-                /*console.log(data);
-                return false;*/
+                data.field['type']=getParam("type");
                 $.ajax({
                     type: 'POST',
                     url: '<%=request.getContextPath()%>/product/publish',
@@ -272,9 +279,6 @@
             });
 
             form.on('select(shop)', function(data){
-            console.log(data.elem); //得到select原始DOM对象
-            console.log(data.value); //得到被选中的值
-            console.log(data.othis); //得到美化后的DOM对象
            });
 
             $("#genPid").click(function () {

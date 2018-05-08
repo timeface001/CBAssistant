@@ -20,7 +20,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import javax.xml.crypto.Data;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -130,6 +129,7 @@ public class ProductClaimController extends BaseController {
         request.setAttribute("pointsFr", null2ZeroSize(claimProduct.getBulletPointFr()));
 
         List<ProductItemVar> vars = productSkuTypeService.selectListByProductId(id);
+        request.setAttribute("skuType", claimProduct.getSkuType());
         if (claimProduct.getSkuType().equals("1")) {
             if (GeneralUtils.isNotNullOrEmpty(vars)) {
                 request.setAttribute("productVar", vars.get(0));
@@ -137,7 +137,7 @@ public class ProductClaimController extends BaseController {
                 request.setAttribute("productVar", new ProductItemVar());
             }
         } else {
-            //todo 多变种回显
+            request.setAttribute("productVars", JSON.toJSONString(vars));
         }
         return view;
     }
@@ -153,10 +153,10 @@ public class ProductClaimController extends BaseController {
 
     @RequestMapping(value = "/product/claim/prePublish", produces = "text/plain;charset=UTF-8")
     @ResponseBody
-    public String prePublish(String id) {
+    public String prePublish(String id,String type) {
 
         try {
-            productManagerService.prePublishProduct(id);
+            productManagerService.prePublishProduct(id,type);
         } catch (Exception e) {
             e.printStackTrace();
             return JSON.toJSONString(ResponseGen.genFail());
