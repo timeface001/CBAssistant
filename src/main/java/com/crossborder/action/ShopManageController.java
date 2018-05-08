@@ -1,6 +1,7 @@
 package com.crossborder.action;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.amazonservices.mws.orders._2013_09_01.MarketplaceWebServiceOrdersClient;
 import com.amazonservices.mws.orders._2013_09_01.MarketplaceWebServiceOrdersConfig;
 import com.amazonservices.mws.orders._2013_09_01.model.ListOrdersRequest;
@@ -69,7 +70,7 @@ public class ShopManageController {
             map.put("code", "-10");
             map.put("msg", "授权失败");
         }
-        return JSON.toJSONString(map);
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
     public boolean validateShop(Map<String, Object> shop) {
@@ -140,7 +141,7 @@ public class ShopManageController {
             map.put("code", "-10");
             map.put("msg", "查询失败");
         }
-        return JSON.toJSONString(map);
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
     /**
@@ -169,7 +170,7 @@ public class ShopManageController {
             map.put("code", "-10");
             map.put("msg", "查询失败");
         }
-        return JSON.toJSONString(map);
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
     /**
@@ -193,7 +194,7 @@ public class ShopManageController {
             map.put("code", "-10");
             map.put("msg", "更新失败");
         }
-        return JSON.toJSONString(map);
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
     /**
@@ -220,7 +221,7 @@ public class ShopManageController {
             map.put("code", "-10");
             map.put("msg", "更新失败");
         }
-        return JSON.toJSONString(map);
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
     /**
@@ -243,6 +244,6 @@ public class ShopManageController {
             map.put("code", "-10");
             map.put("msg", "删除失败");
         }
-        return JSON.toJSONString(map);
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 }

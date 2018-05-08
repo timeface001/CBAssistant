@@ -179,19 +179,19 @@
 
         </div>
         <div class="row cl">
-            <label class=" col-xs-2 col-sm-2 text-r">长(cm)：</label>
+            <label class=" col-xs-1 col-sm-1 text-r">长(cm)：</label>
             <div class=" col-xs-2 col-sm-2">
-                <input type="text" id="length" placeholder=" "
+                <input type="text" id="length" placeholder=" " value="1"
                        class="input-text">
             </div>
             <label class=" col-xs-2 col-sm-2 text-r">宽(cm)：</label>
             <div class=" col-xs-2 col-sm-2">
-                <input type="text" id="width" placeholder=" "
+                <input type="text" id="width" placeholder=" " value="1"
                        class="input-text">
             </div>
             <label class=" col-xs-2 col-sm-2 text-r">高(cm)：</label>
             <div class=" col-xs-2 col-sm-2">
-                <input type="text" id="height" placeholder=" "
+                <input type="text" id="height" placeholder=" " value="1"
                        class="input-text">
             </div>
         </div>
@@ -273,6 +273,8 @@
 <script type="text/javascript">
     var amazonOrderId = '<%=amazonOrderId%>';
     var roleId = $("#roleId").val();
+    var preStatus = "1";
+    var trackNum = "";
     var countryCode;
     $(function () {
         $.post("<%=request.getContextPath()%>/order/selectOrderInfo",
@@ -291,6 +293,8 @@
         initSelect();
     });
     function initBusiness(localOrder) {
+        preStatus = localOrder.LOCALSTATUS;
+        trackNum = localOrder.INTLTRACKNUM;
         $("#salesCompany").val(localOrder.COMPANY_NAME);
         $("#salesMan").val(localOrder.USER_NAME);
         $("#salesSource").val(localOrder.SHOP_NAME);
@@ -317,7 +321,7 @@
                     {"data": "INTLTRACKNUM"},
                     {"data": "ASIN"},
                     {"data": "ITEMPRICE"},
-                    {"data": "PAYTYPE"},
+                    {"data": "PAYMENTMETHOD"},
                     {"data": "SHIPPINGPRICE"},
                     {"data": "TRANSPORTCOMPANY"},
                     {"data": "LOCALSTATUS"}
@@ -347,6 +351,9 @@
                         }
                     }
                 ],
+                "rowCallback": function (row, data, displayIndex) {
+                    $(row).attr("class", "text-c");
+                },
                 "bFilter": false,
                 "paging": false,
                 "info": false
@@ -536,7 +543,7 @@
                         var li = "<li class='item cl comment-flip'>" +
                                 "<div class='comment-main'>" +
                                 "<header class='comment-header'>" +
-                                "<div class='comment-meta'><a class='comment-author'>" + item.OPERATION_USER + "</a> 操作于" +
+                                "<div class='comment-meta'><a class='comment-author'>" + item.USER_NAME + "</a> 操作于" +
                                 "<time>" + item.OPERATION_TIME + "</time>" +
                                 "</div></header>" +
                                 "<div class='comment-body'>" +
@@ -719,13 +726,13 @@
             url: '<%=request.getContextPath()%>/common/getShipTypes',
             dataType: 'json',
             data: {
-                "countryCode": countryCode
+                "companyId": value
             },
             success: function (data) {
                 if (data.code == 0) {
                     var data = data.data;
                     for (var i = 0; i < data.length; i++) {
-                        $("#transType").append($('<option value=' + data[i].code + '>' + data[i].name + '</option>'));
+                        $("#transType").append($('<option value=' + data[i].ID + '>' + data[i].FULL_NAME + '</option>'));
                     }
                 }
             },
@@ -736,25 +743,25 @@
     }
     function updateOrder(status, sku) {
         if (status == 2) {
-            layer_show("备货", "<%=request.getContextPath()%>/assistant/index/order/stocking.jsp?amazonOrderId=" + amazonOrderId + "&sku=" + sku, 400, 300);
+            layer_show("备货", "<%=request.getContextPath()%>/assistant/index/order/stocking.jsp?amazonOrderId=" + amazonOrderId + "&sku=" + sku + "&preStatus=" + preStatus, 400, 300);
         } else if (status == 3) {
             layer.confirm('您确定缺货吗？', function (index) {
                 confirm(3, sku)
             });
         } else if (status == 4) {
-            layer_show("发货", "<%=request.getContextPath()%>/assistant/index/order/stocking.jsp?amazonOrderId=" + amazonOrderId + "&sku=" + sku, 400, 300);
+            layer_show("发货", "<%=request.getContextPath()%>/assistant/index/order/stocking.jsp?amazonOrderId=" + amazonOrderId + "&sku=" + sku + "&preStatus=" + preStatus, 400, 300);
         } else if (status == 5) {
             layer.confirm('您确定此订单有问题吗？', function (index) {
                 confirm(5, sku)
             });
         } else if (status == 6) {
-            layer_show("退款", "<%=request.getContextPath()%>/assistant/index/order/refund.jsp?amazonOrderId=" + amazonOrderId + "&sku=" + sku, 400, 200);
+            layer_show("退款", "<%=request.getContextPath()%>/assistant/index/order/refund.jsp?amazonOrderId=" + amazonOrderId + "&sku=" + sku + "&preStatus=" + preStatus, 400, 200);
         } else if (status == 7) {
             layer.confirm('您确定要妥投吗？', function (index) {
                 confirm(7, sku)
             });
         } else if (status == 8) {
-            layer_show("修改运费", "<%=request.getContextPath()%>/assistant/index/order/stocking.jsp?amazonOrderId=" + amazonOrderId + "&sku=" + sku, 400, 300);
+            layer_show("修改运费", "<%=request.getContextPath()%>/assistant/index/order/stocking.jsp?amazonOrderId=" + amazonOrderId + "&sku=" + sku + "&preStatus=" + preStatus, 400, 300);
         }
     }
     function confirm(status, sku) {
@@ -764,6 +771,7 @@
             dataType: 'json',
             "data": {
                 "amazonOrderId": amazonOrderId,
+                "preStatus": preStatus,
                 "status": status,
                 "cost": "",
                 "refundment": "",
@@ -800,6 +808,7 @@
             }
         });
     }
+    /*发货*/
     function delivery() {
         if ($("#amazonId").val() == null || $("#amazonId").val() == '' || $("#amazonId").val() == undefined) {
             layer.msg('客户单号不能为空', {icon: 2, time: 2000});
@@ -822,13 +831,15 @@
         var ShippingInfo = new Object();
         var SenderInfo = new Object();
         var ApplicationInfos = new Array();
-        wayBill.WayBillNumber = $("#amazonId").val();
+        wayBill.OrderNumber = $("#amazonId").val();
+        wayBill.transportCompany = $("#transportCompany").val();
         wayBill.ShippingMethodCode = $("#transType").val();
         wayBill.Length = $("#length").val();
         wayBill.Width = $("#width").val();
         wayBill.Height = $("#height").val();
         wayBill.PackageNumber = $("#count").val();
         wayBill.Weight = $("#weight").val();
+        wayBill.trackNum = trackNum;
         ShippingInfo.CountryCode = $("#countryCode").val();
         ShippingInfo.ShippingFirstName = $("#name").val();
         ShippingInfo.ShippingLastName = $("#name").val();
@@ -842,9 +853,28 @@
         ShippingInfo.ShippingPhone = $("#phone").val();
         wayBill.ShippingInfo = ShippingInfo;
         var tableData = getFormJson("#tableForm");
-        console.log('[获取数据]' + tableData.enName.length);
         if (count > 1) {
             for (var i = 0; i < tableData.enName.length; i++) {
+                if (tableData.chnName[i] == null || tableData.chnName[i] == '' || tableData.chnName[i] == undefined) {
+                    layer.msg('中文品名不能为空', {icon: 2, time: 2000});
+                    return false;
+                }
+                if (tableData.enName[i] == null || tableData.enName[i] == '' || tableData.enName[i] == undefined) {
+                    layer.msg('英文品名不能为空', {icon: 2, time: 2000});
+                    return false;
+                }
+                if (tableData.count[i] == null || tableData.count[i] == '' || tableData.count[i] == undefined) {
+                    layer.msg('数量不能为空', {icon: 2, time: 2000});
+                    return false;
+                }
+                if (tableData.price[i] == null || tableData.price[i] == '' || tableData.price[i] == undefined) {
+                    layer.msg('单价不能为空', {icon: 2, time: 2000});
+                    return false;
+                }
+                if (tableData.weight[i] == null || tableData.weight[i] == '' || tableData.weight[i] == undefined) {
+                    layer.msg('重量不能为空', {icon: 2, time: 2000});
+                    return false;
+                }
                 var applicationInfo = new Object();
                 applicationInfo.PickingName = tableData.chnName[i];
                 applicationInfo.ApplicationName = tableData.enName[i];
@@ -854,6 +884,26 @@
                 ApplicationInfos.push(applicationInfo);
             }
         } else {
+            if (tableData.chnName == null || tableData.chnName == '' || tableData.chnName == undefined) {
+                layer.msg('中文品名不能为空', {icon: 2, time: 2000});
+                return false;
+            }
+            if (tableData.enName == null || tableData.enName == '' || tableData.enName == undefined) {
+                layer.msg('英文品名不能为空', {icon: 2, time: 2000});
+                return false;
+            }
+            if (tableData.count == null || tableData.count == '' || tableData.count == undefined) {
+                layer.msg('数量不能为空', {icon: 2, time: 2000});
+                return false;
+            }
+            if (tableData.price == null || tableData.price == '' || tableData.price == undefined) {
+                layer.msg('单价不能为空', {icon: 2, time: 2000});
+                return false;
+            }
+            if (tableData.weight == null || tableData.weight == '' || tableData.weight == undefined) {
+                layer.msg('重量不能为空', {icon: 2, time: 2000});
+                return false;
+            }
             var applicationInfo = new Object();
             applicationInfo.PickingName = tableData.chnName;
             applicationInfo.ApplicationName = tableData.enName;
@@ -869,7 +919,8 @@
             url: '<%=request.getContextPath()%>/common/confirmOrder',
             dataType: 'json',
             "data": {
-                "json": JSON.stringify(wayBills)
+                "json": JSON.stringify(wayBills),
+                "amazonOrderId": amazonOrderId
             },
             success: function (data) {
                 if (data.code == 0) {
@@ -880,6 +931,28 @@
             },
             error: function (data) {
                 layer.msg('发货失败!', {icon: 2, time: 1000});
+            }
+        });
+    }
+    function print() {
+        var orderNumbers = new Array();
+        orderNumbers.push($("#amazonId").val());
+        $.ajax({
+            type: 'POST',
+            url: '<%=request.getContextPath()%>/common/print',
+            dataType: 'json',
+            "data": {
+                "orderNumbers": JSON.stringify(orderNumbers)
+            },
+            success: function (data) {
+                if (data.code == 0) {
+                    layer.msg('打印成功!', {icon: 1, time: 1000});
+                } else {
+                    layer.msg('打印失败!', {icon: 1, time: 1000});
+                }
+            },
+            error: function (data) {
+                layer.msg('打印失败!', {icon: 2, time: 1000});
             }
         });
     }

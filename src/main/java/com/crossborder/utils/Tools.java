@@ -73,5 +73,15 @@ public class Tools {
         }
         return false;
     }
+
+    public static String createIntlTrackNum() {
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append("YT");
+        for (int i = 0; i < 10; i++) {
+            int random = (int) (Math.random() * 10);
+            stringBuffer.append(random);
+        }
+        return stringBuffer.toString();
+    }
 }
 

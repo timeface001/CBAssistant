@@ -138,6 +138,30 @@
                 </c:otherwise>
             </c:choose>
         </div>
+        <div class="panel panel-success mt-10">
+            <div class="panel-body row cl">
+                <div class="formControls col-xs-2 col-sm-2">
+                    <label class="form-label f-l">销售额：</label>
+                    <label class="form-label f-l" id="total">0.00</label>
+                </div>
+                <div class="formControls col-xs-2 col-sm-2">
+                    <label class="form-label f-l">成本：</label>
+                    <label class="form-label f-l" id="cost">0.00</label>
+                </div>
+                <div class="formControls col-xs-2 col-sm-2">
+                    <label class="form-label f-l">运费：</label>
+                    <label class="form-label f-l" id="shippingPrice">0.00</label>
+                </div>
+                <div class="formControls col-xs-2 col-sm-2">
+                    <label class="form-label f-l">退款：</label>
+                    <label class="form-label f-l" id="refund">0.00</label>
+                </div>
+                <div class="formControls col-xs-2 col-sm-2">
+                    <label class="form-label f-l">利润：</label>
+                    <label class="form-label f-l" id="profit">0.00</label>
+                </div>
+            </div>
+        </div>
         <c:if test="${sessionScope.user.ROLE_ID eq '100'}">
             <div class="cl pd-5 bg-1 bk-gray mt-10" id="count-div"><span class="l">
             <a class="btn btn-primary radius" href="javascript:;"
@@ -191,7 +215,8 @@
     </div>
 </div>
 
-<script type="text/javascript" src="<%=request.getContextPath()%>/assistant/lib/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript"
+        src="<%=request.getContextPath()%>/assistant/lib/jquery/1.9.1/jquery.min.js"></script>
 <script type="text/javascript" src="<%=request.getContextPath()%>/assistant/lib/layer/2.4/layer.js"></script>
 <script type="text/javascript" src="<%=request.getContextPath()%>/assistant/static/h-ui/js/H-ui.min.js"></script>
 <script type="text/javascript"
@@ -226,12 +251,14 @@
         $("#logmin").val(sd.format("yyyy-MM-dd"));
         $("#logmax").val(new Date().format("yyyy-MM-dd"));
         orderTable = initializeTable();
+        selectFees();
         initSelect();
         $("#downloadOrder").click(function () {
             downloadOrder();
         });
         $("#search").click(function () {
             orderTable.ajax.reload();
+            selectFees();
         });
     });
     function initSelect() {
@@ -414,11 +441,12 @@
     function reloadTable(id) {
         if (id == 8) {
             isShowStatus = true;
-            document.getElementById('localStatus').value = 0;
+            document.getElementById('localStatus').value = "";
         } else {
             $("#localStatus").val(id + 1);
         }
         orderTable.ajax.reload();
+        selectFees();
         var btnDiv = document.getElementById("btn-div");
         var btns = btnDiv.getElementsByTagName("a");
         for (var i = 0; i < btns.length; i++) {
@@ -566,6 +594,34 @@
         });
         return table;
     }
+    /*
+     查询订单总费用明细
+     */
+    function selectFees() {
+        $.ajax({
+            type: 'POST',
+            url: '<%=request.getContextPath()%>/order/selectFees',
+            dataType: 'json',
+            data: {
+                "data": JSON.stringify(getFormJson("#orderForm"))
+            },
+            success: function (data) {
+                if (data.code == 0) {
+                    var data = data.data;
+                    $("#total").html(data.ITEMPRICE);
+                    $("#cost").html(data.COST);
+                    $("#shippingPrice").html(data.SHIPPINGPRICE);
+                    $("#refund").html(data.REFUNDMENT);
+                    $("#profit").html(data.PROFIT);
+                } else {
+                    layer.msg(data.msg, {icon: 2, time: 1000});
+                }
+            },
+            error: function (data) {
+                layer.msg(data.msg, {icon: 2, time: 1000});
+            }
+        });
+    }
     /*订单-添加*/
     function addOrder(title, url, w) {
         layer_show(title, url, w);
@@ -582,6 +638,7 @@
             success: function (data) {
                 if (data.code == 0) {
                     layer.msg(data.msg, {icon: 1, time: 1000});
+                    reloadTable(0)
                 } else {
                     layer.msg(data.msg, {icon: 2, time: 1000});
                 }

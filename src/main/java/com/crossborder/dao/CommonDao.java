@@ -24,4 +24,11 @@ public interface CommonDao {
     public List<Map<String, Object>> selectCountryByCode(String id);
 
     public int updateLogin(Map<String, Object> map);
+
+    public int updateAddress(Map<String, Object> map);
+    public int insertShips(Map<String, Object> map);
+
+    public List<Map<String,String>> getShipTypes(Map<String, String> map);
+    public int insertShipMent(Map<String, Object> map);
+    public int insertCustomsInfo(Map<String, Object> map);
 }

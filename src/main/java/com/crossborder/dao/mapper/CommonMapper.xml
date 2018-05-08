@@ -45,15 +45,124 @@
     <select id="getList" parameterType="java.lang.String" resultType="java.util.Map">
         <![CDATA[
 
+
+
+
+
 			${sqlText}
+
+
+
+
 
         ]]>
     </select>
     <select id="getTreeList" parameterType="java.lang.String" resultType="java.util.Map">
         <![CDATA[
 
+
+
+
+
 			${sqlText}
+
+
+
+
 
         ]]>
     </select>
+    <update id="updateAddress" parameterType="java.util.Map">
+        UPDATE T_ADDRESS
+        SET
+        USERNAME = #{ShippingFirstName,jdbcType=VARCHAR},
+        COMPANY = #{ShippingCompany,jdbcType=VARCHAR},
+        PHONE = #{ShippingPhone,jdbcType=VARCHAR},
+        COUNTRYCODE = #{CountryCode,jdbcType=VARCHAR},
+        POSTALCODE = #{ShippingZip,jdbcType=VARCHAR},
+        CITY = #{ShippingCity,jdbcType=VARCHAR},
+        STATEORREGION = #{ShippingState,jdbcType=VARCHAR},
+        ADDRESSLINE1 = #{ShippingAddress,jdbcType=VARCHAR},
+        ADDRESSLINE2 = #{ShippingAddress1,jdbcType=VARCHAR},
+        ADDRESSLINE3 = #{ShippingAddress2,jdbcType=VARCHAR}
+        WHERE AMAZONORDERID = #{amazonOrderId,jdbcType=VARCHAR}
+    </update>
+    <insert id="insertShips" parameterType="java.util.Map">
+        INSERT INTO T_TRANSPORT_TYPE
+        (ID,
+        COMPANY_ID,
+        STATE,
+        COUNTRY_ID,
+        ENGLISHNAME,
+        HAVETRACKINGNUM,
+        DISPLAYNAME,
+        FULL_NAME)
+        VALUES(
+        #{Code,jdbcType=VARCHAR},
+        #{companyId,jdbcType=VARCHAR},
+        #{state,jdbcType=VARCHAR},
+        #{countryId,jdbcType=VARCHAR},
+        #{EnglishName,jdbcType=VARCHAR},
+        #{HaveTrackingNum,jdbcType=VARCHAR},
+        #{DisplayName,jdbcType=VARCHAR},
+        #{FullName,jdbcType=VARCHAR}
+        )
+    </insert>
+    <select id="getShipTypes" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT * FROM T_TRANSPORT_TYPE
+        WHERE
+        COMPANY_ID = #{companyId,jdbcType=VARCHAR}
+    </select>
+    <insert id="insertShipMent" parameterType="java.util.Map">
+        INSERT INTO T_ORDER_SHIPMENT (
+        ORDER_ID,
+        TRANS_COMPANY_ID,
+        TRANS_TYPE_ID,
+        CUST_ORDER_ID,
+        ITEM_WEIGHT,
+        ITEM_PACKAGES,
+        LENGTH,
+        WIDTH,
+        HEIGHT,
+        TRACKNUMBER
+        )VALUES (
+        #{amazonOrderId,jdbcType=VARCHAR},
+        #{companyId,jdbcType=VARCHAR},
+        #{typeId,jdbcType=VARCHAR},
+        #{custId,jdbcType=VARCHAR},
+        #{weight,jdbcType=VARCHAR},
+        #{packages,jdbcType=VARCHAR},
+        #{length,jdbcType=VARCHAR},
+        #{width,jdbcType=VARCHAR},
+        #{height,jdbcType=VARCHAR},
+        #{trackNum,jdbcType=VARCHAR}
+        )
+    </insert>
+    <insert id="insertCustomsInfo" parameterType="java.util.Map">
+        INSERT INTO T_ORDER_CUSTOMS_INFO (
+        CUST_ORDER_ID,
+        ENGLISH_NAME,
+        CHINESE_NAME,
+        ITEM_QUATITY,
+        QUATITY_UNIT,
+        UNIT_PRICE,
+        TOTAL_PRICE,
+        ITEM_WEIGHT,
+        TOTAL_WEIGHT,
+        CUSTOM_SKU,
+        CUSTOM_NUMBER
+        ) VALUES (
+        #{custId,jdbcType=VARCHAR},
+        #{enName,jdbcType=VARCHAR},
+        #{chnName,jdbcType=VARCHAR},
+        #{count,jdbcType=VARCHAR},
+        #{unit,jdbcType=VARCHAR},
+        #{price,jdbcType=VARCHAR},
+        #{totalPrice,jdbcType=VARCHAR},
+        #{weight,jdbcType=VARCHAR},
+        #{totalWeight,jdbcType=VARCHAR},
+        #{sku,jdbcType=VARCHAR},
+        #{code,jdbcType=VARCHAR}
+        )
+    </insert>
 </mapper>
