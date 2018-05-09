@@ -1,7 +1,6 @@
 package com.crossborder.service;
 
 import com.alibaba.fastjson.JSON;
-import com.amazonservices.mws.orders._2013_09_01.MarketplaceWebServiceOrdersClient;
 import com.crossborder.dao.ProductAmzUploadDao;
 import com.crossborder.dao.ProductClaimDao;
 import com.crossborder.dao.ProductIdGenDao;
@@ -10,10 +9,9 @@ import com.crossborder.entity.ClaimProduct;
 import com.crossborder.entity.ProductAmzUpload;
 import com.crossborder.entity.ProductIdGen;
 import com.crossborder.entity.ProductItemVar;
-import com.crossborder.utils.BaiduTranApi;
-import com.crossborder.utils.GeneralUtils;
-import com.crossborder.utils.ProductStateEnum;
+import com.crossborder.utils.*;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +35,8 @@ public class ProductManagerService {
     private ProductAmzUploadDao productAmzUploadDao;
     @Resource
     private ProductSkuTypeService productSkuTypeService;
+    @Autowired
+    private AmzUpload amzUpload;
 
     public boolean save(Map<String, Object> product) {
         product.put("createTime", new Date());
@@ -337,11 +337,10 @@ public class ProductManagerService {
         return productAmzUploadDao.selectByPrimaryKey(id);
     }
 
-    public void uploadProduct(ProductAmzUpload product) {
-        //todo 上传亚马逊
+    public void uploadProduct(ProductAmzUpload product, Map<String, Object> shop) {
 
-        MarketplaceWebServiceOrdersClient client=new MarketplaceWebServiceOrdersClient("","","","");
-
+        ResponseDto response=amzUpload.uploadProduct(product,shop);
+        System.out.println(JSON.toJSONString(response));;
         //1发布失败 2发布成功 3发布中
         product.setPublishStatus("3");
         product.setUpdateDelete("update");

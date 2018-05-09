@@ -1,6 +1,7 @@
 package com.crossborder.utils;
 
 import java.io.*;
+import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -33,6 +34,38 @@ public class MD5 {
             byte[] inputByteArray = new byte[0];
             try {
                 inputByteArray = input.getBytes("utf-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            // inputByteArray是输入字符串转换得到的字节数组
+            messageDigest.update(inputByteArray);
+            // 转换并返回结果，也是字节数组，包含16个元素
+            byte[] resultByteArray = messageDigest.digest();
+            // 字符数组转换成字符串返回
+            return byteArrayToHex(resultByteArray);
+        } catch (NoSuchAlgorithmException e) {
+            return null;
+        }
+    }
+
+    /**
+     * 获得一个字符串的MD5值
+     *
+     * @param input 输入的字符串
+     * @return 输入字符串的MD5值
+     *
+     */
+    public static String md5N(String input) {
+        if (input == null)
+            return null;
+
+        try {
+            // 拿到一个MD5转换器（如果想要SHA1参数换成”SHA1”）
+            MessageDigest messageDigest = MessageDigest.getInstance("MD5");
+            // 输入的字符串转换成字节数组
+            byte[] inputByteArray = new byte[0];
+            try {
+                inputByteArray = input.getBytes("ISO-8859-1");
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
@@ -117,6 +150,26 @@ public class MD5 {
         // 字符数组组合成字符串返回
         return new String(resultCharArray);
 
+    }
+
+    public static String computeContentMD5HeaderValue( FileInputStream fis )
+            throws IOException, NoSuchAlgorithmException {
+
+        DigestInputStream dis = new DigestInputStream( fis,
+                MessageDigest.getInstance( "MD5" ));
+
+        byte[] buffer = new byte[8192];
+        while( dis.read( buffer ) > 0 );
+
+        String md5Content = new String(
+                org.apache.commons.codec.binary.Base64.encodeBase64(
+                        dis.getMessageDigest().digest()) );
+
+        // Effectively resets the stream to be beginning of the file
+        // via a FileChannel.
+        fis.getChannel().position( 0 );
+
+        return md5Content;
     }
 
 }

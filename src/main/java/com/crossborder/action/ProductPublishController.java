@@ -1,11 +1,6 @@
 package com.crossborder.action;
 
 import com.alibaba.fastjson.JSON;
-import com.amazonaws.mws.MarketplaceWebService;
-import com.amazonaws.mws.MarketplaceWebServiceClient;
-import com.amazonaws.mws.MarketplaceWebServiceConfig;
-import com.amazonaws.mws.MarketplaceWebServiceException;
-import com.amazonaws.mws.model.*;
 import com.crossborder.entity.ProductAmzUpload;
 import com.crossborder.service.ProductManagerService;
 import com.crossborder.service.ShopManageService;
@@ -17,7 +12,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
-import sun.applet.resources.MsgAppletViewer;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -111,7 +105,9 @@ public class ProductPublishController extends BaseController {
     @ResponseBody
     public String publish(ProductAmzUpload product,String type) {
         if(type.equals("1")){
-            productManagerService.uploadProduct(product);
+            Map<String,Object> params=new HashMap<>();
+            params.put("shopId",product.getShopId());
+            productManagerService.uploadProduct(product, shopManageService.selectShopsById(params).get(0));
         }else{//认领列表直接发布
             Map<String,Object> params=new HashMap<>();
             params.put("shopId",product.getShopId());
@@ -122,7 +118,7 @@ public class ProductPublishController extends BaseController {
                 e.printStackTrace();
             }
             product.setId(null);
-            productManagerService.uploadProduct(product);
+            productManagerService.uploadProduct(product,list.get(0));
         }
         return ResponseGen.genSuccessData(null);
     }
