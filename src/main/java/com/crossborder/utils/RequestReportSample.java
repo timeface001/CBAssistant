@@ -143,8 +143,6 @@ public class RequestReportSample {
 				.newXMLGregorianCalendar(new GregorianCalendar(2018, 1, 1));
 		request.setStartDate(startDate);
 		
-	    // @TODO: set additional request parameters here
-		
 		invokeRequestReport(service, request);
     }
 

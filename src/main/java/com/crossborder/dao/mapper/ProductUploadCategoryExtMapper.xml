@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.crossborder.dao.mapper.ext.ProductUploadCategoryMapper">
+<mapper namespace="com.crossborder.dao.ProductUploadCategoryDao">
   <resultMap id="BaseResultMap" type="com.crossborder.entity.ProductUploadCategory">
     <id column="a_ID" jdbcType="VARCHAR" property="id" />
     <result column="a_PARENT_ID" jdbcType="VARCHAR" property="parentId" />
@@ -13,12 +13,12 @@
     <result column="a_SHOP_ID" jdbcType="VARCHAR" property="shopId" />
   </resultMap>
   <sql id="Base_Column_List">
-    a.ID as a_ID, a.PARENT_ID as a_PARENT_ID, a.NAME as a_NAME, a.HAS_CHILD as a_HAS_CHILD, 
-    a.CHILD_COUNT as a_CHILD_COUNT, a.TYPE_DEF as a_TYPE_DEF, a.COUNTRY_CODE as a_COUNTRY_CODE, 
+    a.ID as a_ID, a.PARENT_ID as a_PARENT_ID, a.NAME as a_NAME, a.HAS_CHILD as a_HAS_CHILD,
+    a.CHILD_COUNT as a_CHILD_COUNT, a.TYPE_DEF as a_TYPE_DEF, a.COUNTRY_CODE as a_COUNTRY_CODE,
     a.PATH as a_PATH, a.SHOP_ID as a_SHOP_ID
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from T_PRODUCT_UPLOAD_CATEGORY a
     where a.ID = #{id,jdbcType=VARCHAR}
@@ -28,14 +28,14 @@
     where ID = #{id,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.crossborder.entity.ProductUploadCategory">
-    insert into T_PRODUCT_UPLOAD_CATEGORY (ID, PARENT_ID, NAME, 
-      HAS_CHILD, CHILD_COUNT, TYPE_DEF, 
-      COUNTRY_CODE, PATH, SHOP_ID
-      )
-    values (#{id,jdbcType=VARCHAR}, #{parentId,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
-      #{hasChild,jdbcType=CHAR}, #{childCount,jdbcType=DECIMAL}, #{typeDef,jdbcType=VARCHAR}, 
-      #{countryCode,jdbcType=VARCHAR}, #{path,jdbcType=VARCHAR}, #{shopId,jdbcType=VARCHAR}
-      )
+    insert into T_PRODUCT_UPLOAD_CATEGORY (ID, PARENT_ID, NAME,
+    HAS_CHILD, CHILD_COUNT, TYPE_DEF,
+    COUNTRY_CODE, PATH, SHOP_ID
+    )
+    values (#{id,jdbcType=VARCHAR}, #{parentId,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR},
+    #{hasChild,jdbcType=CHAR}, #{childCount,jdbcType=DECIMAL}, #{typeDef,jdbcType=VARCHAR},
+    #{countryCode,jdbcType=VARCHAR}, #{path,jdbcType=VARCHAR}, #{shopId,jdbcType=VARCHAR}
+    )
   </insert>
   <insert id="insertSelective" parameterType="com.crossborder.entity.ProductUploadCategory">
     insert into T_PRODUCT_UPLOAD_CATEGORY
@@ -131,13 +131,13 @@
   <update id="updateByPrimaryKey" parameterType="com.crossborder.entity.ProductUploadCategory">
     update T_PRODUCT_UPLOAD_CATEGORY
     set PARENT_ID = #{parentId,jdbcType=VARCHAR},
-      NAME = #{name,jdbcType=VARCHAR},
-      HAS_CHILD = #{hasChild,jdbcType=CHAR},
-      CHILD_COUNT = #{childCount,jdbcType=DECIMAL},
-      TYPE_DEF = #{typeDef,jdbcType=VARCHAR},
-      COUNTRY_CODE = #{countryCode,jdbcType=VARCHAR},
-      PATH = #{path,jdbcType=VARCHAR},
-      SHOP_ID = #{shopId,jdbcType=VARCHAR}
+    NAME = #{name,jdbcType=VARCHAR},
+    HAS_CHILD = #{hasChild,jdbcType=CHAR},
+    CHILD_COUNT = #{childCount,jdbcType=DECIMAL},
+    TYPE_DEF = #{typeDef,jdbcType=VARCHAR},
+    COUNTRY_CODE = #{countryCode,jdbcType=VARCHAR},
+    PATH = #{path,jdbcType=VARCHAR},
+    SHOP_ID = #{shopId,jdbcType=VARCHAR}
     where ID = #{id,jdbcType=VARCHAR}
   </update>
 

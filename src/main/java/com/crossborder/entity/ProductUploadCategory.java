@@ -1,7 +1,5 @@
 package com.crossborder.entity;
 
-import java.math.BigDecimal;
-
 public class ProductUploadCategory {
     private String id;
 
@@ -11,11 +9,15 @@ public class ProductUploadCategory {
 
     private String hasChild;
 
-    private BigDecimal childCount;
+    private Integer childCount;
 
     private String typeDef;
 
     private String countryCode;
+
+    private String path;
+
+    private String shopId;
 
     public String getId() {
         return id;
@@ -49,11 +51,11 @@ public class ProductUploadCategory {
         this.hasChild = hasChild == null ? null : hasChild.trim();
     }
 
-    public BigDecimal getChildCount() {
+    public Integer getChildCount() {
         return childCount;
     }
 
-    public void setChildCount(BigDecimal childCount) {
+    public void setChildCount(Integer childCount) {
         this.childCount = childCount;
     }
 
@@ -71,5 +73,21 @@ public class ProductUploadCategory {
 
     public void setCountryCode(String countryCode) {
         this.countryCode = countryCode == null ? null : countryCode.trim();
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path == null ? null : path.trim();
+    }
+
+    public String getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(String shopId) {
+        this.shopId = shopId == null ? null : shopId.trim();
     }
 }

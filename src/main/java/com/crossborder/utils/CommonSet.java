@@ -11,6 +11,18 @@ public class CommonSet {
 
     private String amzUploadProductPath;
 
+    private String productCategoryPath;
+
+
+    public String getProductCategoryPath() {
+        return productCategoryPath;
+    }
+
+    @Value("${productCategoryPath}")
+    public void setProductCategoryPath(String productCategoryPath) {
+        this.productCategoryPath = productCategoryPath;
+    }
+
     public String getProductImagePath() {
         return productImagePath;
     }

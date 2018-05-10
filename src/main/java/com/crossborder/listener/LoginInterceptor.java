@@ -26,7 +26,7 @@ public class LoginInterceptor implements HandlerInterceptor {
                 requestUri.equals("/CBAssistant") ||
                 requestUri.contains("/assistant/lib/") ||
                 requestUri.contains("/assistant/static/") ||
-                requestUri.contains("/assistant/common/")) {
+                requestUri.contains("/assistant/common/")||requestUri.contains("public/category/init")) {
             return true;
         }
         //创建session

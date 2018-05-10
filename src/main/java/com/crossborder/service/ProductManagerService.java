@@ -1,26 +1,27 @@
 package com.crossborder.service;
 
 import com.alibaba.fastjson.JSON;
-import com.crossborder.dao.ProductAmzUploadDao;
-import com.crossborder.dao.ProductClaimDao;
-import com.crossborder.dao.ProductIdGenDao;
-import com.crossborder.dao.ProductManagerDao;
-import com.crossborder.entity.ClaimProduct;
-import com.crossborder.entity.ProductAmzUpload;
-import com.crossborder.entity.ProductIdGen;
-import com.crossborder.entity.ProductItemVar;
+import com.crossborder.dao.*;
+import com.crossborder.dao.mapper.ext.ProductUploadCategoryMapper;
+import com.crossborder.entity.*;
 import com.crossborder.utils.*;
 import org.apache.commons.lang3.StringUtils;
+import org.jdom2.Element;
+import org.jdom2.input.SAXBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by fengsong on 2018/4/14.
@@ -37,6 +38,8 @@ public class ProductManagerService {
     private ProductSkuTypeService productSkuTypeService;
     @Autowired
     private AmzUpload amzUpload;
+    @Autowired
+    private ProductUploadCategoryDao productUploadCategoryDao;
 
     public boolean save(Map<String, Object> product) {
         product.put("createTime", new Date());
@@ -94,8 +97,8 @@ public class ProductManagerService {
                 claimProduct.setCreateTime(new Date());
                 claimProduct.setCreateUser(GeneralUtils.getUserId());
                 claimProduct.setSkuType("1");
-                claimProduct.setSource(product.get("SOURCE")!=null?product.get("SOURCE").toString():"");
-                claimProduct.setImagePath(product.get("IMAGE_PATH")!=null?product.get("IMAGE_PATH").toString():"");
+                claimProduct.setSource(product.get("SOURCE") != null ? product.get("SOURCE").toString() : "");
+                claimProduct.setImagePath(product.get("IMAGE_PATH") != null ? product.get("IMAGE_PATH").toString() : "");
                 claimProductExtMapper.insertSelective(claimProduct);
 
             }
@@ -199,56 +202,56 @@ public class ProductManagerService {
      * @return
      */
     @Transactional(rollbackFor = Exception.class)
-    public void prePublishProduct(String id,String language) throws Exception {
+    public void prePublishProduct(String id, String language) throws Exception {
         ClaimProduct product = claimProductExtMapper.selectByPrimaryKey(id);
         if (product != null) {
 
             List<ProductItemVar> vars = productSkuTypeService.selectListByProductId(id);
 
 
-            if(language.equals("GB")){
+            if (language.equals("GB")) {
                 //GB 英国
                 ProductAmzUpload uploadGB = generateCommonProperties(product, "GB", product.getBulletPointUk(), product.getItemUk(), product.getProductDescriptionUk(), product.getKeywordsUk());
                 saveAmzUploadBySku(uploadGB, product, vars);
             }
 
-            if(language.equals("JP")){
+            if (language.equals("JP")) {
                 //JP 日本
                 ProductAmzUpload uploadJP = generateCommonProperties(product, "JP", product.getBulletPointJp(), product.getItemJp(), product.getProductDescriptionJp(), product.getKeywordsJp());
                 saveAmzUploadBySku(uploadJP, product, vars);
             }
 
-            if(language.equals("CN")){
+            if (language.equals("CN")) {
                 //CN
                 ProductAmzUpload uploadCN = generateCommonProperties(product, "CN", product.getBulletPointCn(), product.getItemCn(), product.getProductDescriptionCn(), product.getKeywordsCn());
                 saveAmzUploadBySku(uploadCN, product, vars);
             }
 
-            if(language.equals("DE")){
+            if (language.equals("DE")) {
                 //DE 德国
                 ProductAmzUpload uploadDE = generateCommonProperties(product, "DE", product.getBulletPointDe(), product.getItemDe(), product.getProductDescriptionDe(), product.getKeywordsDe());
                 saveAmzUploadBySku(uploadDE, product, vars);
             }
 
-            if(language.equals("FR")){
+            if (language.equals("FR")) {
                 //FR 法国
                 ProductAmzUpload uploadFR = generateCommonProperties(product, "FR", product.getBulletPointFr(), product.getItemFr(), product.getProductDescriptionFr(), product.getKeywordsFr());
                 saveAmzUploadBySku(uploadFR, product, vars);
             }
 
-            if(language.equals("ES")){
+            if (language.equals("ES")) {
                 //ES 西班牙
                 ProductAmzUpload uploadES = generateCommonProperties(product, "ES", product.getBulletPointEs(), product.getItemEs(), product.getProductDescriptionEs(), product.getKeywordsEs());
                 saveAmzUploadBySku(uploadES, product, vars);
             }
 
-            if(language.equals("IT")){
+            if (language.equals("IT")) {
                 //IT意大利
                 ProductAmzUpload uploadIT = generateCommonProperties(product, "IT", product.getBulletPointIt(), product.getItemIt(), product.getProductDescriptionIt(), product.getKeywordsIt());
                 saveAmzUploadBySku(uploadIT, product, vars);
             }
 
-            ClaimProduct update=new ClaimProduct();
+            ClaimProduct update = new ClaimProduct();
             update.setId(product.getId());
             update.setIsPrepublish("1");
             claimProductExtMapper.updateByPrimaryKeySelective(update);
@@ -339,8 +342,9 @@ public class ProductManagerService {
 
     public void uploadProduct(ProductAmzUpload product, Map<String, Object> shop) {
 
-        ResponseDto response=amzUpload.uploadProduct(product,shop);
-        System.out.println(JSON.toJSONString(response));;
+        ResponseDto response = amzUpload.uploadProduct(product, shop);
+        System.out.println(JSON.toJSONString(response));
+        ;
         //1发布失败 2发布成功 3发布中
         product.setPublishStatus("3");
         product.setUpdateDelete("update");
@@ -377,4 +381,100 @@ public class ProductManagerService {
     public ProductIdGen selectProductIdForUse(String type) {
         return productIdGenDao.selectProductIdForUse(type);
     }
+
+
+    @Resource
+    private ShopManageService shopManageService;
+    @Autowired
+    private CommonSet set;
+
+    public void initshopCategory() {
+        final List<Map<String, Object>> shops = shopManageService.selectShops(new HashMap());
+        ThreadPoolExecutor executor = new ThreadPoolExecutor(2, 5, 100, TimeUnit.MINUTES, new ArrayBlockingQueue<Runnable>(10));
+
+        for (final Map<String, Object> shop : shops) {
+            initCategory(set.getProductCategoryPath() + shop.get("SHOP_ID") + ".txt", shop);
+            /*executor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    initCategory(set.getProductCategoryPath() + shop.get("SHOP_ID") + ".txt", shop);
+                }
+            });
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }*/
+        }
+
+        try {
+            Thread.sleep(5000);
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println(executor.isTerminated());
+
+
+
+    }
+
+    // "C:\\Users\\fengsong\\Desktop\\cate.txt"
+    public void initCategory(String path, Map<String, Object> shop) {
+
+        amzUpload.write(path, shop);
+
+        InputStreamReader isr = null;
+        try {
+            isr = new InputStreamReader(new FileInputStream(path));
+
+            SAXBuilder sb = new SAXBuilder();
+            org.jdom2.Document doc = sb.build(isr);
+
+            Element root = doc.getRootElement();
+            List<Element> list = root.getChildren("Node");
+            int i = 0;
+            String code = shop.get("COUNTRY_CODE").toString();
+            for (Element e : list) {
+                i++;
+                ProductUploadCategory category = new ProductUploadCategory();
+                boolean hasChildren = e.getChild("hasChildren").getText().equals("true");
+                if (hasChildren) {
+                    category.setChildCount(Integer.parseInt(e.getChild("childNodes").getAttribute("count").getValue()));
+                }
+                String pathp = e.getChild("browsePathById").getText();
+                category.setName(e.getChild("browseNodeStoreContextName").getText());
+                if (StringUtils.isBlank(category.getName())) {
+                    category.setName(e.getChild("browsePathByName").getText());
+                    ProductUploadCategory pc = new ProductUploadCategory();
+                    pc.setName(e.getChild("browseNodeName").getText());
+                    pc.setParentId("0");
+                    pc.setId(pathp.split(",")[0]);
+                    pc.setCountryCode(code);
+                    pc.setShopId(shop.get("SHOP_ID").toString());
+                    productUploadCategoryDao.insert(pc);
+                }
+                category.setId(e.getChild("browseNodeId").getText());
+
+                category.setParentId(pathp.split(",")[pathp.split(",").length - 1]);
+                category.setPath(pathp);
+                category.setCountryCode(code);
+                category.setShopId(shop.get("SHOP_ID").toString());
+                productUploadCategoryDao.insert(category);
+            }
+            System.out.println(shop.get("SHOP_NAME")+"成功");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (isr != null) {
+                try {
+                    isr.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
 }

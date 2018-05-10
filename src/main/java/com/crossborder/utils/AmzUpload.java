@@ -12,8 +12,12 @@ import org.jdom2.input.SAXBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.*;
 import java.util.Arrays;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 
@@ -32,7 +36,7 @@ public class AmzUpload {
 
         MarketplaceWebServiceConfig config = new MarketplaceWebServiceConfig();
 
-        config.setServiceURL(shop.get("END_POINT").toString());
+        config.setServiceURL(shop.get("ENDPOINT").toString());
 
         return new MarketplaceWebServiceClient(
                 accessKeyId, secretAccessKey, appName, appVersion, config);
@@ -51,7 +55,7 @@ public class AmzUpload {
             e.printStackTrace();
         }
 
-        ResponseDto result=getUploadResult(getService(shop),request);
+        ResponseDto result = getUploadResult(getService(shop), request);
 
 
         return result;
@@ -116,20 +120,94 @@ public class AmzUpload {
 
     }
 
-    public static void main(String[] args) throws IOException, JDOMException {
-        InputStreamReader isr = new InputStreamReader(new FileInputStream("/Users/fengsong/Downloads/rule_chain.txt"));
-        SAXBuilder sb = new SAXBuilder();
-        org.jdom2.Document doc = sb.build(isr);
+    public void write(String path, Map<String, Object> shop) {
+        MarketplaceWebService service = getService(shop);
 
 
+        String merchantId = shop.get("MERCHANT_ID").toString();
 
-        Element root = doc.getRootElement();
-        List<Element> list= root.getChildren("Node");
-        int i=0;
-        for(Element e:list){
-            i++;
-            System.out.println(e.getChild("browseNodeName").getText());
+        RequestReportRequest request = new RequestReportRequest()
+                .withMerchant(shop.get("MERCHANT_ID").toString())
+                .withMarketplaceIdList(new IdList(Arrays.asList(
+                        shop.get("MARKETPLACEID").toString())))
+                .withReportType("_GET_XML_BROWSE_TREE_DATA_")
+                .withReportOptions("ShowSalesChannel=true");
+
+        DatatypeFactory df = null;
+        try {
+            df = DatatypeFactory.newInstance();
+        } catch (DatatypeConfigurationException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        System.out.println(i);
+        XMLGregorianCalendar startDate = df
+                .newXMLGregorianCalendar(new GregorianCalendar(2018, 1, 1));
+        request.setStartDate(startDate);
+
+        System.out.println("***************");
+
+        System.out.println("shopId:"+shop.get("SHOP_ID"));
+        try {
+            RequestReportResponse response = service.requestReport(request);
+            String reportRequestId = null;
+            if (response.isSetRequestReportResult()) {
+                RequestReportResult requestReportResult = response.getRequestReportResult();
+                if (requestReportResult.isSetReportRequestInfo()) {
+                    ReportRequestInfo reportRequestInfo = requestReportResult.getReportRequestInfo();
+                    if (reportRequestInfo.isSetReportRequestId()) {
+                        reportRequestId = reportRequestInfo.getReportRequestId();
+                    }
+                }
+            }
+
+            System.out.println("REQUEST_ID:"+reportRequestId);
+            if (reportRequestId != null) {
+                String reportId = null;
+                GetReportListRequest requestqq = new GetReportListRequest();
+                requestqq.setMerchant(merchantId);
+                TypeList typeList = new TypeList();
+                typeList.setType(Arrays.asList("_GET_XML_BROWSE_TREE_DATA_"));
+                requestqq.setReportTypeList(typeList);
+
+                requestqq.setReportRequestIdList(new IdList(Arrays.asList(reportRequestId)));
+
+                GetReportListResponse listReponse = getService(shop).getReportList(requestqq);
+
+                if (listReponse.isSetGetReportListResult()) {
+
+                    GetReportListResult getReportListResult = listReponse.getGetReportListResult();
+
+                    java.util.List<ReportInfo> reportInfoListList = getReportListResult.getReportInfoList();
+                    for (ReportInfo reportInfoList : reportInfoListList) {
+
+                        if (reportInfoList.isSetReportId()) {
+                            reportId = reportInfoList.getReportId();
+                        }
+                    }
+                }
+
+                System.out.println("REPORTID:"+reportId);
+                if (reportId != null) {
+                    GetReportRequest requestpp = new GetReportRequest();
+                    requestpp.setMerchant(merchantId);
+
+                    requestpp.setReportId(reportId);
+                    try {
+                        requestpp.setReportOutputStream(new FileOutputStream(path));
+
+                        GetReportResponse respon = service.getReport(requestpp);
+                        System.out.println(respon.isSetGetReportResult());
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+
+            }
+
+
+        } catch (MarketplaceWebServiceException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -112,8 +112,8 @@ public class GetReportSample {
         request.setMerchant( merchantId );
         //request.setMWSAuthToken(sellerDevAuthToken);
 
-        request.setReportId( "9494401037017661" );
-        request.setReportOutputStream(new FileOutputStream("/Users/fengsong/Downloads/rule_chain.txt"));
+        request.setReportId( "9490456228017661" );
+        request.setReportOutputStream(new FileOutputStream("C:\\Users\\fengsong\\Desktop\\cate.txt"));
 
         // Note that depending on the type of report being downloaded, a report can reach 
         // sizes greater than 1GB. For this reason we recommend that you _always_ program to

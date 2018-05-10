@@ -123,6 +123,15 @@ public class ProductPublishController extends BaseController {
         return ResponseGen.genSuccessData(null);
     }
 
+    @RequestMapping("public/category/init")
+    @ResponseBody
+    public String init(){
+
+        productManagerService.initshopCategory();
+
+        return "success";
+    }
+
 
 
 
