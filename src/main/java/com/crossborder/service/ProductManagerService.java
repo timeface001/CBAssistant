@@ -389,7 +389,9 @@ public class ProductManagerService {
     private CommonSet set;
 
     public void initshopCategory() {
-        final List<Map<String, Object>> shops = shopManageService.selectShops(new HashMap());
+        Map<String,Object> params=new HashMap<>();
+        params.put("id","1039");
+        final List<Map<String, Object>> shops = shopManageService.selectShops(params);
         ThreadPoolExecutor executor = new ThreadPoolExecutor(2, 5, 100, TimeUnit.MINUTES, new ArrayBlockingQueue<Runnable>(10));
 
         for (final Map<String, Object> shop : shops) {

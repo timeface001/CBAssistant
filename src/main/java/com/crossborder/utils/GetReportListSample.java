@@ -73,43 +73,10 @@ public class GetReportListSample {
         // India
         // config.setServiceURL("https://mws.amazonservices.in/");
 
-        /************************************************************************
-         * You can also try advanced configuration options. Available options are:
-         *
-         *  - Signature Version
-         *  - Proxy Host and Proxy Port
-         *  - User Agent String to be sent to Marketplace Web Service
-         *
-         ***********************************************************************/
-
-        /************************************************************************
-         * Instantiate Http Client Implementation of Marketplace Web Service        
-         ***********************************************************************/
 
         MarketplaceWebService service = new MarketplaceWebServiceClient(
                 accessKeyId, secretAccessKey, appName, appVersion, config);
 
-        /************************************************************************
-         * Uncomment to try out Mock Service that simulates Marketplace Web Service 
-         * responses without calling Marketplace Web Service  service.
-         *
-         * Responses are loaded from local XML files. You can tweak XML files to
-         * experiment with various outputs during development
-         *
-         * XML files available under com/amazonaws/mws/mock tree
-         *
-         ***********************************************************************/
-        // MarketplaceWebService service = new MarketplaceWebServiceMock();
-
-        /************************************************************************
-         * Setup request parameters and uncomment invoke to try out 
-         * sample for Get Report List 
-         ***********************************************************************/
-
-        /************************************************************************
-         * Marketplace and Merchant IDs are required parameters for all 
-         * Marketplace Web Service calls.
-         ***********************************************************************/
         final String merchantId = "AX2JQLLAWG3JN";
         final String sellerDevAuthToken = "<Merchant Developer MWS Auth Token>";
         final IdList marketplaces = new IdList(Arrays.asList(
@@ -123,7 +90,7 @@ public class GetReportListSample {
 
         // @TODO: set request parameters here
 
-        request.setReportRequestIdList(new IdList(Arrays.asList("50392017661")));
+        request.setReportRequestIdList(new IdList(Arrays.asList("50416017661")));
 
 
         invokeGetReportList(service, request);
