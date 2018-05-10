@@ -30,7 +30,8 @@
 </head>
 <body>
 <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 产品管理 <span
-        class="c-gray en">&gt;</span> 产品列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" id="refresh"
+        class="c-gray en">&gt;</span> 产品列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px"
+                                              id="refresh"
                                               href="javascript:location.replace(location.href);" title="刷新"><i
         class="Hui-iconfont">&#xe68f;</i></a></nav>
 <div class="page-container">
@@ -56,7 +57,7 @@
                 <button id="search" class="btn btn-success" type="button"><i class="Hui-iconfont">&#xe665;</i>
                 </button>
             </div>
-            <input type="hidden" name="pState" id="pStatus" >
+            <input type="hidden" name="pState" id="pStatus">
         </div>
     </form>
     <div class="mt-20">
@@ -163,28 +164,46 @@
             "columns": [
                 {"data": "ID"},
                 {"data": "ID"},
-                {"data": function (val) {
-                    return val.MAIN_PATH==null?"":"<img width='100px' height='90px'  src='<%=request.getContextPath()%>/upload/"+val.MAIN_PATH+"'/>";
-                }},
-                {"data": function (val) {
-                    return val.SOURCE==null?"":"<a target='_blank' href='"+val.SOURCE+"'>"+val.SOURCE+"</a>";
-                }},
-                {"data": function (val) {
-                    return val.NAME==null?"":val.NAME;}},
-                {"data": function (val) {
-                    return "";}},
-                {"data": function (val) {
-                    return val.INFO==null?"":val.INFO;
-                }},
-                {"data": function (val) {
-                    return val.PRICE==null?"":val.PRICE;
-                }},
-                {"data": function (val) {
-                    return val.STATE_TIME==null?"":"在"+getMyDate(val.STATE_TIME)+"时被认领";
-                }},
-                {"data": function (val) {
-                    return getMyDate( val.CREATE_TIME);
-                }}
+                {
+                    "data": function (val) {
+                        return val.MAIN_PATH == null ? "" : "<img width='100px' height='90px'  src='<%=request.getContextPath()%>/upload/" + val.MAIN_PATH + "'/>";
+                    }
+                },
+                {
+                    "data": function (val) {
+                        return val.SOURCE == null ? "" : "<a target='_blank' href='" + val.SOURCE + "'>" + val.SOURCE + "</a>";
+                    }
+                },
+                {
+                    "data": function (val) {
+                        return val.NAME == null ? "" : val.NAME;
+                    }
+                },
+                {
+                    "data": function (val) {
+                        return "";
+                    }
+                },
+                {
+                    "data": function (val) {
+                        return val.INFO == null ? "" : val.INFO;
+                    }
+                },
+                {
+                    "data": function (val) {
+                        return val.PRICE == null ? "" : val.PRICE;
+                    }
+                },
+                {
+                    "data": function (val) {
+                        return val.STATE_TIME == null ? "" : "在" + getMyDate(val.STATE_TIME) + "时被认领";
+                    }
+                },
+                {
+                    "data": function (val) {
+                        return getMyDate(val.CREATE_TIME);
+                    }
+                }
             ],
             "columnDefs": [
                 {
@@ -195,14 +214,19 @@
                     }
                 },
                 {
+                    "targets": [6],
+                    "data": "INFO",
+                    "visible": false
+                },
+                {
                     "targets": [10],
                     "data": "ID",
                     "render": function (data, type, full) {
-                        return( full.P_STATE=="1"?"<a style='text-decoration:none' title='认领'  onClick=\"claimProduct('" + full.ID + "')\"')>认领</a>" +
+                        return ( full.P_STATE == "1" ? "<a style='text-decoration:none' title='认领'  onClick=\"claimProduct('" + full.ID + "')\"')>认领</a>" +
                                 "&nbsp;&nbsp;" +
-                                "<a style='text-decoration:none' title='编辑'  onClick=\"editProduct('" + full.ID + "')\"')>编辑</a>":"") +
-                            "&nbsp;&nbsp;" +
-                            "<a style='text-decoration:none' title='删除'  onClick=\"deleteProduct('" + full.ID + "')\"')>删除</a>";
+                                "<a style='text-decoration:none' title='编辑'  onClick=\"editProduct('" + full.ID + "')\"')>编辑</a>" : "") +
+                                "&nbsp;&nbsp;" +
+                                "<a style='text-decoration:none' title='删除'  onClick=\"deleteProduct('" + full.ID + "')\"')>删除</a>";
                     }
                 }
             ],
@@ -243,7 +267,7 @@
     }
 
     function editProduct(id) {
-        layer_show("编辑产品", '<%=request.getContextPath()%>/assistant/index/product/product-add.jsp?id='+id, 800);
+        layer_show("编辑产品", '<%=request.getContextPath()%>/assistant/index/product/product-add.jsp?id=' + id, 800);
 
     }
 
@@ -252,38 +276,39 @@
      * @param ids
      */
     function claimProduct(ids) {
-        if(ids==null){
-            ids=getIDs();
+        if (ids == null) {
+            ids = getIDs();
         }
 
         layer.confirm('确定认领商品吗？', function (index) {
-        $.ajax({
-            type: 'POST',
-            url: '<%=request.getContextPath()%>/product/state',
-            dataType: 'json',
-            data: {
-                "data": ids,
-                "type": 2
-            },
-            success: function (data) {
-                if (data.success) {
-                    layer.msg(data.msg, {icon: 6, time: 1000});
-                    setTimeout(function () {
-                        document.getElementById("refresh").click();
-                    },1000);
+            $.ajax({
+                type: 'POST',
+                url: '<%=request.getContextPath()%>/product/state',
+                dataType: 'json',
+                data: {
+                    "data": ids,
+                    "type": 2
+                },
+                success: function (data) {
+                    if (data.success) {
+                        layer.msg(data.msg, {icon: 6, time: 1000});
+                        setTimeout(function () {
+                            document.getElementById("refresh").click();
+                        }, 1000);
 
+                    }
+                },
+                error: function (data) {
+                    layer.msg(data.msg, {icon: 2, time: 1000});
                 }
-            },
-            error: function (data) {
-                layer.msg(data.msg, {icon: 2, time: 1000});
-            }
-        }); });
+            });
+        });
     }
 
     /*产品-删除*/
     function deleteProduct(id) {
-        if(id==null||id==""){
-            id=getIDs();
+        if (id == null || id == "") {
+            id = getIDs();
         }
         layer.confirm('产品删除须谨慎，确认要删除吗？', function (index) {
             $.ajax({
@@ -310,34 +335,35 @@
     }
 
     function getIDs() {
-        var ids=[];
-         $("#productTable td input:checkbox:checked").each(function (i,val) {
+        var ids = [];
+        $("#productTable td input:checkbox:checked").each(function (i, val) {
             ids.push($(val).val());
         });
-         return ids.join(",");
+        return ids.join(",");
     }
 
     //将时间戳格式化
-    function getMyDate(time){
-        if(typeof(time)=="undefined"){
+    function getMyDate(time) {
+        if (typeof(time) == "undefined") {
             return "";
         }
         var oDate = new Date(time),
-            oYear = oDate.getFullYear(),
-            oMonth = oDate.getMonth()+1,
-            oDay = oDate.getDate(),
-            oHour = oDate.getHours(),
-            oMin = oDate.getMinutes(),
-            oSen = oDate.getSeconds(),
-            oTime = oYear +'-'+ getzf(oMonth) +'-'+ getzf(oDay) +' '+ getzf(oHour) +':'+ getzf(oMin) +':'+getzf(oSen);//最后拼接时间
+                oYear = oDate.getFullYear(),
+                oMonth = oDate.getMonth() + 1,
+                oDay = oDate.getDate(),
+                oHour = oDate.getHours(),
+                oMin = oDate.getMinutes(),
+                oSen = oDate.getSeconds(),
+                oTime = oYear + '-' + getzf(oMonth) + '-' + getzf(oDay) + ' ' + getzf(oHour) + ':' + getzf(oMin) + ':' + getzf(oSen);//最后拼接时间
 
         return oTime;
-    };
+    }
+    ;
 
     //补0操作,当时间数据小于10的时候，给该数据前面加一个0
-    function getzf(num){
-        if(parseInt(num) < 10){
-            num = '0'+num;
+    function getzf(num) {
+        if (parseInt(num) < 10) {
+            num = '0' + num;
         }
         return num;
     }

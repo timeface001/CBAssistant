@@ -242,8 +242,8 @@
     <select id="selectLocalOrderItem" resultType="java.util.Map" parameterType="java.lang.String">
         SELECT * from T_ORDER_ITEM
         WHERE AMAZONORDERID = #{amazonOrderId,jdbcType=VARCHAR}
-        <if test="sku !=null and sku != ''">
-            AND SELLERSKU = #{sku,jdbcType=VARCHAR}
+        <if test="orderItemId !=null and orderItemId != ''">
+            AND ORDERITEMID = #{orderItemId,jdbcType=VARCHAR}
         </if>
     </select>
     <update id="updateOrder" parameterType="java.util.Map">
@@ -258,8 +258,8 @@
         <if test="shippingPrice !=null and shippingPrice !=''">
             ,SHIPPINGPRICE = #{shippingPrice,jdbcType=VARCHAR}
         </if>
-        <if test="transportcompany !=null and transportcompany !=''">
-            ,TRANSPORTCOMPANY = #{transportcompany,jdbcType=VARCHAR}
+        <if test="transportCompany !=null and transportCompany !=''">
+            ,TRANSPORTCOMPANY = #{transportCompany,jdbcType=VARCHAR}
         </if>
         WHERE AMAZONORDERID = #{amazonOrderId,jdbcType=VARCHAR}
     </update>
@@ -279,8 +279,8 @@
             ,PURCHASENUM = #{purchaseNum,jdbcType=VARCHAR}
         </if>
         WHERE AMAZONORDERID = #{amazonOrderId,jdbcType=VARCHAR}
-        <if test="sku !=null and sku !=''">
-            AND SELLERSKU = #{sku,jdbcType=VARCHAR}
+        <if test="orderItemId !=null and orderItemId !=''">
+            AND ORDERITEMID = #{orderItemId,jdbcType=VARCHAR}
         </if>
     </update>
     <update id="updateOrderRemark" parameterType="java.util.Map">

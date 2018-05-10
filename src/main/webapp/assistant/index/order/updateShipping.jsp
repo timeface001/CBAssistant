@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     String amazonOrderId = request.getParameter("amazonOrderId");
-    String sku = request.getParameter("sku");
+    String orderItemId = request.getParameter("orderItemId");
     String preStatus = request.getParameter("preStatus");
 %>
 <!DOCTYPE HTML>
@@ -30,7 +30,7 @@
         <form id="shippingForm" class="form form-horizontal" method="post"
               action="<%=request.getContextPath()%>/order/updateOrderInfo">
             <input type="hidden" value="<%=amazonOrderId%>" name="amazonOrderId">
-            <input type="hidden" value="<%=sku%>" name="sku">
+            <input type="hidden" value="<%=orderItemId%>" name="orderItemId">
             <input type="hidden" value="6" name="status">
             <input type="hidden" value="<%=preStatus%>" name="preStatus">
             <div class="row cl">

@@ -30,7 +30,8 @@
 </head>
 <body>
 <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 产品管理 <span
-        class="c-gray en">&gt;</span> 产品列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" id="refresh"
+        class="c-gray en">&gt;</span> 产品列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px"
+                                              id="refresh"
                                               href="javascript:location.replace(location.href);" title="刷新"><i
         class="Hui-iconfont">&#xe68f;</i></a></nav>
 <div class="page-container">
@@ -91,9 +92,8 @@
             <thead>
             <tr class="text-c">
                 <th width="25"><input type="checkbox" value="" name=""></th>
-
+                <th width="150">产品图</th>
                 <th width="150">标题</th>
-
                 <th width="150">分类</th>
                 <th width="150">sku</th>
                 <th width="60">售价</th>
@@ -170,26 +170,48 @@
             },
             "columns": [
                 {"data": "id"},
-                {"data": function (val) {
-                    return val.itemCn==null?"":val.itemCn;
-                }},
-
-                {"data": function (val) {
-                    return val.typeId==null?"":val.typeId;
-                }},
-                {"data": function (val) {
-                    return val.sku==null?"":val.sku;
-                }},
+                {
+                    "data": function (val) {
+                        var imagePath = "";
+                        if (val.imagePath != null && val.imagePath != "" && val.imagePath != undefined &&val.imagePath.indexOf(",") != -1) {
+                            imagePath = val.imagePath.substring(0, val.imagePath.indexOf(","));
+                        } else {
+                            imagePath = val.imagePath;
+                        }
+                        return val.imagePath == null ? "" : "<img width='100px' height='90px'  src='<%=request.getContextPath()%>/upload/" + imagePath + "'/>";
+                    }
+                },
+                {
+                    "data": function (val) {
+                        return val.itemCn == null ? "" : "<a target='_blank' href='" + val.source + "'>" + val.itemCn + "</a>";
+                    }
+                },
+                {
+                    "data": function (val) {
+                        return val.typeId == null ? "" : val.typeId;
+                    }
+                },
+                {
+                    "data": function (val) {
+                        return val.sku == null ? "" : val.sku;
+                    }
+                },
                 {"data": "price"},
-                {"data": function (val) {
-                    return val.quantity==null?"":val.quantity;
-                }},
-                {"data": function (val) {
-                    return val.isPrepublish==1?"已加入待发布":"未加入待发布";
-                }},
-                {"data": function (val) {
-                    return "<p style='text-align: left'>创建</p><p style='text-align: left'>"+getMyDate(val.createTime)+"</p>"+(val.publishTime!=null?("<p style='text-align: left'>更新</p><p style='text-align: left'>"+getMyDate(val.publishTime)+"</p>"):"");
-                }}
+                {
+                    "data": function (val) {
+                        return val.quantity == null ? "" : val.quantity;
+                    }
+                },
+                {
+                    "data": function (val) {
+                        return val.isPrepublish == 1 ? "已加入待发布" : "未加入待发布";
+                    }
+                },
+                {
+                    "data": function (val) {
+                        return "<p style='text-align: left'>创建</p><p style='text-align: left'>" + getMyDate(val.createTime) + "</p>" + (val.publishTime != null ? ("<p style='text-align: left'>更新</p><p style='text-align: left'>" + getMyDate(val.publishTime) + "</p>") : "");
+                    }
+                }
             ],
             "columnDefs": [
                 {
@@ -200,12 +222,12 @@
                     }
                 },
                 {
-                    "targets": [8],
+                    "targets": [9],
                     "data": "id",
                     "render": function (data, type, full) {
-                        return( full.updateState=="1"?"<a style='text-decoration:none' title='发布'  onClick=\"prePublish('" + full.id + "')\"')>发布</a>":"") +
-                            "&nbsp;&nbsp;" +
-                            "<a style='text-decoration:none' title='编辑'  onClick=\"editProduct('" + full.id + "')\"')>编辑</a>" ;
+                        return ( full.updateState == "1" ? "<a style='text-decoration:none' title='发布'  onClick=\"prePublish('" + full.id + "')\"')>发布</a>" : "") +
+                                "&nbsp;&nbsp;" +
+                                "<a style='text-decoration:none' title='编辑'  onClick=\"editProduct('" + full.id + "')\"')>编辑</a>";
                     }
                 }
             ],
@@ -246,7 +268,7 @@
     }
 
     function editProduct(id) {
-        location.href='<%=request.getContextPath()%>/product/claim/detail?id='+id;
+        location.href = '<%=request.getContextPath()%>/product/claim/detail?id=' + id;
 
     }
 
@@ -256,14 +278,14 @@
      */
     function prePublish(id) {
 
-        layer_show("发布", '<%=request.getContextPath()%>/product/publish/detail?id='+id+"&type=0", 800);
+        layer_show("发布", '<%=request.getContextPath()%>/product/publish/detail?id=' + id + "&type=0", 800);
     }
 
     /*产品-删除*/
     function deleteProduct(id) {
 
-        if(id==null||id==""){
-            id=getIDs();
+        if (id == null || id == "") {
+            id = getIDs();
         }
         layer.confirm('产品删除须谨慎，确认要删除吗？', function (index) {
             $.ajax({
@@ -287,34 +309,35 @@
     }
 
     function getIDs() {
-        var ids=[];
-         $("#productTable td input:checkbox:checked").each(function (i,val) {
+        var ids = [];
+        $("#productTable td input:checkbox:checked").each(function (i, val) {
             ids.push($(val).val());
         });
-         return ids.join(",");
+        return ids.join(",");
     }
 
     //将时间戳格式化
-    function getMyDate(time){
-        if(typeof(time)=="undefined"){
+    function getMyDate(time) {
+        if (typeof(time) == "undefined") {
             return "";
         }
         var oDate = new Date(time),
-            oYear = oDate.getFullYear(),
-            oMonth = oDate.getMonth()+1,
-            oDay = oDate.getDate(),
-            oHour = oDate.getHours(),
-            oMin = oDate.getMinutes(),
-            oSen = oDate.getSeconds(),
-            oTime = oYear +'-'+ getzf(oMonth) +'-'+ getzf(oDay) ;//+' '+ getzf(oHour) +':'+ getzf(oMin) +':'+getzf(oSen);//最后拼接时间
+                oYear = oDate.getFullYear(),
+                oMonth = oDate.getMonth() + 1,
+                oDay = oDate.getDate(),
+                oHour = oDate.getHours(),
+                oMin = oDate.getMinutes(),
+                oSen = oDate.getSeconds(),
+                oTime = oYear + '-' + getzf(oMonth) + '-' + getzf(oDay);//+' '+ getzf(oHour) +':'+ getzf(oMin) +':'+getzf(oSen);//最后拼接时间
 
         return oTime;
-    };
+    }
+    ;
 
     //补0操作,当时间数据小于10的时候，给该数据前面加一个0
-    function getzf(num){
-        if(parseInt(num) < 10){
-            num = '0'+num;
+    function getzf(num) {
+        if (parseInt(num) < 10) {
+            num = '0' + num;
         }
         return num;
     }

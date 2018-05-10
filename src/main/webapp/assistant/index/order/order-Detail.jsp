@@ -128,6 +128,7 @@
         <table id="itemTable" class="table table-border table-bordered table-bg table-hover">
             <thead>
             <tr class="text-c">
+                <th width="50">ItemId</th>
                 <th width="100">SKU</th>
                 <th width="150">图片</th>
                 <th width="150">产品信息</th>
@@ -197,7 +198,7 @@
         </div>
         <div class="cl pd-5 bg-1 bk-gray mt-10" id="count-div"><span class="l">
             <a class="btn btn-primary radius" href="javascript:;"
-               onclick="addRow()"><i
+               onclick="addRow()" id="addRow"><i
                     class="Hui-iconfont">
                 &#xe600;</i>添加一行</a></span></div>
         <form class="form form-horizontal" id="tableForm">
@@ -275,7 +276,6 @@
     var roleId = $("#roleId").val();
     var preStatus = "1";
     var trackNum = "";
-    var countryCode;
     $(function () {
         $.post("<%=request.getContextPath()%>/order/selectOrderInfo",
                 {
@@ -283,7 +283,6 @@
                 },
                 function (data) {
                     var map = JSON.parse(data);
-                    countryCode = map.address.COUNTRYCODE;
                     initBusiness(map.localOrder);
                     initAddressInfo(map.address);
                 });
@@ -399,6 +398,7 @@
                 }
             },
             "columns": [
+                {"data": "ORDERITEMID"},
                 {"data": "SELLERSKU"},
                 {"data": "SMALLIMAGE"},
                 {"data": "TITLE"},
@@ -414,22 +414,27 @@
             ],
             "columnDefs": [
                 {
-                    "targets": [5],
+                    "targets": [0],
+                    "data": "ORDERITEMID",
+                    "visible": true
+                },
+                {
+                    "targets": [6],
                     "data": "ITEMPRICE",
                     "visible": vis
                 },
                 {
-                    "targets": [6],
+                    "targets": [7],
                     "data": "COST",
                     "visible": vis
                 },
                 {
-                    "targets": [7],
+                    "targets": [8],
                     "data": "REFUNDMENT",
                     "visible": vis
                 },
                 {
-                    "targets": [10],
+                    "targets": [11],
                     "data": "STATUS",
                     "render": function (data, type, full) {
                         if (data == 1) {
@@ -452,20 +457,20 @@
                     }
                 },
                 {
-                    "targets": [11],
+                    "targets": [12],
                     "data": "STATUS",
                     "render": function (data, type, full) {
                         if (data == 1 || data == 3) {
                             if (roleId == 300) {
                                 return "";
                             } else {
-                                return "<a style='text-decoration:none' title='备货'  onClick=\"updateOrder(2,'" + full.SELLERSKU + "')\"'>备货</a>" +
+                                return "<a style='text-decoration:none' title='备货'  onClick=\"updateOrder(2,'" + full.ORDERITEMID + "')\"'>备货</a>" +
                                         "&nbsp;&nbsp;&nbsp;&nbsp;" +
-                                        "<a style='text-decoration:none' title='缺货'  onClick=\"updateOrder(3,'" + full.SELLERSKU + "')\"'>缺货</a>" +
+                                        "<a style='text-decoration:none' title='缺货'  onClick=\"updateOrder(3,'" + full.ORDERITEMID + "')\"'>缺货</a>" +
                                         "&nbsp;&nbsp;&nbsp;&nbsp;" +
-                                        "<a style='text-decoration:none' title='退款'  onClick=\"updateOrder(6,'" + full.SELLERSKU + "')\"'>退款</a>" +
+                                        "<a style='text-decoration:none' title='退款'  onClick=\"updateOrder(6,'" + full.ORDERITEMID + "')\"'>退款</a>" +
                                         "&nbsp;&nbsp;&nbsp;&nbsp;" +
-                                        "<a style='text-decoration:none' title='问题'  onClick=\"updateOrder(5,'" + full.SELLERSKU + "')\"'>问题</a>" +
+                                        "<a style='text-decoration:none' title='问题'  onClick=\"updateOrder(5,'" + full.ORDERITEMID + "')\"'>问题</a>" +
                                         "&nbsp;&nbsp;&nbsp;&nbsp;";
                             }
                         } else if (data == 2) {
@@ -474,40 +479,40 @@
                             } else if (roleId == 400) {
                                 return "";
                             } else if (roleId == 500) {
-                                return "<a style='text-decoration:none' title='缺货'  onClick=\"updateOrder(3,'" + full.SELLERSKU + "')\"'>缺货</a>" +
+                                return "<a style='text-decoration:none' title='缺货'  onClick=\"updateOrder(3,'" + full.ORDERITEMID + "')\"'>缺货</a>" +
                                         "&nbsp;&nbsp;&nbsp;&nbsp;" +
-                                        "<a style='text-decoration:none' title='退款'  onClick=\"updateOrder(6,'" + full.SELLERSKU + "')\"'>退款</a>" +
+                                        "<a style='text-decoration:none' title='退款'  onClick=\"updateOrder(6,'" + full.ORDERITEMID + "')\"'>退款</a>" +
                                         "&nbsp;&nbsp;&nbsp;&nbsp;" +
-                                        "<a style='text-decoration:none' title='问题'  onClick=\"updateOrder(5,'" + full.SELLERSKU + "')\"'>问题</a>" +
+                                        "<a style='text-decoration:none' title='问题'  onClick=\"updateOrder(5,'" + full.ORDERITEMID + "')\"'>问题</a>" +
                                         "&nbsp;&nbsp;&nbsp;&nbsp;";
                             } else {
-                                return "<a style='text-decoration:none' title='备货'  onClick=\"updateOrder(2,'" + full.SELLERSKU + "')\"'>备货</a>" +
+                                return "<a style='text-decoration:none' title='备货'  onClick=\"updateOrder(2,'" + full.ORDERITEMID + "')\"'>备货</a>" +
                                         "&nbsp;&nbsp;&nbsp;&nbsp;" +
-                                        "<a style='text-decoration:none' title='缺货'  onClick=\"updateOrder(3,'" + full.SELLERSKU + "')\"'>缺货</a>" +
+                                        "<a style='text-decoration:none' title='缺货'  onClick=\"updateOrder(3,'" + full.ORDERITEMID + "')\"'>缺货</a>" +
                                         "&nbsp;&nbsp;&nbsp;&nbsp;" +
                                         "<a style='text-decoration:none' title='退款'  onClick=\"updateOrder(6,'" + full.SELLERSKU + "')\"'>退款</a>" +
                                         "&nbsp;&nbsp;&nbsp;&nbsp;" +
-                                        "<a style='text-decoration:none' title='问题'  onClick=\"updateOrder(5,'" + full.SELLERSKU + "')\"'>问题</a>" +
+                                        "<a style='text-decoration:none' title='问题'  onClick=\"updateOrder(5,'" + full.ORDERITEMID + "')\"'>问题</a>" +
                                         "&nbsp;&nbsp;&nbsp;&nbsp;";
                             }
                         } else if (data == 4) {
                             if (roleId == 400 || roleId == 300) {
                                 return "";
                             } else {
-                                return "<a style='text-decoration:none' title='退款'  onClick=\"updateOrder(6,'" + full.SELLERSKU + "')\"'>退款</a>" +
+                                return "<a style='text-decoration:none' title='退款'  onClick=\"updateOrder(6,'" + full.ORDERITEMID + "')\"'>退款</a>" +
                                         "&nbsp;&nbsp;&nbsp;&nbsp;" +
-                                        "<a style='text-decoration:none' title='妥投'  onClick=\"updateOrder(7,'" + full.SELLERSKU + "')\"'>妥投</a>" +
+                                        "<a style='text-decoration:none' title='妥投'  onClick=\"updateOrder(7,'" + full.ORDERITEMID + "')\"'>妥投</a>" +
                                         "&nbsp;&nbsp;&nbsp;&nbsp;";
                             }
                         } else if (data == 5 || data == 6 || data == 7 || data == 8) {
                             if (roleId == 300) {
                                 return "";
                             } else {
-                                return "<a style='text-decoration:none' title='退款'  onClick=\"updateOrder(6,'" + full.SELLERSKU + "')\"'>退款</a>" +
+                                return "<a style='text-decoration:none' title='退款'  onClick=\"updateOrder(6,'" + full.ORDERITEMID + "')\"'>退款</a>" +
                                         "&nbsp;&nbsp;&nbsp;&nbsp;" +
-                                        "<a style='text-decoration:none' title='问题'  onClick=\"updateOrder(5,'" + full.SELLERSKU + "')\"'>问题</a>" +
+                                        "<a style='text-decoration:none' title='问题'  onClick=\"updateOrder(5,'" + full.ORDERITEMID + "')\"'>问题</a>" +
                                         "&nbsp;&nbsp;&nbsp;&nbsp;" +
-                                        "<a style='text-decoration:none' title='妥投'  onClick=\"updateOrder(7,'" + full.SELLERSKU + "')\"'>妥投</a>" +
+                                        "<a style='text-decoration:none' title='妥投'  onClick=\"updateOrder(7,'" + full.ORDERITEMID + "')\"'>妥投</a>" +
                                         "&nbsp;&nbsp;&nbsp;&nbsp;";
                             }
                         }
@@ -560,6 +565,7 @@
         });
     }
     var customsTable;
+    var count = 1;
     function initCustomsTable() {
         customsTable = $("#customsTable").DataTable({
             "ordering": false,
@@ -606,7 +612,9 @@
                     "targets": [3],
                     "data": "UNIT",
                     "render": function (data, type, full) {
-                        return "<input type='text' value=''  class='input-text' name='unit'/>";
+                        return "<select type='text' value=''  class='input-text' name='unit'>" +
+                                "<option value='1'>件</option>" +
+                                "</select>";
                     }
                 },
                 {
@@ -620,7 +628,7 @@
                     "targets": [5],
                     "data": "TOTALPRICE",
                     "render": function (data, type, full) {
-                        return "<input type='text' value=''  class='input-text' name='address'totalPrice/>";
+                        return "<input type='text' value=''  class='input-text' name='totalPrice' readonly/>";
                     }
                 },
                 {
@@ -634,7 +642,7 @@
                     "targets": [7],
                     "data": "TOTALWEIGHT",
                     "render": function (data, type, full) {
-                        return "<input type='text' value=''  class='input-text' name='totalWeight'/>";
+                        return "<input type='text' value=''  class='input-text' name='totalWeight' readonly/>";
                     }
                 },
                 {
@@ -668,7 +676,11 @@
                     "targets": [12],
                     "data": "STATUS",
                     "render": function (data, type, full) {
-                        return "<a style='text-decoration:none' title='删除'  onClick='removeRow(this)'>删除</a>";
+                        if (count > 1) {
+                            return "<a style='text-decoration:none' title='删除'  onClick='removeRow(this)'>删除</a>";
+                        } else {
+                            return "<a style='text-decoration:none'></a>";
+                        }
                     }
                 }
             ],
@@ -676,8 +688,9 @@
             "paging": false,
             "info": false
         });
+        $("#addRow").trigger("click");
     }
-    var count = 0;
+
     function addRow() {
         customsTable.row.add([
             "",
@@ -726,13 +739,14 @@
             url: '<%=request.getContextPath()%>/common/getShipTypes',
             dataType: 'json',
             data: {
+                "countryCode": $("#countryCode").val(),
                 "companyId": value
             },
             success: function (data) {
                 if (data.code == 0) {
                     var data = data.data;
                     for (var i = 0; i < data.length; i++) {
-                        $("#transType").append($('<option value=' + data[i].ID + '>' + data[i].FULL_NAME + '</option>'));
+                        $("#transType").append($('<option value=' + data[i].code + '>' + data[i].name + '</option>'));
                     }
                 }
             },
@@ -741,30 +755,31 @@
             }
         });
     }
-    function updateOrder(status, sku) {
+    function updateOrder(status, orderItemId) {
+        alert(orderItemId);
         if (status == 2) {
-            layer_show("备货", "<%=request.getContextPath()%>/assistant/index/order/stocking.jsp?amazonOrderId=" + amazonOrderId + "&sku=" + sku + "&preStatus=" + preStatus, 400, 300);
+            layer_show("备货", "<%=request.getContextPath()%>/assistant/index/order/stocking.jsp?amazonOrderId=" + amazonOrderId + "&orderItemId=" + orderItemId + "&preStatus=" + preStatus, 400, 300);
         } else if (status == 3) {
             layer.confirm('您确定缺货吗？', function (index) {
-                confirm(3, sku)
+                confirm(3, orderItemId)
             });
         } else if (status == 4) {
-            layer_show("发货", "<%=request.getContextPath()%>/assistant/index/order/stocking.jsp?amazonOrderId=" + amazonOrderId + "&sku=" + sku + "&preStatus=" + preStatus, 400, 300);
+            layer_show("发货", "<%=request.getContextPath()%>/assistant/index/order/stocking.jsp?amazonOrderId=" + amazonOrderId + "&orderItemId=" + orderItemId + "&preStatus=" + preStatus, 400, 300);
         } else if (status == 5) {
             layer.confirm('您确定此订单有问题吗？', function (index) {
-                confirm(5, sku)
+                confirm(5, orderItemId)
             });
         } else if (status == 6) {
-            layer_show("退款", "<%=request.getContextPath()%>/assistant/index/order/refund.jsp?amazonOrderId=" + amazonOrderId + "&sku=" + sku + "&preStatus=" + preStatus, 400, 200);
+            layer_show("退款", "<%=request.getContextPath()%>/assistant/index/order/refund.jsp?amazonOrderId=" + amazonOrderId + "&orderItemId=" + orderItemId + "&preStatus=" + preStatus, 400, 200);
         } else if (status == 7) {
             layer.confirm('您确定要妥投吗？', function (index) {
-                confirm(7, sku)
+                confirm(7, orderItemId)
             });
         } else if (status == 8) {
             layer_show("修改运费", "<%=request.getContextPath()%>/assistant/index/order/stocking.jsp?amazonOrderId=" + amazonOrderId + "&sku=" + sku + "&preStatus=" + preStatus, 400, 300);
         }
     }
-    function confirm(status, sku) {
+    function confirm(status, orderItemId) {
         $.ajax({
             type: 'POST',
             url: '<%=request.getContextPath()%>/order/updateOrderInfo',
@@ -777,7 +792,7 @@
                 "refundment": "",
                 "trackNum": "",
                 "purchaseNum": "",
-                "sku": sku
+                "orderItemId": orderItemId
             },
             success: function (data) {
                 layer.msg('更新订单成功!', {icon: 1, time: 1000});
@@ -946,13 +961,13 @@
             },
             success: function (data) {
                 if (data.code == 0) {
-                    layer.msg('打印成功!', {icon: 1, time: 1000});
+                    layer_show("打印标签", data.data);
                 } else {
-                    layer.msg('打印失败!', {icon: 1, time: 1000});
+                    layer.msg(data.msg, {icon: 1, time: 1000});
                 }
             },
             error: function (data) {
-                layer.msg('打印失败!', {icon: 2, time: 1000});
+                layer.msg(data.msg, {icon: 2, time: 1000});
             }
         });
     }

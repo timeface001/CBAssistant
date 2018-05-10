@@ -25,6 +25,12 @@
     <div class="Huiform">
         <form id="fileForm" class="form form-horizontal">
             <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-3">上传示例：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <img src="<%=request.getContextPath()%>/assistant/static/h-ui.admin/images/upload_demo.png">
+                </div>
+            </div>
+            <div class="row cl">
                 <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>批量修改：</label>
                 <div class="formControls col-xs-8 col-sm-9">
                     <input class="input-text" type="text" name="fileUrl" id="fileUrl" readonly

@@ -47,7 +47,7 @@
         <div class="layui-form-item">
             <label class="layui-form-label">售卖形式</label>
             <div class="layui-input-block">
-                <input type="radio" name="skuType" lay-filter="skuType" value="1" title="单体" >
+                <input type="radio" name="skuType" lay-filter="skuType" value="1" title="单体">
                 <input type="radio" name="skuType" lay-filter="skuType" value="2" title="多变种">
             </div>
         </div>
@@ -75,7 +75,8 @@
                         <li>意大利语</li>
                     </ul>
                     <div class="layui-tab-content" style="height: 50px;">
-                        <div class="layui-tab-item layui-show"><input type="text" name="itemCn" value="${product.itemCn}"
+                        <div class="layui-tab-item layui-show"><input type="text" name="itemCn"
+                                                                      value="${product.itemCn}"
                                                                       lay-verify="required" placeholder=""
                                                                       autocomplete="off" class="layui-input"></div>
                         <div class="layui-tab-item"><input type="text" name="itemUk" value="${product.itemUk}"
@@ -116,7 +117,6 @@
                         <c:forEach items="${typeList}" var="type">
                             <option value="${type.variationType}">${type.variationName}</option>
                         </c:forEach>
-
                     </select>
                 </div>
             </div>
@@ -191,40 +191,36 @@
                     </ul>
                     <div class="layui-tab-content" style="height: 100px;">
                         <div class="layui-tab-item layui-show"><textarea name="productDescriptionCn" placeholder=""
-                                                                         class="layui-textarea">${product.productDescriptionCn}</textarea>
+                                                                         class="layui-textarea" style="resize: none">${product.productDescriptionCn}</textarea>
                         </div>
                         <div class="layui-tab-item"><textarea name="productDescriptionUk" placeholder=""
-                                                              class="layui-textarea">${product.productDescriptionUk}</textarea>
+                                                              class="layui-textarea" style="resize: none">${product.productDescriptionUk}</textarea>
                         </div>
                         <div class="layui-tab-item "><textarea name="productDescriptionJp" placeholder=""
-                                                               class="layui-textarea">${product.productDescriptionJp}</textarea>
+                                                               class="layui-textarea" style="resize: none">${product.productDescriptionJp}</textarea>
                         </div>
                         <div class="layui-tab-item "><textarea name="productDescriptionDe" placeholder=""
-                                                               class="layui-textarea">${product.productDescriptionDe}</textarea>
+                                                               class="layui-textarea" style="resize: none">${product.productDescriptionDe}</textarea>
                         </div>
                         <div class="layui-tab-item "><textarea name="productDescriptionFr" placeholder=""
-                                                               class="layui-textarea">${product.productDescriptionFr}</textarea>
+                                                               class="layui-textarea" style="resize: none">${product.productDescriptionFr}</textarea>
                         </div>
                         <div class="layui-tab-item "><textarea name="productDescriptionEs" placeholder=""
-                                                               class="layui-textarea">${product.productDescriptionEs}</textarea>
+                                                               class="layui-textarea" style="resize: none">${product.productDescriptionEs}</textarea>
                         </div>
                         <div class="layui-tab-item "><textarea name="productDescriptionIt" placeholder=""
-                                                               class="layui-textarea">${product.productDescriptionIt}</textarea>
+                                                               class="layui-textarea" style="resize: none">${product.productDescriptionIt}</textarea>
                         </div>
-
                     </div>
                 </div>
             </div>
             <div class="layui-inline">
-                <button class="layui-btn translate"  type="button" style="margin-bottom: 125px;">一键翻译</button>
+                <button class="layui-btn translate" type="button" style="margin-bottom: 125px;">一键翻译</button>
             </div>
-
-
         </div>
 
         <div class="layui-form-item" style="width: 1000px;">
             <label class="layui-form-label">简要描述</label>
-
             <div class="layui-inline">
                 <div class="layui-tab layui-tab-card" style="width: 670px;">
                     <ul class="layui-tab-title">
@@ -411,10 +407,7 @@
             <div class="layui-inline">
                 <button class="layui-btn translate" type="button" style="margin-bottom: 175px;">一键翻译</button>
             </div>
-
-
         </div>
-
 
         <blockquote class="layui-elem-quote">关键词信息</blockquote>
         <div class="layui-form-item">
@@ -431,174 +424,174 @@
                         <li>意大利语</li>
                     </ul>
                     <div class="layui-tab-content" style="height: 150px;">
-                            <div class="layui-tab-item layui-show" id="keywordsCn">
-                                <div class="layui-inline">
-                                    <input type="text" name="keywordsCn0" style="width: 300px" value="${keywordsCn[0]}"
-                                           lay-verify="required" placeholder="" autocomplete="off" class="layui-input ">
-                                </div>
-                                <div class="layui-inline">
-                                    <input type="text" name="keywordsCn1" style="width: 300px" value="${keywordsCn[1]}"
-                                           lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
-                                </div>
-
-                                <div class="layui-inline">
-                                    <input type="text" name="keywordsCn2" value="${keywordsCn[2]}" style="width: 300px"
-                                           lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
-                                </div>
-                                <div class="layui-inline">
-                                    <input type="text" name="keywordsCn3" value="${keywordsCn[3]}" style="width: 300px"
-                                           lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
-                                </div>
-
-                                <div class="layui-inline">
-                                    <input type="text" name="keywordsCn4" value="${keywordsCn[4]}" style="width: 300px"
-                                           lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
-                                </div>
-                        </div>
-
-                            <div class="layui-tab-item" id="keywordsUk">
-                                <div class="layui-inline">
-                                    <input type="text" name="keywordsUk0" style="width: 300px" value="${keywordsUk[0]}"
-                                           lay-verify="required" placeholder="" autocomplete="off" class="layui-input ">
-                                </div>
-                                <div class="layui-inline">
-                                    <input type="text" name="keywordsUk1" style="width: 300px" value="${keywordsUk[1]}"
-                                           lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
-                                </div>
-
-                                <div class="layui-inline">
-                                    <input type="text" name="keywordsUk2" value="${keywordsUk[2]}" style="width: 300px"
-                                           lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
-                                </div>
-                                <div class="layui-inline">
-                                    <input type="text" name="keywordsUk3" value="${keywordsUk[3]}" style="width: 300px"
-                                           lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
-                                </div>
-
-                                <div class="layui-inline">
-                                    <input type="text" name="keywordsUk4" value="${keywordsUk[4]}" style="width: 300px"
-                                           lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
-                                </div>
+                        <div class="layui-tab-item layui-show" id="keywordsCn">
+                            <div class="layui-inline">
+                                <input type="text" name="keywordsCn0" style="width: 300px" value="${keywordsCn[0]}"
+                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input ">
+                            </div>
+                            <div class="layui-inline">
+                                <input type="text" name="keywordsCn1" style="width: 300px" value="${keywordsCn[1]}"
+                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
                             </div>
 
-                            <div class="layui-tab-item" id="keywordsJp">
-                                <div class="layui-inline">
-                                    <input type="text" name="keywordsJp0" style="width: 300px" value="${keywordsJp[0]}"
-                                           lay-verify="required" placeholder="" autocomplete="off" class="layui-input ">
-                                </div>
-                                <div class="layui-inline">
-                                    <input type="text" name="keywordsJp1" style="width: 300px" value="${keywordsJp[1]}"
-                                           lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
-                                </div>
-
-                                <div class="layui-inline">
-                                    <input type="text" name="keywordsJp2" value="${keywordsJp[2]}" style="width: 300px"
-                                           lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
-                                </div>
-                                <div class="layui-inline">
-                                    <input type="text" name="keywordsJp3" value="${keywordsJp[3]}" style="width: 300px"
-                                           lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
-                                </div>
-
-                                <div class="layui-inline">
-                                    <input type="text" name="keywordsJp4" value="${keywordsJp[4]}" style="width: 300px"
-                                           lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
-                                </div>
+                            <div class="layui-inline">
+                                <input type="text" name="keywordsCn2" value="${keywordsCn[2]}" style="width: 300px"
+                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
                             </div>
-                            <div class="layui-tab-item" id="keywordsDe">
-                                <div class="layui-inline">
-                                    <input type="text" name="keywordsUk0" style="width: 300px" value="${keywordsDe[0]}"
-                                           lay-verify="required" placeholder="" autocomplete="off" class="layui-input ">
-                                </div>
-                                <div class="layui-inline">
-                                    <input type="text" name="keywordsDe1" style="width: 300px" value="${keywordsDe[1]}"
-                                           lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
-                                </div>
-
-                                <div class="layui-inline">
-                                    <input type="text" name="keywordsDe2" value="${keywordsDe[2]}" style="width: 300px"
-                                           lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
-                                </div>
-                                <div class="layui-inline">
-                                    <input type="text" name="keywordsDe3" value="${keywordsDe[3]}" style="width: 300px"
-                                           lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
-                                </div>
-
-                                <div class="layui-inline">
-                                    <input type="text" name="keywordsDe4" value="${keywordsDe[4]}" style="width: 300px"
-                                           lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
-                                </div>
-                        </div>
-                            <div class="layui-tab-item" id="keywordsFr">
-                                <div class="layui-inline">
-                                    <input type="text" name="keywordsFr0" style="width: 300px" value="${keywordsFr[0]}"
-                                           lay-verify="required" placeholder="" autocomplete="off" class="layui-input ">
-                                </div>
-                                <div class="layui-inline">
-                                    <input type="text" name="keywordsFr1" style="width: 300px" value="${keywordsFr[1]}"
-                                           lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
-                                </div>
-
-                                <div class="layui-inline">
-                                    <input type="text" name="keywordsFr2" value="${keywordsFr[2]}" style="width: 300px"
-                                           lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
-                                </div>
-                                <div class="layui-inline">
-                                    <input type="text" name="keywordsFr3" value="${keywordsFr[3]}" style="width: 300px"
-                                           lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
-                                </div>
-
-                                <div class="layui-inline">
-                                    <input type="text" name="keywordsFr4" value="${keywordsFr[4]}" style="width: 300px"
-                                           lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
-                                </div>
-                        </div>
-                            <div class="layui-tab-item" id="keywordsEs">
-                                <div class="layui-inline">
-                                    <input type="text" name="keywordsEs0" style="width: 300px" value="${keywordsEs[0]}"
-                                           lay-verify="required" placeholder="" autocomplete="off" class="layui-input ">
-                                </div>
-                                <div class="layui-inline">
-                                    <input type="text" name="keywordsEs1" style="width: 300px" value="${keywordsEs[1]}"
-                                           lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
-                                </div>
-
-                                <div class="layui-inline">
-                                    <input type="text" name="keywordsEs2" value="${keywordsEs[2]}" style="width: 300px"
-                                           lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
-                                </div>
-                                <div class="layui-inline">
-                                    <input type="text" name="keywordsEs3" value="${keywordsEs[3]}" style="width: 300px"
-                                           lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
-                                </div>
-
-                                <div class="layui-inline">
-                                    <input type="text" name="keywordsEs4" value="${keywordsEs[4]}" style="width: 300px"
-                                           lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
-                                </div>
+                            <div class="layui-inline">
+                                <input type="text" name="keywordsCn3" value="${keywordsCn[3]}" style="width: 300px"
+                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
                             </div>
-                            <div class="layui-tab-item" id="keywordsIt">
-                                <div class="layui-inline">
-                                    <input type="text" name="keywordsUk0" style="width: 300px" value="${keywordsIt[0]}"
-                                           lay-verify="required" placeholder="" autocomplete="off" class="layui-input ">
-                                </div>
-                                <div class="layui-inline">
-                                    <input type="text" name="keywordsIt1" style="width: 300px" value="${keywordsIt[1]}"
-                                           lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
-                                </div>
 
-                                <div class="layui-inline">
-                                    <input type="text" name="keywordsIt2" value="${keywordsIt[2]}" style="width: 300px"
-                                           lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
-                                </div>
-                                <div class="layui-inline">
-                                    <input type="text" name="keywordsIt3" value="${keywordsIt[3]}" style="width: 300px"
-                                           lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
-                                </div>
+                            <div class="layui-inline">
+                                <input type="text" name="keywordsCn4" value="${keywordsCn[4]}" style="width: 300px"
+                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
 
-                                <div class="layui-inline">
-                                    <input type="text" name="keywordsIt4" value="${keywordsIt[4]}" style="width: 300px"
-                                           lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                        <div class="layui-tab-item" id="keywordsUk">
+                            <div class="layui-inline">
+                                <input type="text" name="keywordsUk0" style="width: 300px" value="${keywordsUk[0]}"
+                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input ">
+                            </div>
+                            <div class="layui-inline">
+                                <input type="text" name="keywordsUk1" style="width: 300px" value="${keywordsUk[1]}"
+                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+
+                            <div class="layui-inline">
+                                <input type="text" name="keywordsUk2" value="${keywordsUk[2]}" style="width: 300px"
+                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                            <div class="layui-inline">
+                                <input type="text" name="keywordsUk3" value="${keywordsUk[3]}" style="width: 300px"
+                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+
+                            <div class="layui-inline">
+                                <input type="text" name="keywordsUk4" value="${keywordsUk[4]}" style="width: 300px"
+                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+
+                        <div class="layui-tab-item" id="keywordsJp">
+                            <div class="layui-inline">
+                                <input type="text" name="keywordsJp0" style="width: 300px" value="${keywordsJp[0]}"
+                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input ">
+                            </div>
+                            <div class="layui-inline">
+                                <input type="text" name="keywordsJp1" style="width: 300px" value="${keywordsJp[1]}"
+                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+
+                            <div class="layui-inline">
+                                <input type="text" name="keywordsJp2" value="${keywordsJp[2]}" style="width: 300px"
+                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                            <div class="layui-inline">
+                                <input type="text" name="keywordsJp3" value="${keywordsJp[3]}" style="width: 300px"
+                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+
+                            <div class="layui-inline">
+                                <input type="text" name="keywordsJp4" value="${keywordsJp[4]}" style="width: 300px"
+                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-tab-item" id="keywordsDe">
+                            <div class="layui-inline">
+                                <input type="text" name="keywordsUk0" style="width: 300px" value="${keywordsDe[0]}"
+                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input ">
+                            </div>
+                            <div class="layui-inline">
+                                <input type="text" name="keywordsDe1" style="width: 300px" value="${keywordsDe[1]}"
+                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+
+                            <div class="layui-inline">
+                                <input type="text" name="keywordsDe2" value="${keywordsDe[2]}" style="width: 300px"
+                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                            <div class="layui-inline">
+                                <input type="text" name="keywordsDe3" value="${keywordsDe[3]}" style="width: 300px"
+                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+
+                            <div class="layui-inline">
+                                <input type="text" name="keywordsDe4" value="${keywordsDe[4]}" style="width: 300px"
+                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-tab-item" id="keywordsFr">
+                            <div class="layui-inline">
+                                <input type="text" name="keywordsFr0" style="width: 300px" value="${keywordsFr[0]}"
+                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input ">
+                            </div>
+                            <div class="layui-inline">
+                                <input type="text" name="keywordsFr1" style="width: 300px" value="${keywordsFr[1]}"
+                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+
+                            <div class="layui-inline">
+                                <input type="text" name="keywordsFr2" value="${keywordsFr[2]}" style="width: 300px"
+                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                            <div class="layui-inline">
+                                <input type="text" name="keywordsFr3" value="${keywordsFr[3]}" style="width: 300px"
+                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+
+                            <div class="layui-inline">
+                                <input type="text" name="keywordsFr4" value="${keywordsFr[4]}" style="width: 300px"
+                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-tab-item" id="keywordsEs">
+                            <div class="layui-inline">
+                                <input type="text" name="keywordsEs0" style="width: 300px" value="${keywordsEs[0]}"
+                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input ">
+                            </div>
+                            <div class="layui-inline">
+                                <input type="text" name="keywordsEs1" style="width: 300px" value="${keywordsEs[1]}"
+                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+
+                            <div class="layui-inline">
+                                <input type="text" name="keywordsEs2" value="${keywordsEs[2]}" style="width: 300px"
+                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                            <div class="layui-inline">
+                                <input type="text" name="keywordsEs3" value="${keywordsEs[3]}" style="width: 300px"
+                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+
+                            <div class="layui-inline">
+                                <input type="text" name="keywordsEs4" value="${keywordsEs[4]}" style="width: 300px"
+                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-tab-item" id="keywordsIt">
+                            <div class="layui-inline">
+                                <input type="text" name="keywordsUk0" style="width: 300px" value="${keywordsIt[0]}"
+                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input ">
+                            </div>
+                            <div class="layui-inline">
+                                <input type="text" name="keywordsIt1" style="width: 300px" value="${keywordsIt[1]}"
+                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+
+                            <div class="layui-inline">
+                                <input type="text" name="keywordsIt2" value="${keywordsIt[2]}" style="width: 300px"
+                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                            <div class="layui-inline">
+                                <input type="text" name="keywordsIt3" value="${keywordsIt[3]}" style="width: 300px"
+                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+
+                            <div class="layui-inline">
+                                <input type="text" name="keywordsIt4" value="${keywordsIt[4]}" style="width: 300px"
+                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
                             </div>
                         </div>
 
@@ -614,8 +607,9 @@
         <div class="layui-form-item">
             <div class="layui-input-block">
                 <button class="layui-btn" lay-submit lay-filter="formDemo">保存</button>
-                <a type="button" class="layui-btn layui-btn-primary" onclick="location.href='<%=request.getContextPath()%>/assistant/index/product/product_claim_list.jsp'"
-                        href="javascript:void(0);">
+                <a type="button" class="layui-btn layui-btn-primary"
+                   onclick="location.href='<%=request.getContextPath()%>/assistant/index/product/product_claim_list.jsp'"
+                   href="javascript:void(0);">
                     返回
                 </a>
             </div>
@@ -649,7 +643,7 @@
         initSku('${product}')
 
 
-        var skuType='${skuType}';
+        var skuType = '${skuType}';
 
 
         function initSku() {
@@ -710,13 +704,12 @@
             });
 
 
-
             if (skuType == "2") {//选中多变体
                 mutiSku();
-                $("input[name='skuType']").eq(1).attr("checked",'checked');
+                $("input[name='skuType']").eq(1).attr("checked", 'checked');
                 $("input[name='skuType']").eq(0).removeAttr("checked");
 
-                var vars=JSON.parse('${productVars}');
+                var vars = JSON.parse('${productVars}');
                 $("#selectMuti").val("Color");
                 form.render("select", "skuMuti");
                 selectValue = vars[0].variationType;
@@ -724,7 +717,7 @@
                 $("#skuRender").append(genSkuTypeDom($("#skuMutiDiv option:selected").text()));
 
                 $(".skuBtn").on("click", function () {
-                    var $this=$(this);
+                    var $this = $(this);
                     var text = $(this).parent().parent().find("input").val();
                     if (text != null && $.trim(text).length > 0) {
                         text = $.trim(text);
@@ -750,13 +743,13 @@
                 });
 
 
-                for(var i=0;i<vars.length;i++){
+                for (var i = 0; i < vars.length; i++) {
 
-                    var vvType=vars[i].variationType;
+                    var vvType = vars[i].variationType;
                     console.log(vvType);
-                    if(vvType!=null && vvType!='undefined'){
+                    if (vvType != null && vvType != 'undefined') {
                         console.log(vars[i]);
-                        if(vvType='Color'){
+                        if (vvType = 'Color') {
                             $("#skuRender button").parent().prev().find('input').val(vars[i].colorMap);
 
                         }
@@ -769,86 +762,81 @@
 
                 }
 
-                var index=0;
+                var index = 0;
 
-                for(var i=0;i<vars.length;i++){
-                    var vvType=vars[i].variationType;
-                    if(vvType!=null && vvType!='undefined'){
+                for (var i = 0; i < vars.length; i++) {
+                    var vvType = vars[i].variationType;
+                    if (vvType != null && vvType != 'undefined') {
 
-                         var ttImages=(vars[i].mainPath+","+vars[i].attachPath).split(",");
-                         var ttHtml='';
-                         for(var j=0;j< ttImages.length;j++){
-                             ttHtml+="<div style='width:100px;height:110px;margin-left:2px;float:left;'><img width='100px' height='90px' style='padding-right:5px;' src=<%=request.getContextPath()%>/upload/" + ttImages[j] + " /><i class='layui-icon delImage' style='font-size:20px;margin-left:35px;'>&#xe640;</i></div>";
-                         }
-
-
-                        $("#skuMutiPath > div :eq("+(index*3+2)+")").html(ttHtml);
+                        var ttImages = (vars[i].mainPath + "," + vars[i].attachPath).split(",");
+                        var ttHtml = '';
+                        for (var j = 0; j < ttImages.length; j++) {
+                            ttHtml += "<div style='width:100px;height:110px;margin-left:2px;float:left;'><img width='100px' height='90px' style='padding-right:5px;' src=<%=request.getContextPath()%>/upload/" + ttImages[j] + " /><i class='layui-icon delImage' style='font-size:20px;margin-left:35px;'>&#xe640;</i></div>";
+                        }
 
 
-                        $("#skuTable> tbody tr").eq(index).find("td").each(function (ii,val) {
-                            var isTwo=$(val).parent().attr("val").indexOf(":")>0;
-                            if(ii==0){
-                               $(val).find(".trOtherPath").val(ttImages.join(","));
+                        $("#skuMutiPath > div :eq(" + (index * 3 + 2) + ")").html(ttHtml);
+
+
+                        $("#skuTable> tbody tr").eq(index).find("td").each(function (ii, val) {
+                            var isTwo = $(val).parent().attr("val").indexOf(":") > 0;
+                            if (ii == 0) {
+                                $(val).find(".trOtherPath").val(ttImages.join(","));
                             }
 
-                            if(isTwo){
-                               if(ii==3){
-                                   $(val).find("input").val(vars[i].price);
-                               }
-                                if(ii==4){
+                            if (isTwo) {
+                                if (ii == 3) {
+                                    $(val).find("input").val(vars[i].price);
+                                }
+                                if (ii == 4) {
                                     $(val).find("input").val(vars[i].salePrice);
                                 }
 
-                                if(ii==5){
+                                if (ii == 5) {
                                     $(val).find("input:eq(0)").val(getMyDate(vars[i].saleStartTime));
                                     $(val).find("input:eq(1)").val(getMyDate(vars[i].saleEndTime));
                                 }
 
-                                if(ii==6){
+                                if (ii == 6) {
                                     $(val).find("input").val(vars[i].quantity);
                                 }
-                            }else{
-                                if(ii==2){
+                            } else {
+                                if (ii == 2) {
                                     $(val).find("input").val(vars[i].price);
                                 }
 
-                                if(ii==3){
+                                if (ii == 3) {
                                     $(val).find("input").val(vars[i].salePrice);
                                 }
 
-                                if(ii==4){
+                                if (ii == 4) {
                                     $(val).find("input:eq(0)").val(getMyDate(vars[i].saleStartTime));
                                     $(val).find("input:eq(1)").val(getMyDate(vars[i].saleEndTime));
                                 }
 
-                                if(ii==5){
+                                if (ii == 5) {
                                     $(val).find("input").val(vars[i].quantity);
                                 }
                             }
                         });
-
-
                         index++;
                     }
-
                 }
 
+                $(".delImage").on("click", function () {
 
+                    var pprent = $(this).parent().parent();
 
-                $(".delImage").on("click",function () {
-
-                    var pprent=$(this).parent().parent();
-
-                    var ppKey=$(this).prev().attr("src").substring(8);
+                    var ppKey = $(this).prev().attr("src").substring(8);
                     $("#skuTable tbody tr").each(function (i, val) {
 
                         var exVal = $(val).find(".trOtherPath").val();
-                        var delVals=[];
+                        var delVals = [];
 
-                        if(exVal!=null&&exVal!=""){
-                            var exArr=exVal.split(",");
-                            for(var i=0;i<exArr.length;i++){
-                                if(exArr[i]!=""&&ppKey!=exArr[i]){
+                        if (exVal != null && exVal != "") {
+                            var exArr = exVal.split(",");
+                            for (var i = 0; i < exArr.length; i++) {
+                                if (exArr[i] != "" && ppKey != exArr[i]) {
                                     delVals.push(exArr[i]);
                                 }
                             }
@@ -858,24 +846,21 @@
 
                     });
                     $(this).parent().remove();
-                    if(pprent.find("div").length==0){
+                    if (pprent.find("div").length == 0) {
                         pprent.append("<img class='pathDemo' src='http://bpic.588ku.com/element_origin_min_pic/01/47/02/12574338a640011.jpg!r650' width='100' height='90' />");
                     }
                 })
 
 
-
-
             } else {//单体
                 singleSku();
-                $("input[name='skuType']").eq(0).attr("checked",'checked');
+                $("input[name='skuType']").eq(0).attr("checked", 'checked');
                 $("input[name='skuType']").eq(1).removeAttr("checked");
 
 
             }
 
             form.render("radio");
-
 
 
             form.on('checkbox(skuMutiCheck)', function (data) {//切换变体类型
@@ -890,7 +875,7 @@
                 $("#skuRender").append(genSkuTypeDom($("#skuMutiDiv option:selected").text()));
 
                 $(".skuBtn").on("click", function () {
-                    var $this=$(this);
+                    var $this = $(this);
                     var text = $(this).parent().parent().find("input").val();
                     if (text != null && $.trim(text).length > 0) {
                         text = $.trim(text);
@@ -947,17 +932,13 @@
                         layer.msg("请选择变种主题！", {icon: 5, time: 1000});
                         return false;
                     }
-
-
                     var skuVar = [];
-                    var isItemImags=true;
+                    var isItemImags = true;
                     $("#skuTable tbody tr").each(function (i, val) {
                         var item = {};
-                        var itemImgs= $(val).eq(0).find(".trOtherPath").val().split(",");
-                        console.log(itemImgs);
-                        console.log($(val).eq(0).find(".trOtherPath").val());
-                        if(itemImgs.length<9){
-                            isItemImags=false;
+                        var itemImgs = $(val).eq(0).find(".trOtherPath").val().split(",");
+                        if (itemImgs.length < 1) {
+                            isItemImags = false;
                         }
                         item["productId"] = $("input[name='id']").val();
                         item["mainPath"] = itemImgs[0];
@@ -1009,21 +990,14 @@
                             item["itempackagequantity"] = firstValue;
                             item["materialType"] = secondValue;
                         }
-
                         skuVar.push(item);
-
                     });
-
-                    if(!isItemImags){
-                        layer.msg("每种变体图片需传满9张！", {icon: 5, time: 1000});
+                    if (!isItemImags) {
+                        layer.msg("请上传变体图片", {icon: 5, time: 1000});
                         return false;
                     }
-
-
                 }
-
                 data.field["vars"] = JSON.stringify(skuVar);
-
                 var url = '<%=request.getContextPath()%>/product/claim/save';
                 $.ajax({
                     type: 'POST',
@@ -1109,7 +1083,7 @@
         }
 
         function skuTable(fisrtDesc, fisrtArr, secondDesc, secondArr) {
-            $("skuTable tbody").html("");
+            $("#skuTable tbody").html("");
             if (fisrtDesc == null) {
                 return;
             }
@@ -1137,21 +1111,21 @@
         function getTR(isSingle, first, second) {
             var sku = $("input[name='sku']").val() + "-" + (isSingle ? first : (first + "-" + second));
             return "<tr val=" + (isSingle ? first : (first + ":" + second)) + ">" +
-                "<td><input type='hidden' class='trMainPath' /> <input type='hidden' class='trOtherPath' /> <input type='text' value='" + sku + "'  lay-verify='required'  autocomplete='off' class='layui-input'></td>" +
-                (isSingle ? ("<td class='skuVarType'>" + first + "</td>") : ("<td class='skuVarType'>" + first + "</td><td>" + second + "</td>"))
-                +
-                "<td><input type='text' lay-verify='required'  autocomplete='off' class='layui-input price'></td>" +
-                "<td><input type='text'  autocomplete='off' class='layui-input salePrice'></td>" +
-                "<td> <div class='layui-inline'>" +
-                "<input type='text'  autocomplete='off' class='layui-input saleStart'>" +
-                "</div>" +
-                "-" +
-                "<div class='layui-inline'>" +
-                "<input type='text' autocomplete='off' class='layui-input saleEnd'>" +
-                "</div>" +
-                "</td>" +
-                "<td><input type='text' lay-verify='required'  autocomplete='off' class='layui-input quantity'></td>" +
-                "</tr>";
+                    "<td><input type='hidden' class='trMainPath' /> <input type='hidden' class='trOtherPath' /> <input type='text' value='" + sku + "'  lay-verify='required'  autocomplete='off' class='layui-input'></td>" +
+                    (isSingle ? ("<td class='skuVarType'>" + first + "</td>") : ("<td class='skuVarType'>" + first + "</td><td>" + second + "</td>"))
+                    +
+                    "<td><input type='text' lay-verify='required'  autocomplete='off' class='layui-input price'></td>" +
+                    "<td><input type='text'  autocomplete='off' class='layui-input salePrice'></td>" +
+                    "<td> <div class='layui-inline'>" +
+                    "<input type='text'  autocomplete='off' class='layui-input saleStart'>" +
+                    "</div>" +
+                    "-" +
+                    "<div class='layui-inline'>" +
+                    "<input type='text' autocomplete='off' class='layui-input saleEnd'>" +
+                    "</div>" +
+                    "</td>" +
+                    "<td><input type='text' lay-verify='required'  autocomplete='off' class='layui-input quantity'></td>" +
+                    "</tr>";
         }
 
         //监听parentSKU值变化
@@ -1164,11 +1138,11 @@
 
         function getCgroup(isSingle) {
             return "<col width=\"200\">" +
-                (isSingle ? ("<col width=\"100\">") : ("<col width=\"100\"><col width=\"100\">")) +
-                " <col width=\"50\">" +
-                "  <col width=\"50\">" +
-                "  <col width=\"300\">" +
-                "  <col width=\"100\">";
+                    (isSingle ? ("<col width=\"100\">") : ("<col width=\"100\"><col width=\"100\">")) +
+                    " <col width=\"50\">" +
+                    "  <col width=\"50\">" +
+                    "  <col width=\"300\">" +
+                    "  <col width=\"100\">";
         }
 
         function getThead(desc) {
@@ -1192,21 +1166,21 @@
             }
 
             dom += "<div class=\"layui-form-item\" id='skuMutiPath' lay-filter=\"skuMutiPath\" >\n" +
-                "            <label class=\"layui-form-label\">变种图片</label>\n" +
-                "</div>";
+                    "            <label class=\"layui-form-label\">变种图片</label>\n" +
+                    "</div>";
 
             dom += "<div class=\"layui-form-item\">" +
-                "<label class=\"layui-form-label\">变种参数</label>" +
-                "<div class=\"layui-input-block\">" +
-                "<table class=\"layui-table\" id=\"skuTable\" lay-filter='skuTable'>" +
-                " <colgroup>" +
+                    "<label class=\"layui-form-label\">变种参数</label>" +
+                    "<div class=\"layui-input-block\">" +
+                    "<table class=\"layui-table\" id=\"skuTable\" lay-filter='skuTable'>" +
+                    " <colgroup>" +
 
-                "   </colgroup><thead></thead> <tbody>" +
+                    "   </colgroup><thead></thead> <tbody>" +
 
-                "</tbody>" +
-                "</table>" +
-                "</div>" +
-                "</div>";
+                    "</tbody>" +
+                    "</table>" +
+                    "</div>" +
+                    "</div>";
 
             return dom;
         }
@@ -1221,28 +1195,28 @@
                 var id = "skuMainPath" + i;
                 var sid = "skuOtherPath" + i;
                 dom += "<div class=\"layui-input-block\" val=" + (arr[i].substring(arr[i].indexOf(":") + 1)) + ">" +
-                    "    <div class='layui-inline layui-bg-gray' style='margin-top: 10px;'>变种属性    " + arr[i] + "</div>" +
-                    "            </div>" +
-                    /*"            <div class=\"layui-input-block\">\n" +
-                    "                <button id=" + id + " type=\"button\" class=\"layui-btn skuMainPath\" >\n" +
-                    "            <i class=\"layui-icon\">&#xe67c;</i>上传主图\n" +
-                    "        </button>" +
-                    "            </div>\n" +*/
+                        "    <div class='layui-inline layui-bg-gray' style='margin-top: 10px;'>变种属性    " + arr[i] + "</div>" +
+                        "            </div>" +
+                            /*"            <div class=\"layui-input-block\">\n" +
+                             "                <button id=" + id + " type=\"button\" class=\"layui-btn skuMainPath\" >\n" +
+                             "            <i class=\"layui-icon\">&#xe67c;</i>上传主图\n" +
+                             "        </button>" +
+                             "            </div>\n" +*/
 
 
-                  /*  "            <div class=\"layui-input-block\" style='margin-top: 5px'>" +
-                    "<img src='http://bpic.588ku.com/element_origin_min_pic/01/47/02/12574338a640011.jpg!r650' width='100' height='90' />" +
-                    "                     </div>" +*/
+                            /*  "            <div class=\"layui-input-block\" style='margin-top: 5px'>" +
+                             "<img src='http://bpic.588ku.com/element_origin_min_pic/01/47/02/12574338a640011.jpg!r650' width='100' height='90' />" +
+                             "                     </div>" +*/
 
 
-                    "            <div class=\"layui-input-block\" style='margin-top: 10px;'>\n" +
-                    "                <button type=\"button\" id=" + sid + " class=\"layui-btn skuOtherPath\"  >\n" +
-                    "            <i class=\"layui-icon\">&#xe67c;</i>上传附图\n" +
-                    "        </button>" +
-                    "            </div>" +
-                    "            <div class=\"layui-input-block\" style='margin-top: 5px;height: 110px;'>" +
-                    "<img class=\"pathDemo\" src='http://bpic.588ku.com/element_origin_min_pic/01/47/02/12574338a640011.jpg!r650' width='100' height='90' />" +
-                    "                     </div>";
+                        "            <div class=\"layui-input-block\" style='margin-top: 10px;'>\n" +
+                        "                <button type=\"button\" id=" + sid + " class=\"layui-btn skuOtherPath\"  >\n" +
+                        "            <i class=\"layui-icon\">&#xe67c;</i>上传附图\n" +
+                        "        </button>" +
+                        "            </div>" +
+                        "            <div class=\"layui-input-block\" style='margin-top: 5px;height: 110px;'>" +
+                        "<img class=\"pathDemo\" src='http://bpic.588ku.com/element_origin_min_pic/01/47/02/12574338a640011.jpg!r650' width='100' height='90' />" +
+                        "                     </div>";
 
 
             }
@@ -1253,22 +1227,22 @@
 
         function getSkuItemDom(desc) {
             return "<div class='layui-form-item' >" +
-                "<div class='layui-input-block'>" +
-                "    <div class='layui-inline' style='width: 50px;'><span>" + desc +
-                "  </span>  :</div>" +
-                "    <div class='layui-inline skuCheckbox'>" +
-                "    </div>" +
-                "</div>" +
-                "      <div class='layui-input-block'>" +
-                "    <div class=\"layui-input-inline\" style=\"width: 150px;\">" +
-                "      <input type=\"text\" name=\"\" autocomplete=\"off\" class=\"layui-input\">" +
-                "    </div>" +
-                "   <div class=\"layui-input-inline\" style=\"width: 100px;\">" +
-                "      <button type='button' class=\"layui-btn skuBtn\">添加</button>\n" +
-                "    </div>" +
-                "      </div>" +
-                "</div> " +
-                "</div>";
+                    "<div class='layui-input-block'>" +
+                    "    <div class='layui-inline' style='width: 50px;'><span>" + desc +
+                    "  </span>  :</div>" +
+                    "    <div class='layui-inline skuCheckbox'>" +
+                    "    </div>" +
+                    "</div>" +
+                    "      <div class='layui-input-block'>" +
+                    "    <div class=\"layui-input-inline\" style=\"width: 150px;\">" +
+                    "      <input type=\"text\" name=\"\" autocomplete=\"off\" class=\"layui-input\">" +
+                    "    </div>" +
+                    "   <div class=\"layui-input-inline\" style=\"width: 100px;\">" +
+                    "      <button type='button' class=\"layui-btn skuBtn\">添加</button>\n" +
+                    "    </div>" +
+                    "      </div>" +
+                    "</div> " +
+                    "</div>";
         }
 
 
@@ -1308,7 +1282,7 @@
 
                         });
 
-                        $(".delImageMain").on("click",function () {
+                        $(".delImageMain").on("click", function () {
                             $("#skuTable tbody tr").each(function (i, val) {
 
                                 if ($(val).attr("val") == key) {
@@ -1316,7 +1290,7 @@
                                 }
 
                             });
-                            var pprent=$(this).parent().parent();
+                            var pprent = $(this).parent().parent();
                             $(this).parent().remove();
                             pprent.append("<img src='http://bpic.588ku.com/element_origin_min_pic/01/47/02/12574338a640011.jpg!r650' width='100' height='90' />");
                         })
@@ -1336,7 +1310,7 @@
                     multiple: true
                     , number: 9
                     , url: '<%=request.getContextPath()%>/upload/image' //上传接口
-                    , done: function (res,index,upload) {
+                    , done: function (res, index, upload) {
 
                         var $this = $($(this)[0].item[0]);
 
@@ -1349,18 +1323,16 @@
                             if ($(val).attr("val") == key) {
 
                                 var exVal = $(val).find(".trOtherPath").val();
-                                var exVals="";
-                                if(exVal == null || exVal == ""){
-                                    exVals=res.data;
-                                }else if(exVal.split(",").length<9){
-                                    exVals=exVal += "," + res.data;
-                                }else{
-                                    exVals=exVal;
+                                var exVals = "";
+                                if (exVal == null || exVal == "") {
+                                    exVals = res.data;
+                                } else if (exVal.split(",").length < 9) {
+                                    exVals = exVal += "," + res.data;
+                                } else {
+                                    exVals = exVal;
                                 }
-                                $(val).find(".trOtherPath").val( exVals);
-
+                                $(val).find(".trOtherPath").val(exVals);
                             }
-
                         });
                         //上传完毕回调
                         if ($this.parent().next().find("img").length > 9) {//最多上传9张
@@ -1370,19 +1342,16 @@
                                 }
                             });
                         }
-
-                        $(".delImage").on("click",function () {
-
-                            var pprent=$(this).parent().parent();
-                            var ppKey=$(this).prev().attr("src").substring(8);
+                        $(".delImage").on("click", function () {
+                            var pprent = $(this).parent().parent();
+                            var ppKey = $(this).prev().attr("src").substring(8);
                             $("#skuTable tbody tr").each(function (i, val) {
-
                                 var exVal = $(val).find(".trOtherPath").val();
-                                var delVals=[];
-                                if(exVal!=null&&exVal!=""){
-                                    var exArr=exVal.split(",");
-                                    for(var i=0;i<exArr.length;i++){
-                                        if(exArr[i]!=""&&ppKey!=exArr[i]){
+                                var delVals = [];
+                                if (exVal != null && exVal != "") {
+                                    var exArr = exVal.split(",");
+                                    for (var i = 0; i < exArr.length; i++) {
+                                        if (exArr[i] != "" && ppKey != exArr[i]) {
                                             delVals.push(exArr[i]);
                                         }
                                     }
@@ -1392,106 +1361,100 @@
 
                             });
                             $(this).parent().remove();
-                            if(pprent.find("div").length==0){
+                            if (pprent.find("div").length == 0) {
                                 pprent.append("<img class='pathDemo' src='http://bpic.588ku.com/element_origin_min_pic/01/47/02/12574338a640011.jpg!r650' width='100' height='90' />");
                             }
                         })
                     }
                     , error: function () {
                         //请求异常回调
-                        console.log(1);
                     }
                 });
             });
-
-
-
         }
 
+        function getContentByLanguage(id) {
+            var arr = [];
+            $("#" + id).find("input").each(function (i, val) {
+                arr.push($(val).val());
+            });
+            return JSON.stringify(arr);
+        }
 
+        //一键翻译
+        $(".translate").click(function () {
 
-    function getContentByLanguage(id) {
-        var arr=[];
-        $("#"+id).find("input").each(function (i,val) {
-            arr.push($(val).val());
+            var currentLanguage = $(this).parent().prev().find(".layui-this").text();
+            var inputs = $(this).parent().prev().find(".layui-show input");
+            var vArr = [];
+
+            var isContainsEmpty = false;
+            if (inputs.length > 0) {
+                for (var i = 0; i < inputs.length; i++) {
+
+                    vArr.push($(inputs[i]).val());
+                    if ($(inputs[i]).val() == null || $.trim($(inputs[i]).val()).length == 0) {
+                        isContainsEmpty = true;
+                    }
+                }
+            } else {
+                var areas = $(this).parent().prev().find(".layui-show textarea");
+                for (var i = 0; i < areas.length; i++) {
+                    vArr.push($(areas[i]).val());
+                    if ($(areas[i]).val() == null || $.trim($(areas[i]).val()).length == 0) {
+                        isContainsEmpty = true;
+                    }
+                }
+            }
+            if (isContainsEmpty) {
+                layer.msg('翻译词条不能为空', {icon: 5, time: 1000});
+                return;
+            }
+
+            var content = $(this).parent().prev().find(".layui-tab-content");
+            if (currentLanguage === "中文") {
+                valueDisplay("cn", content, vArr);
+            } else if (currentLanguage === "英语") {
+                valueDisplay("uk", content, vArr);
+            } else if (currentLanguage === "日语") {
+                valueDisplay("jp", content, vArr);
+            } else if (currentLanguage === "德语") {
+                valueDisplay("de", content, vArr);
+            } else if (currentLanguage === "法语") {
+                valueDisplay("fr", content, vArr);
+            } else if (currentLanguage === "西班牙语") {
+                valueDisplay("es", content, vArr);
+            } else if (currentLanguage === "意大利语") {
+                valueDisplay("it", content, vArr);
+            }
+
         });
-        return JSON.stringify(arr);
-    }
 
-    //一键翻译
-    $(".translate").click(function () {
-
-        var currentLanguage=$(this).parent().prev().find(".layui-this").text();
-        var inputs=$(this).parent().prev().find(".layui-show input");
-        var vArr=[];
-
-        var isContainsEmpty=false;
-        if(inputs.length>0){
-            for(var i=0;i<inputs.length;i++){
-
-                vArr.push($(inputs[i]).val());
-                if($(inputs[i]).val()==null||$.trim($(inputs[i]).val()).length==0){
-                    isContainsEmpty=true;
-                }
-            }
-        }else{
-            var areas=$(this).parent().prev().find(".layui-show textarea");
-            for(var i=0;i<areas.length;i++){
-                vArr.push($(areas[i]).val());
-                if($(areas[i]).val()==null||$.trim($(areas[i]).val()).length==0){
-                    isContainsEmpty=true;
-                }
-            }
-        }
-        if(isContainsEmpty){
-            layer.msg('翻译词条不能为空', {icon: 5, time: 1000});
-            return;
-        }
-
-        var content=$(this).parent().prev().find(".layui-tab-content");
-        if(currentLanguage==="中文"){
-            valueDisplay("cn",content,vArr);
-        }else if(currentLanguage==="英语"){
-            valueDisplay("uk",content,vArr);
-        }else if(currentLanguage==="日语"){
-            valueDisplay("jp",content,vArr);
-        }else if(currentLanguage==="德语"){
-            valueDisplay("de",content,vArr);
-        }else if(currentLanguage==="法语"){
-            valueDisplay("fr",content,vArr);
-        }else if(currentLanguage==="西班牙语"){
-            valueDisplay("es",content,vArr);
-        }else if(currentLanguage==="意大利语"){
-            valueDisplay("it",content,vArr);
-        }
-
-    });
-
-        function  valueDisplay(language,$content,arrv) {
+        function valueDisplay(language, $content, arrv) {
 
             $.ajax({
                 type: 'POST',
                 url: '<%=request.getContextPath()%>/product/translate',
                 dataType: 'json',
-                data: {"data": JSON.stringify(arrv),language:language},
+                data: {"data": JSON.stringify(arrv), language: language},
                 success: function (data) {
 
                     if (data.success) {
-                        var arr=data.data;
-                        $content.children("div ").each(function (i,val) {
-                            var isSingle=arr.length==1,isContainsTextarea=$(val).find("textarea").length>0;
-                            if(isSingle){
-                                if(isContainsTextarea){
-                                    $(val).find("textarea").eq(0).val(getSingleValue(arr[0],i));
-                                }else{
-                                    $(val).find("input").eq(0).val(getSingleValue(arr[0],i));
+                        var arr = data.data;
+                        $content.children("div ").each(function (i, val) {
+                            var isSingle = arr.length == 1, isContainsTextarea = $(val).find("textarea").length > 0;
+                            if (isSingle) {
+                                if (isContainsTextarea) {
+                                    $(val).find("textarea").eq(0).val(getSingleValue(arr[0], i));
+                                } else {
+                                    $(val).find("input").eq(0).val(getSingleValue(arr[0], i));
                                 }
-                            }else{
-                                $(val).find("div input").eq(0).val(getSingleValue(arr[0],i));
-                                $(val).find("div input").eq(1).val(getSingleValue(arr[1],i));
-                                $(val).find("div input").eq(2).val(getSingleValue(arr[2],i));
-                                $(val).find("div input").eq(3).val(getSingleValue(arr[3],i));
-                                $(val).find("div input").eq(4).val(getSingleValue(arr[4],i));
+                            } else {
+                                $(val).find("div input").eq(0).val(getSingleValue(arr[0], i));
+                                $(val).find("div input").eq(1).val(getSingleValue(arr[1], i));
+                                $(val).find("div input").eq(2).val(getSingleValue(arr[2], i));
+                                $(val).find("div input").eq(3).val(getSingleValue(arr[3], i));
+                                $(val).find("div input").eq(4).val(getSingleValue(arr[4], i));
                             }
                         });
                     } else {
@@ -1506,26 +1469,26 @@
 
         }
 
-        function getSingleValue(dto,i) {
-            if(i==0){
-               return dto.cn;
+        function getSingleValue(dto, i) {
+            if (i == 0) {
+                return dto.cn;
             }
-            if(i==1){
+            if (i == 1) {
                 return dto.uk;
             }
-            if(i==2){
+            if (i == 2) {
                 return dto.jp;
             }
-            if(i==3){
+            if (i == 3) {
                 return dto.de;
             }
-            if(i==4){
+            if (i == 4) {
                 return dto.fr;
             }
-            if(i==5){
+            if (i == 5) {
                 return dto.es;
             }
-            if(i==6){
+            if (i == 6) {
                 return dto.it;
             }
             return "";
@@ -1535,26 +1498,27 @@
 
 
     //将时间戳格式化
-    function getMyDate(time){
-        if(typeof(time)=="undefined"){
+    function getMyDate(time) {
+        if (typeof(time) == "undefined") {
             return "";
         }
         var oDate = new Date(time),
-            oYear = oDate.getFullYear(),
-            oMonth = oDate.getMonth()+1,
-            oDay = oDate.getDate(),
-            oHour = oDate.getHours(),
-            oMin = oDate.getMinutes(),
-            oSen = oDate.getSeconds(),
-            oTime = oYear +'-'+ getzf(oMonth) +'-'+ getzf(oDay) ;//+' '+ getzf(oHour) +':'+ getzf(oMin) +':'+getzf(oSen);//最后拼接时间
+                oYear = oDate.getFullYear(),
+                oMonth = oDate.getMonth() + 1,
+                oDay = oDate.getDate(),
+                oHour = oDate.getHours(),
+                oMin = oDate.getMinutes(),
+                oSen = oDate.getSeconds(),
+                oTime = oYear + '-' + getzf(oMonth) + '-' + getzf(oDay);//+' '+ getzf(oHour) +':'+ getzf(oMin) +':'+getzf(oSen);//最后拼接时间
 
         return oTime;
-    };
+    }
+    ;
 
     //补0操作,当时间数据小于10的时候，给该数据前面加一个0
-    function getzf(num){
-        if(parseInt(num) < 10){
-            num = '0'+num;
+    function getzf(num) {
+        if (parseInt(num) < 10) {
+            num = '0' + num;
         }
         return num;
     }

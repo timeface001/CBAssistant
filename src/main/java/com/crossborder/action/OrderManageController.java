@@ -22,6 +22,7 @@ import com.crossborder.utils.Tools;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
@@ -145,7 +146,7 @@ public class OrderManageController {
                 localOrder.setRunningTime(Tools.timeDifference(createDate.getTime(), new Date().getTime()));
                 localOrder.setOrderType(order.getOrderType());
                 localOrder.setShippingPrice(0);
-                localOrder.setIntlTrackNum(Tools.createIntlTrackNum());
+                localOrder.setIntlTrackNum("");
                 orderManageService.insertOrders(localOrder);
                 AddressInfo addressInfo = new AddressInfo();
                 addressInfo.setAmazonOrderId(order.getAmazonOrderId());
@@ -345,11 +346,11 @@ public class OrderManageController {
      */
     @ResponseBody
     @RequestMapping(value = "selectLocalOrderItem", produces = "text/plain;charset=UTF-8")
-    public String selectLocalOrderItem(String amazonOrderId, String sku) {
+    public String selectLocalOrderItem(String amazonOrderId, String orderItemId) {
         Map<String, Object> map = new HashMap<>();
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("amazonOrderId", amazonOrderId);
-        paramMap.put("sku", sku);
+        paramMap.put("orderItemId", orderItemId);
         try {
             List<Map<String, Object>> localOrderItemList = orderManageService.selectLocalOrderItem(paramMap);
             map.put("data", localOrderItemList);
@@ -428,10 +429,12 @@ public class OrderManageController {
                 List<ArrayList<String>> list = new ExcelRead().readExcel(file);
                 for (ArrayList<String> arr : list) {
                     Map<String, Object> item = new HashMap<>();
-                    item.put("amazonOrderId", arr.get(0));
-                    item.put("intlTrackNum", arr.get(1));
-                    item.put("shippingPrice", arr.get(2));
-                    orderManageService.updateOrder(item);
+                    if (!StringUtils.isEmpty(arr.get(0))) {
+                        item.put("amazonOrderId", arr.get(0));
+                        item.put("intlTrackNum", arr.get(1));
+                        item.put("shippingPrice", arr.get(2));
+                        orderManageService.updateOrder(item);
+                    }
                 }
                 map.put("code", "0");
                 map.put("msg", "更新成功");
@@ -451,11 +454,11 @@ public class OrderManageController {
      */
     @ResponseBody
     @RequestMapping(value = "updateOrderInfo", produces = "text/plain;charset=UTF-8")
-    public String updateOrderInfo(String amazonOrderId, String preStatus, String status, String sku, String cost, String refundment, String trackNum, String purchaseNum, String shippingPrice, HttpSession session) {
+    public String updateOrderInfo(String amazonOrderId, String preStatus, String status, String orderItemId, String cost, String refundment, String trackNum, String purchaseNum, String shippingPrice, HttpSession session) {
         Map<String, Object> map = new HashMap<>();
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("status", status);
-        paramMap.put("sku", sku);
+        paramMap.put("orderItemId", orderItemId);
         paramMap.put("amazonOrderId", amazonOrderId);
         paramMap.put("cost", cost);
         paramMap.put("refundment", refundment);
@@ -528,39 +531,20 @@ public class OrderManageController {
         return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
-    public void insertOperationLog(String amazonOrderId, String preStatus, String type, String userId, String cost) {
+    public void insertOperationLog(String amazonOrderId, String preStatus, String status, String userId, String cost) {
         Map<String, Object> operationMap = new HashMap<>();
         operationMap.put("user", userId);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         operationMap.put("time", simpleDateFormat.format(new Date()));
         operationMap.put("amazonOrderId", amazonOrderId);
-        operationMap.put("type", type);
-        if (type.equals("0")) {
+        operationMap.put("type", status);
+        if (status.equals("0")) {
             operationMap.put("info", "产品" + amazonOrderId + "添加了备注");
         } else {
-            operationMap.put("info", "产品" + amazonOrderId + "状态由【" + getStatusStr(preStatus) + "】变为【" + getStatusStr(type) + "】；成本由【0.00】变为【" + cost + "】");
+            operationMap.put("info", "产品" + amazonOrderId + "状态由【" + Tools.getStatusStr(preStatus) + "】变为【" + Tools.getStatusStr(status) + "】；成本由【0.00】变为【" + cost + "】");
         }
         orderManageService.inserOperationLog(operationMap);
     }
 
-    public String getStatusStr(String status) {
-        if (status.equals("1")) {
-            return "新单";
-        } else if (status.equals("2")) {
-            return "备货";
-        } else if (status.equals("3")) {
-            return "缺货";
-        } else if (status.equals("4")) {
-            return "发货";
-        } else if (status.equals("5")) {
-            return "问题";
-        } else if (status.equals("6")) {
-            return "退款";
-        } else if (status.equals("7")) {
-            return "妥投";
-        } else if (status.equals("8")) {
-            return "代发";
-        }
-        return "";
-    }
+
 }

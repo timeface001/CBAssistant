@@ -109,7 +109,6 @@ public class ProductClaimController extends BaseController {
         request.setAttribute("typeList", productSkuTypeService.selectTypeList());
         claimProduct.setSku(StringUtils.isNoneBlank(claimProduct.getSku())?claimProduct.getSku():GeneralUtils.getRandomString(16));
         request.setAttribute("product", claimProduct);
-
         request.setAttribute("productStr", JSON.toJSONString(claimProduct));
         //关键词返回
         request.setAttribute("keywordsCn", null2ZeroSize(claimProduct.getKeywordsCn()));

@@ -83,5 +83,25 @@ public class Tools {
         }
         return stringBuffer.toString();
     }
+    public static String getStatusStr(String status) {
+        if (status.equals("1")) {
+            return "新单";
+        } else if (status.equals("2")) {
+            return "备货";
+        } else if (status.equals("3")) {
+            return "缺货";
+        } else if (status.equals("4")) {
+            return "发货";
+        } else if (status.equals("5")) {
+            return "问题";
+        } else if (status.equals("6")) {
+            return "退款";
+        } else if (status.equals("7")) {
+            return "妥投";
+        } else if (status.equals("8")) {
+            return "代发";
+        }
+        return "";
+    }
 }
 
