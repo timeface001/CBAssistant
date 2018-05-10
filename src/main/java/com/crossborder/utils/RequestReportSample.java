@@ -49,8 +49,8 @@ public class RequestReportSample {
          * Access Key ID and Secret Access Key ID, obtained from:
          * http://aws.amazon.com
          ***********************************************************************/
-        final String accessKeyId = "AKIAJWGBACWXIRQPOELQ";
-        final String secretAccessKey = "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";
+        final String accessKeyId = "AKIAIWNVZFF7XJ7LV32A";
+        final String secretAccessKey = "IVWnOBGLuewSgF2ol3ByGin1NXFwBQBxh1Krq3N/";
 
         final String appName = "<Your Application or Company Name>";
         final String appVersion = "<Your Application Version or Build Number or Release Date>";
@@ -116,13 +116,13 @@ public class RequestReportSample {
          * Marketplace and Merchant IDs are required parameters for all 
          * Marketplace Web Service calls.
          ***********************************************************************/
-        final String merchantId = "A3QYTECAYFZL4M";
+        final String merchantId = "AX2JQLLAWG3JN";
         final String sellerDevAuthToken = "<Merchant Developer MWS Auth Token>";
         // marketplaces from which data should be included in the report; look at the
         // API reference document on the MWS website to see which marketplaces are
         // included if you do not specify the list yourself
         final IdList marketplaces = new IdList(Arrays.asList(
-        		"ATVPDKIKX0DER"));
+        		"A2EUQ1WTGCTBG2"));
         
         RequestReportRequest request = new RequestReportRequest()
 		        .withMerchant(merchantId)
@@ -140,7 +140,7 @@ public class RequestReportSample {
 			throw new RuntimeException(e);
 		}
 		XMLGregorianCalendar startDate = df
-				.newXMLGregorianCalendar(new GregorianCalendar(2011, 1, 1));
+				.newXMLGregorianCalendar(new GregorianCalendar(2018, 1, 1));
 		request.setStartDate(startDate);
 		
 	    // @TODO: set additional request parameters here

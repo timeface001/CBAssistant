@@ -6,11 +6,15 @@ import com.amazonaws.mws.MarketplaceWebServiceConfig;
 import com.amazonaws.mws.MarketplaceWebServiceException;
 import com.amazonaws.mws.model.*;
 import com.crossborder.entity.ProductAmzUpload;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
+import org.jdom2.input.SAXBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.FileInputStream;
+import java.io.*;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -112,7 +116,17 @@ public class AmzUpload {
 
     }
 
-    public static void main(String[] args) {
-
+    public static void main(String[] args) throws IOException, JDOMException {
+        InputStreamReader isr = new InputStreamReader(new FileInputStream("/Users/fengsong/Downloads/rule_chain.txt"));
+        SAXBuilder sb = new SAXBuilder();
+        org.jdom2.Document doc = sb.build(isr);
+        Element root = doc.getRootElement();
+        List<Element> list= root.getChildren("Node");
+        int i=0;
+        for(Element e:list){
+            i++;
+            System.out.println(e.getChild("browseNodeName").getText());
+        }
+        System.out.println(i);
     }
 }

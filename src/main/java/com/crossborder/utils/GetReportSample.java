@@ -48,8 +48,9 @@ public class GetReportSample {
          * Access Key ID and Secret Access Key ID, obtained from:
          * http://aws.amazon.com
          ***********************************************************************/
-        final String accessKeyId = "AKIAJWGBACWXIRQPOELQ";
-        final String secretAccessKey = "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";
+        final String accessKeyId = "AKIAIWNVZFF7XJ7LV32A";
+        final String secretAccessKey = "IVWnOBGLuewSgF2ol3ByGin1NXFwBQBxh1Krq3N/";
+
 
 
         final String appName = "<Your Application or Company Name>";
@@ -73,7 +74,7 @@ public class GetReportSample {
         // Japan
         // config.setServiceURL("https://mws.amazonservices.jp/");
         // China
-        // config.setServiceURL("https://mws.amazonservices.com.cn/");
+         //config.setServiceURL("https://mws.amazonservices.com.cn/");
         // Canada
         // config.setServiceURL("https://mws.amazonservices.ca/");
         // India
@@ -104,14 +105,14 @@ public class GetReportSample {
          * Marketplace and Merchant IDs are required parameters for all 
          * Marketplace Web Service calls.
          ***********************************************************************/
-        final String merchantId = "A3QYTECAYFZL4M";
+        final String merchantId = "AX2JQLLAWG3JN";
         final String sellerDevAuthToken = "<Merchant Developer MWS Auth Token>";
 
         GetReportRequest request = new GetReportRequest();
         request.setMerchant( merchantId );
         //request.setMWSAuthToken(sellerDevAuthToken);
 
-        request.setReportId( "9479156300017660" );
+        request.setReportId( "9494401037017661" );
         request.setReportOutputStream(new FileOutputStream("/Users/fengsong/Downloads/rule_chain.txt"));
 
         // Note that depending on the type of report being downloaded, a report can reach 
