@@ -26,11 +26,11 @@
             src="<%=request.getContextPath()%>/assistant/lib/DD_belatedPNG_0.0.8a-min.js"></script>
     <script>DD_belatedPNG.fix('*');</script>
     <![endif]-->
-    <title>产品发布列表</title>
+    <title>发布产品</title>
 </head>
 <body>
 <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 产品管理 <span
-        class="c-gray en">&gt;</span> 预发布列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" id="refresh"
+        class="c-gray en">&gt;</span> 发布产品 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" id="refresh"
                                               href="javascript:location.replace(location.href);" title="刷新"><i
         class="Hui-iconfont">&#xe68f;</i></a></nav>
 <div class="page-container">

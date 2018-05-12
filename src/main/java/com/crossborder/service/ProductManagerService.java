@@ -2,7 +2,6 @@ package com.crossborder.service;
 
 import com.alibaba.fastjson.JSON;
 import com.crossborder.dao.*;
-import com.crossborder.dao.mapper.ext.ProductUploadCategoryMapper;
 import com.crossborder.entity.*;
 import com.crossborder.utils.*;
 import org.apache.commons.lang3.StringUtils;
@@ -14,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
@@ -98,7 +96,6 @@ public class ProductManagerService {
                 claimProduct.setCreateUser(GeneralUtils.getUserId());
                 claimProduct.setSkuType("1");
                 claimProduct.setSource(product.get("SOURCE") != null ? product.get("SOURCE").toString() : "");
-                claimProduct.setImagePath(product.get("IMAGE_PATH") != null ? product.get("IMAGE_PATH").toString() : "");
                 claimProductExtMapper.insertSelective(claimProduct);
 
             }
@@ -144,7 +141,6 @@ public class ProductManagerService {
             keyJp.add(BaiduTranApi.getInstance().zh2Jp(key));
             keyUk.add(BaiduTranApi.getInstance().zh2Uk(key));
             keyFr.add(BaiduTranApi.getInstance().zh2Fr(key));
-
         }
         product.setKeywordsCn(JSON.toJSONString(keyList));
         product.setKeywordsDe(JSON.toJSONString(keyDe));
@@ -168,16 +164,14 @@ public class ProductManagerService {
             pointJp.add(BaiduTranApi.getInstance().zh2Jp(point));
             pointUk.add(BaiduTranApi.getInstance().zh2Uk(point));
             pointFr.add(BaiduTranApi.getInstance().zh2Fr(point));
-
         }
-        product.setBulletPointCn(product.getKeywordsCn());
+        product.setBulletPointCn(JSON.toJSONString(pointList));
         product.setBulletPointDe(JSON.toJSONString(pointDe));
         product.setBulletPointEs(JSON.toJSONString(pointEs));
         product.setBulletPointIt(JSON.toJSONString(pointIt));
         product.setBulletPointJp(JSON.toJSONString(pointJp));
         product.setBulletPointUk(JSON.toJSONString(pointUk));
         product.setBulletPointFr(JSON.toJSONString(pointFr));
-
 
         product.setUpdateState("1");//已编辑
         product.setUpdateTime(new Date());
@@ -192,7 +186,6 @@ public class ProductManagerService {
     public List<ProductAmzUpload> selectAmzUploadList(Map<String, Object> params) {
         params.put("name", params.get("name") != null && StringUtils.isNotBlank(params.get("name").toString()) ? ("%" + params.get("name") + "%") : "");
         return productAmzUploadDao.selectList(params);
-
     }
 
     /**
@@ -389,8 +382,8 @@ public class ProductManagerService {
     private CommonSet set;
 
     public void initshopCategory() {
-        Map<String,Object> params=new HashMap<>();
-        params.put("id","1039");
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", "1039");
         final List<Map<String, Object>> shops = shopManageService.selectShops(params);
         ThreadPoolExecutor executor = new ThreadPoolExecutor(2, 5, 100, TimeUnit.MINUTES, new ArrayBlockingQueue<Runnable>(10));
 
@@ -416,7 +409,6 @@ public class ProductManagerService {
             e.printStackTrace();
         }
         System.out.println(executor.isTerminated());
-
 
 
     }
@@ -464,7 +456,7 @@ public class ProductManagerService {
                 category.setShopId(shop.get("SHOP_ID").toString());
                 productUploadCategoryDao.insert(category);
             }
-            System.out.println(shop.get("SHOP_NAME")+"成功");
+            System.out.println(shop.get("SHOP_NAME") + "成功");
 
         } catch (Exception e) {
             e.printStackTrace();

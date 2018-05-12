@@ -60,17 +60,18 @@
             <input type="hidden" name="pState" id="pStatus">
         </div>
     </form>
-    <div class="mt-20">
+    <div class="mt-10">
         <div id="btn-div" class="row text-c">
             <a href="javascript:;" onclick="reloadTable(0)" class="btn btn-success radius">全部</a>
             <a href="javascript:;" onclick="reloadTable(1)" class="btn btn-default radius">未认领</a>
             <a href="javascript:;" onclick="reloadTable(2)" class="btn btn-default radius">已认领</a>
         </div>
-        <div class="cl pd-5 bg-1 bk-gray" id="count-div"><span class="l"> <a href="javascript:;"
-                                                                             onclick="deleteProduct(null)"
-                                                                             class="btn btn-danger radius"><i
-                class="Hui-iconfont">
-            &#xe6e2;</i> 批量删除</a>
+        <div class="cl pd-5 bg-1 bk-gray mt-10" id="count-div">
+            <span class="l"> <a href="javascript:;"
+                                onclick="deleteProduct(null)"
+                                class="btn btn-danger radius"><i
+                    class="Hui-iconfont">
+                &#xe6e2;</i> 批量删除</a>
             <a href="javascript:;"
                onclick="claimProduct(null)"
                class="btn btn-danger radius"><i
@@ -80,7 +81,7 @@
                onclick="addProduct('添加产品','<%=request.getContextPath()%>/assistant/index/product/product-add.jsp','800')"><i
                     class="Hui-iconfont">
                 &#xe600;</i> 添加产品</a> </span></div>
-        <table id="productTable" class="table table-border table-bordered table-bg table-hover mt-10">
+        <table id="productTable" class="table table-border table-bordered table-bg table-hover">
             <thead>
             <tr class="text-c">
                 <th width="25"><input type="checkbox" value="" name=""></th>

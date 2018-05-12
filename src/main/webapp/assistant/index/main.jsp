@@ -39,18 +39,18 @@
             <a class="logo navbar-logo-m f-l mr-10 visible-xs" href="/aboutHui.shtml">H-ui</a>
             <span class="logo navbar-slogan f-l mr-10 hidden-xs">v1.0</span>
             <a aria-hidden="false" class="nav-toggle Hui-iconfont visible-xs" href="javascript:;">&#xe667;</a>
-            <nav class="nav navbar-nav">
+            <nav class="nav navbar-nav" style="display: none">
                 <ul class="cl">
                     <li class="dropDown dropDown_hover"><a href="javascript:;" class="dropDown_A"><i
                             class="Hui-iconfont">&#xe600;</i> 新增 <i class="Hui-iconfont">&#xe6d5;</i></a>
                         <ul class="dropDown-menu menu radius box-shadow">
-                            <li><a href="javascript:;" onclick="article_add('添加订单','article-add.html')"><i
-                                    class="Hui-iconfont">&#xe616;</i> 资讯</a></li>
-                            <li><a href="javascript:;" onclick="picture_add('添加产品','picture-add.html')"><i
-                                    class="Hui-iconfont">&#xe613;</i> 图片</a></li>
-                            <li><a href="javascript:;" onclick="product_add('添加店铺','product-add.html')"><i
-                                    class="Hui-iconfont">&#xe620;</i> 产品</a></li>
-                            <li><a href="javascript:;" onclick="member_add('添加用户','member-add.html','','510')"><i
+                            <li><a href="javascript:;" onclick="order_add('添加订单','/order/order-add.jsp')"><i
+                                    class="Hui-iconfont">&#xe616;</i> 订单</a></li>
+                            <li><a href="javascript:;" onclick="product_add('添加产品','/product/product-add.jsp')"><i
+                                    class="Hui-iconfont">&#xe613;</i> 产品</a></li>
+                            <li><a href="javascript:;" onclick="shop_add('添加店铺','/shop/shop-add.jsp')"><i
+                                    class="Hui-iconfont">&#xe620;</i> 店铺</a></li>
+                            <li><a href="javascript:;" onclick="user_add('添加用户','/system/user-add.jsp')"><i
                                     class="Hui-iconfont">&#xe60d;</i> 用户</a></li>
                         </ul>
                     </li>
@@ -173,17 +173,8 @@
         });
     }
 
-    /*资讯-添加*/
-    function article_add(title, url) {
-        var index = layer.open({
-            type: 2,
-            title: title,
-            content: url
-        });
-        layer.full(index);
-    }
-    /*图片-添加*/
-    function picture_add(title, url) {
+    /*订单-添加*/
+    function order_add(title, url) {
         var index = layer.open({
             type: 2,
             title: title,
@@ -200,9 +191,18 @@
         });
         layer.full(index);
     }
+    /*店铺-添加*/
+    function shop_add(title, url) {
+        var index = layer.open({
+            type: 2,
+            title: title,
+            content: url
+        });
+        layer.full(index);
+    }
     /*用户-添加*/
-    function member_add(title, url, w, h) {
-        layer_show(title, url, w, h);
+    function user_add(title, url) {
+        layer_show(title, url);
     }
     /*用户-登出*/
     function logout() {
