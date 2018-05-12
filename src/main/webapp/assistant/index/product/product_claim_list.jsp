@@ -188,7 +188,7 @@
                 },
                 {
                     "data": function (val) {
-                        return val.typeId == null ? "" : val.typeId;
+                        return val.typeName == null ? "" : val.typeName;
                     }
                 },
                 {

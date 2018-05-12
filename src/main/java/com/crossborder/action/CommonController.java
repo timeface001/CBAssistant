@@ -166,6 +166,34 @@ public class CommonController {
     }
 
     /**
+     * 获取产品分类
+     *
+     * @param id
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "selectTypes", produces = "text/plain;charset=UTF-8")
+    public String selectTypes(String id) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            List<Map<String, Object>> list = commonService.selectTypes(id);
+            if (list != null && list.size() > 0) {
+                map.put("data", list);
+                map.put("code", "0");
+                map.put("msg", "查询成功");
+            } else {
+                map.put("code", "1");
+                map.put("msg", "查询成功");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("code", "-10");
+            map.put("msg", "查询失败");
+        }
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
+    }
+
+    /**
      * 通用查询接口，主要用来查询tree列表
      *
      * @param code

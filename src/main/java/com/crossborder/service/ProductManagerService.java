@@ -71,6 +71,7 @@ public class ProductManagerService {
                 claimProduct.setImagePath(GeneralUtils.nullToEmpty(product.get("MAIN_PATH")));
                 claimProduct.setPrice(new BigDecimal(String.valueOf(product.get("PRICE"))));
                 claimProduct.setProductId(product.get("ID").toString());
+                claimProduct.setTypeId(product.get("TYPE_ID").toString());
 
                 //产品描述翻译
                 String productDesc = GeneralUtils.nullToEmpty(product.get("INFO"));
@@ -84,7 +85,7 @@ public class ProductManagerService {
 
                 //标题翻译
                 String name = GeneralUtils.nullToEmpty(product.get("NAME"));
-                claimProduct.setItemCn(productDesc);
+                claimProduct.setItemCn(name);
                 claimProduct.setItemDe(BaiduTranApi.getInstance().zh2De(name));
                 claimProduct.setItemEs(BaiduTranApi.getInstance().zh2Es(name));
                 claimProduct.setItemIt(BaiduTranApi.getInstance().zh2It(name));

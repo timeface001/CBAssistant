@@ -78,7 +78,7 @@
                     class="Hui-iconfont">
                 &#xe6e2;</i> 批量认领</a>
             <a class="btn btn-primary radius" href="javascript:;"
-               onclick="addProduct('添加产品','<%=request.getContextPath()%>/assistant/index/product/product-add.jsp','800')"><i
+               onclick="addProduct('添加产品','<%=request.getContextPath()%>/assistant/index/product/product-add.jsp')"><i
                     class="Hui-iconfont">
                 &#xe600;</i> 添加产品</a> </span></div>
         <table id="productTable" class="table table-border table-bordered table-bg table-hover">
@@ -124,8 +124,13 @@
         productTable.ajax.reload();
     });
     /*产品-添加*/
-    function addProduct(title, url, w) {
-        layer_show(title, url, w);
+    function addProduct(title, url) {
+        var index = layer.open({
+            type: 2,
+            title: title,
+            content: url
+        });
+        layer.full(index);
     }
     function initSelect() {
 
@@ -182,7 +187,7 @@
                 },
                 {
                     "data": function (val) {
-                        return "";
+                        return val.TYPENAME == null ? "" : val.TYPENAME;
                     }
                 },
                 {

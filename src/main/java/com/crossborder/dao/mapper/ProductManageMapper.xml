@@ -47,7 +47,9 @@
     </insert>
 
     <select id="selectList" parameterType="java.util.Map" resultType="java.util.Map">
-        SELECT * FROM T_PRODUCT_ITEM a
+        SELECT a.*,b.l_c_name typeName FROM T_PRODUCT_ITEM a
+        LEFT JOIN T_PRODUCT_TYPE_LOCAL b
+        ON a.type_id = b.l_c_id
         where
         a.STATUS=0
         <if test="pState != null and pState!= ''">
@@ -77,8 +79,11 @@
         UPDATE T_PRODUCT_ITEM a SET STATUS=1,UPDATE_TIME=CURRENT_DATE  WHERE ID=#{id}
     </update>
 
-    <select id="selectOne"  parameterType="java.util.Map"  resultType="java.util.Map">
-        SELECT * FROM T_PRODUCT_ITEM where ID=#{id}
+    <select id="selectOne" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT a.*,b.l_c_name typeName FROM T_PRODUCT_ITEM a
+         LEFT JOIN T_PRODUCT_TYPE_LOCAL b
+         ON a.type_id = b.l_c_id
+        where a.ID=#{id}
     </select>
 
 </mapper>
