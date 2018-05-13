@@ -49,7 +49,11 @@
 
 
 
+
+
 			${sqlText}
+
+
 
 
 
@@ -64,7 +68,11 @@
 
 
 
+
+
 			${sqlText}
+
+
 
 
 
@@ -165,4 +173,8 @@
         #{code,jdbcType=VARCHAR}
         )
     </insert>
+    <select id="selectTypes" parameterType="java.lang.String" resultType="java.util.Map">
+        SELECT * FROM T_PRODUCT_TYPE_LOCAL
+        WHERE L_C_PID = #{#id,jdbcType=VARCHAR}
+    </select>
 </mapper>

@@ -60,27 +60,28 @@
             <input type="hidden" name="pState" id="pStatus">
         </div>
     </form>
-    <div class="mt-20">
+    <div class="mt-10">
         <div id="btn-div" class="row text-c">
             <a href="javascript:;" onclick="reloadTable(0)" class="btn btn-success radius">全部</a>
             <a href="javascript:;" onclick="reloadTable(1)" class="btn btn-default radius">未认领</a>
             <a href="javascript:;" onclick="reloadTable(2)" class="btn btn-default radius">已认领</a>
         </div>
-        <div class="cl pd-5 bg-1 bk-gray" id="count-div"><span class="l"> <a href="javascript:;"
-                                                                             onclick="deleteProduct(null)"
-                                                                             class="btn btn-danger radius"><i
-                class="Hui-iconfont">
-            &#xe6e2;</i> 批量删除</a>
+        <div class="cl pd-5 bg-1 bk-gray mt-10" id="count-div">
+            <span class="l"> <a href="javascript:;"
+                                onclick="deleteProduct(null)"
+                                class="btn btn-danger radius"><i
+                    class="Hui-iconfont">
+                &#xe6e2;</i> 批量删除</a>
             <a href="javascript:;"
                onclick="claimProduct(null)"
                class="btn btn-danger radius"><i
                     class="Hui-iconfont">
                 &#xe6e2;</i> 批量认领</a>
             <a class="btn btn-primary radius" href="javascript:;"
-               onclick="addProduct('添加产品','<%=request.getContextPath()%>/assistant/index/product/product-add.jsp','800')"><i
+               onclick="addProduct('添加产品','<%=request.getContextPath()%>/assistant/index/product/product-add.jsp')"><i
                     class="Hui-iconfont">
                 &#xe600;</i> 添加产品</a> </span></div>
-        <table id="productTable" class="table table-border table-bordered table-bg table-hover mt-10">
+        <table id="productTable" class="table table-border table-bordered table-bg table-hover">
             <thead>
             <tr class="text-c">
                 <th width="25"><input type="checkbox" value="" name=""></th>
@@ -123,8 +124,13 @@
         productTable.ajax.reload();
     });
     /*产品-添加*/
-    function addProduct(title, url, w) {
-        layer_show(title, url, w);
+    function addProduct(title, url) {
+        var index = layer.open({
+            type: 2,
+            title: title,
+            content: url
+        });
+        layer.full(index);
     }
     function initSelect() {
 
@@ -181,7 +187,7 @@
                 },
                 {
                     "data": function (val) {
-                        return "";
+                        return val.TYPENAME == null ? "" : val.TYPENAME;
                     }
                 },
                 {

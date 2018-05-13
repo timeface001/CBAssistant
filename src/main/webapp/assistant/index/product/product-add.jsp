@@ -37,7 +37,8 @@
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>产品名称：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text layui-input" value="" placeholder="" id="pName" name="name" lay-verify="required" required>
+                <input type="text" class="input-text" value="" placeholder="" id="pName" name="name"
+                       lay-verify="required" required>
             </div>
         </div>
         <div class="row cl">
@@ -51,7 +52,7 @@
             <div class="formControls col-xs-8 col-sm-9">
                 <input name="mainPath" type="hidden"/>
                 <button type="button" class="layui-btn" id="mainPath">
-                    <i class="layui-icon">&#xe67c;</i>上传主图
+                    <i class="layui-icon">&#xe67c;</i>上传图片
                 </button>
             </div>
         </div>
@@ -67,7 +68,7 @@
             <div class="formControls col-xs-8 col-sm-9">
                 <input name="imagePath" type="hidden"/>
                 <button type="button" class="layui-btn" id="imagePath">
-                    <i class="layui-icon">&#xe67c;</i>上传附图
+                    <i class="layui-icon">&#xe67c;</i>上传图片
                 </button>
                 <span style="font-size: 10px;">(最多9张)</span>
             </div>
@@ -79,11 +80,15 @@
             </div>
         </div>
         <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-3"><span class=""></span>产品分类：</label>
-            <div class="formControls col-xs-8 col-sm-9">
-                <select id="pType" name="typeId" class="select" style="height: 32px">
-                    <option value="">请选择</option>
-                </select>
+            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>产品分类：</label>
+            <div class="formControls col-xs-6 col-sm-7">
+                <input type="text" class="input-text" value="" placeholder="请选择" id="typeName" name="typeName" required>
+                <input type="hidden" name="typeId" id="typeId">
+            </div>
+            <div class="formControls col-xs-2 col-sm-2">
+                <button type="button" class="btn btn-success radius" id="typeBtn"><i
+                        class="icon-ok"></i> 选择分类
+                </button>
             </div>
         </div>
 
@@ -105,19 +110,104 @@
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>产品信息：</label>
             <div class="formControls col-xs-8 col-sm-9">
-
                 <textarea name="info" placeholder="" class="layui-textarea" id="pInfo" lay-verify="required"></textarea>
             </div>
         </div>
-        <input type="hidden" name="id" id="id" />
+        <input type="hidden" name="id" id="id"/>
         <div class="row cl">
             <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
-                <button type="button" class="btn btn-success radius " lay-submit  name="product_save"><i
+                <button type="button" class="btn btn-success radius " lay-submit name="product_save"><i
                         class="icon-ok"></i> 确定
                 </button>
             </div>
         </div>
     </form>
+    <div id="modal-demo" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" style="min-width: 1000px">
+            <div class="modal-content radius">
+                <div class="modal-header">
+                    <h3 class="modal-title">选择分类</h3>
+                    <a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:">×</a>
+                </div>
+                <div class="modal-body" style="height: 330px;overflow-x: auto">
+                    <div id="content-div">
+                        <div id="div1"
+                             style="display: block;width: 240px;height: 300px; float: left;border: 1px solid #ddd;border-radius: 4px;padding: 5px 5px 5px 5px;margin-right: 10px;">
+                            <select id="level-1" name="level-1" class="select" style="height: 32px;"
+                                    onchange="loadTypes(this.value,2)">
+                                <option value="">请选择</option>
+                            </select>
+                        </div>
+                        <div id="div2"
+                             style="display: none;width: 240px;height: 300px; float: left;border: 1px solid #ddd;border-radius: 4px;padding: 5px 5px 5px 5px;margin-right: 10px;">
+                            <select id="level-2" name="level-2" class="select" style="height: 32px"
+                                    onchange="loadTypes(this.value,3)">
+                                <option value="">请选择</option>
+                            </select>
+                        </div>
+                        <div id="div3"
+                             style="display: none;width: 240px;height: 300px; float: left;border: 1px solid #ddd;border-radius: 4px;padding: 5px 5px 5px 5px;margin-right: 10px;">
+                            <select id="level-3" name="level-3" class="select" style="height: 32px"
+                                    onchange="loadTypes(this.value,4)">
+                                <option value="">请选择</option>
+                            </select>
+                        </div>
+                        <div id="div4"
+                             style="display: none;width: 240px;height: 300px; float: left;border: 1px solid #ddd;border-radius: 4px;padding: 5px 5px 5px 5px;margin-right: 10px;">
+                            <select id="level-4" name="level-4" class="select" style="height: 32px"
+                                    onchange="loadTypes(this.value,5)">
+                                <option value="">请选择</option>
+                            </select>
+                        </div>
+                        <div id="div5"
+                             style="display: none;width: 240px;height: 300px; float: left;border: 1px solid #ddd;border-radius: 4px;padding: 5px 5px 5px 5px;margin-right: 10px;">
+                            <select id="level-5" name="level-5" class="select" style="height: 32px"
+                                    onchange="loadTypes(this.value,6)">
+                                <option value="">请选择</option>
+                            </select>
+                        </div>
+                        <div id="div6"
+                             style="display: none;width: 240px;height: 300px; float: left;border: 1px solid #ddd;border-radius: 4px;padding: 5px 5px 5px 5px;margin-right: 10px;">
+                            <select id="level-6" name="level-6" class="select" style="height: 32px"
+                                    onchange="loadTypes(this.value,7)">
+                                <option value="">请选择</option>
+                            </select>
+                        </div>
+                        <div id="div7"
+                             style="display: none;width: 240px;height: 300px; float: left;border: 1px solid #ddd;border-radius: 4px;padding: 5px 5px 5px 5px;margin-right: 10px;">
+                            <select id="level-7" name="level-7" class="select" style="height: 32px"
+                                    onchange="loadTypes(this.value,8)">
+                                <option value="">请选择</option>
+                            </select>
+                        </div>
+                        <div id="div8"
+                             style="display: none;width: 240px;height: 300px; float: left;border: 1px solid #ddd;border-radius: 4px;padding: 5px 5px 5px 5px;margin-right: 10px;">
+                            <select id="level-8" name="level-8" class="select" style="height: 32px">
+                                <option value="">请选择</option>
+                            </select>
+                        </div>
+                        <div id="div9"
+                             style="display: none;width: 240px;height: 300px; float: left;border: 1px solid #ddd;border-radius: 4px;padding: 5px 5px 5px 5px;margin-right: 10px;">
+                            <select id="level-9" name="level-9" class="select" style="height: 32px">
+                                <option value="">请选择</option>
+                            </select>
+                        </div>
+                        <div id="div10"
+                             style="display: none;width: 240px;height: 300px; float: left;border: 1px solid #ddd;border-radius: 4px;padding: 5px 5px 5px 5px;margin-right: 10px;">
+                            <select id="level-10" name="level-10" class="select" style="height: 32px">
+                                <option value="">请选择</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-success radius" onclick="chooseType()">确定</button>
+                    <button class="btn radius" data-dismiss="modal" aria-hidden="true">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </article>
 
 <!--_footer 作为公共模版分离出去-->
@@ -139,7 +229,6 @@
 <script type="text/javascript">
     function getParam(paramName) {
         paramValue = "", isFound = !1;
-        console.log(this.location);
         if (this.location.search.indexOf("?") == 0 && this.location.search.indexOf("=") > 1) {
             arrSource = unescape(this.location.search).substring(1, this.location.search.length).split("&"), i = 0;
             while (i < arrSource.length && !isFound) arrSource[i].indexOf("=") > 0 && arrSource[i].split("=")[0].toLowerCase() == paramName.toLowerCase() && (paramValue = arrSource[i].split("=")[1], isFound = !0), i++
@@ -149,17 +238,17 @@
     var id = '';
     $(function () {
         id = getParam("id");
-        if(id!=null&&id!=""){
+        if (id != null && id != "") {
             initProductInfo();
         }
 
         layui.use('form', function () {
             var form = layui.form;
 
-            form.on("submit",function (data) {
+            form.on("submit", function (data) {
                 var url = '<%=request.getContextPath()%>/product/save';
-                var imgs=[];
-                $("#imagePathSrc img").each(function (i,val) {
+                var imgs = [];
+                $("#imagePathSrc img").each(function (i, val) {
                     imgs.push($(val).attr("val"));
                 });
                 $("input[name='imagePath']").val(imgs.join(","));
@@ -215,13 +304,13 @@
                 , number: 9
                 , url: '<%=request.getContextPath()%>/upload/image' //上传接口
                 , done: function (res) {
-                    $("#imagePathSrc").append("<img width='100px' height='90px' style='margin-left:2px;margin-top:2px' src=<%=request.getContextPath()%>/upload/" + res.data + " val='"+res.data+"' />")
+                    $("#imagePathSrc").append("<img width='100px' height='90px' style='margin-left:2px;margin-top:2px' src=<%=request.getContextPath()%>/upload/" + res.data + " val='" + res.data + "' />")
                     //上传完毕回调
                     if ($("#imagePathSrc img").length > 9) {//最多上传9张
                         $("#imagePathSrc img").each(function (i, val) {
                             if (i > 9) {
                                 $(val).remove();
-                            }else{
+                            } else {
 
                             }
                         });
@@ -245,23 +334,22 @@
                     "id": id
                 },
                 success: function (data) {
-
                     if (data.success) {
                         var data = data.data;
                         $("#pName").val(data.NAME);
                         $("#mainPathSrc").html("<img width='100px' height='90px' src=<%=request.getContextPath()%>/upload/" + data.MAIN_PATH + " />")
                         $("input[name='mainPath']").val(data.MAIN_PATH);
                         $("#pSource").val(data.SOURCE);
-                        if(data.IMAGE_PATH!=null){
-                             var ims=data.IMAGE_PATH.split(",");
-                             if(ims.length>0){
-                                 for(var i=0;i<ims.length;i++){
-                                     $("#imagePathSrc").append("<img width='100px' style='margin-left:2px;margin-top:2px' height='90px' src=<%=request.getContextPath()%>/upload/" + ims[i] + " val='"+ims[i]+"' />")
-                                 }
-
-                             }
-
+                        if (data.IMAGE_PATH != null) {
+                            var ims = data.IMAGE_PATH.split(",");
+                            if (ims.length > 0) {
+                                for (var i = 0; i < ims.length; i++) {
+                                    $("#imagePathSrc").append("<img width='100px' style='margin-left:2px;margin-top:2px' height='90px' src=<%=request.getContextPath()%>/upload/" + ims[i] + " val='" + ims[i] + "' />")
+                                }
+                            }
                         }
+                        $("#typeId").val(data.TYPE_ID);
+                        $("#typeName").val(data.TYPENAME);
                         $("#pPrice").val(data.PRICE);
                         $("#pInfo").val(data.INFO);
                     } else {
@@ -274,11 +362,79 @@
             });
         }
     }
-    $("#product_save").click(function () {
-
-
-
+    $("#typeBtn").click(function () {
+        $("#modal-demo").modal("show");
+        initLevel1();
+        /*layer_show("选择分类", "product-type.jsp");*/
     });
+    function initLevel1() {
+        $.ajax({
+            type: 'POST',
+            url: '<%=request.getContextPath()%>/common/getList',
+            dataType: 'json',
+            data: {
+                "code": "parentTypes"
+            },
+            success: function (data) {
+                if (data.code == 0) {
+                    var data = data.data;
+                    for (var i = 0; i < data.length; i++) {
+                        $("#level-1").append($('<option value=' + data[i].L_C_ID + '>' + data[i].L_C_NAME + '</option>'));
+                    }
+                }
+            },
+            error: function (data) {
+                layer.msg(data.msg, {icon: 2, time: 1000});
+            },
+        });
+    }
+    function loadTypes(value, index) {
+        $.ajax({
+            type: 'POST',
+            url: '<%=request.getContextPath()%>/common/selectTypes',
+            dataType: 'json',
+            data: {
+                "id": value
+            },
+            success: function (data) {
+                document.getElementById("content-div").style.width = (index - 1) * 262 + "px";
+                for (var i = 0; i <= (10 - index); i++) {
+                    document.getElementById("div" + (index + i)).style.display = "none";
+                }
+                if (data.code == 0) {
+                    document.getElementById("content-div").style.width = index * 262 + "px";
+                    document.getElementById("div" + index).style.display = "block";
+                    var data = data.data;
+                    $("#level-" + index).empty();
+                    for (var i = 0; i < data.length; i++) {
+                        $("#level-" + index).append($('<option value=' + data[i].L_C_ID + '>' + data[i].L_C_NAME + '</option>'));
+                    }
+                } else if (data.code == 1) {
+                    /*document.getElementById("content-div").style.width = (index - 1) * 262 + "px";
+                     for (var i = 0; i <= (10 - index); i++) {
+                     document.getElementById("div" + (index + i)).style.display = "none";
+                     }*/
+                }
+            },
+            error: function (data) {
+                layer.msg(data.msg, {icon: 2, time: 1000});
+            }
+        });
+    }
+    function chooseType() {
+        $("#modal-demo").modal("hide");
+        var typeName = "";
+        var typeId = "";
+        for (var i = 1; i <= 10; i++) {
+            var options = $("#level-" + i + " option:selected");
+            if (options.val() != null && options.val() != "") {
+                typeName += (options.text() + " > ");
+                typeId = options.val();
+            }
+        }
+        $("#typeName").val(typeName);
+        $("#typeId").val(typeId);
+    }
 </script>
 </body>
 </html>

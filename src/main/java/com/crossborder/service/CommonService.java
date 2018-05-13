@@ -62,4 +62,8 @@ public class CommonService {
     public int insertCustomsInfo(Map<String, Object> map) {
         return commonDao.insertCustomsInfo(map);
     }
+
+    public List<Map<String, Object>> selectTypes(String id) {
+        return commonDao.selectTypes(id);
+    }
 }

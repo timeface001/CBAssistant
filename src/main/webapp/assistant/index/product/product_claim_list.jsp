@@ -26,11 +26,11 @@
             src="<%=request.getContextPath()%>/assistant/lib/DD_belatedPNG_0.0.8a-min.js"></script>
     <script>DD_belatedPNG.fix('*');</script>
     <![endif]-->
-    <title>产品列表</title>
+    <title>认领产品</title>
 </head>
 <body>
 <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 产品管理 <span
-        class="c-gray en">&gt;</span> 产品列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px"
+        class="c-gray en">&gt;</span> 认领产品 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px"
                                               id="refresh"
                                               href="javascript:location.replace(location.href);" title="刷新"><i
         class="Hui-iconfont">&#xe68f;</i></a></nav>
@@ -63,8 +63,8 @@
             <div class="formControls col-xs-2 col-sm-2">
                 <select id="pStatus" name="pStatus" class="select" style="height: 32px">
                     <option value="">请选择</option>
-                    <option value="1">已加入预发布</option>
-                    <option value="0">未加入预发布</option>
+                    <option value="1">已加入</option>
+                    <option value="0">未加入</option>
                 </select>
             </div>
 
@@ -99,7 +99,7 @@
                 <th width="60">售价</th>
                 <th width="100">库存</th>
                 <th width="100">状态</th>
-                <th width="100">时间</th>
+                <th width="100">日期</th>
                 <th width="100">操作</th>
             </tr>
             </thead>
@@ -188,7 +188,7 @@
                 },
                 {
                     "data": function (val) {
-                        return val.typeId == null ? "" : val.typeId;
+                        return val.typeName == null ? "" : val.typeName;
                     }
                 },
                 {
@@ -204,7 +204,7 @@
                 },
                 {
                     "data": function (val) {
-                        return val.isPrepublish == 1 ? "已加入待发布" : "未加入待发布";
+                        return val.isPrepublish == 1 ? "已加入" : "未加入";
                     }
                 },
                 {

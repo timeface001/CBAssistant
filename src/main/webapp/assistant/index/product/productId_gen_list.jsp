@@ -26,11 +26,11 @@
             src="<%=request.getContextPath()%>/assistant/lib/DD_belatedPNG_0.0.8a-min.js"></script>
     <script>DD_belatedPNG.fix('*');</script>
     <![endif]-->
-    <title>UPC列表</title>
+    <title>产品UPC</title>
 </head>
 <body>
 <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 产品管理 <span
-        class="c-gray en">&gt;</span> 产品列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" id="refresh"
+        class="c-gray en">&gt;</span> 产品UPC <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" id="refresh"
                                               href="javascript:location.replace(location.href);" title="刷新"><i
         class="Hui-iconfont">&#xe68f;</i></a></nav>
 <div class="page-container">
@@ -41,7 +41,7 @@
             <label class="form-label col-xs-1 col-sm-1">类型：</label>
             <div class="formControls col-xs-2 col-sm-2">
                 <select  name="type" class="select" style="height: 32px">
-                    <option value="">--</option>
+                    <option value="">请选择</option>
                     <option value="ISBN">ISBN</option>
                     <option value="UPC">UPC</option>
                     <option value="EAN">EAN</option>
@@ -56,8 +56,8 @@
             <label class="form-label col-xs-1 col-sm-1">状态：</label>
             <div class="formControls col-xs-2 col-sm-2">
                 <select id="status" name="status" class="select" style="height: 32px">
-                    <option value="0">未使用</option>
                     <option value="">请选择</option>
+                    <option value="0">未使用</option>
                     <option value="1">已使用</option>
                 </select>
             </div>

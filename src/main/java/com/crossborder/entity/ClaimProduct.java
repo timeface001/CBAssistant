@@ -86,6 +86,8 @@ public class ClaimProduct {
 
     private String typeId;
 
+    private String typeName;
+
     private String isPrepublish;
 
     public String getId() {
@@ -422,5 +424,13 @@ public class ClaimProduct {
 
     public void setIsPrepublish(String isPrepublish) {
         this.isPrepublish = isPrepublish == null ? null : isPrepublish.trim();
+    }
+
+    public String getTypeName() {
+        return typeName;
+    }
+
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
     }
 }

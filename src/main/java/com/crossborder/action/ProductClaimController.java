@@ -88,11 +88,9 @@ public class ProductClaimController extends BaseController {
                 for (ProductItemVar va : list) {
                     totalInventory += va.getQuantity();
                 }
-
                 product.setQuantity(totalInventory);
                 var.setQuantity(totalInventory);
             }
-
         }
         list.add(var);
         productManagerService.save(product);

@@ -9474,7 +9474,6 @@ a.modal-close:hover {
 }
 
 .docs-example:after {
-    content: "Example";
     position: absolute;
     top: -1px;
     left: -1px;

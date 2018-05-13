@@ -1,72 +1,75 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.crossborder.dao.ProductClaimDao">
-  <select id="selectList" parameterType="java.util.Map" resultMap="BaseResultMap">
-      SELECT
-       <include refid="Base_Column_List"/>
-       FROM T_PRODUCT_ITEM_AMZ a
-       <where>
-           <if test="typeId!=null and typeId!=''">
-               AND  a.TYPE_ID=#{typeId}
-           </if>
-           <if test="pStatus!=null and pStatus!=''">
-               AND  a.IS_PREPUBLISH=#{pStatus}
-           </if>
-           <if test="sku!=null and sku!=''">
-               AND  a.SKU LIKE #{sku}
-           </if>
+    <select id="selectList" parameterType="java.util.Map" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM T_PRODUCT_ITEM_AMZ a
+        LEFT JOIN T_PRODUCT_TYPE_LOCAL b
+        ON a.type_id = b.l_c_id
+        <where>
+            <if test="typeId!=null and typeId!=''">
+                AND a.TYPE_ID=#{typeId}
+            </if>
+            <if test="pStatus!=null and pStatus!=''">
+                AND a.IS_PREPUBLISH=#{pStatus}
+            </if>
+            <if test="sku!=null and sku!=''">
+                AND a.SKU LIKE #{sku}
+            </if>
 
-           <if test="name!=null and name!=''">
-               AND  a.ITEM_CN LIKE #{name}
-           </if>
-       </where>
-      ORDER BY a.CREATE_TIME DESC
-  </select>
+            <if test="name!=null and name!=''">
+                AND a.ITEM_CN LIKE #{name}
+            </if>
+        </where>
+        ORDER BY a.CREATE_TIME DESC
+    </select>
 
 
     <resultMap id="BaseResultMap" type="com.crossborder.entity.ClaimProduct">
-        <id column="a_ID" jdbcType="VARCHAR" property="id" />
-        <result column="a_SKU" jdbcType="VARCHAR" property="sku" />
-        <result column="a_CREATE_USER" jdbcType="VARCHAR" property="createUser" />
-        <result column="a_PRICE" jdbcType="DECIMAL" property="price" />
-        <result column="a_QUANTITY" jdbcType="DECIMAL" property="quantity" />
-        <result column="a_IMAGE_PATH" jdbcType="VARCHAR" property="imagePath" />
-        <result column="a_ITEM_UK" jdbcType="VARCHAR" property="itemUk" />
-        <result column="a_ITEM_FR" jdbcType="VARCHAR" property="itemFr" />
-        <result column="a_ITEM_DE" jdbcType="VARCHAR" property="itemDe" />
-        <result column="a_ITEM_IT" jdbcType="VARCHAR" property="itemIt" />
-        <result column="a_ITEM_ES" jdbcType="VARCHAR" property="itemEs" />
-        <result column="a_ITEM_JP" jdbcType="VARCHAR" property="itemJp" />
-        <result column="a_ITEM_CN" jdbcType="VARCHAR" property="itemCn" />
-        <result column="a_BULLET_POINT_UK" jdbcType="VARCHAR" property="bulletPointUk" />
-        <result column="a_BULLET_POINT_FR" jdbcType="VARCHAR" property="bulletPointFr" />
-        <result column="a_BULLET_POINT_DE" jdbcType="VARCHAR" property="bulletPointDe" />
-        <result column="a_BULLET_POINT_IT" jdbcType="VARCHAR" property="bulletPointIt" />
-        <result column="a_BULLET_POINT_ES" jdbcType="VARCHAR" property="bulletPointEs" />
-        <result column="a_BULLET_POINT_JP" jdbcType="VARCHAR" property="bulletPointJp" />
-        <result column="a_BULLET_POINT_CN" jdbcType="VARCHAR" property="bulletPointCn" />
-        <result column="a_KEYWORDS_UK" jdbcType="VARCHAR" property="keywordsUk" />
-        <result column="a_KEYWORDS_FR" jdbcType="VARCHAR" property="keywordsFr" />
-        <result column="a_KEYWORDS_DE" jdbcType="VARCHAR" property="keywordsDe" />
-        <result column="a_KEYWORDS_IT" jdbcType="VARCHAR" property="keywordsIt" />
-        <result column="a_KEYWORDS_ES" jdbcType="VARCHAR" property="keywordsEs" />
-        <result column="a_KEYWORDS_JP" jdbcType="VARCHAR" property="keywordsJp" />
-        <result column="a_KEYWORDS_CN" jdbcType="VARCHAR" property="keywordsCn" />
-        <result column="a_PRODUCT_DESCRIPTION_UK" jdbcType="VARCHAR" property="productDescriptionUk" />
-        <result column="a_PRODUCT_DESCRIPTION_FR" jdbcType="VARCHAR" property="productDescriptionFr" />
-        <result column="a_PRODUCT_DESCRIPTION_DE" jdbcType="VARCHAR" property="productDescriptionDe" />
-        <result column="a_PRODUCT_DESCRIPTION_IT" jdbcType="VARCHAR" property="productDescriptionIt" />
-        <result column="a_PRODUCT_DESCRIPTION_ES" jdbcType="VARCHAR" property="productDescriptionEs" />
-        <result column="a_PRODUCT_DESCRIPTION_JP" jdbcType="VARCHAR" property="productDescriptionJp" />
-        <result column="a_PRODUCT_DESCRIPTION_CN" jdbcType="VARCHAR" property="productDescriptionCn" />
-        <result column="a_CREATE_TIME" jdbcType="DATE" property="createTime" />
-        <result column="a_UPDATE_TIME" jdbcType="DATE" property="updateTime" />
-        <result column="a_PRODUCT_ID" jdbcType="VARCHAR" property="productId" />
-        <result column="a_UPDATE_STATE" jdbcType="CHAR" property="updateState" />
-        <result column="a_SKU_TYPE" jdbcType="CHAR" property="skuType" />
-        <result column="a_SOURCE" jdbcType="VARCHAR" property="source" />
-        <result column="a_TYPE_ID" jdbcType="VARCHAR" property="typeId" />
-        <result column="a_IS_PREPUBLISH" jdbcType="CHAR" property="isPrepublish" />
+        <id column="a_ID" jdbcType="VARCHAR" property="id"/>
+        <result column="a_SKU" jdbcType="VARCHAR" property="sku"/>
+        <result column="a_CREATE_USER" jdbcType="VARCHAR" property="createUser"/>
+        <result column="a_PRICE" jdbcType="DECIMAL" property="price"/>
+        <result column="a_QUANTITY" jdbcType="DECIMAL" property="quantity"/>
+        <result column="a_IMAGE_PATH" jdbcType="VARCHAR" property="imagePath"/>
+        <result column="a_ITEM_UK" jdbcType="VARCHAR" property="itemUk"/>
+        <result column="a_ITEM_FR" jdbcType="VARCHAR" property="itemFr"/>
+        <result column="a_ITEM_DE" jdbcType="VARCHAR" property="itemDe"/>
+        <result column="a_ITEM_IT" jdbcType="VARCHAR" property="itemIt"/>
+        <result column="a_ITEM_ES" jdbcType="VARCHAR" property="itemEs"/>
+        <result column="a_ITEM_JP" jdbcType="VARCHAR" property="itemJp"/>
+        <result column="a_ITEM_CN" jdbcType="VARCHAR" property="itemCn"/>
+        <result column="a_BULLET_POINT_UK" jdbcType="VARCHAR" property="bulletPointUk"/>
+        <result column="a_BULLET_POINT_FR" jdbcType="VARCHAR" property="bulletPointFr"/>
+        <result column="a_BULLET_POINT_DE" jdbcType="VARCHAR" property="bulletPointDe"/>
+        <result column="a_BULLET_POINT_IT" jdbcType="VARCHAR" property="bulletPointIt"/>
+        <result column="a_BULLET_POINT_ES" jdbcType="VARCHAR" property="bulletPointEs"/>
+        <result column="a_BULLET_POINT_JP" jdbcType="VARCHAR" property="bulletPointJp"/>
+        <result column="a_BULLET_POINT_CN" jdbcType="VARCHAR" property="bulletPointCn"/>
+        <result column="a_KEYWORDS_UK" jdbcType="VARCHAR" property="keywordsUk"/>
+        <result column="a_KEYWORDS_FR" jdbcType="VARCHAR" property="keywordsFr"/>
+        <result column="a_KEYWORDS_DE" jdbcType="VARCHAR" property="keywordsDe"/>
+        <result column="a_KEYWORDS_IT" jdbcType="VARCHAR" property="keywordsIt"/>
+        <result column="a_KEYWORDS_ES" jdbcType="VARCHAR" property="keywordsEs"/>
+        <result column="a_KEYWORDS_JP" jdbcType="VARCHAR" property="keywordsJp"/>
+        <result column="a_KEYWORDS_CN" jdbcType="VARCHAR" property="keywordsCn"/>
+        <result column="a_PRODUCT_DESCRIPTION_UK" jdbcType="VARCHAR" property="productDescriptionUk"/>
+        <result column="a_PRODUCT_DESCRIPTION_FR" jdbcType="VARCHAR" property="productDescriptionFr"/>
+        <result column="a_PRODUCT_DESCRIPTION_DE" jdbcType="VARCHAR" property="productDescriptionDe"/>
+        <result column="a_PRODUCT_DESCRIPTION_IT" jdbcType="VARCHAR" property="productDescriptionIt"/>
+        <result column="a_PRODUCT_DESCRIPTION_ES" jdbcType="VARCHAR" property="productDescriptionEs"/>
+        <result column="a_PRODUCT_DESCRIPTION_JP" jdbcType="VARCHAR" property="productDescriptionJp"/>
+        <result column="a_PRODUCT_DESCRIPTION_CN" jdbcType="VARCHAR" property="productDescriptionCn"/>
+        <result column="a_CREATE_TIME" jdbcType="DATE" property="createTime"/>
+        <result column="a_UPDATE_TIME" jdbcType="DATE" property="updateTime"/>
+        <result column="a_PRODUCT_ID" jdbcType="VARCHAR" property="productId"/>
+        <result column="a_UPDATE_STATE" jdbcType="CHAR" property="updateState"/>
+        <result column="a_SKU_TYPE" jdbcType="CHAR" property="skuType"/>
+        <result column="a_SOURCE" jdbcType="VARCHAR" property="source"/>
+        <result column="a_TYPE_ID" jdbcType="VARCHAR" property="typeId"/>
+        <result column="b_L_C_NAME" jdbcType="VARCHAR" property="typeName"/>
+        <result column="a_IS_PREPUBLISH" jdbcType="CHAR" property="isPrepublish"/>
     </resultMap>
     <sql id="Base_Column_List">
         a.ID as a_ID, a.SKU as a_SKU, a.CREATE_USER as a_CREATE_USER, a.PRICE as a_PRICE,
@@ -82,12 +85,14 @@
         a.PRODUCT_DESCRIPTION_ES as a_PRODUCT_DESCRIPTION_ES, a.PRODUCT_DESCRIPTION_JP as a_PRODUCT_DESCRIPTION_JP,
         a.PRODUCT_DESCRIPTION_CN as a_PRODUCT_DESCRIPTION_CN, a.CREATE_TIME as a_CREATE_TIME,
         a.UPDATE_TIME as a_UPDATE_TIME, a.PRODUCT_ID as a_PRODUCT_ID, a.UPDATE_STATE as a_UPDATE_STATE,
-        a.SKU_TYPE as a_SKU_TYPE, a.SOURCE as a_SOURCE, a.TYPE_ID as a_TYPE_ID, a.IS_PREPUBLISH as a_IS_PREPUBLISH
+        a.SKU_TYPE as a_SKU_TYPE, a.SOURCE as a_SOURCE, a.TYPE_ID as a_TYPE_ID, a.IS_PREPUBLISH as a_IS_PREPUBLISH,b.L_C_NAME as b_L_C_NAME
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
         select
-        <include refid="Base_Column_List" />
+        <include refid="Base_Column_List"/>
         from T_PRODUCT_ITEM_AMZ a
+        LEFT JOIN T_PRODUCT_TYPE_LOCAL b
+        ON a.type_id = b.l_c_id
         where a.ID = #{id,jdbcType=VARCHAR}
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
@@ -131,7 +136,7 @@
     <insert id="insertSelective" parameterType="com.crossborder.entity.ClaimProduct">
         insert into T_PRODUCT_ITEM_AMZ
         <trim prefix="(" suffix=")" suffixOverrides=",">
-                ID,
+            ID,
             <if test="sku != null">
                 SKU,
             </if>
