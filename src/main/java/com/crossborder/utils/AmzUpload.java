@@ -52,6 +52,7 @@ public class AmzUpload {
         try {
             request.setFeedContent(fis);
             request.setContentMD5(MD5.computeContentMD5HeaderValue(fis));
+
         } catch (Exception e) {
             e.printStackTrace();
         }
