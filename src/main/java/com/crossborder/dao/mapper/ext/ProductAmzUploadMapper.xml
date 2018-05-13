@@ -64,6 +64,7 @@
     <result column="a_WEBSITE_TYPE" jdbcType="VARCHAR" property="websiteType" />
     <result column="a_EXTERNAL_PRODUCT_ID_TYPE" jdbcType="VARCHAR" property="externalProductIdType" />
     <result column="a_AMZ_SKU" jdbcType="VARCHAR" property="amzSku" />
+    <result column="a_UPLOAD_DESC" jdbcType="VARCHAR" property="uploadDesc" />
   </resultMap>
   <sql id="Base_Column_List">
     a.ID as a_ID, a.LANGUAGE_ID as a_LANGUAGE_ID, a.TEMPLATETYPE as a_TEMPLATETYPE, a.ITEM_SKU as a_ITEM_SKU, 
@@ -88,7 +89,7 @@
     a.SALE_FROM_DATE as a_SALE_FROM_DATE, a.SALE_END_DATE as a_SALE_END_DATE, a.PUBLISH_STATUS as a_PUBLISH_STATUS, 
     a.CREATE_TIME as a_CREATE_TIME, a.PRODUCT_AMZ_ID as a_PRODUCT_AMZ_ID, a.MAIN_PATH as a_MAIN_PATH, 
     a.ATTACH_PATH as a_ATTACH_PATH, a.WEBSITE_TYPE as a_WEBSITE_TYPE, a.EXTERNAL_PRODUCT_ID_TYPE as a_EXTERNAL_PRODUCT_ID_TYPE, 
-    a.AMZ_SKU as a_AMZ_SKU
+    a.AMZ_SKU as a_AMZ_SKU, a.UPLOAD_DESC as a_UPLOAD_DESC
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
@@ -121,7 +122,8 @@
       SALE_PRICE, SALE_FROM_DATE, SALE_END_DATE, 
       PUBLISH_STATUS, CREATE_TIME, PRODUCT_AMZ_ID, 
       MAIN_PATH, ATTACH_PATH, WEBSITE_TYPE, 
-      EXTERNAL_PRODUCT_ID_TYPE, AMZ_SKU)
+      EXTERNAL_PRODUCT_ID_TYPE, AMZ_SKU, UPLOAD_DESC
+      )
     values (#{id,jdbcType=VARCHAR}, #{languageId,jdbcType=VARCHAR}, #{templatetype,jdbcType=VARCHAR}, 
       #{itemSku,jdbcType=VARCHAR}, #{externalProductId,jdbcType=VARCHAR}, #{productimagePt02,jdbcType=VARCHAR}, 
       #{itemName,jdbcType=VARCHAR}, #{brandName,jdbcType=VARCHAR}, #{manufacturer,jdbcType=VARCHAR}, 
@@ -142,7 +144,8 @@
       #{salePrice,jdbcType=DECIMAL}, #{saleFromDate,jdbcType=DATE}, #{saleEndDate,jdbcType=DATE}, 
       #{publishStatus,jdbcType=CHAR}, #{createTime,jdbcType=DATE}, #{productAmzId,jdbcType=VARCHAR}, 
       #{mainPath,jdbcType=VARCHAR}, #{attachPath,jdbcType=VARCHAR}, #{websiteType,jdbcType=VARCHAR}, 
-      #{externalProductIdType,jdbcType=VARCHAR}, #{amzSku,jdbcType=VARCHAR})
+      #{externalProductIdType,jdbcType=VARCHAR}, #{amzSku,jdbcType=VARCHAR}, #{uploadDesc,jdbcType=VARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.crossborder.entity.ProductAmzUpload">
     insert into T_PRODUCT_ITEM_AMZ_UPLOAD
@@ -333,6 +336,9 @@
       <if test="amzSku != null">
         AMZ_SKU,
       </if>
+      <if test="uploadDesc != null">
+        UPLOAD_DESC,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -520,6 +526,9 @@
       </if>
       <if test="amzSku != null">
         #{amzSku,jdbcType=VARCHAR},
+      </if>
+      <if test="uploadDesc != null">
+        #{uploadDesc,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -709,6 +718,9 @@
       <if test="amzSku != null">
         AMZ_SKU = #{amzSku,jdbcType=VARCHAR},
       </if>
+      <if test="uploadDesc != null">
+        UPLOAD_DESC = #{uploadDesc,jdbcType=VARCHAR},
+      </if>
     </set>
     where ID = #{id,jdbcType=VARCHAR}
   </update>
@@ -774,7 +786,8 @@
       ATTACH_PATH = #{attachPath,jdbcType=VARCHAR},
       WEBSITE_TYPE = #{websiteType,jdbcType=VARCHAR},
       EXTERNAL_PRODUCT_ID_TYPE = #{externalProductIdType,jdbcType=VARCHAR},
-      AMZ_SKU = #{amzSku,jdbcType=VARCHAR}
+      AMZ_SKU = #{amzSku,jdbcType=VARCHAR},
+      UPLOAD_DESC = #{uploadDesc,jdbcType=VARCHAR}
     where ID = #{id,jdbcType=VARCHAR}
   </update>
 </mapper>

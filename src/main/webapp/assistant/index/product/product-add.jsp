@@ -181,7 +181,7 @@
                     },
                     error: function (data) {
                         layer.msg(data.msg, {icon: 5, time: 1000});
-                    },
+                    }
                 });
             });
 

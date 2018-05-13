@@ -18,27 +18,27 @@
 
 package com.crossborder.utils;
 
-import java.io.FileNotFoundException;
-import java.util.List;
-import java.util.ArrayList;
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.util.List;
+import java.util.ArrayList;
 import com.amazonaws.mws.*;
 import com.amazonaws.mws.model.*;
 import com.amazonaws.mws.mock.MarketplaceWebServiceMock;
 
 /**
  *
- * Get Report  Samples
+ * Get Feed Submission Result  Samples
  *
  *
  */
-public class GetReportSample {
+public class GetFeedSubmissionResultSample {
 
     /**
      * Just add a few required parameters, and try the service
-     * Get Report functionality
+     * Get Feed Submission Result functionality
      *
      * @param args unused
      */
@@ -51,8 +51,6 @@ public class GetReportSample {
         final String accessKeyId = "AKIAIWNVZFF7XJ7LV32A";
         final String secretAccessKey = "IVWnOBGLuewSgF2ol3ByGin1NXFwBQBxh1Krq3N/";
 
-
-
         final String appName = "<Your Application or Company Name>";
         final String appVersion = "<Your Application Version or Build Number or Release Date>";
 
@@ -62,7 +60,7 @@ public class GetReportSample {
          * Uncomment to set the appropriate MWS endpoint.
          ************************************************************************/
         // US
-        config.setServiceURL("https://mws.amazonservices.com/");
+         config.setServiceURL("https://mws.amazonservices.com/");
         // UK
         // config.setServiceURL("https://mws.amazonservices.co.uk/");
         // Germany
@@ -74,7 +72,7 @@ public class GetReportSample {
         // Japan
         // config.setServiceURL("https://mws.amazonservices.jp/");
         // China
-         //config.setServiceURL("https://mws.amazonservices.com.cn/");
+        // config.setServiceURL("https://mws.amazonservices.com.cn/");
         // Canada
         // config.setServiceURL("https://mws.amazonservices.ca/");
         // India
@@ -98,7 +96,7 @@ public class GetReportSample {
 
         /************************************************************************
          * Setup request parameters and uncomment invoke to try out 
-         * sample for Get Report 
+         * sample for Get Feed Submission Result 
          ***********************************************************************/
 
         /************************************************************************
@@ -108,53 +106,49 @@ public class GetReportSample {
         final String merchantId = "AX2JQLLAWG3JN";
         final String sellerDevAuthToken = "<Merchant Developer MWS Auth Token>";
 
-        GetReportRequest request = new GetReportRequest();
+        GetFeedSubmissionResultRequest request = new GetFeedSubmissionResultRequest();
         request.setMerchant( merchantId );
         //request.setMWSAuthToken(sellerDevAuthToken);
+        
+        request.setFeedSubmissionId( "50431017663" );
 
-        request.setReportId( "9497489579017662" );
-        request.setReportOutputStream(new FileOutputStream("/Users/fengsong/Downloads/11.txt"));
-
-        // Note that depending on the type of report being downloaded, a report can reach 
-        // sizes greater than 1GB. For this reason we recommend that you _always_ program to
-        // MWS in a streaming fashion. Otherwise, as your business grows you may silently reach
+        // Note that depending on the size of the feed sent in, and the number of errors and warnings,
+        // the result can reach sizes greater than 1GB. For this reason we recommend that you _always_ 
+        // program to MWS in a streaming fashion. Otherwise, as your business grows you may silently reach
         // the in-memory size limit and have to re-work your solution.
         //
-        // OutputStream report = new FileOutputStream( "report.xml" );
-        // request.setReportOutputStream( report );
+         OutputStream processingResult = new FileOutputStream( "/Users/fengsong/Downloads/feedSubmissionResult.xml" );
+         request.setFeedSubmissionResultOutputStream( processingResult );
 
-         invokeGetReport(service, request);
-
+         invokeGetFeedSubmissionResult(service, request);
     }
 
 
 
     /**
-     * Get Report  request sample
-     * The GetReport operation returns the contents of a report. Reports can potentially be
-     * very large (>100MB) which is why we only return one report at a time, and in a
-     * streaming fashion.
+     * Get Feed Submission Result  request sample
+     * retrieves the feed processing report
      *   
      * @param service instance of MarketplaceWebService service
      * @param request Action to invoke
      */
-    public static void invokeGetReport(MarketplaceWebService service, GetReportRequest request) {
+    public static void invokeGetFeedSubmissionResult(MarketplaceWebService service, GetFeedSubmissionResultRequest request) {
         try {
 
-            GetReportResponse response = service.getReport(request);
+            GetFeedSubmissionResultResponse response = service.getFeedSubmissionResult(request);
 
 
-            System.out.println ("GetReport Action Response");
+            System.out.println ("GetFeedSubmissionResult Action Response");
             System.out.println ("=============================================================================");
             System.out.println ();
 
-            System.out.print("    GetReportResponse");
+            System.out.print("    GetFeedSubmissionResultResponse");
             System.out.println();
-            System.out.print("    GetReportResult");
+            System.out.print("    GetFeedSubmissionResultResult");
             System.out.println();
             System.out.print("            MD5Checksum");
             System.out.println();
-            System.out.print("                " + response.getGetReportResult().getMD5Checksum());
+            System.out.print("                " + response.getGetFeedSubmissionResultResult().getMD5Checksum());
             System.out.println();
             if (response.isSetResponseMetadata()) {
                 System.out.print("        ResponseMetadata");
@@ -169,15 +163,13 @@ public class GetReportSample {
             } 
             System.out.println();
 
-            System.out.println("Report");
+            System.out.println("Feed Processing Result");
             System.out.println ("=============================================================================");
             System.out.println();
-            System.out.println( request.getReportOutputStream().toString() );
-            System.out.println();
-
+            System.out.println( request.getFeedSubmissionResultOutputStream().toString() );
             System.out.println(response.getResponseHeaderMetadata());
             System.out.println();
-
+            System.out.println();
 
         } catch (MarketplaceWebServiceException ex) {
 

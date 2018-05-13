@@ -67,7 +67,7 @@
                enableSelectByExample="false" enableUpdateByExample="false" alias="a">
         </table>-->
 
-        <!--<table tableName="T_PRODUCT_ITEM_AMZ_UPLOAD" domainObjectName="ProductAmzUpload" enableCountByExample="false" enableDeleteByExample="false"
+       <!-- <table tableName="T_PRODUCT_ITEM_AMZ_UPLOAD" domainObjectName="ProductAmzUpload" enableCountByExample="false" enableDeleteByExample="false"
                enableSelectByExample="false" enableUpdateByExample="false" alias="a">
         </table>-->
 
@@ -75,7 +75,11 @@
                enableSelectByExample="false" enableUpdateByExample="false" alias="a">
         </table>-->
 
-        <table tableName="T_PRODUCT_UPLOAD_CATEGORY" domainObjectName="ProductUploadCategory" enableCountByExample="false" enableDeleteByExample="false"
+        <!--<table tableName="T_PRODUCT_UPLOAD_CATEGORY" domainObjectName="ProductUploadCategory" enableCountByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" enableUpdateByExample="false" alias="a">
+        </table>-->
+
+        <table tableName="T_PRODUCT_UPLOAD_LOG" domainObjectName="ProductUploadLog" enableCountByExample="false" enableDeleteByExample="false"
                enableSelectByExample="false" enableUpdateByExample="false" alias="a">
         </table>
 

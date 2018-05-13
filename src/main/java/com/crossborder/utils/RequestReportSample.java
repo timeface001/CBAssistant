@@ -122,7 +122,7 @@ public class RequestReportSample {
         // API reference document on the MWS website to see which marketplaces are
         // included if you do not specify the list yourself
         final IdList marketplaces = new IdList(Arrays.asList(
-        		"A2EUQ1WTGCTBG2"));
+        		"ATVPDKIKX0DER"));
         
         RequestReportRequest request = new RequestReportRequest()
 		        .withMerchant(merchantId)

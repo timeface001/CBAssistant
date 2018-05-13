@@ -84,6 +84,20 @@ public class GeneralUtils {
         return null;
     }
 
+    public static String formatDate(Date date, String pattern) {
+        if (date == null) {
+            return "";
+        }
+        SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+        try {
+            return sdf.format(date);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return "";
+    }
+
     public static boolean isNotNullOrEmpty(List<?> list) {
         return list != null && !list.isEmpty();
     }

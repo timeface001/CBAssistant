@@ -1,10 +1,12 @@
 package com.crossborder.action;
 
 import com.alibaba.fastjson.JSON;
+import com.crossborder.dao.ProductAmzUploadDao;
 import com.crossborder.entity.ProductAmzUpload;
 import com.crossborder.service.ProductManagerService;
 import com.crossborder.service.ShopManageService;
 import com.crossborder.utils.GeneralUtils;
+import com.crossborder.utils.ResponseDto;
 import com.crossborder.utils.ResponseGen;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -15,7 +17,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 预发布产品--
@@ -101,26 +105,41 @@ public class ProductPublishController extends BaseController {
         return view;
     }
 
+    @Resource
+    private ProductAmzUploadDao productAmzUploadDao;
     @RequestMapping(value = "/product/publish", produces = "text/plain;charset=UTF-8")
     @ResponseBody
     public String publish(ProductAmzUpload product,String type) {
-        if(type.equals("1")){
-            Map<String,Object> params=new HashMap<>();
-            params.put("shopId",product.getShopId());
-            productManagerService.uploadProduct(product, shopManageService.selectShopsById(params).get(0));
-        }else{//认领列表直接发布
-            Map<String,Object> params=new HashMap<>();
-            params.put("shopId",product.getShopId());
-            List<Map<String,Object>> list= shopManageService.selectShopsById(params);
-            try {
-                productManagerService.prePublishProduct(product.getId(),list.get(0).get("COUNTRY_CODE").toString());
-            } catch (Exception e) {
-                e.printStackTrace();
+        ResponseDto dto=new ResponseDto();
+        dto.setSuccess(true);
+        dto.setMsg("数据提交成功");
+        try {
+            if(type.equals("1")){
+                Map<String,Object> params=new HashMap<>();
+                params.put("id",product.getShopId());
+                productAmzUploadDao.updateByPrimaryKeySelective(product);
+                product=productAmzUploadDao.selectByPrimaryKey(product.getId());
+                productManagerService.uploadProduct(product, shopManageService.selectShops(params).get(0));
+            }else{//认领列表直接发布
+                Map<String,Object> params=new HashMap<>();
+                params.put("shopId",product.getShopId());
+                List<Map<String,Object>> list= shopManageService.selectShopsById(params);
+                try {
+                    productManagerService.prePublishProduct(product.getId(),list.get(0).get("COUNTRY_CODE").toString());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                product.setId(null);
+                productManagerService.uploadProduct(product,list.get(0));
             }
-            product.setId(null);
-            productManagerService.uploadProduct(product,list.get(0));
+        }catch (Exception e){
+            e.printStackTrace();
+            dto.setSuccess(false);
+            dto.setMsg("发布失败");
         }
-        return ResponseGen.genSuccessData(null);
+
+
+        return ResponseGen.genSuccessData(dto);
     }
 
     @RequestMapping("public/category/init")
@@ -130,6 +149,20 @@ public class ProductPublishController extends BaseController {
         productManagerService.initshopCategory();
 
         return "success";
+    }
+
+
+    @RequestMapping("publish/category")
+    @ResponseBody
+    public String listCategory(String parentId, String shopId) {
+
+        if (parentId.equals("-1")) {
+            return JSON.toJSONString(productManagerService.selectListParent(shopId));
+
+        } else {
+            return JSON.toJSONString(productManagerService.selectList(parentId, shopId));
+        }
+
     }
 
 

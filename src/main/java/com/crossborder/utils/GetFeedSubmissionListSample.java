@@ -16,33 +16,31 @@
  */
 
 
+
 package com.crossborder.utils;
 
-import java.io.FileNotFoundException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
-import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
 import com.amazonaws.mws.*;
 import com.amazonaws.mws.model.*;
 import com.amazonaws.mws.mock.MarketplaceWebServiceMock;
 
 /**
  *
- * Get Report  Samples
+ * Get Feed Submission List  Samples
  *
  *
  */
-public class GetReportSample {
+public class GetFeedSubmissionListSample {
 
     /**
      * Just add a few required parameters, and try the service
-     * Get Report functionality
+     * Get Feed Submission List functionality
      *
      * @param args unused
      */
-    public static void main(String... args) throws FileNotFoundException {
+    public static void main(String... args) {
 
         /************************************************************************
          * Access Key ID and Secret Access Key ID, obtained from:
@@ -50,8 +48,6 @@ public class GetReportSample {
          ***********************************************************************/
         final String accessKeyId = "AKIAIWNVZFF7XJ7LV32A";
         final String secretAccessKey = "IVWnOBGLuewSgF2ol3ByGin1NXFwBQBxh1Krq3N/";
-
-
 
         final String appName = "<Your Application or Company Name>";
         final String appVersion = "<Your Application Version or Build Number or Release Date>";
@@ -62,7 +58,7 @@ public class GetReportSample {
          * Uncomment to set the appropriate MWS endpoint.
          ************************************************************************/
         // US
-        config.setServiceURL("https://mws.amazonservices.com/");
+         config.setServiceURL("https://mws.amazonservices.com/");
         // UK
         // config.setServiceURL("https://mws.amazonservices.co.uk/");
         // Germany
@@ -74,7 +70,7 @@ public class GetReportSample {
         // Japan
         // config.setServiceURL("https://mws.amazonservices.jp/");
         // China
-         //config.setServiceURL("https://mws.amazonservices.com.cn/");
+        // config.setServiceURL("https://mws.amazonservices.com.cn/");
         // Canada
         // config.setServiceURL("https://mws.amazonservices.ca/");
         // India
@@ -95,10 +91,25 @@ public class GetReportSample {
 
         MarketplaceWebService service = new MarketplaceWebServiceClient(
                 accessKeyId, secretAccessKey, appName, appVersion, config);
+        // MarketplaceWebServiceConfig config = new MarketplaceWebServiceConfig();
+
+        // MarketplaceWebService service = new MarketplaceWebServiceClient(accessKeyId, secretAccessKey, config);
+
+        /************************************************************************
+         * Uncomment to try out Mock Service that simulates Marketplace Web Service 
+         * responses without calling Marketplace Web Service  service.
+         *
+         * Responses are loaded from local XML files. You can tweak XML files to
+         * experiment with various outputs during development
+         *
+         * XML files available under com/amazonaws/mws/mock tree
+         *
+         ***********************************************************************/
+        // MarketplaceWebService service = new MarketplaceWebServiceMock();
 
         /************************************************************************
          * Setup request parameters and uncomment invoke to try out 
-         * sample for Get Report 
+         * sample for Get Feed Submission List 
          ***********************************************************************/
 
         /************************************************************************
@@ -108,54 +119,97 @@ public class GetReportSample {
         final String merchantId = "AX2JQLLAWG3JN";
         final String sellerDevAuthToken = "<Merchant Developer MWS Auth Token>";
 
-        GetReportRequest request = new GetReportRequest();
+        GetFeedSubmissionListRequest request = new GetFeedSubmissionListRequest();
         request.setMerchant( merchantId );
-        //request.setMWSAuthToken(sellerDevAuthToken);
+       //request.setMWSAuthToken(sellerDevAuthToken);
 
-        request.setReportId( "9497489579017662" );
-        request.setReportOutputStream(new FileOutputStream("/Users/fengsong/Downloads/11.txt"));
+        // @TODO: set request parameters here
 
-        // Note that depending on the type of report being downloaded, a report can reach 
-        // sizes greater than 1GB. For this reason we recommend that you _always_ program to
-        // MWS in a streaming fashion. Otherwise, as your business grows you may silently reach
-        // the in-memory size limit and have to re-work your solution.
-        //
-        // OutputStream report = new FileOutputStream( "report.xml" );
-        // request.setReportOutputStream( report );
 
-         invokeGetReport(service, request);
+         request.setFeedSubmissionIdList(new IdList(Arrays.asList("50431017663")));
+         invokeGetFeedSubmissionList(service, request);
 
     }
 
 
 
     /**
-     * Get Report  request sample
-     * The GetReport operation returns the contents of a report. Reports can potentially be
-     * very large (>100MB) which is why we only return one report at a time, and in a
-     * streaming fashion.
+     * Get Feed Submission List  request sample
+     * returns a list of feed submission identifiers and their associated metadata
      *   
      * @param service instance of MarketplaceWebService service
      * @param request Action to invoke
      */
-    public static void invokeGetReport(MarketplaceWebService service, GetReportRequest request) {
+    public static void invokeGetFeedSubmissionList(MarketplaceWebService service, GetFeedSubmissionListRequest request) {
         try {
 
-            GetReportResponse response = service.getReport(request);
+            GetFeedSubmissionListResponse response = service.getFeedSubmissionList(request);
 
 
-            System.out.println ("GetReport Action Response");
+            System.out.println ("GetFeedSubmissionList Action Response");
             System.out.println ("=============================================================================");
             System.out.println ();
 
-            System.out.print("    GetReportResponse");
+            System.out.print("    GetFeedSubmissionListResponse");
             System.out.println();
-            System.out.print("    GetReportResult");
-            System.out.println();
-            System.out.print("            MD5Checksum");
-            System.out.println();
-            System.out.print("                " + response.getGetReportResult().getMD5Checksum());
-            System.out.println();
+            if (response.isSetGetFeedSubmissionListResult()) {
+                System.out.print("        GetFeedSubmissionListResult");
+                System.out.println();
+                GetFeedSubmissionListResult  getFeedSubmissionListResult = response.getGetFeedSubmissionListResult();
+                if (getFeedSubmissionListResult.isSetNextToken()) {
+                    System.out.print("            NextToken");
+                    System.out.println();
+                    System.out.print("                " + getFeedSubmissionListResult.getNextToken());
+                    System.out.println();
+                }
+                if (getFeedSubmissionListResult.isSetHasNext()) {
+                    System.out.print("            HasNext");
+                    System.out.println();
+                    System.out.print("                " + getFeedSubmissionListResult.isHasNext());
+                    System.out.println();
+                }
+                List<FeedSubmissionInfo> feedSubmissionInfoList = getFeedSubmissionListResult.getFeedSubmissionInfoList();
+                for (FeedSubmissionInfo feedSubmissionInfo : feedSubmissionInfoList) {
+                    System.out.print("            FeedSubmissionInfo");
+                    System.out.println();
+                    if (feedSubmissionInfo.isSetFeedSubmissionId()) {
+                        System.out.print("                FeedSubmissionId");
+                        System.out.println();
+                        System.out.print("                    " + feedSubmissionInfo.getFeedSubmissionId());
+                        System.out.println();
+                    }
+                    if (feedSubmissionInfo.isSetFeedType()) {
+                        System.out.print("                FeedType");
+                        System.out.println();
+                        System.out.print("                    " + feedSubmissionInfo.getFeedType());
+                        System.out.println();
+                    }
+                    if (feedSubmissionInfo.isSetSubmittedDate()) {
+                        System.out.print("                SubmittedDate");
+                        System.out.println();
+                        System.out.print("                    " + feedSubmissionInfo.getSubmittedDate());
+                        System.out.println();
+                    }
+                    if (feedSubmissionInfo.isSetFeedProcessingStatus()) {
+                        System.out.print("                FeedProcessingStatus");
+                        System.out.println();
+                        System.out.print("                    " + feedSubmissionInfo.getFeedProcessingStatus());
+                        System.out.println();
+                    }
+                    if (feedSubmissionInfo.isSetStartedProcessingDate()) {
+                        System.out.print("                StartedProcessingDate");
+                        System.out.println();
+                        System.out.print("                    " + feedSubmissionInfo.getStartedProcessingDate());
+                        System.out.println();
+                    }
+                    if (feedSubmissionInfo.isSetCompletedProcessingDate()) {
+                        System.out.print("                CompletedProcessingDate");
+                        System.out.println();
+                        System.out.print("                    " + feedSubmissionInfo.getCompletedProcessingDate());
+                        System.out.println();
+                    }
+                }
+            } 
             if (response.isSetResponseMetadata()) {
                 System.out.print("        ResponseMetadata");
                 System.out.println();
@@ -168,13 +222,6 @@ public class GetReportSample {
                 }
             } 
             System.out.println();
-
-            System.out.println("Report");
-            System.out.println ("=============================================================================");
-            System.out.println();
-            System.out.println( request.getReportOutputStream().toString() );
-            System.out.println();
-
             System.out.println(response.getResponseHeaderMetadata());
             System.out.println();
 

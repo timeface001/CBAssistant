@@ -1,6 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 <mapper namespace="com.crossborder.dao.ProductUploadCategoryDao">
+<delete id="deleteByShopId" parameterType="java.util.Map">
+  DELETE  FROM T_PRODUCT_UPLOAD_CATEGORY a where a.SHOP_ID=#{shopId} AND COUNTRY_CODE=#{code}
+</delete>
+
+  <select id="selectList" parameterType="java.util.Map" resultMap="BaseResultMap">
+    SELECT
+     <include refid="Base_Column_List"/>
+     from T_PRODUCT_UPLOAD_CATEGORY a WHERE a.PARENT_ID=#{parentId} AND SHOP_ID=#{shopId} ORDER BY a.NAME
+  </select>
+
+  <select id="selectListParent" parameterType="java.util.Map" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    from T_PRODUCT_UPLOAD_CATEGORY a where a.PARENT_ID in (SELECT ID from T_PRODUCT_UPLOAD_CATEGORY where NAME='Categories')  AND a.SHOP_ID=#{shopId}
+  </select>
+
+  <insert id="batchInsert">
+    INSERT INTO T_PRODUCT_UPLOAD_CATEGORY (ID,PARENT_ID,NAME,HAS_CHILD,CHILD_COUNT,TYPE_DEF,COUNTRY_CODE,PATH,SHOP_ID)
+    VALUES
+    <foreach collection="list" separator="," open="(" close=")" item="i">
+        #{i,id},#{i.parentId},#{i.name},#{i.hasChild},#{i.childCount},#{i.typeDef},#{i.countryCode},#{i.path},#{i.shopId}
+    </foreach>
+  </insert>
+
+
   <resultMap id="BaseResultMap" type="com.crossborder.entity.ProductUploadCategory">
     <id column="a_ID" jdbcType="VARCHAR" property="id" />
     <result column="a_PARENT_ID" jdbcType="VARCHAR" property="parentId" />

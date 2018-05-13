@@ -90,7 +90,7 @@ public class GetReportListSample {
 
         // @TODO: set request parameters here
 
-        request.setReportRequestIdList(new IdList(Arrays.asList("50416017661")));
+        request.setReportRequestIdList(new IdList(Arrays.asList("50425017663")));
 
 
         invokeGetReportList(service, request);

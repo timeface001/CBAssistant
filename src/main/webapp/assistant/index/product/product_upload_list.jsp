@@ -173,7 +173,7 @@
                         return "未发布";
                     }
                     if(val.publishStatus=="1"){
-                        return "发布失败";
+                        return "<p style='text-align: left'>发布失败：</p><p title='"+val.uploadDesc+"' style='color: #ff515b'>"+getUploadDesc(val.uploadDesc)+"</p>";
                     }
                     if(val.publishStatus=="2"){
                         return "发布成功";
@@ -256,6 +256,23 @@
 
         return "";
 
+    }
+
+    function getUploadDesc(str) {
+        if(str==null||str==""){
+            return str;
+        }
+
+        if(str =="undefined"){
+            return '';
+        }
+
+
+        if(str.length>200){
+            return str.substring(0,200)+"...";
+        }
+
+        return str;
     }
 
     /*打开订单详情页*/

@@ -128,6 +128,8 @@ public class ProductAmzUpload {
 
     private String amzSku;
 
+    private String uploadDesc;
+
     public String getId() {
         return id;
     }
@@ -622,5 +624,13 @@ public class ProductAmzUpload {
 
     public void setAmzSku(String amzSku) {
         this.amzSku = amzSku == null ? null : amzSku.trim();
+    }
+
+    public String getUploadDesc() {
+        return uploadDesc;
+    }
+
+    public void setUploadDesc(String uploadDesc) {
+        this.uploadDesc = uploadDesc == null ? null : uploadDesc.trim();
     }
 }

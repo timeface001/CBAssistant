@@ -89,14 +89,14 @@
         <div class="layui-form-item">
             <label class="layui-form-label">产品分类</label>
             <div class="layui-inline">
-                <input type="text" name="productType" value="" id="productType"
-                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input ">
+                <input type="text" name="productType" value="" id="productType" lay-filter="productType"
+                        placeholder="" autocomplete="off" class="layui-input ">
             </div>
             <div class="layui-inline">
                 <label class="layui-form-label">分类类型</label>
                 <div class="layui-input-inline" style="width: 100px;">
                 <input type="text" name="externalProductId" value="" id="type"
-                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input ">
+                        placeholder="" autocomplete="off" class="layui-input ">
                 </div>
             </div>
         </div>
@@ -170,7 +170,6 @@
 
         <div class="layui-form-item">
             <div class="layui-input-block">
-                <%--<button class="layui-btn" lay-submit lay-filter="formDemo">保存</button>--%>
                 <button class="layui-btn" lay-submit lay-filter="formDemo">发布</button>
             </div>
         </div>
@@ -228,12 +227,6 @@
         });
 
 
-        /*form.on('select(shopId)', function(data){
-            console.log(data.elem); //得到select原始DOM对象
-            console.log(data.value); //得到被选中的值
-            console.log(data.othis); //得到美化后的DOM对象
-        });*/
-
         $("#shopId").val('${product.shopId}');
 
         $("input[name='websiteType']").each(function (i,val) {
@@ -264,10 +257,15 @@
                     ,
                     success: function (data) {
                         if (data.success) {
-                            setTimeout(layer.msg(data.msg, {icon: 6, time: 1000}), 1300);
-                            layer_close();
+                            layer.msg(data.msg, {icon: 6, time: 1000});
+                            setTimeout(function () {
+                                layer_close();
+                            },1000);
+
+
                         } else {
                             layer.msg(data.msg, {icon: 5, time: 1000});
+                            layer_close();
                         }
 
                     },
@@ -278,8 +276,27 @@
 
             });
 
+            $("#productType").click(function () {
+
+                    layer.open({
+                        type: 2,
+                        area: [800 + 'px', ($(window).height() - 50) + 'px'],
+                        fix: false, //不固定
+                        maxmin: true,
+                        shade: 0.4,
+                        title: "产品类型选择",
+                        content: '<%=request.getContextPath()%>/assistant/index/product/product_category.jsp?shopId='+id,
+                        end: function () {
+
+                        }
+                    });
+            });
+
+
             form.on('select(shop)', function(data){
-           });
+                id=data.value;
+
+            });
 
             $("#genPid").click(function () {
                 $.ajax({
