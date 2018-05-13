@@ -70,7 +70,7 @@
                 <button type="button" class="layui-btn" id="imagePath">
                     <i class="layui-icon">&#xe67c;</i>上传图片
                 </button>
-                <span style="font-size: 10px;">(最多9张)</span>
+                <span style="font-size: 10px;">(最多8张)</span>
             </div>
         </div>
         <div class="row cl">
@@ -273,12 +273,10 @@
                     }
                 });
             });
-
             //各种基于事件的操作，下面会有进一步介绍
         });
         layui.use('upload', function () {
             var upload = layui.upload;
-
             //执行实例
             var uploadInst = upload.render({
                 accept: "images",

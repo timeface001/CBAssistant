@@ -13,6 +13,12 @@
     <!--[if lt IE 9]>
     <script type="text/javascript" src="<%=request.getContextPath()%>/assistant/lib/html5shiv.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/assistant/lib/respond.min.js"></script>
+    <script type="text/javascript" charset="utf-8"
+            src="<%=request.getContextPath()%>/assistant/ueditor/ueditor.config.js"></script>
+    <script type="text/javascript" charset="utf-8"
+            src="<%=request.getContextPath()%>/assistant/ueditor/ueditor.all.min.js"></script>
+    <script type="text/javascript" charset="utf-8"
+            src="<%=request.getContextPath()%>/assistant/ueditor/lang/lang/zh-cn/zh-cn.js"></script>
     <![endif]-->
     <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/assistant/static/h-ui/css/H-ui.min.css"/>
     <link rel="stylesheet" type="text/css"
@@ -25,6 +31,7 @@
           href="<%=request.getContextPath()%>/assistant/static/h-ui.admin/css/style.css"/>
     <link rel="stylesheet" type="text/css"
           href="<%=request.getContextPath()%>/assistant/lib/layui/css/layui.css"/>
+
 
     <!--[if IE 6]>
     <script type="text/javascript"
@@ -59,7 +66,6 @@
                        class="layui-input" value="${product.sku}">
             </div>
         </div>
-
 
         <div class="layui-form-item">
             <label class="layui-form-label">产品标题</label>
@@ -169,8 +175,23 @@
                            class="layui-input">
                 </div>
             </div>
-        </div>
 
+            <div class="layui-form-item">
+                <label class="layui-form-label">图片</label>
+                <div class="layui-inline">
+                    <input id="imagePathValue" name="imagePath" type="hidden"/>
+                    <button type="button" class="layui-btn" id="imagePathBtn">
+                        <i class="layui-icon">&#xe67c;</i>上传图片
+                    </button>
+                    <span style="font-size: 10px;">(最多9张)</span>
+                </div>
+                <div id="imagePathSrc" class="layui-input-block" style='margin-top: 5px;height: 110px;'>
+                    <img class="pathDemo"
+                         src='http://bpic.588ku.com/element_origin_min_pic/01/47/02/12574338a640011.jpg!r650'
+                         width='100' height='90'/>
+                </div>
+            </div>
+        </div>
 
         <blockquote class="layui-elem-quote">描述信息</blockquote>
         <div class="layui-form-item">
@@ -187,7 +208,8 @@
                         <li>意大利语</li>
                     </ul>
                     <div class="layui-tab-content" style="height: 100px;">
-                        <div class="layui-tab-item layui-show"><textarea name="productDescriptionCn" placeholder=""
+                        <div class="layui-tab-item layui-show"><textarea id="productDescriptionCn"
+                                                                         name="productDescriptionCn" placeholder=""
                                                                          class="layui-textarea"
                                                                          style="resize: none"
                                                                          maxlength="600">${product.productDescriptionCn}</textarea>
@@ -698,29 +720,25 @@
         src="<%=request.getContextPath()%>/assistant/lib/jquery.validation/1.14.0/messages_zh.js"></script>
 <script type="text/javascript" src="<%=request.getContextPath()%>/assistant/lib/layui/layui.js"></script>
 <script type="text/javascript">
+    /*  UE.getEditor('productDescriptionCn');*/
     var id = '';
     $(function () {
-
         var skuArr = [];
         //singleSku();
         //日期
         initSku('${product}')
-
-
         var skuType = '${skuType}';
-
 
         function initSku() {
 
         }
 
-
+        initSKuPath(null, null);
         layui.use('element', function () {
             var element = layui.element;
 
             //…
         });
-
         layui.use('laydate', function () {
             var laydate = layui.laydate;
             laydate.render({
@@ -739,7 +757,6 @@
                 elem: '.saleEnd' //促销结束时间
             });
         });
-
         function initSkuSaleDate() {
             var laydate = layui.laydate;
             layui.use('laydate', function () {
@@ -766,7 +783,6 @@
                     singleSku();
                 }
             });
-
 
             if (skuType == "2") {//选中多变体
                 mutiSku();
@@ -806,9 +822,7 @@
                     }
                 });
 
-
                 for (var i = 0; i < vars.length; i++) {
-
                     var vvType = vars[i].variationType;
                     console.log(vvType);
                     if (vvType != null && vvType != 'undefined') {
@@ -817,17 +831,12 @@
                             $("#skuRender button").parent().prev().find('input').val(vars[i].colorMap);
 
                         }
-
                         $(".skuBtn").click();
                         form.render(null, 'skuRender');
                         form.render('checkbox');
-
                     }
-
                 }
-
                 var index = 0;
-
                 for (var i = 0; i < vars.length; i++) {
                     var vvType = vars[i].variationType;
                     if (vvType != null && vvType != 'undefined') {
@@ -922,15 +931,11 @@
                 singleSku();
                 $("input[name='skuType']").eq(0).attr("checked", 'checked');
                 $("input[name='skuType']").eq(1).removeAttr("checked");
-
-
             }
 
             form.render("radio");
 
-
             form.on('checkbox(skuMutiCheck)', function (data) {//切换变体类型
-
                 refrehSKuPath();
                 form.render(null, "skuMutiPath");
             });
@@ -974,7 +979,6 @@
             form.on('submit', function (data) {
                 var skuTypeA = data.field.skuType;
                 //组合关键词和简要描述
-
                 data.field["bulletPointCn"] = getContentByLanguage("pointsCn");
                 data.field["bulletPointJp"] = getContentByLanguage("pointsJp");
                 data.field["bulletPointEs"] = getContentByLanguage("pointsEs");
@@ -991,15 +995,19 @@
                 data.field["keywordsEs"] = getContentByLanguage("keywordsEs");
                 data.field["keywordsIt"] = getContentByLanguage("keywordsIt");
                 data.field["keywordsUk"] = getContentByLanguage("keywordsUk");
+                var isItemImags = true;
                 if (skuTypeA == 1) {//单体
-
+                    var imagePathValue = $("#imagePathValue").val();
+                    if (imagePathValue == null || imagePathValue == "") {
+                        isItemImags = false;
+                    }
+                    data.field["imagePath"] = imagePathValue;
                 } else {//多变中
                     if (selectValue == null || selectValue == "") {
                         layer.msg("请选择变种主题！", {icon: 5, time: 1000});
                         return false;
                     }
                     var skuVar = [];
-                    var isItemImags = true;
                     $("#skuTable tbody tr").each(function (i, val) {
                         var item = {};
                         var itemImgs = $(val).eq(0).find(".trOtherPath").val().split(",");
@@ -1058,10 +1066,10 @@
                         }
                         skuVar.push(item);
                     });
-                    if (!isItemImags) {
-                        layer.msg("请上传变体图片", {icon: 5, time: 1000});
-                        return false;
-                    }
+                }
+                if (!isItemImags) {
+                    layer.msg("请上传变体图片", {icon: 5, time: 1000});
+                    return false;
                 }
                 data.field["vars"] = JSON.stringify(skuVar);
                 var url = '<%=request.getContextPath()%>/product/claim/save';
@@ -1140,10 +1148,7 @@
                     skuTable(desc, fistRow, null, null);
                 }
             }
-
             $("#skuMutiPath").append(getSKuPathDom(arr));
-            initSKuPath(null, null);
-
         }
 
         function skuTable(fisrtDesc, fisrtArr, secondDesc, secondArr) {
@@ -1324,9 +1329,7 @@
 
 
         function initSKuPath(id, sid) {
-
             layui.use('upload', function () {
-
                 var upload = layui.upload;
                 //执行实例
                 var uploadInst = upload.render({
@@ -1350,21 +1353,17 @@
                                 if ($(val).attr("val") == key) {
                                     $(val).find(".trMainPath").val("");
                                 }
-
                             });
                             var pprent = $(this).parent().parent();
                             $(this).parent().remove();
                             pprent.append("<img src='http://bpic.588ku.com/element_origin_min_pic/01/47/02/12574338a640011.jpg!r650' width='100' height='90' />");
                         })
-
                         //上传完毕回调
                     }
                     , error: function () {
                         //请求异常回调
                     }
                 });
-
-
                 var uploadMuti = upload.render({
                     accept: "images",
                     acceptMime: "image/*",
@@ -1373,17 +1372,13 @@
                     , number: 9
                     , url: '<%=request.getContextPath()%>/upload/image' //上传接口
                     , done: function (res, index, upload) {
-
                         var $this = $($(this)[0].item[0]);
-
                         var key = $this.parent().prev().attr("val");
                         $this.parent().next().find(".pathDemo").remove();
                         console.log($this);
                         $this.parent().next().append("<div style='width:100px;height:110px;margin-left:2px;float:left;'><img width='100px' height='90px' style='padding-right:5px;' src=<%=request.getContextPath()%>/upload/" + res.data + " /><i class='layui-icon delImage' style='font-size:20px;margin-left:35px;'>&#xe640;</i></div>");
-
                         $("#skuTable tbody tr").each(function (i, val) {
                             if ($(val).attr("val") == key) {
-
                                 var exVal = $(val).find(".trOtherPath").val();
                                 var exVals = "";
                                 if (exVal == null || exVal == "") {
@@ -1418,10 +1413,57 @@
                                         }
                                     }
                                 }
-
                                 $(val).find(".trOtherPath").val(delVals.join(","));
-
                             });
+                            $(this).parent().remove();
+                            if (pprent.find("div").length == 0) {
+                                pprent.append("<img class='pathDemo' src='http://bpic.588ku.com/element_origin_min_pic/01/47/02/12574338a640011.jpg!r650' width='100' height='90' />");
+                            }
+                        })
+                    }
+                    , error: function () {
+                        //请求异常回调
+                    }
+                });
+                var uploadMuti = upload.render({
+                    accept: "images",
+                    acceptMime: "image/*",
+                    elem: "#imagePathBtn", //绑定元素
+                    multiple: true,
+                    number: 9,
+                    url: '<%=request.getContextPath()%>/upload/image', //上传接口
+                    done: function (res, index, upload) {
+                        var $this = $($(this)[0].item[0]);
+                        var key = $this.parent().prev().attr("val");
+                        $this.parent().next().find(".pathDemo").remove();
+                        $this.parent().next().append("<div style='width:100px;height:110px;margin-left:2px;float:left;'><img width='100px' height='90px' style='padding-right:5px;' src=<%=request.getContextPath()%>/upload/" + res.data + " /><i class='layui-icon delImage' style='font-size:20px;margin-left:35px;'>&#xe640;</i></div>");
+                        var exVal = $("#imagePathValue").val();
+                        if (exVal == null || exVal == "") {
+                            exVal = res.data;
+                        } else {
+                            exVal = exVal + "," + res.data;
+                        }
+                        $("#imagePathValue").val(exVal);
+                        //上传完毕回调
+                        if ($this.parent().next().find("img").length > 9) {//最多上传9张
+                            $this.parent().next().find("img").each(function (i, val) {
+                                if (i > 9) {
+                                    $(val).parent().remove();
+                                }
+                            });
+                        }
+                        $(".delImage").on("click", function () {
+                            var pprent = $(this).parent().parent();
+                            var ppKey = $(this).prev().attr("src").substring(8);
+                            var exVal = $("#imagePathValue").val();
+                            var exArr = exVal.split(",");
+                            var delVals = [];
+                            for (var i = 0; i < exArr.length; i++) {
+                                if (exArr[i] != "" && ppKey != exArr[i]) {
+                                    delVals.push(exArr[i]);
+                                }
+                            }
+                            $("#imagePathValue").val(delVals.join(","));
                             $(this).parent().remove();
                             if (pprent.find("div").length == 0) {
                                 pprent.append("<img class='pathDemo' src='http://bpic.588ku.com/element_origin_min_pic/01/47/02/12574338a640011.jpg!r650' width='100' height='90' />");

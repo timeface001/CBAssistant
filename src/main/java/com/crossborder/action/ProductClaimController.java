@@ -28,7 +28,7 @@ import java.util.Map;
 /**
  * 产品管理--
  * >>>>>>>>>>>产品列表
- * <p>
+ * <p/>
  * Created by fengsong on 2018/4/14.
  */
 @Controller
@@ -49,7 +49,7 @@ public class ProductClaimController extends BaseController {
      */
     @RequestMapping(value = "/product/claim/list", produces = "text/plain;charset=UTF-8")
     @ResponseBody
-    public String productList(String data, Integer start, Integer length,Integer draw) {
+    public String productList(String data, Integer start, Integer length, Integer draw) {
 
         Map<String, Object> params = JSON.parseObject(data, Map.class);
         if (params == null) {
@@ -70,10 +70,7 @@ public class ProductClaimController extends BaseController {
     @RequestMapping(value = "/product/claim/save", produces = "text/plain;charset=UTF-8")
     @ResponseBody
     public String save(ClaimProduct product, String saleStartTime, String saleEndTime, String vars) {
-
-
         List<ProductItemVar> list = new ArrayList<>();
-
         ProductItemVar var = new ProductItemVar();
         var.setProductId(product.getId());
         var.setPrice(product.getPrice());
@@ -105,7 +102,7 @@ public class ProductClaimController extends BaseController {
         ClaimProduct claimProduct = productManagerService.selectClaimProduct(id);
         //view.addObject("product", claimProduct);
         request.setAttribute("typeList", productSkuTypeService.selectTypeList());
-        claimProduct.setSku(StringUtils.isNoneBlank(claimProduct.getSku())?claimProduct.getSku():GeneralUtils.getRandomString(16));
+        claimProduct.setSku(StringUtils.isNoneBlank(claimProduct.getSku()) ? claimProduct.getSku() : GeneralUtils.getRandomString(16));
         request.setAttribute("product", claimProduct);
         request.setAttribute("productStr", JSON.toJSONString(claimProduct));
         //关键词返回
@@ -150,10 +147,9 @@ public class ProductClaimController extends BaseController {
 
     @RequestMapping(value = "/product/claim/prePublish", produces = "text/plain;charset=UTF-8")
     @ResponseBody
-    public String prePublish(String id,String type) {
-
+    public String prePublish(String id, String type) {
         try {
-            productManagerService.prePublishProduct(id,type);
+            productManagerService.prePublishProduct(id, type);
         } catch (Exception e) {
             e.printStackTrace();
             return JSON.toJSONString(ResponseGen.genFail());
@@ -168,43 +164,43 @@ public class ProductClaimController extends BaseController {
         if (org.apache.commons.lang3.StringUtils.isBlank(language)) {
             return JSON.toJSONString(ResponseGen.genFail());
         }
-        List<TranslateDto> resultList=null;
+        List<TranslateDto> resultList = null;
         try {
             List<String> dataList = JSON.parseArray(data, String.class);
             List<String> midList = new ArrayList<>(dataList.size());
             BaiduTranApi api = BaiduTranApi.getInstance();
             if (language.equals("cn")) {
-                resultList=getTanslateList(dataList);
-            }else if(language.equals("uk")){
-                for(String s:dataList){
+                resultList = getTanslateList(dataList);
+            } else if (language.equals("uk")) {
+                for (String s : dataList) {
                     midList.add(api.uk2Zh(s));
                 }
-                resultList=getTanslateList(midList);
-            }else if(language.equals("de")){
-                for(String s:dataList){
+                resultList = getTanslateList(midList);
+            } else if (language.equals("de")) {
+                for (String s : dataList) {
                     midList.add(api.de2Zh(s));
                 }
-                resultList=getTanslateList(midList);
-            }else if(language.equals("jp")){
-                for(String s:dataList){
+                resultList = getTanslateList(midList);
+            } else if (language.equals("jp")) {
+                for (String s : dataList) {
                     midList.add(api.jp2Zh(s));
                 }
-                resultList=getTanslateList(midList);
-            }else if(language.equals("it")){
-                for(String s:dataList){
+                resultList = getTanslateList(midList);
+            } else if (language.equals("it")) {
+                for (String s : dataList) {
                     midList.add(api.it2Zh(s));
                 }
-                resultList=getTanslateList(midList);
-            }else if(language.equals("es")){
-                for(String s:dataList){
+                resultList = getTanslateList(midList);
+            } else if (language.equals("es")) {
+                for (String s : dataList) {
                     midList.add(api.es2Zh(s));
                 }
-                resultList=getTanslateList(midList);
-            }else if(language.equals("fr")){
-                for(String s:dataList){
+                resultList = getTanslateList(midList);
+            } else if (language.equals("fr")) {
+                for (String s : dataList) {
                     midList.add(api.fr2Zh(s));
                 }
-                resultList=getTanslateList(midList);
+                resultList = getTanslateList(midList);
             }
         } catch (Exception e) {
             e.printStackTrace();

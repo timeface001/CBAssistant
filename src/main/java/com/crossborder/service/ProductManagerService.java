@@ -119,7 +119,6 @@ public class ProductManagerService {
         //翻译产品描述  产品概要  关键词翻译
         List<String> keyList = JSON.parseArray(product.getKeywordsCn(), String.class);
         List<String> pointList = JSON.parseArray(product.getBulletPointCn(), String.class);
-
         String productDesc = product.getProductDescriptionCn();
         product.setProductDescriptionCn(productDesc);
         product.setProductDescriptionDe(BaiduTranApi.getInstance().zh2De(productDesc));
@@ -175,11 +174,8 @@ public class ProductManagerService {
         product.setBulletPointJp(JSON.toJSONString(pointJp));
         product.setBulletPointUk(JSON.toJSONString(pointUk));
         product.setBulletPointFr(JSON.toJSONString(pointFr));
-
-
         product.setUpdateState("1");//已编辑
         product.setUpdateTime(new Date());
-
         claimProductExtMapper.updateByPrimaryKeySelective(product);
     }
 
