@@ -365,7 +365,6 @@
     $("#typeBtn").click(function () {
         $("#modal-demo").modal("show");
         initLevel1();
-        /*layer_show("选择分类", "product-type.jsp");*/
     });
     function initLevel1() {
         $.ajax({
@@ -432,7 +431,7 @@
                 typeId = options.val();
             }
         }
-        $("#typeName").val(typeName);
+        $("#typeName").val(typeName.substring(0, typeName.length - 3));
         $("#typeId").val(typeId);
     }
 </script>

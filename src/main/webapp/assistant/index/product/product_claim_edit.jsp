@@ -842,9 +842,7 @@
                             ttHtml += "<div style='width:100px;height:110px;margin-left:2px;float:left;'><img width='100px' height='90px' style='padding-right:5px;' src=<%=request.getContextPath()%>/upload/" + ttImages[j] + " /><i class='layui-icon delImage' style='font-size:20px;margin-left:35px;'>&#xe640;</i></div>";
                         }
 
-
                         $("#skuMutiPath > div :eq(" + (index * 3 + 2) + ")").html(ttHtml);
-
 
                         $("#skuTable> tbody tr").eq(index).find("td").each(function (ii, val) {
                             var isTwo = $(val).parent().attr("val").indexOf(":") > 0;
