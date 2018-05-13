@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crossborder.dao.mapper.ext.ProductUploadLogMapper">
+  <resultMap id="BaseResultMap" type="com.crossborder.entity.ProductUploadLog">
+    <id column="a_ID" jdbcType="VARCHAR" property="id" />
+    <result column="a_PRODUCT_ID" jdbcType="VARCHAR" property="productId" />
+    <result column="a_TYPE" jdbcType="CHAR" property="type" />
+    <result column="a_SUBMIT_ID" jdbcType="VARCHAR" property="submitId" />
+    <result column="a_SUBMIT_DATE" jdbcType="DATE" property="submitDate" />
+    <result column="a_STATUS" jdbcType="VARCHAR" property="status" />
+    <result column="a_RESPONSE" jdbcType="VARCHAR" property="response" />
+    <result column="a_SHOP_ID" jdbcType="VARCHAR" property="shopId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    a.ID as a_ID, a.PRODUCT_ID as a_PRODUCT_ID, a.TYPE as a_TYPE, a.SUBMIT_ID as a_SUBMIT_ID, 
+    a.SUBMIT_DATE as a_SUBMIT_DATE, a.STATUS as a_STATUS, a.RESPONSE as a_RESPONSE, a.SHOP_ID as a_SHOP_ID
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from T_PRODUCT_UPLOAD_LOG a
+    where a.ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from T_PRODUCT_UPLOAD_LOG
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.crossborder.entity.ProductUploadLog">
+    insert into T_PRODUCT_UPLOAD_LOG (ID, PRODUCT_ID, TYPE, 
+      SUBMIT_ID, SUBMIT_DATE, STATUS, 
+      RESPONSE, SHOP_ID)
+    values (#{id,jdbcType=VARCHAR}, #{productId,jdbcType=VARCHAR}, #{type,jdbcType=CHAR}, 
+      #{submitId,jdbcType=VARCHAR}, #{submitDate,jdbcType=DATE}, #{status,jdbcType=VARCHAR}, 
+      #{response,jdbcType=VARCHAR}, #{shopId,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.crossborder.entity.ProductUploadLog">
+    insert into T_PRODUCT_UPLOAD_LOG
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="productId != null">
+        PRODUCT_ID,
+      </if>
+      <if test="type != null">
+        TYPE,
+      </if>
+      <if test="submitId != null">
+        SUBMIT_ID,
+      </if>
+      <if test="submitDate != null">
+        SUBMIT_DATE,
+      </if>
+      <if test="status != null">
+        STATUS,
+      </if>
+      <if test="response != null">
+        RESPONSE,
+      </if>
+      <if test="shopId != null">
+        SHOP_ID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="productId != null">
+        #{productId,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=CHAR},
+      </if>
+      <if test="submitId != null">
+        #{submitId,jdbcType=VARCHAR},
+      </if>
+      <if test="submitDate != null">
+        #{submitDate,jdbcType=DATE},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="response != null">
+        #{response,jdbcType=VARCHAR},
+      </if>
+      <if test="shopId != null">
+        #{shopId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.crossborder.entity.ProductUploadLog">
+    update T_PRODUCT_UPLOAD_LOG
+    <set>
+      <if test="productId != null">
+        PRODUCT_ID = #{productId,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        TYPE = #{type,jdbcType=CHAR},
+      </if>
+      <if test="submitId != null">
+        SUBMIT_ID = #{submitId,jdbcType=VARCHAR},
+      </if>
+      <if test="submitDate != null">
+        SUBMIT_DATE = #{submitDate,jdbcType=DATE},
+      </if>
+      <if test="status != null">
+        STATUS = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="response != null">
+        RESPONSE = #{response,jdbcType=VARCHAR},
+      </if>
+      <if test="shopId != null">
+        SHOP_ID = #{shopId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.crossborder.entity.ProductUploadLog">
+    update T_PRODUCT_UPLOAD_LOG
+    set PRODUCT_ID = #{productId,jdbcType=VARCHAR},
+      TYPE = #{type,jdbcType=CHAR},
+      SUBMIT_ID = #{submitId,jdbcType=VARCHAR},
+      SUBMIT_DATE = #{submitDate,jdbcType=DATE},
+      STATUS = #{status,jdbcType=VARCHAR},
+      RESPONSE = #{response,jdbcType=VARCHAR},
+      SHOP_ID = #{shopId,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

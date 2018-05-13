@@ -142,6 +142,7 @@ public class ProductManagerService {
             keyJp.add(BaiduTranApi.getInstance().zh2Jp(key));
             keyUk.add(BaiduTranApi.getInstance().zh2Uk(key));
             keyFr.add(BaiduTranApi.getInstance().zh2Fr(key));
+
         }
         product.setKeywordsCn(JSON.toJSONString(keyList));
         product.setKeywordsDe(JSON.toJSONString(keyDe));
@@ -165,6 +166,7 @@ public class ProductManagerService {
             pointJp.add(BaiduTranApi.getInstance().zh2Jp(point));
             pointUk.add(BaiduTranApi.getInstance().zh2Uk(point));
             pointFr.add(BaiduTranApi.getInstance().zh2Fr(point));
+
         }
         product.setBulletPointCn(JSON.toJSONString(pointList));
         product.setBulletPointDe(JSON.toJSONString(pointDe));
@@ -173,6 +175,7 @@ public class ProductManagerService {
         product.setBulletPointJp(JSON.toJSONString(pointJp));
         product.setBulletPointUk(JSON.toJSONString(pointUk));
         product.setBulletPointFr(JSON.toJSONString(pointFr));
+
 
         product.setUpdateState("1");//已编辑
         product.setUpdateTime(new Date());
@@ -330,6 +333,9 @@ public class ProductManagerService {
         uploadGB.setBulletPoint5(pointGB.get(4));
     }
 
+    @Resource
+    private ProductUploadLogDao productUploadLogDao;
+
     public ProductAmzUpload selectAmzUploadProduct(String id) {
         return productAmzUploadDao.selectByPrimaryKey(id);
     }
@@ -338,7 +344,13 @@ public class ProductManagerService {
 
         ResponseDto response = amzUpload.uploadProduct(product, shop);
         System.out.println(JSON.toJSONString(response));
-        ;
+        ProductUploadLog log = new ProductUploadLog();
+        log.setProductId(product.getId());
+        log.setStatus("3");
+        log.setSubmitId(response.getData().toString());
+        log.setShopId(shop.get("SHOP_ID").toString());
+        productUploadLogDao.insert(log);
+
         //1发布失败 2发布成功 3发布中
         product.setPublishStatus("3");
         product.setUpdateDelete("update");
@@ -383,13 +395,15 @@ public class ProductManagerService {
     private CommonSet set;
 
     public void initshopCategory() {
-        Map<String, Object> params = new HashMap<>();
-        params.put("id", "1039");
+        Map<String,Object> params=new HashMap<>();
         final List<Map<String, Object>> shops = shopManageService.selectShops(params);
         ThreadPoolExecutor executor = new ThreadPoolExecutor(2, 5, 100, TimeUnit.MINUTES, new ArrayBlockingQueue<Runnable>(10));
 
-        for (final Map<String, Object> shop : shops) {
-            initCategory(set.getProductCategoryPath() + shop.get("SHOP_ID") + ".txt", shop);
+        for (Map<String, Object> shop : shops) {
+            if (!shop.get("SHOP_ID").toString().equals("1039")) {
+
+                initCategory(set.getProductCategoryPath() + shop.get("SHOP_ID") + ".txt", shop);
+            }
             /*executor.execute(new Runnable() {
                 @Override
                 public void run() {
@@ -412,6 +426,7 @@ public class ProductManagerService {
         System.out.println(executor.isTerminated());
 
 
+
     }
 
     // "C:\\Users\\fengsong\\Desktop\\cate.txt"
@@ -429,12 +444,16 @@ public class ProductManagerService {
             Element root = doc.getRootElement();
             List<Element> list = root.getChildren("Node");
             int i = 0;
+            List<String> ids = new ArrayList<>();
             String code = shop.get("COUNTRY_CODE").toString();
+            productUploadCategoryDao.deleteByShopId(shop.get("SHOP_ID").toString(), code);
+            List<ProductUploadCategory> categories = new ArrayList<>();
             for (Element e : list) {
                 i++;
                 ProductUploadCategory category = new ProductUploadCategory();
                 boolean hasChildren = e.getChild("hasChildren").getText().equals("true");
                 if (hasChildren) {
+                    category.setHasChild("1");
                     category.setChildCount(Integer.parseInt(e.getChild("childNodes").getAttribute("count").getValue()));
                 }
                 String pathp = e.getChild("browsePathById").getText();
@@ -447,17 +466,30 @@ public class ProductManagerService {
                     pc.setId(pathp.split(",")[0]);
                     pc.setCountryCode(code);
                     pc.setShopId(shop.get("SHOP_ID").toString());
-                    productUploadCategoryDao.insert(pc);
+                    System.out.println(JSON.toJSONString(pc));
+                    if (ids.indexOf(pc.getId()) == -1) {
+                        categories.add(pc);
+                        ids.add(pc.getId());
+                    }
                 }
                 category.setId(e.getChild("browseNodeId").getText());
 
-                category.setParentId(pathp.split(",")[pathp.split(",").length - 1]);
+                category.setParentId(pathp.split(",")[pathp.split(",").length - 2]);
                 category.setPath(pathp);
                 category.setCountryCode(code);
                 category.setShopId(shop.get("SHOP_ID").toString());
-                productUploadCategoryDao.insert(category);
+                category.setTypeDef(e.getChildText("productTypeDefinitions"));
+                System.out.println(JSON.toJSONString(category));
+                if (ids.indexOf(category.getId()) == -1) {
+                    categories.add(category);
+                    ids.add(category.getId());
+                }
+
+                if (categories.size() > 100) {
+                    productUploadCategoryDao.batchInsert(categories);
+                    categories = new ArrayList<>(0);
+                }
             }
-            System.out.println(shop.get("SHOP_NAME") + "成功");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -472,4 +504,18 @@ public class ProductManagerService {
         }
     }
 
+
+    public List<ProductUploadCategory> selectList(String parentId, String shopId) {
+        return productUploadCategoryDao.selectList(parentId, shopId);
+    }
+
+    public List<ProductUploadCategory> selectListParent(String shopId) {
+        return productUploadCategoryDao.selectListParent(shopId);
+    }
+
+
+    public List<ProductUploadLog> selectLogList(String s) {
+
+        return productUploadLogDao.selectLogList(s);
+    }
 }

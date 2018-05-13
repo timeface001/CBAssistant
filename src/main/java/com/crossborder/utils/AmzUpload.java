@@ -1,14 +1,16 @@
 package com.crossborder.utils;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.amazonaws.mws.MarketplaceWebService;
 import com.amazonaws.mws.MarketplaceWebServiceClient;
 import com.amazonaws.mws.MarketplaceWebServiceConfig;
 import com.amazonaws.mws.MarketplaceWebServiceException;
 import com.amazonaws.mws.model.*;
 import com.crossborder.entity.ProductAmzUpload;
-import org.jdom2.Element;
+import org.apache.commons.lang3.StringUtils;
 import org.jdom2.JDOMException;
-import org.jdom2.input.SAXBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -45,12 +47,12 @@ public class AmzUpload {
 
     public ResponseDto uploadProduct(ProductAmzUpload product, Map<String, Object> shop) {
 
-        String s = "/Users/fengsong/Downloads/rule_chain.txt";
-        FileInputStream fis = AmzXmlTemplate.uploadProduct(product, shop);
+        FileInputStream fis = AmzXmlTemplate.uploadProduct(product, shop, commonSet.getAmzUploadProductPath());
         SubmitFeedRequest request = getRequest(shop, AmzFeeType.PRODUCT_FEED);
         try {
             request.setFeedContent(fis);
             request.setContentMD5(MD5.computeContentMD5HeaderValue(fis));
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -69,6 +71,96 @@ public class AmzUpload {
 
         request.setFeedType(feeType.getVal());
         return request;
+    }
+
+    public ResponseDto<String> getFeedSubResult(Map<String, Object> shop, String submitId) {
+        GetFeedSubmissionListRequest request = new GetFeedSubmissionListRequest();
+        request.setMerchant(shop.get("MERCHANT_ID").toString());
+        request.setFeedSubmissionIdList(new IdList(Arrays.asList(submitId)));
+        ResponseDto<String> dto = new ResponseDto();
+        int i = 0;
+        try {
+            GetFeedSubmissionListResponse response = getService(shop).getFeedSubmissionList(request);
+            boolean isDone;
+            do {
+                isDone = getFeedResult(response);
+                i++;
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            } while (!isDone && i < 3);
+
+            if (isDone) {
+
+                GetFeedSubmissionResultRequest resultRequest = new GetFeedSubmissionResultRequest();
+                resultRequest.setMerchant(shop.get("MERCHANT_ID").toString());
+
+                resultRequest.setFeedSubmissionId(submitId);
+
+                OutputStream processingResult = null;
+                String path = commonSet.getAmzUploadProductPath() + shop.get("SHOP_ID") + "feedSubmissionResult.xml";
+                try {
+                    processingResult = new FileOutputStream(path);
+                    resultRequest.setFeedSubmissionResultOutputStream(processingResult);
+                    getService(shop).getFeedSubmissionResult(resultRequest);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+                try {
+                    JSONObject res = XmlUtil.xml2JSON(FileUtils.File2byte(new File(path)));
+                    System.out.println(JSON.toJSONString(res));
+                    dto.setSuccess(false);
+                    dto.setMsg(getErrorMsg(res));
+                } catch (JDOMException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+
+        } catch (MarketplaceWebServiceException e) {
+            e.printStackTrace();
+        }
+
+        return dto;
+
+    }
+
+    public String getErrorMsg(JSONObject json) {
+        String str = "";
+        JSONArray array = json.getJSONObject("AmazonEnvelope").getJSONArray("Message");
+        for (int i = 0; i < array.size(); i++) {
+            JSONArray reports = array.getJSONObject(i).getJSONArray("ProcessingReport");
+            for (int k = 0; k < reports.size(); k++) {
+                JSONArray list = reports.getJSONObject(k).getJSONArray("Result");
+                for (int j = 0; j < list.size(); j++) {
+                    JSONObject object = list.getJSONObject(j);
+                    if (object.getString("ResultCode").equals("[Error]")) {
+                        str += object.getString("ResultDescription") + ",";
+                    }
+                }
+            }
+        }
+        return StringUtils.isBlank(str) ? "" : str.substring(0, str.length() - 1);
+    }
+
+    private boolean getFeedResult(GetFeedSubmissionListResponse response) {
+        boolean isDone = false;
+        if (response.isSetGetFeedSubmissionListResult()) {
+            GetFeedSubmissionListResult getFeedSubmissionListResult = response.getGetFeedSubmissionListResult();
+            List<FeedSubmissionInfo> feedSubmissionInfoList = getFeedSubmissionListResult.getFeedSubmissionInfoList();
+            for (FeedSubmissionInfo feedSubmissionInfo : feedSubmissionInfoList) {
+
+                isDone = feedSubmissionInfo.getFeedProcessingStatus().equals("_DONE_");
+            }
+        }
+
+        return isDone;
     }
 
 
@@ -187,6 +279,7 @@ public class AmzUpload {
                 }
 
                 System.out.println("REPORTID:"+reportId);
+                //reportId="9497489579017662";
                 if (reportId != null) {
                     GetReportRequest requestpp = new GetReportRequest();
                     requestpp.setMerchant(merchantId);

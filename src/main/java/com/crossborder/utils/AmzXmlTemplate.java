@@ -1,21 +1,27 @@
 package com.crossborder.utils;
 
 import com.crossborder.entity.ProductAmzUpload;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.Date;
 import java.util.Map;
 
 public class AmzXmlTemplate {
 
 
-    public static FileInputStream uploadProduct(ProductAmzUpload product, Map<String, Object> shop) {
+    public static FileInputStream uploadProduct(ProductAmzUpload product, Map<String, Object> shop, String path) {
+
+
+
+
 
         String text = "<?xml version=\"1.0\" ?>\n" +
                 "<AmazonEnvelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"amznenvelope.xsd\">\n" +
                 "<Header>\n" +
                 "<DocumentVersion>1.01</DocumentVersion>\n" +
-                "<MerchantIdentifier>M_SELLER_" + shop.get("MERCHANT_ID") + "</MerchantIdentifier>\n" +
+                "<MerchantIdentifier>" + shop.get("MERCHANT_ID") + "</MerchantIdentifier>\n" +
                 "</Header>\n" +
                 "<MessageType>Product</MessageType>\n" +
                 "<PurgeAndReplace>false</PurgeAndReplace>\n" +
@@ -23,12 +29,12 @@ public class AmzXmlTemplate {
                 "<MessageID>1</MessageID>\n" +
                 "<OperationType>Update</OperationType>\n" +
                 "<Product>\n" +
-                "<SKU>" + product.getItemSku() + "-" + product.getAmzSku() + "</SKU>\n" +
-                "<StandardProductID>" + product.getExternalProductId() + "</StandardProductID>\n" +
+                "<SKU>" + product.getItemSku() + "-" + product.getAmzSku() + "</SKU>" +
+                "<StandardProductID>" + product.getExternalProductId() + "</StandardProductID>" +
                 "<ItemPackageQuantity>" + product.getItemPackageQuantity() + "</ItemPackageQuantity>\n" +
-                "<LaunchDate>" + new Date() + "</LaunchDate>\n" +
-                "<DescriptionData>\n" +
-                "<Title>" + product.getItemName() + "</Title>\n" +
+                "<LaunchDate>" + GeneralUtils.formatDate(new Date(), "yyyy-MM-dd'T'hh:mm:ss") + "</LaunchDate>\n" +
+                "<DescriptionData>" +
+                "<Title>" + product.getItemName() + "</Title>" +
                 "<Brand>" + product.getBrandName() + "</Brand> <Description>" + product.getProductDescription() + "</Description>\n" +
                 "<BulletPoint>" + product.getBulletPoint1() + "</BulletPoint>" +
                 "<BulletPoint>" + product.getBulletPoint2() + "</BulletPoint>" +
@@ -44,14 +50,12 @@ public class AmzXmlTemplate {
                 //"<ItemType>flat-sheets</ItemType>" +
                 "<IsGiftWrapAvailable>false</IsGiftWrapAvailable>\n" +
                 "<IsGiftMessageAvailable>false</IsGiftMessageAvailable>\n" +
-                " <RecommendedBrowseNode></RecommendedBrowseNode>\n" +
-                " <RecommendedBrowseNode></RecommendedBrowseNode>\n" +
                 "</DescriptionData>\n" +
                 "<ProductData>\n" +
                 "<Home>\n" +
                 "<Parentage>variation-parent</Parentage>\n" +
-                "<VariationData>\n" +
-                "<VariationTheme>" + product.getVariationTheme() + "</VariationTheme>\n" +
+                "<VariationData>" +
+                (StringUtils.isBlank(product.getVariationTheme()) ? "" : ("<VariationTheme>" + product.getVariationTheme() + "</VariationTheme>")) +
                 "</VariationData>\n" +
                 /*"<Material>cotton</Material>\n" +
                 "<ThreadCount>500</ThreadCount>\n" +*/
@@ -59,10 +63,16 @@ public class AmzXmlTemplate {
                 "</ProductData>\n" +
                 "</Product>\n" +
                 "</Message>\n" +
-                "<Message>\n" +
                 "</AmazonEnvelope>";
 
-        FileUtils.byte2File(text.getBytes(), "/Users/fengsong/Downloads/", "rule_chain.txt");
+        System.out.println(text);
+
+
+        try {
+            return new FileInputStream(FileUtils.byte2File(text.getBytes(), path, product.getId() + "product_fee.txt"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
 
         return null;
 
