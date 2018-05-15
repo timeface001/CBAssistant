@@ -68,7 +68,7 @@ public class ProductManagerService {
                 Map<String, Object> product = productManagerDao.selectOne(id);
                 ClaimProduct claimProduct = new ClaimProduct();
                 claimProduct.setCreateUser(GeneralUtils.getUserId());
-                claimProduct.setImagePath(GeneralUtils.nullToEmpty(product.get("MAIN_PATH")));
+                claimProduct.setImagePath(GeneralUtils.nullToEmpty(product.get("MAIN_PATH")) + "," + GeneralUtils.nullToEmpty(product.get("IMAGE_PATH")));
                 claimProduct.setPrice(new BigDecimal(String.valueOf(product.get("PRICE"))));
                 claimProduct.setProductId(product.get("ID").toString());
                 claimProduct.setTypeId(product.get("TYPE_ID").toString());
@@ -391,7 +391,7 @@ public class ProductManagerService {
     private CommonSet set;
 
     public void initshopCategory() {
-        Map<String,Object> params=new HashMap<>();
+        Map<String, Object> params = new HashMap<>();
         final List<Map<String, Object>> shops = shopManageService.selectShops(params);
         ThreadPoolExecutor executor = new ThreadPoolExecutor(2, 5, 100, TimeUnit.MINUTES, new ArrayBlockingQueue<Runnable>(10));
 
@@ -420,7 +420,6 @@ public class ProductManagerService {
             e.printStackTrace();
         }
         System.out.println(executor.isTerminated());
-
 
 
     }

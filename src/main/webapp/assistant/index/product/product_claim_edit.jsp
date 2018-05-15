@@ -127,12 +127,10 @@
                     </select>
                 </div>
             </div>
-
             <div lay-filter="skuRender" id="skuRender">
 
             </div>
         </div>
-
 
         <div id="priceInfo">
             <blockquote class="layui-elem-quote">价格信息</blockquote>
@@ -179,16 +177,16 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">图片</label>
                 <div class="layui-inline">
-                    <input id="imagePathValue" name="imagePath" type="hidden"/>
+                    <input id="imagePathValue" name="imagePath" type="hidden" value="${product.imagePath}"/>
                     <button type="button" class="layui-btn" id="imagePathBtn">
                         <i class="layui-icon">&#xe67c;</i>上传图片
                     </button>
                     <span style="font-size: 10px;">(最多9张)</span>
                 </div>
                 <div id="imagePathSrc" class="layui-input-block" style='margin-top: 5px;height: 110px;'>
-                    <img class="pathDemo"
+                    <%--<img class="pathDemo"
                          src='http://bpic.588ku.com/element_origin_min_pic/01/47/02/12574338a640011.jpg!r650'
-                         width='100' height='90'/>
+                         width='100' height='90'/>--%>
                 </div>
             </div>
         </div>
@@ -255,7 +253,7 @@
         <div class="layui-form-item" style="width: 1000px;">
             <label class="layui-form-label">简要描述</label>
             <div class="layui-inline">
-                <div class="layui-tab layui-tab-card" style="width: 670px;">
+                <div class="layui-tab layui-tab-card" style="width: 670px;" lay-filter="demo">
                     <ul class="layui-tab-title">
                         <li class="layui-this">中文</li>
                         <li>英语</li>
@@ -721,6 +719,8 @@
 <script type="text/javascript" src="<%=request.getContextPath()%>/assistant/lib/layui/layui.js"></script>
 <script type="text/javascript">
     /*  UE.getEditor('productDescriptionCn');*/
+    var imagePathSrc = '${product.imagePath}';
+    var imagePathArr = imagePathSrc.split(',');
     var id = '';
     $(function () {
         var skuArr = [];
@@ -733,11 +733,32 @@
 
         }
 
-        initSKuPath(null, null);
+        for (var i = 0; i < imagePathArr.length; i++) {
+            $("#imagePathSrc").append("<div style='width:100px;height:110px;margin-left:2px;float:left;'><img width='100px' height='90px' style='padding-right:5px;' src=<%=request.getContextPath()%>/upload/" + imagePathArr[i] + " /><i class='layui-icon delImage' style='font-size:20px;margin-left:35px;'>&#xe640;</i></div>");
+            $(".delImage").on("click", function () {
+                var pprent = $(this).parent().parent();
+                var ppKey = $(this).prev().attr("src").substring(8);
+                var exVal = $("#imagePathValue").val();
+                var exArr = exVal.split(",");
+                var delVals = [];
+                for (var i = 0; i < exArr.length; i++) {
+                    if (exArr[i] != "" && ppKey != exArr[i]) {
+                        delVals.push(exArr[i]);
+                    }
+                }
+                $("#imagePathValue").val(delVals.join(","));
+                $(this).parent().remove();
+                if (pprent.find("div").length == 0) {
+                    pprent.append("<img class='pathDemo' src='http://bpic.588ku.com/element_origin_min_pic/01/47/02/12574338a640011.jpg!r650' width='100' height='90' />");
+                }
+            })
+        }
+        initSingleImage();
         layui.use('element', function () {
             var element = layui.element;
-
-            //…
+            element.on('tab(demo)', function(data){
+                console.log(data);
+            });
         });
         layui.use('laydate', function () {
             var laydate = layui.laydate;
@@ -778,7 +799,6 @@
 
                 if ($(this).val() == "2") {//选中多变体
                     mutiSku();
-
                 } else {//单体
                     singleSku();
                 }
@@ -899,9 +919,7 @@
                 }
 
                 $(".delImage").on("click", function () {
-
                     var pprent = $(this).parent().parent();
-
                     var ppKey = $(this).prev().attr("src").substring(8);
                     $("#skuTable tbody tr").each(function (i, val) {
 
@@ -916,25 +934,19 @@
                                 }
                             }
                         }
-
                         $(val).find(".trOtherPath").val(delVals.join(","));
-
                     });
                     $(this).parent().remove();
                     if (pprent.find("div").length == 0) {
                         pprent.append("<img class='pathDemo' src='http://bpic.588ku.com/element_origin_min_pic/01/47/02/12574338a640011.jpg!r650' width='100' height='90' />");
                     }
                 })
-
-
             } else {//单体
                 singleSku();
                 $("input[name='skuType']").eq(0).attr("checked", 'checked');
                 $("input[name='skuType']").eq(1).removeAttr("checked");
             }
-
             form.render("radio");
-
             form.on('checkbox(skuMutiCheck)', function (data) {//切换变体类型
                 refrehSKuPath();
                 form.render(null, "skuMutiPath");
@@ -967,7 +979,6 @@
                             form.render(null, "skuTable");
                             $this.parent().parent().find("input").val('');
                         }
-
                     }
                 });
 
@@ -1171,10 +1182,8 @@
                     dom += getTR(true, fisrtArr[i], null);
                 }
             }
-
             $("#skuTable tbody").html(dom);
             initSkuSaleDate();
-
         }
 
         function getTR(isSingle, first, second) {
@@ -1290,7 +1299,6 @@
 
             }
 
-
             return dom;
         }
 
@@ -1326,7 +1334,6 @@
             $("#skuSingleDiv").css("display", "none");
             $("#priceInfo").css("display", "none");
         }
-
 
         function initSKuPath(id, sid) {
             layui.use('upload', function () {
@@ -1425,6 +1432,12 @@
                         //请求异常回调
                     }
                 });
+            });
+        }
+
+        function initSingleImage() {
+            layui.use('upload', function () {
+                var upload = layui.upload;
                 var uploadMuti = upload.render({
                     accept: "images",
                     acceptMime: "image/*",
@@ -1495,7 +1508,6 @@
             var isContainsEmpty = false;
             if (inputs.length > 0) {
                 for (var i = 0; i < inputs.length; i++) {
-
                     vArr.push($(inputs[i]).val());
                     if ($(inputs[i]).val() == null || $.trim($(inputs[i]).val()).length == 0) {
                         isContainsEmpty = true;
@@ -1514,7 +1526,6 @@
                 layer.msg('翻译词条不能为空', {icon: 5, time: 1000});
                 return;
             }
-
             var content = $(this).parent().prev().find(".layui-tab-content");
             if (currentLanguage === "中文") {
                 valueDisplay("cn", content, vArr);

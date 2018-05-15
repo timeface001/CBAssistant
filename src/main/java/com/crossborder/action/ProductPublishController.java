@@ -17,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,15 +46,20 @@ public class ProductPublishController extends BaseController {
      */
     @RequestMapping(value = "/product/publish/list", produces = "text/plain;charset=UTF-8")
     @ResponseBody
-    public String productList(String data, Integer start, Integer length, Integer draw) {
+    public String productList(HttpSession session, String data, Integer start, Integer length, Integer draw) {
         Map<String, Object> params = JSON.parseObject(data, Map.class);
+        Map<String, Object> user = (Map<String, Object>) session.getAttribute("user");
+        if (user.get("ROLE_ID").toString().equals("500")) {
+            params.put("userId", user.get("USER_ID"));
+        } else if (user.get("ROLE_ID").toString().equals("600")) {
+            params.put("companyId", user.get("USER_COMPANY"));
+        }
         Map<String, Object> result = new HashMap<>();
         PageHelper.startPage((start == null || start < 1) ? 1 : start, (length == null || length < 1) ? 10 : length);
         List<ProductAmzUpload> list = productManagerService.selectAmzUploadList(params);
         PageInfo pageInfo = new PageInfo<>(list);
         result.put("data", list);
         result.put("draw", draw);
-
         result.put("recordsTotal", pageInfo.getTotal());
         result.put("recordsFiltered", pageInfo.getTotal());
         return JSON.toJSONString(result);

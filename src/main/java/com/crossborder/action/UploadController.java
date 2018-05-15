@@ -18,9 +18,8 @@ import java.io.IOException;
 public class UploadController extends BaseController {
 
     @RequestMapping("/image")
-    public @ResponseBody
-    String upload(HttpServletRequest request, MultipartFile file) throws IOException {
-
+    @ResponseBody
+    public String upload(HttpServletRequest request, MultipartFile file) throws IOException {
         String localPath = GeneralUtils.getUUID16() + "." + FileType.getFileTypeByStream(file.getBytes());
         String fileName = request.getRealPath("/") + "upload/";
         File file11 = new File(fileName);

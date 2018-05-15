@@ -5,10 +5,12 @@ import com.crossborder.entity.ClaimProduct;
 import com.crossborder.entity.ProductItemVar;
 import com.crossborder.service.ProductManagerService;
 import com.crossborder.service.ProductSkuTypeService;
-import com.crossborder.utils.BaiduTranApi;
 import com.crossborder.utils.GeneralUtils;
 import com.crossborder.utils.ResponseGen;
 import com.crossborder.utils.TranslateDto;
+import com.crossborder.utils.lang.Lang;
+import com.crossborder.utils.querier.Querier;
+import com.crossborder.utils.trans.Google;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.StringUtils;
@@ -20,6 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +30,6 @@ import java.util.Map;
 
 /**
  * 产品管理--
- * >>>>>>>>>>>产品列表
  * <p/>
  * Created by fengsong on 2018/4/14.
  */
@@ -49,13 +51,18 @@ public class ProductClaimController extends BaseController {
      */
     @RequestMapping(value = "/product/claim/list", produces = "text/plain;charset=UTF-8")
     @ResponseBody
-    public String productList(String data, Integer start, Integer length, Integer draw) {
+    public String productList(HttpSession session, String data, Integer start, Integer length, Integer draw) {
 
         Map<String, Object> params = JSON.parseObject(data, Map.class);
         if (params == null) {
             params = new HashMap<>();
         }
-
+        Map<String, Object> user = (Map<String, Object>) session.getAttribute("user");
+        if (user.get("ROLE_ID").toString().equals("500")) {
+            params.put("userId", user.get("USER_ID"));
+        } else if (user.get("ROLE_ID").toString().equals("600")) {
+            params.put("companyId", user.get("USER_COMPANY"));
+        }
         Map<String, Object> result = new HashMap<>();
         PageHelper.startPage((start == null || start < 1) ? 1 : start, (length == null || length < 1) ? 10 : length);
         List<ClaimProduct> list = productManagerService.selectClaimList(params);
@@ -160,16 +167,14 @@ public class ProductClaimController extends BaseController {
     @RequestMapping(value = "/product/translate", produces = "text/plain;charset=UTF-8")
     @ResponseBody
     public String translate(String data, String language) {
-
         if (org.apache.commons.lang3.StringUtils.isBlank(language)) {
             return JSON.toJSONString(ResponseGen.genFail());
         }
         List<TranslateDto> resultList = null;
         try {
             List<String> dataList = JSON.parseArray(data, String.class);
-            List<String> midList = new ArrayList<>(dataList.size());
-            BaiduTranApi api = BaiduTranApi.getInstance();
-            if (language.equals("cn")) {
+            resultList = getTanslateList(dataList, language);
+            /*if (language.equals("cn")) {
                 resultList = getTanslateList(dataList);
             } else if (language.equals("uk")) {
                 for (String s : dataList) {
@@ -201,7 +206,7 @@ public class ProductClaimController extends BaseController {
                     midList.add(api.fr2Zh(s));
                 }
                 resultList = getTanslateList(midList);
-            }
+            }*/
         } catch (Exception e) {
             e.printStackTrace();
             return JSON.toJSONString(ResponseGen.genFail());
@@ -209,21 +214,61 @@ public class ProductClaimController extends BaseController {
         return ResponseGen.genSuccessData(resultList);
     }
 
-    public List<TranslateDto> getTanslateList(List<String> zhs) {
-        BaiduTranApi api = BaiduTranApi.getInstance();
+    public List<TranslateDto> getTanslateList(List<String> zhs, String language) {
+        Querier querier = Querier.getQuerier();
+        Google google = new Google();
+        querier.attach(google);
         List<TranslateDto> list = new ArrayList<>();
+        Lang lang = Lang.ZH;
+        if (language.equals("cn")) {
+            lang = Lang.ZH;
+        } else if (language.equals("uk")) {
+            lang = Lang.EN;
+        } else if (language.equals("de")) {
+            lang = Lang.DE;
+        } else if (language.equals("es")) {
+            lang = Lang.SPA;
+        } else if (language.equals("it")) {
+            lang = Lang.IT;
+        } else if (language.equals("jp")) {
+            lang = Lang.JP;
+        } else if (language.equals("fr")) {
+            lang = Lang.FRA;
+        }
         for (String s : zhs) {
+            s = s.replaceAll("\n", "<br>");
+            querier.setParams(lang, Lang.ZH, s);
+            String zh = querier.execute().get(0);
+            zh = zh.substring(1, zh.length() - 1).replace("<br>", "\n");
+            querier.setParams(lang, Lang.EN, s);
+            String uk = querier.execute().get(0);
+            uk = uk.substring(1, uk.length() - 1).replace("<br>", "\n");
+            querier.setParams(lang, Lang.JP, s);
+            String jp = querier.execute().get(0);
+            jp = jp.substring(1, jp.length() - 1).replace("<br>", "\n");
+            querier.setParams(lang, Lang.DE, s);
+            String de = querier.execute().get(0);
+            de = de.substring(1, de.length() - 1).replace("<br>", "\n");
+            querier.setParams(lang, Lang.FRA, s);
+            String fra = querier.execute().get(0);
+            fra = fra.substring(1, fra.length() - 1).replace("<br>", "\n");
+            querier.setParams(lang, Lang.SPA, s);
+            String spa = querier.execute().get(0);
+            spa = spa.substring(1, spa.length() - 1).replace("<br>", "\n");
+            querier.setParams(lang, Lang.IT, s);
+            String it = querier.execute().get(0);
+            it = it.substring(1, it.length() - 1).replace("<br>", "\n");
             TranslateDto dto = new TranslateDto();
-            dto.setCn(s);
-            dto.setJp(api.zh2Jp(s));
-            dto.setDe(api.zh2De(s));
-            dto.setEs(api.zh2Es(s));
-            dto.setFr(api.zh2Fr(s));
-            dto.setIt(api.zh2It(s));
-            dto.setUk(api.zh2Uk(s));
+            dto.setCn(zh.replace("<br>", "\n"));
+            dto.setJp(jp.replace("<br>", "\n"));
+            dto.setDe(de.replace("<br>", "\n"));
+            dto.setEs(spa.replace("<br>", "\n"));
+            dto.setFr(fra.replace("<br>", "\n"));
+            dto.setIt(it.replace("<br>", "\n"));
+            dto.setUk(uk.replace("<br>", "\n"));
             list.add(dto);
         }
-
+        querier.detach(google);
         return list;
     }
 

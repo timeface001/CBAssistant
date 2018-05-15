@@ -82,7 +82,7 @@
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>产品分类：</label>
             <div class="formControls col-xs-6 col-sm-7">
-                <input type="text" class="input-text" value="" placeholder="请选择" id="typeName" name="typeName" required>
+                <input type="text" class="input-text" value="" placeholder="请选择" id="typeName" name="typeName" required readonly>
                 <input type="hidden" name="typeId" id="typeId">
             </div>
             <div class="formControls col-xs-2 col-sm-2">
@@ -299,7 +299,7 @@
                 acceptMime: "image/*",
                 elem: '#imagePath', //绑定元素
                 multiple: true
-                , number: 9
+                , number: 8
                 , url: '<%=request.getContextPath()%>/upload/image' //上传接口
                 , done: function (res) {
                     $("#imagePathSrc").append("<img width='100px' height='90px' style='margin-left:2px;margin-top:2px' src=<%=request.getContextPath()%>/upload/" + res.data + " val='" + res.data + "' />")

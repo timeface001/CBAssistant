@@ -58,15 +58,18 @@
         <if test="source != null and source!=''">
             AND a.source=#{source}
         </if>
-
         <if test="startTime != null and startTime !=''">
             AND a.CREATE_TIME >= TO_DATE(#{startTime},'yyyy-MM-dd HH24:mi:ss')
         </if>
-
         <if test="source != null">
             AND a.CREATE_TIME <![CDATA[<=]]>  TO_DATE(#{endTime},'yyyy-MM-dd HH24:mi:ss')
         </if>
-
+        <if test="userId != null and userId!=''">
+            AND a.create_user_id=#{userId}
+        </if>
+        <if test="companyId != null and companyId!=''">
+            AND a.create_user_id in (SELECT user_id from t_user_info where user_company = #{companyId})
+        </if>
         ORDER BY a.CREATE_TIME DESC
     </select>
 
