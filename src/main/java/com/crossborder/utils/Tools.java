@@ -1,5 +1,6 @@
 package com.crossborder.utils;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
@@ -83,6 +84,7 @@ public class Tools {
         }
         return stringBuffer.toString();
     }
+
     public static String getStatusStr(String status) {
         if (status.equals("1")) {
             return "新单";
@@ -102,6 +104,10 @@ public class Tools {
             return "代发";
         }
         return "";
+    }
+
+    public static void main(String args[]) {
+        System.out.print(new BigDecimal("1"));
     }
 }
 

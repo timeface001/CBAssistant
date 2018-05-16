@@ -20,10 +20,10 @@
             <if test="name!=null and name!=''">
                 AND a.ITEM_CN LIKE #{name}
             </if>
-            <if test="userId != null and userId!=''">
+            <if test="userId != null and userId !=''">
                 AND a.create_user_id=#{userId}
             </if>
-            <if test="companyId != null and companyId!=''">
+            <if test="companyId != null and companyId !=''">
                 AND a.create_user_id in (SELECT user_id from t_user_info where user_company = #{companyId})
             </if>
         </where>

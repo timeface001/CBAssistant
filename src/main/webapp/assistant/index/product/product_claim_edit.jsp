@@ -267,202 +267,202 @@
                         <div class="layui-tab-item layui-show" id="pointsCn">
                             <div class="layui-inline">
                                 <input type="text" name="bulletPoint1" style="width: 300px" value="${pointsCn[0]}"
-                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input"
+                                       placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="150">
                             </div>
                             <div class="layui-inline">
                                 <input type="text" name="bulletPoint2" style="width: 300px" value="${pointsCn[1]}"
-                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input"
+                                       placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="150">
                             </div>
                             <div class="layui-inline">
                                 <input type="text" name="bulletPoint3" value="${pointsCn[2]}" style="width: 300px"
-                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input"
+                                       placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="150">
                             </div>
                             <div class="layui-inline">
                                 <input type="text" name="bulletPoint4" value="${pointsCn[3]}" style="width: 300px"
-                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input"
+                                       placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="150">
                             </div>
 
                             <div class="layui-inline">
                                 <input type="text" name="bulletPoint5" value="${pointsCn[4]}" style="width: 300px"
-                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input"
+                                       placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="150">
                             </div>
                         </div>
                         <div class="layui-tab-item" id="pointsUk">
                             <div class="layui-inline">
                                 <input type="text" name="bulletPoint1" style="width: 300px" value="${pointsUk[0]}"
-                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input"
+                                       placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="450">
                             </div>
                             <div class="layui-inline">
                                 <input type="text" name="bulletPoint2" style="width: 300px" value="${pointsUk[1]}"
-                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input"
+                                       placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="450">
                             </div>
 
                             <div class="layui-inline">
                                 <input type="text" name="bulletPoint3" value="${pointsUk[2]}" style="width: 300px"
-                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input"
+                                       placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="450">
                             </div>
                             <div class="layui-inline">
                                 <input type="text" name="bulletPoint4" value="${pointsUk[3]}" style="width: 300px"
-                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input"
+                                       placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="450">
                             </div>
 
                             <div class="layui-inline">
                                 <input type="text" name="bulletPoint5" value="${pointsUk[4]}" style="width: 300px"
-                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input"
+                                       placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="450">
                             </div>
                         </div>
                         <div class="layui-tab-item " id="pointsJp">
                             <div class="layui-inline">
                                 <input type="text" name="bulletPoint1" style="width: 300px" value="${pointsJp[0]}"
-                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input"
+                                       placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="150">
                             </div>
                             <div class="layui-inline">
                                 <input type="text" name="bulletPoint2" style="width: 300px" value="${pointsJp[1]}"
-                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input"
+                                       placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="150">
                             </div>
 
                             <div class="layui-inline">
                                 <input type="text" name="bulletPoint3" value="${pointsJp[2]}" style="width: 300px"
-                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input"
+                                       placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="150">
                             </div>
                             <div class="layui-inline">
                                 <input type="text" name="bulletPoint4" value="${pointsJp[3]}" style="width: 300px"
-                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input"
+                                       placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="150">
                             </div>
 
                             <div class="layui-inline">
                                 <input type="text" name="bulletPoint5" value="${pointsJp[4]}" style="width: 300px"
-                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input"
+                                       placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="150">
                             </div>
                         </div>
                         <div class="layui-tab-item " id="pointsDe">
                             <div class="layui-inline">
                                 <input type="text" name="bulletPoint1" style="width: 300px" value="${pointsDe[0]}"
-                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input"
+                                       placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="450">
                             </div>
                             <div class="layui-inline">
                                 <input type="text" name="bulletPoint2" style="width: 300px" value="${pointsDe[1]}"
-                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input"
+                                       placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="450">
                             </div>
 
                             <div class="layui-inline">
                                 <input type="text" name="bulletPoint3" value="${pointsDe[2]}" style="width: 300px"
-                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input"
+                                       placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="450">
                             </div>
                             <div class="layui-inline">
                                 <input type="text" name="bulletPoint4" value="${pointsDe[3]}" style="width: 300px"
-                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input"
+                                       placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="450">
                             </div>
 
                             <div class="layui-inline">
                                 <input type="text" name="bulletPoint5" value="${pointsDe[4]}" style="width: 300px"
-                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input"
+                                       placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="450">
                             </div>
                         </div>
                         <div class="layui-tab-item" id="pointsFr">
                             <div class="layui-inline">
                                 <input type="text" name="bulletPoint1" style="width: 300px" value="${pointsFr[0]}"
-                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input"
+                                       placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="450">
                             </div>
                             <div class="layui-inline">
                                 <input type="text" name="bulletPoint2" style="width: 300px" value="${pointsFr[1]}"
-                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input"
+                                       placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="450">
                             </div>
 
                             <div class="layui-inline">
                                 <input type="text" name="bulletPoint3" value="${pointsFr[2]}" style="width: 300px"
-                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input"
+                                       placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="450">
                             </div>
                             <div class="layui-inline">
                                 <input type="text" name="bulletPoint4" value="${pointsFr[3]}" style="width: 300px"
-                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input"
+                                       placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="450">
                             </div>
 
                             <div class="layui-inline">
                                 <input type="text" name="bulletPoint5" value="${pointsFr[4]}" style="width: 300px"
-                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input"
+                                       placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="450">
                             </div>
                         </div>
                         <div class="layui-tab-item" id="pointsEs">
                             <div class="layui-inline">
                                 <input type="text" name="bulletPoint1" style="width: 300px" value="${pointsEs[0]}"
-                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input"
+                                       placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="450">
                             </div>
                             <div class="layui-inline">
                                 <input type="text" name="bulletPoint2" style="width: 300px" value="${pointsEs[1]}"
-                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input"
+                                       placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="450">
                             </div>
 
                             <div class="layui-inline">
                                 <input type="text" name="bulletPoint3" value="${pointsEs[2]}" style="width: 300px"
-                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input"
+                                       placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="450">
                             </div>
                             <div class="layui-inline">
                                 <input type="text" name="bulletPoint4" value="${pointsEs[3]}" style="width: 300px"
-                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input"
+                                       placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="450">
                             </div>
 
                             <div class="layui-inline">
                                 <input type="text" name="bulletPoint5" value="${pointsEs[4]}" style="width: 300px"
-                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input"
+                                       placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="450">
                             </div>
                         </div>
                         <div class="layui-tab-item" id="pointsIt">
                             <div class="layui-inline">
                                 <input type="text" name="pointsIt0" style="width: 300px" value="${pointsIt[0]}"
-                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input"
+                                       placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="450">
                             </div>
                             <div class="layui-inline">
                                 <input type="text" name="pointsIt1" style="width: 300px" value="${pointsIt[1]}"
-                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input"
+                                       placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="450">
                             </div>
 
                             <div class="layui-inline">
                                 <input type="text" name="pointsIt2" value="${pointsIt[2]}" style="width: 300px"
-                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input"
+                                       placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="450">
                             </div>
                             <div class="layui-inline">
                                 <input type="text" name="pointsIt3" value="${pointsIt[3]}" style="width: 300px"
-                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input"
+                                       placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="450">
                             </div>
 
                             <div class="layui-inline">
                                 <input type="text" name="pointsIt4" value="${pointsIt[4]}" style="width: 300px"
-                                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input"
+                                       placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="450">
                             </div>
                         </div>
@@ -728,16 +728,19 @@
         //日期
         initSku('${product}')
         var skuType = '${skuType}';
-
         function initSku() {
 
         }
+        layui.use('element', function () {
+            var element = layui.element;
 
+            //…
+        });
         for (var i = 0; i < imagePathArr.length; i++) {
             $("#imagePathSrc").append("<div style='width:100px;height:110px;margin-left:2px;float:left;'><img width='100px' height='90px' style='padding-right:5px;' src=<%=request.getContextPath()%>/upload/" + imagePathArr[i] + " /><i class='layui-icon delImage' style='font-size:20px;margin-left:35px;'>&#xe640;</i></div>");
             $(".delImage").on("click", function () {
                 var pprent = $(this).parent().parent();
-                var ppKey = $(this).prev().attr("src").substring(8);
+                var ppKey = $(this).prev().attr("src").substring(20);
                 var exVal = $("#imagePathValue").val();
                 var exArr = exVal.split(",");
                 var delVals = [];
@@ -754,12 +757,6 @@
             })
         }
         initSingleImage();
-        layui.use('element', function () {
-            var element = layui.element;
-            element.on('tab(demo)', function(data){
-                console.log(data);
-            });
-        });
         layui.use('laydate', function () {
             var laydate = layui.laydate;
             laydate.render({
@@ -796,14 +793,12 @@
         layui.use('form', function () {
             var form = layui.form;
             form.on('radio(skuType)', function (data) {//切换变体类型
-
                 if ($(this).val() == "2") {//选中多变体
                     mutiSku();
                 } else {//单体
                     singleSku();
                 }
             });
-
             if (skuType == "2") {//选中多变体
                 mutiSku();
                 $("input[name='skuType']").eq(1).attr("checked", 'checked');
@@ -920,7 +915,7 @@
 
                 $(".delImage").on("click", function () {
                     var pprent = $(this).parent().parent();
-                    var ppKey = $(this).prev().attr("src").substring(8);
+                    var ppKey = $(this).prev().attr("src").substring(20);
                     $("#skuTable tbody tr").each(function (i, val) {
 
                         var exVal = $(val).find(".trOtherPath").val();
@@ -1145,7 +1140,6 @@
                             secondRow.push($(second[k]).find("span").text());
                         }
                     }
-
                     skuTable(fisrtDesc, fistRow, secondDesc, secondRow);
                 } else {
                     var desc = (first.length == 0) ? $(".skuCheckbox").eq(1).prev().find("span").text() : $(".skuCheckbox").eq(0).prev().find("span").text();
@@ -1154,12 +1148,12 @@
                     for (var i = 0; i < checked.length; i++) {
                         arr.push(desc + ":" + $(checked[i]).find("span").text());
                         fistRow.push($(first[i]).find("span").text());
-
                     }
                     skuTable(desc, fistRow, null, null);
                 }
             }
             $("#skuMutiPath").append(getSKuPathDom(arr));
+            initSKuPath(null, null);
         }
 
         function skuTable(fisrtDesc, fisrtArr, secondDesc, secondArr) {
@@ -1298,7 +1292,6 @@
 
 
             }
-
             return dom;
         }
 
@@ -1408,7 +1401,7 @@
                         }
                         $(".delImage").on("click", function () {
                             var pprent = $(this).parent().parent();
-                            var ppKey = $(this).prev().attr("src").substring(8);
+                            var ppKey = $(this).prev().attr("src").substring(20);
                             $("#skuTable tbody tr").each(function (i, val) {
                                 var exVal = $(val).find(".trOtherPath").val();
                                 var delVals = [];
@@ -1467,7 +1460,7 @@
                         }
                         $(".delImage").on("click", function () {
                             var pprent = $(this).parent().parent();
-                            var ppKey = $(this).prev().attr("src").substring(8);
+                            var ppKey = $(this).prev().attr("src").substring(20);
                             var exVal = $("#imagePathValue").val();
                             var exArr = exVal.split(",");
                             var delVals = [];
@@ -1500,7 +1493,6 @@
 
         //一键翻译
         $(".translate").click(function () {
-
             var currentLanguage = $(this).parent().prev().find(".layui-this").text();
             var inputs = $(this).parent().prev().find(".layui-show input");
             var vArr = [];
@@ -1632,8 +1624,6 @@
         }
         return num;
     }
-
-
 </script>
 </body>
 </html>

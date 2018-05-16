@@ -23,6 +23,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -52,7 +53,6 @@ public class ProductClaimController extends BaseController {
     @RequestMapping(value = "/product/claim/list", produces = "text/plain;charset=UTF-8")
     @ResponseBody
     public String productList(HttpSession session, String data, Integer start, Integer length, Integer draw) {
-
         Map<String, Object> params = JSON.parseObject(data, Map.class);
         if (params == null) {
             params = new HashMap<>();
@@ -76,11 +76,12 @@ public class ProductClaimController extends BaseController {
 
     @RequestMapping(value = "/product/claim/save", produces = "text/plain;charset=UTF-8")
     @ResponseBody
-    public String save(ClaimProduct product, String saleStartTime, String saleEndTime, String vars) {
+    public String save(ClaimProduct product, String saleStartTime, String saleEndTime, String salePrice, String vars) {
         List<ProductItemVar> list = new ArrayList<>();
         ProductItemVar var = new ProductItemVar();
         var.setProductId(product.getId());
         var.setPrice(product.getPrice());
+        var.setSalePrice(new BigDecimal(salePrice));
         var.setQuantity(product.getQuantity());
         var.setSaleStartTime(GeneralUtils.getDateFromStr(saleStartTime));
         var.setSaleEndTime(GeneralUtils.getDateFromStr(saleEndTime));
@@ -148,7 +149,6 @@ public class ProductClaimController extends BaseController {
         if (org.apache.commons.lang3.StringUtils.isNotBlank(str)) {
             list = JSON.parseArray(str, String.class);
         }
-
         return list;
     }
 

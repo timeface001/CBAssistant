@@ -92,7 +92,7 @@ public final class Google extends Translator {
         String tk = "";
         ScriptEngine engine = new ScriptEngineManager().getEngineByName("js");
         try {
-            FileReader reader = new FileReader("C:\\Users\\s\\Downloads\\MTrans-master\\tk\\Google.js");
+            FileReader reader = new FileReader("/home/tk/Google.js");
             engine.eval(reader);
             if (engine instanceof Invocable) {
                 Invocable invoke = (Invocable) engine;
