@@ -1,38 +1,38 @@
 package com.crossborder.utils;
 
 import com.crossborder.entity.ProductAmzUpload;
+import com.crossborder.entity.ProductItemVar;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.Date;
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
 public class AmzXmlTemplate {
 
 
-    public static FileInputStream uploadProduct(ProductAmzUpload product, Map<String, Object> shop, String path) {
+    public static FileInputStream uploadProduct(ProductAmzUpload product, Map<String, Object> shop, String path, ProductItemVar var) {
 
-
-
-
-
-        String text = "<?xml version=\"1.0\" ?>\n" +
+        boolean isParent = StringUtils.isBlank(var.getVariationType());
+        String text = "<?xml version=\"1.0\" ?>" +
                 "<AmazonEnvelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"amznenvelope.xsd\">\n" +
-                "<Header>\n" +
-                "<DocumentVersion>1.01</DocumentVersion>\n" +
+                "<Header>" +
+                "<DocumentVersion>1.01</DocumentVersion>" +
                 "<MerchantIdentifier>" + shop.get("MERCHANT_ID") + "</MerchantIdentifier>\n" +
-                "</Header>\n" +
-                "<MessageType>Product</MessageType>\n" +
-                "<PurgeAndReplace>false</PurgeAndReplace>\n" +
-                "<Message>\n" +
-                "<MessageID>1</MessageID>\n" +
-                "<OperationType>Update</OperationType>\n" +
-                "<Product>\n" +
-                "<SKU>" + product.getItemSku() + "-" + product.getAmzSku() + "</SKU>" +
-                "<StandardProductID>" + product.getExternalProductId() + "</StandardProductID>" +
+                "</Header>" +
+                "<MessageType>Product</MessageType>" +
+                "<PurgeAndReplace>false</PurgeAndReplace>" +
+                "<Message>" +
+                "<MessageID>1</MessageID>" +
+                "<OperationType>Update</OperationType>" +
+                "<Product>" +
+                "<SKU>" + product.getItemSku() + "-" + var.getSku() + "</SKU>" +
+                "<StandardProductID>" +
+                "<Type>" + product.getExternalProductIdType() + "</Type><Value>" + product.getExternalProductId() + "</Value></StandardProductID>" +
                 "<ItemPackageQuantity>" + product.getItemPackageQuantity() + "</ItemPackageQuantity>\n" +
-                "<LaunchDate>" + GeneralUtils.formatDate(new Date(), "yyyy-MM-dd'T'hh:mm:ss") + "</LaunchDate>\n" +
+                /*"<LaunchDate>" + GeneralUtils.formatDate(new Date(), "yyyy-MM-dd'T'hh:mm:ss") + "</LaunchDate>" +*/
                 "<DescriptionData>" +
                 "<Title>" + product.getItemName() + "</Title>" +
                 "<Brand>" + product.getBrandName() + "</Brand> <Description>" + product.getProductDescription() + "</Description>\n" +
@@ -52,14 +52,13 @@ public class AmzXmlTemplate {
                 "<IsGiftMessageAvailable>false</IsGiftMessageAvailable>\n" +
                 "</DescriptionData>\n" +
                 "<ProductData>\n" +
-                "<Home>\n" +
-                "<Parentage>variation-parent</Parentage>\n" +
+                "<Sports>\n" + getByProductType(product) +
                 "<VariationData>" +
-                (StringUtils.isBlank(product.getVariationTheme()) ? "" : ("<VariationTheme>" + product.getVariationTheme() + "</VariationTheme>")) +
-                "</VariationData>\n" +
-                /*"<Material>cotton</Material>\n" +
-                "<ThreadCount>500</ThreadCount>\n" +*/
-                "</Home>\n" +
+                "<Parentage>" + (isParent ? "parent" : "child") + "</Parentage>\n" +
+                (isParent ? variationTheme(product.getVariationTheme()) : (variationData(var))) +
+                "</VariationData>" +//variationData(product)+
+
+                "</Sports>\n" +
                 "</ProductData>\n" +
                 "</Product>\n" +
                 "</Message>\n" +
@@ -77,4 +76,252 @@ public class AmzXmlTemplate {
         return null;
 
     }
+
+    private static String getByProductType(ProductAmzUpload product) {
+        String str = "<ProductType>SportingGoods</ProductType>";
+
+        return str;
+    }
+
+    private static String variationData(ProductItemVar var) {
+        if (var.getVariationType().equals("colorsize")) {
+            return "<VariationTheme>ColorSize</VariationTheme>" +
+                    "<Color>" + var.getColorName() + "</Color><Size>" + var.getSizeName() + "</Size>";
+        } else if (var.getVariationType().equals("Color")) {
+            return "<VariationTheme>" + var.getVariationType() + "</VariationTheme>" +
+                    "<Color>" + var.getColorName() + "</Color>";
+        } else if (var.getVariationType().equals("Size")) {
+            return "<VariationTheme>" + var.getVariationType() + "</VariationTheme>" +
+                    "<Size>" + var.getSizeName() + "</Size>";
+        } else if (var.getVariationType().equals("material")) {
+            return "<VariationTheme>Material</VariationTheme>" +
+                    "<Material>" + var.getMaterialType() + "</Material>";
+        } else if (var.getVariationType().equals("size-material")) {
+            return "<VariationTheme>MaterialSize</VariationTheme>" +
+                    "<Material>" + var.getMaterialType() + "</Material><Size>" + var.getSizeName() + "</Size>";
+        } else if (var.getVariationType().equals("color-itempackagequantity")) {
+            return "<VariationTheme>MaterialSize</VariationTheme>" +
+                    "<Material>" + var.getMaterialType() + "</Material><Size>" + var.getSizeName() + "</Size>";
+        }
+
+        return "";
+    }
+
+    private static String variationTheme(String varTheme) {
+        if (varTheme.equals("colorsize")) {
+            return "<VariationTheme>ColorSize</VariationTheme>";
+
+        } else if (varTheme.equals("Color")) {
+            return "<VariationTheme>" + varTheme + "</VariationTheme>";
+
+        } else if (varTheme.equals("Size")) {
+            return "<VariationTheme>" + varTheme + "</VariationTheme>";
+        } else if (varTheme.equals("material")) {
+            return "<VariationTheme>Material</VariationTheme>";
+        } else if (varTheme.equals("size-material")) {
+            return "<VariationTheme>MaterialSize</VariationTheme>";
+        } else if (varTheme.equals("color-itempackagequantity")) {
+            return "<VariationTheme>MaterialSize</VariationTheme>";
+        }
+
+        return "";
+    }
+
+
+    public static FileInputStream uploadInventory(ProductAmzUpload product, Map<String, Object> shop, String path, List<ProductItemVar> vars) {
+
+        String varStr = "";
+        int i = 1;
+        for (ProductItemVar var : vars) {
+            i++;
+            varStr += "<Message>\n" +
+                    "<MessageID>" + i + "</MessageID>\n" +
+                    "<OperationType>Update</OperationType>\n" +
+                    "<Inventory>\n" +
+                    "<SKU>" + product.getItemSku() + "-" + var.getSku() + "</SKU>\n" +
+                    "<Quantity>" + var.getQuantity() + "</Quantity>\n" +
+                    "</Inventory></Message>";
+        }
+        String text = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n" +
+                "<AmazonEnvelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"amznenvelope.xsd\">\n" +
+                "<Header>\n" +
+                "<DocumentVersion>1.01</DocumentVersion>\n" +
+                "<MerchantIdentifier>" + shop.get("MERCHANT_ID") + "</MerchantIdentifier>\n" +
+                "</Header>\n" +
+                "<MessageType>Inventory</MessageType>\n" +
+                varStr +
+                "</AmazonEnvelope>";
+
+        System.out.println(text);
+
+
+        try {
+            return new FileInputStream(FileUtils.byte2File(text.getBytes(), path, product.getId() + "product_inventory.txt"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+
+    }
+
+    public static FileInputStream uploadPrice(ProductAmzUpload product, Map<String, Object> shop, String path, List<ProductItemVar> vars) {
+
+        String varStr = "";
+        int i = 1;
+        for (ProductItemVar var : vars) {
+            i++;
+            String saleStr = "";
+            if (var.getSalePrice() != null && var.getSalePrice().compareTo(BigDecimal.ZERO) > 0) {
+                saleStr = " <Sale>" +
+                        " <StartDate>" + GeneralUtils.localToUTC(var.getSaleStartTime()) + "</StartDate>" +
+                        " <EndDate>" + GeneralUtils.localToUTC(var.getSaleEndTime()) + "</EndDate>" +
+                        " <SalePrice currency='USD'>" + GeneralUtils.formatTwo(var.getSalePrice().multiply(new BigDecimal(shop.get("EXRATE").toString()))) + "</SalePrice>" +
+                        " </Sale>";
+            }
+            varStr += "<Message>" +
+                    "<MessageID>" + i + "</MessageID>" +
+                    "<Price>" +
+                    "<SKU>" + product.getItemSku() + "-" + var.getSku() + "</SKU>" +
+                    "<StandardPrice currency=\"USD\">204.99</StandardPrice>\n" +
+                    saleStr +
+                    "</Price>" +
+                    "</Message>";
+        }
+        String text = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n" +
+                "<AmazonEnvelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"amznenvelope.xsd\">\n" +
+                "<Header>\n" +
+                "<DocumentVersion>1.01</DocumentVersion>\n" +
+                "<MerchantIdentifier>" + shop.get("MERCHANT_ID") + "</MerchantIdentifier>\n" +
+                "</Header>\n" +
+                "<MessageType>Price</MessageType>\n" +
+                varStr +
+                "</AmazonEnvelope>";
+
+        System.out.println(text);
+
+
+        try {
+            return new FileInputStream(FileUtils.byte2File(text.getBytes(), path, product.getId() + "product_price.txt"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+
+    }
+
+    private String getPriceStr(BigDecimal rate,BigDecimal price,String code){
+
+        /*if(){
+
+        }*/
+        return "";
+    }
+
+    public static FileInputStream uploadRelationShop(ProductAmzUpload product, Map<String, Object> shop, String path, List<ProductItemVar> vars) {
+
+        String varStr = "";
+        int i = 1;
+        for (ProductItemVar var : vars) {
+            i++;
+            if (StringUtils.isNotBlank(var.getVariationType())) {
+                varStr += "<Relation>" +
+                        "<SKU>" + product.getItemSku() + "-" + var.getSku() + "</SKU>" +
+                        "<Type>Variation</Type>" +
+                        "</Relation>";
+            }
+        }
+        String text = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>" +
+                "<AmazonEnvelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"amznenvelope.xsd\">\n" +
+                "<Header>" +
+                "<DocumentVersion>1.01</DocumentVersion>" +
+                "<MerchantIdentifier>" + shop.get("MERCHANT_ID") + "</MerchantIdentifier>\n" +
+                "</Header>" +
+                "<MessageType>Relationship</MessageType>\n" +
+                "<Message>" +
+                "<MessageID>1</MessageID>\n" +
+                "<OperationType>Update</OperationType>\n" +
+                "<Relationship>\n" +
+                "<ParentSKU>" + product.getItemSku() + "-" + product.getAmzSku() + "</ParentSKU>\n" + varStr +
+                "</Relationship>\n" +
+                "</Message>\n" +
+                "</AmazonEnvelope>";
+
+        System.out.println(text);
+
+
+        try {
+            return new FileInputStream(FileUtils.byte2File(text.getBytes(), path, product.getId() + "product_relationship.txt"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+
+    }
+
+    public static FileInputStream uploadImage(ProductAmzUpload product, Map<String, Object> shop, String path, List<ProductItemVar> vars) {
+
+        String varStr = "";
+        int i = 0;
+        for (ProductItemVar var : vars) {
+            i++;
+            varStr += "<Message>" +
+                    "<MessageID>" + i + "</MessageID>" +
+                    "<OperationType>Update</OperationType>" +
+                    "<ProductImage>" +
+                    "<SKU>" + product.getItemSku() + "-" + var.getSku() + "</SKU>" +
+                    "<ImageType>Main</ImageType>" +
+                    "<ImageLocation>" + var.getMainPath() + "</ImageLocation>" +
+                    "</ProductImage>" +
+                    "</Message>";
+            if (StringUtils.isNotBlank(var.getAttachPath())) {
+                String[] strs = var.getAttachPath().split(",");
+                int index = 1;
+                for (String str : strs) {
+                    if (StringUtils.isNotBlank(str)) {
+                        i++;
+                        varStr += "<Message>" +
+                                "<MessageID>" + i + "</MessageID>" +
+                                "<OperationType>Update</OperationType>" +
+                                "<ProductImage>" +
+                                "<SKU>" + product.getItemSku() + "-" + var.getSku() + "</SKU>" +
+                                "<ImageType>PT" + index + "</ImageType>" +
+                                "<ImageLocation>" + str + "</ImageLocation>" +
+                                "</ProductImage>" +
+                                "</Message>";
+                        index++;
+                    }
+                }
+
+            }
+        }
+        String text = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>" +
+                "<AmazonEnvelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"amznenvelope.xsd\">\n" +
+                "<Header>\n" +
+                "<DocumentVersion>1.01</DocumentVersion>" +
+                "<MerchantIdentifier>" + shop.get("MERCHANT_ID") + "</MerchantIdentifier>\n" +
+                "</Header>\n" +
+                "<MessageType>ProductImage</MessageType>" +
+                varStr +
+                "</AmazonEnvelope>";
+
+        System.out.println(text);
+
+
+        try {
+            return new FileInputStream(FileUtils.byte2File(text.getBytes(), path, product.getId() + "product_relationship.txt"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+
+    }
+
+
+
+
+
 }

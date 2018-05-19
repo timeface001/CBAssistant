@@ -9,6 +9,7 @@ import com.crossborder.utils.querier.Querier;
 import com.crossborder.utils.trans.Google;
 import com.crossborder.utils.util.ChineseAndEnglish;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.jdom2.Element;
 import org.jdom2.input.SAXBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,8 @@ public class ProductManagerService {
     private AmzUpload amzUpload;
     @Autowired
     private ProductUploadCategoryDao productUploadCategoryDao;
+
+    private Logger logger = Logger.getLogger(ProductManagerService.class);
 
     public boolean save(Map<String, Object> product) {
         product.put("createTime", new Date());
@@ -241,53 +244,60 @@ public class ProductManagerService {
      * @return
      */
     @Transactional(rollbackFor = Exception.class)
-    public void prePublishProduct(String id, String language) throws Exception {
+    public String prePublishProduct(String id, String language) throws Exception {
         ClaimProduct product = claimProductExtMapper.selectByPrimaryKey(id);
         if (product != null) {
 
             List<ProductItemVar> vars = productSkuTypeService.selectListByProductId(id);
 
 
-            if (language.equals("GB")) {
+            if (language.equals("GB") || language.equals("US") || language.equals("AU")) {
                 //GB 英国
                 ProductAmzUpload uploadGB = generateCommonProperties(product, "GB", product.getBulletPointUk(), product.getItemUk(), product.getProductDescriptionUk(), product.getKeywordsUk());
                 saveAmzUploadBySku(uploadGB, product, vars);
+                return uploadGB.getId();
             }
 
             if (language.equals("JP")) {
                 //JP 日本
                 ProductAmzUpload uploadJP = generateCommonProperties(product, "JP", product.getBulletPointJp(), product.getItemJp(), product.getProductDescriptionJp(), product.getKeywordsJp());
                 saveAmzUploadBySku(uploadJP, product, vars);
+                return uploadJP.getId();
             }
 
             if (language.equals("CN")) {
                 //CN
                 ProductAmzUpload uploadCN = generateCommonProperties(product, "CN", product.getBulletPointCn(), product.getItemCn(), product.getProductDescriptionCn(), product.getKeywordsCn());
                 saveAmzUploadBySku(uploadCN, product, vars);
+                return uploadCN.getId();
             }
 
             if (language.equals("DE")) {
                 //DE 德国
                 ProductAmzUpload uploadDE = generateCommonProperties(product, "DE", product.getBulletPointDe(), product.getItemDe(), product.getProductDescriptionDe(), product.getKeywordsDe());
                 saveAmzUploadBySku(uploadDE, product, vars);
+                return uploadDE.getId();
             }
 
             if (language.equals("FR")) {
                 //FR 法国
                 ProductAmzUpload uploadFR = generateCommonProperties(product, "FR", product.getBulletPointFr(), product.getItemFr(), product.getProductDescriptionFr(), product.getKeywordsFr());
                 saveAmzUploadBySku(uploadFR, product, vars);
+                return uploadFR.getId();
             }
 
-            if (language.equals("ES")) {
+            if (language.equals("ES") || language.equals("MX")) {
                 //ES 西班牙
                 ProductAmzUpload uploadES = generateCommonProperties(product, "ES", product.getBulletPointEs(), product.getItemEs(), product.getProductDescriptionEs(), product.getKeywordsEs());
                 saveAmzUploadBySku(uploadES, product, vars);
+                return uploadES.getId();
             }
 
             if (language.equals("IT")) {
                 //IT意大利
                 ProductAmzUpload uploadIT = generateCommonProperties(product, "IT", product.getBulletPointIt(), product.getItemIt(), product.getProductDescriptionIt(), product.getKeywordsIt());
                 saveAmzUploadBySku(uploadIT, product, vars);
+                return uploadIT.getId();
             }
 
             ClaimProduct update = new ClaimProduct();
@@ -297,6 +307,7 @@ public class ProductManagerService {
 
 
         }
+        return "";
 
     }
 
@@ -310,7 +321,7 @@ public class ProductManagerService {
 
                 if (StringUtils.isBlank(var.getVariationType())) {//主体
                     upload.setParentChild("parent");
-
+                    upload.setVariationTheme(var.getVariationType());
 
                 } else {//变体
                     upload.setParentChild("child");
@@ -326,7 +337,7 @@ public class ProductManagerService {
                 upload.setSizeName(var.getSizeName());
                 upload.setSalePrice(var.getSalePrice());
                 upload.setMaterialType(var.getMaterialType());
-                upload.setItemPackageQuantity(var.getItemPackageQuantity());
+                upload.setItemPackageQuantity(var.getQuantity());
                 upload.setStandardPrice(var.getPrice());
                 upload.setVariationTheme(var.getVariationType());
                 upload.setQuantity(var.getQuantity());
@@ -334,7 +345,10 @@ public class ProductManagerService {
                 upload.setCreateTime(new Date());
                 upload.setAmzSku(product.getSku());
 
+                //清除之前预发布的数据
+                productAmzUploadDao.deleteByAmzId(product.getId());
                 i += productAmzUploadDao.insertSelective(upload);
+                upload.setId(selectOneByAmzID(product.getId()).getId());
 
             }
         } else {
@@ -342,6 +356,11 @@ public class ProductManagerService {
         }
 
         return i;
+    }
+
+    public ProductAmzUpload selectOneByAmzID(String id) {
+        List<ProductAmzUpload> list = productAmzUploadDao.selectByAmzId(id);
+        return GeneralUtils.isNotNullOrEmpty(list) ? list.get(0) : new ProductAmzUpload();
     }
 
     private ProductAmzUpload generateCommonProperties(ClaimProduct product, String languageId, String points, String productName, String productDesc, String keywords) {
@@ -384,13 +403,21 @@ public class ProductManagerService {
 
     public void uploadProduct(ProductAmzUpload product, Map<String, Object> shop) {
 
-        ResponseDto response = amzUpload.uploadProduct(product, shop);
-        System.out.println(JSON.toJSONString(response));
+        logger.debug("************  start upload product ****************  id -----> " + product.getId());
+        List<ProductItemVar> vars = productSkuTypeService.selectListByProductId(product.getProductAmzId());
+
+        ResponseDto response = amzUpload.uploadProduct(product, shop, vars);
+        logger.debug("call amz result:  " + JSON.toJSONString(response));
         ProductUploadLog log = new ProductUploadLog();
         log.setProductId(product.getId());
-        log.setStatus("3");
+        if (StringUtils.isNotBlank(response.getCode())) {
+            log.setStatus(response.getCode().equals("001") ? PublishStatusEnum.FAILED.toString() : PublishStatusEnum.PROCESS.toString());
+        } else {
+            log.setStatus(PublishStatusEnum.PROCESS.toString());
+        }
         log.setSubmitId(response.getData().toString());
         log.setShopId(shop.get("SHOP_ID").toString());
+        log.setResponse(response.getMsg());
         productUploadLogDao.insert(log);
 
         //1发布失败 2发布成功 3发布中
@@ -398,9 +425,8 @@ public class ProductManagerService {
         product.setUpdateDelete("update");
         product.setPublishTime(new Date());
 
-
         productAmzUploadDao.updateByPrimaryKeySelective(product);
-
+        logger.debug("************  end upload product ****************  id -----> " + product.getId());
     }
 
     @Resource
@@ -439,7 +465,7 @@ public class ProductManagerService {
         ThreadPoolExecutor executor = new ThreadPoolExecutor(2, 5, 100, TimeUnit.MINUTES, new ArrayBlockingQueue<Runnable>(10));
 
         for (Map<String, Object> shop : shops) {
-            if (!shop.get("SHOP_ID").toString().equals("1039")) {
+            if (shop.get("SHOP_ID").toString().equals("1038")) {
 
                 initCategory(set.getProductCategoryPath() + shop.get("SHOP_ID") + ".txt", shop);
             }
@@ -472,7 +498,9 @@ public class ProductManagerService {
 
         amzUpload.write(path, shop);
 
-        InputStreamReader isr = null;
+
+
+        /*InputStreamReader isr = null;
         try {
             isr = new InputStreamReader(new FileInputStream(path));
 
@@ -493,6 +521,9 @@ public class ProductManagerService {
                 if (hasChildren) {
                     category.setHasChild("1");
                     category.setChildCount(Integer.parseInt(e.getChild("childNodes").getAttribute("count").getValue()));
+                } else {
+                    category.setHasChild("0");
+                    category.setChildCount(0);
                 }
                 String pathp = e.getChild("browsePathById").getText();
                 category.setName(e.getChild("browseNodeStoreContextName").getText());
@@ -504,6 +535,11 @@ public class ProductManagerService {
                     pc.setId(pathp.split(",")[0]);
                     pc.setCountryCode(code);
                     pc.setShopId(shop.get("SHOP_ID").toString());
+                    pc.setHasChild("0");
+                    pc.setTypeDef("");
+                    pc.setPath("");
+                    pc.setChildCount(0);
+
                     System.out.println(JSON.toJSONString(pc));
                     if (ids.indexOf(pc.getId()) == -1) {
                         categories.add(pc);
@@ -539,7 +575,7 @@ public class ProductManagerService {
                     e.printStackTrace();
                 }
             }
-        }
+        }*/
     }
 
 

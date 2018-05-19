@@ -224,7 +224,7 @@
                     "targets": [0],
                     "data": "id",
                     "render": function (data, type, full) {
-                        return "<input type='checkbox' value=" + full.ID + ">"
+                        return "<input type='checkbox' value=" + full.id + ">"
                     }
                 },
                 {

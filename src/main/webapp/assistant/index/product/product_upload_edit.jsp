@@ -170,7 +170,7 @@
 
         <div class="layui-form-item">
             <div class="layui-input-block">
-                <button class="layui-btn" lay-submit lay-filter="formDemo">发布</button>
+                <button class="layui-btn" type="button" lay-submit lay-filter="formDemo">发布</button>
             </div>
         </div>
     </form>
@@ -247,7 +247,8 @@
             var form = layui.form;
 
             form.on('submit', function (data) {
-                data.field['type']=getParam("type");
+                console.log(123);
+                data.field['type'] = '${type}';
                 $.ajax({
                     type: 'POST',
                     url: '<%=request.getContextPath()%>/product/publish',
@@ -255,17 +256,17 @@
                     data:
                          data.field
                     ,
-                    success: function (data) {
+                    success: function (data, index) {
                         if (data.success) {
-                            layer.msg(data.msg, {icon: 6, time: 1000});
+                            layer.msg(data.msg, {icon: 6, time: 2000});
                             setTimeout(function () {
-                                layer_close();
+                                layer_close(index);
                             },1000);
 
 
                         } else {
                             layer.msg(data.msg, {icon: 5, time: 1000});
-                            layer_close();
+                            //layer_close(index);
                         }
 
                     },
@@ -277,6 +278,11 @@
             });
 
             $("#productType").click(function () {
+
+                if (id == null) {
+                    layer.msg("请选择店铺！", {icon: 5, time: 1000});
+                    return;
+                }
 
                     layer.open({
                         type: 2,

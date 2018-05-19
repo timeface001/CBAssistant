@@ -15,15 +15,17 @@
   <select id="selectListParent" parameterType="java.util.Map" resultMap="BaseResultMap">
     SELECT
     <include refid="Base_Column_List"/>
-    from T_PRODUCT_UPLOAD_CATEGORY a where a.PARENT_ID in (SELECT ID from T_PRODUCT_UPLOAD_CATEGORY where NAME='Categories')  AND a.SHOP_ID=#{shopId}
+    from T_PRODUCT_UPLOAD_CATEGORY a where a.PARENT_ID in (SELECT ID from T_PRODUCT_UPLOAD_CATEGORY where (NAME='Categories' OR NAME='Categorías'))  AND a.SHOP_ID=#{shopId}
   </select>
 
   <insert id="batchInsert">
-    INSERT INTO T_PRODUCT_UPLOAD_CATEGORY (ID,PARENT_ID,NAME,HAS_CHILD,CHILD_COUNT,TYPE_DEF,COUNTRY_CODE,PATH,SHOP_ID)
-    VALUES
-    <foreach collection="list" separator="," open="(" close=")" item="i">
-        #{i,id},#{i.parentId},#{i.name},#{i.hasChild},#{i.childCount},#{i.typeDef},#{i.countryCode},#{i.path},#{i.shopId}
+    INSERT ALL
+
+    <foreach collection="list" separator="" open="" close="" item="i">
+      INTO T_PRODUCT_UPLOAD_CATEGORY (ID,PARENT_ID,NAME,HAS_CHILD,CHILD_COUNT,TYPE_DEF,COUNTRY_CODE,PATH,SHOP_ID) VALUES
+      (#{i.id},#{i.parentId},#{i.name},#{i.hasChild},#{i.childCount},#{i.typeDef},#{i.countryCode},#{i.path},#{i.shopId})
     </foreach>
+      SELECT 1 FROM dual
   </insert>
 
 

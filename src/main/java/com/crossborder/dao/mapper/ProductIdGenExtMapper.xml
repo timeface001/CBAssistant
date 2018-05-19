@@ -49,12 +49,31 @@
         ORDER BY CREATE_TIME DESC
     </select>
 
+    <select id="selectProductIdForUseOne" resultMap="BaseResultMap" parameterType="java.util.Map">
+        SELECT  <include refid="Base_Column_List" />  FROM ( select *  from (select
+        * from T_PRODUCT_ID
+        where
+        USE_STATUS=0
+
+        <if test="type!=null and type!=''">
+            AND TYPE=#{type}
+        </if>
+        ORDER BY CREATE_TIME DESC ) where rownum=1 ) a
+    </select>
+
     <select id="selectProductIdExist" resultType="java.lang.Long" parameterType="java.util.Map">
       select
         count(1) from T_PRODUCT_ID a
         where
          a.TYPE=#{type}
         AND a.PRODUCT_ID=#{productId}
+
+    </select>
+
+    <select id="updateUsed" resultType="java.lang.Long" parameterType="java.util.Map">
+        UPDATE T_PRODUCT_ID SET USE_STATUS=1,AMZ_UPLOAD_ID=#{uploadId} WHERE
+        TYPE=#{type}
+        AND PRODUCT_ID=#{productId}
 
     </select>
 

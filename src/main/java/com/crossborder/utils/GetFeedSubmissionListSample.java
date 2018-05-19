@@ -126,7 +126,7 @@ public class GetFeedSubmissionListSample {
         // @TODO: set request parameters here
 
 
-         request.setFeedSubmissionIdList(new IdList(Arrays.asList("50431017663")));
+         request.setFeedSubmissionIdList(new IdList(Arrays.asList("50483017666")));
          invokeGetFeedSubmissionList(service, request);
 
     }

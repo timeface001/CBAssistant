@@ -8,11 +8,13 @@ import com.crossborder.entity.ProductAmzUpload;
 import com.crossborder.entity.ProductUploadLog;
 import com.crossborder.service.ProductManagerService;
 import com.crossborder.service.ShopManageService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,24 +54,46 @@ public class QuartProduct {
     public void testTask() {
         List<ProductUploadLog> logs = productManagerService.selectLogList("3");
         for (ProductUploadLog log : logs) {
+            if(log.getSubmitDate().getTime()>(new Date().getTime()-20)){
+                continue;
+            }
             Map<String, Object> params = new HashMap<>();
             params.put("id", log.getShopId());
             System.out.println(JSON.toJSONString(log));
-            ResponseDto dto = amzUpload.getFeedSubResult(shopManageService.selectShops(params).get(0), log.getSubmitId());
-            if (dto.isSuccess()) {
+            Map<String, Object> shop = shopManageService.selectShops(params).get(0);
+            String[] arr = log.getSubmitId().split(",");
+            for (String submitID : arr) {
+                if (StringUtils.isBlank(submitID)) {
+                    continue;
+                }
 
-            } else {
-                ProductAmzUpload upload = new ProductAmzUpload();
-                upload.setId(log.getProductId());
-                upload.setPublishStatus(String.valueOf(PublishStatusEnum.FAILED.toString()));
-                upload.setUploadDesc(dto.getMsg());
-                productAmzUploadDao.updateByPrimaryKeySelective(upload);
+                ResponseDto dto = amzUpload.getFeedSubResult(shop, submitID);
+                System.out.println("dto:" + JSON.toJSONString(dto));
+                if (dto.isSuccess()) {
+                    ProductAmzUpload upload = new ProductAmzUpload();
+                    upload.setId(log.getProductId());
+                    upload.setPublishStatus(String.valueOf(PublishStatusEnum.SUCCESS.toString()));
+                    upload.setUploadDesc(dto.getMsg());
+                    productAmzUploadDao.updateByPrimaryKeySelective(upload);
 
-                ProductUploadLog ll = new ProductUploadLog();
-                ll.setId(log.getId());
-                ll.setStatus(PublishStatusEnum.FAILED.toString());
-                ll.setResponse(dto.getMsg());
-                productUploadLogDao.updateByPrimaryKeySelective(ll);
+                    ProductUploadLog ll = new ProductUploadLog();
+                    ll.setId(log.getId());
+                    ll.setStatus(PublishStatusEnum.SUCCESS.toString());
+                    ll.setResponse(dto.getMsg());
+                    productUploadLogDao.updateByPrimaryKeySelective(ll);
+                } else if (StringUtils.isNotBlank(dto.getMsg())) {
+                    ProductAmzUpload upload = new ProductAmzUpload();
+                    upload.setId(log.getProductId());
+                    upload.setPublishStatus(String.valueOf(PublishStatusEnum.FAILED.toString()));
+                    upload.setUploadDesc(dto.getMsg());
+                    productAmzUploadDao.updateByPrimaryKeySelective(upload);
+
+                    ProductUploadLog ll = new ProductUploadLog();
+                    ll.setId(log.getId());
+                    ll.setStatus(PublishStatusEnum.FAILED.toString());
+                    ll.setResponse(dto.getMsg());
+                    productUploadLogDao.updateByPrimaryKeySelective(ll);
+                }
             }
         }
     }

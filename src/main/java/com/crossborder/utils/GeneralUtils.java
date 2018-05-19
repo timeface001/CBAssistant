@@ -4,6 +4,7 @@ import org.springframework.util.ClassUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -98,8 +99,37 @@ public class GeneralUtils {
         return "";
     }
 
+    public static String localToUTC(Date localTime) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date localDate = localTime;
+
+        long localTimeInMillis = localDate.getTime();
+        /** long时间转换成Calendar */
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(localTimeInMillis);
+        /** 取得时间偏移量 */
+        int zoneOffset = calendar.get(java.util.Calendar.ZONE_OFFSET);
+        /** 取得夏令时差 */
+        int dstOffset = calendar.get(java.util.Calendar.DST_OFFSET);
+        /** 从本地时间里扣除这些差量，即可以取得UTC时间*/
+        calendar.add(java.util.Calendar.MILLISECOND, -(zoneOffset + dstOffset));
+        /** 取得的时间就是UTC标准时间 */
+        Date utcDate = new Date(calendar.getTimeInMillis());
+        return GeneralUtils.formatDate(utcDate, "yyyy-MM-dd'T'hh:mm:ss'Z'");
+    }
+
+    public static void main(String[] args) {
+        System.out.println(formatDate(new Date(), "yyyy-MM-dd'T'HH:mm:ss Z"));
+    }
+
     public static boolean isNotNullOrEmpty(List<?> list) {
         return list != null && !list.isEmpty();
+    }
+
+    public static String formatTwo(BigDecimal val) {
+        java.text.DecimalFormat myformat = new java.text.DecimalFormat("0.00");
+
+        return myformat.format(val);
     }
 
 }
