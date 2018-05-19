@@ -4,29 +4,49 @@
 
     <select id="selectProductIdGenList" resultMap="BaseResultMap" parameterType="java.util.Map">
         select
-         <include refid="Base_Column_List" /> from T_PRODUCT_ID a
+        <include refid="Base_Column_List"/>
+        from T_PRODUCT_ID a
+        LEFT JOIN t_user_info b
+        ON a.create_user = b.user_id
         <where>
             <if test="status!=null and status!=''">
                 AND a.USE_STATUS=#{status}
             </if>
-
             <if test="type!=null and type!=''">
                 AND a.TYPE=#{type}
             </if>
+            <if test="userId != null and userId !=''">
+                AND (a.create_user = #{userId} OR a.create_user IN (select t1.user_id from t_user_info t1 left join
+                t_user_info t2
+                on t2.user_company = t1.user_company where t1.role_id = '500' and t2.user_id=#{userId}))
+            </if>
+            <if test="companyId != null and companyId !=''">
+                AND a.create_user in (SELECT user_id from t_user_info where user_company = #{companyId})
+            </if>
         </where>
-          ORDER BY a.CREATE_TIME DESC
+        ORDER BY a.CREATE_TIME DESC
     </select>
 
     <select id="selectProductIdForUse" resultMap="BaseResultMap" parameterType="java.util.Map">
-    SELECT  <include refid="Base_Column_List" />  FROM ( select *  from (select
-        * from T_PRODUCT_ID
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM  T_PRODUCT_ID a
+        LEFT JOIN t_user_info b
+        ON a.create_user = b.user_id
         where
-                 USE_STATUS=0
-
-                  <if test="type!=null and type!=''">
-                      AND TYPE=#{type}
-                  </if>
-        ORDER BY CREATE_TIME DESC ) where rownum=1 ) a
+        a.USE_STATUS=0
+        <if test="type != null and type != ''">
+            AND a.TYPE=#{type}
+        </if>
+        <if test="userId != null and userId !=''">
+            AND (a.create_user = #{userId} OR a.create_user IN (select t1.user_id from t_user_info t1 left join
+            t_user_info t2
+            on t2.user_company = t1.user_company where t1.role_id = '500' and t2.user_id=#{userId}))
+        </if>
+        <if test="companyId != null and companyId !=''">
+            AND a.create_user in (SELECT user_id from t_user_info where user_company = #{companyId})
+        </if>
+        ORDER BY CREATE_TIME DESC
     </select>
 
     <select id="selectProductIdExist" resultType="java.lang.Long" parameterType="java.util.Map">
@@ -40,21 +60,25 @@
 
 
     <resultMap id="BaseResultMap" type="com.crossborder.entity.ProductIdGen">
-        <id column="a_ID" jdbcType="DECIMAL" property="id" />
-        <result column="a_PRODUCT_ID" jdbcType="VARCHAR" property="productId" />
-        <result column="a_TYPE" jdbcType="VARCHAR" property="type" />
-        <result column="a_USE_STATUS" jdbcType="CHAR" property="useStatus" />
-        <result column="a_CREATE_TIME" jdbcType="DATE" property="createTime" />
-        <result column="a_AMZ_UPLOAD_ID" jdbcType="VARCHAR" property="amzUploadId" />
+        <id column="a_ID" jdbcType="DECIMAL" property="id"/>
+        <result column="a_PRODUCT_ID" jdbcType="VARCHAR" property="productId"/>
+        <result column="a_TYPE" jdbcType="VARCHAR" property="type"/>
+        <result column="a_USE_STATUS" jdbcType="CHAR" property="useStatus"/>
+        <result column="a_CREATE_TIME" jdbcType="DATE" property="createTime"/>
+        <result column="a_AMZ_UPLOAD_ID" jdbcType="VARCHAR" property="amzUploadId"/>
+        <result column="a_CREATE_USER" jdbcType="VARCHAR" property="createUser"/>
+        <result column="b_USER_NAME" jdbcType="VARCHAR" property="userName"/>
     </resultMap>
     <sql id="Base_Column_List">
         a.ID as a_ID, a.PRODUCT_ID as a_PRODUCT_ID, a.TYPE as a_TYPE, a.USE_STATUS as a_USE_STATUS,
-        a.CREATE_TIME as a_CREATE_TIME, a.AMZ_UPLOAD_ID as a_AMZ_UPLOAD_ID
+        a.CREATE_TIME as a_CREATE_TIME, a.CREATE_USER as a_CREATE_USER,a.AMZ_UPLOAD_ID as a_AMZ_UPLOAD_ID,b.USER_NAME as b_USER_NAME
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
-        <include refid="Base_Column_List" />
+        <include refid="Base_Column_List"/>
         from T_PRODUCT_ID a
+        LEFT JOIN t_user_info b
+        ON a.create_user = b.user_id
         where a.ID = #{id,jdbcType=DECIMAL}
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
@@ -82,11 +106,12 @@
             <if test="useStatus != null">
                 USE_STATUS,
             </if>
-            <if test="createTime != null">
-                CREATE_TIME,
-            </if>
+            CREATE_TIME,
             <if test="amzUploadId != null">
                 AMZ_UPLOAD_ID,
+            </if>
+            <if test="createUser != null">
+                CREATE_USER,
             </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -100,11 +125,12 @@
             <if test="useStatus != null">
                 #{useStatus,jdbcType=CHAR},
             </if>
-            <if test="createTime != null">
-                CURRENT_DATE,
-            </if>
+            CURRENT_DATE,
             <if test="amzUploadId != null">
                 #{amzUploadId,jdbcType=VARCHAR},
+            </if>
+            <if test="createUser != null">
+                #{createUser,jdbcType=VARCHAR}
             </if>
         </trim>
     </insert>

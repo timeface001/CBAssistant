@@ -338,12 +338,12 @@ public class CommonController {
                 map.put("msg", "发货成功");
             } else {
                 map.put("code", "-10");
-                map.put("msg", "发货失败");
+                map.put("msg", resultObject.getJSONArray("Item").getJSONObject(0).getString("Feedback"));
             }
         } catch (Exception e) {
             e.printStackTrace();
             map.put("code", "-10");
-            map.put("msg", "发货失败");
+            map.put("msg", e.getMessage());
         }
         return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }

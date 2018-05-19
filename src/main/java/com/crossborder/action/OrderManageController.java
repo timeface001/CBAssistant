@@ -33,7 +33,6 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -167,7 +166,7 @@ public class OrderManageController {
                 for (int j = 0; j < orderItemList.size(); j++) {
                     OrderItem orderItem = orderItemList.get(j);
                     //FeesEstimateResult feesEstimateResult = getProduct(orderItem, shop);
-                    /*Product product = getProduct(orderItem, shop);*/
+                    Product product = getProduct(orderItem, shop);
                     LocalOrderItem localOrderItem = new LocalOrderItem();
                     /*for (Object obj : product.getAttributeSets().getAny()) {
                         Node nd = (Node) obj;
@@ -262,8 +261,8 @@ public class OrderManageController {
         return response.getListOrderItemsResult().getOrderItems();
     }
 
-    public FeesEstimateResult getProduct(OrderItem orderItem, Map<String, Object> shop) {
-        List<FeesEstimateRequest> feesEstimateRequests = new ArrayList<>();
+    public Product getProduct(OrderItem orderItem, Map<String, Object> shop) {
+       /* List<FeesEstimateRequest> feesEstimateRequests = new ArrayList<>();
         FeesEstimateRequest feesEstimateRequest = new FeesEstimateRequest();
         feesEstimateRequest.setMarketplaceId(shop.get("MARKETPLACEID").toString());
         feesEstimateRequest.setIdType("ASIN");
@@ -286,8 +285,8 @@ public class OrderManageController {
         FeesEstimateRequestList feesEstimateRequestList = new FeesEstimateRequestList();
         feesEstimateRequestList.setFeesEstimateRequest(feesEstimateRequests);
         request.setFeesEstimateRequestList(feesEstimateRequestList);
-        GetMyFeesEstimateResponse response = client.getMyFeesEstimate(request);
-        /*MarketplaceWebServiceProductsConfig config = new MarketplaceWebServiceProductsConfig();
+        GetMyFeesEstimateResponse response = client.getMyFeesEstimate(request);*/
+        MarketplaceWebServiceProductsConfig config = new MarketplaceWebServiceProductsConfig();
         config.setServiceURL(shop.get("ENDPOINT").toString());
         MarketplaceWebServiceProductsClient client = new MarketplaceWebServiceProductsClient(shop.get("ACCESSKEY_ID").toString(), shop.get("SECRET_KEY").toString(), config);
         GetMatchingProductForIdRequest request = new GetMatchingProductForIdRequest();
@@ -301,8 +300,7 @@ public class OrderManageController {
         idList.setId(asins);
         request.setIdList(idList);
         GetMatchingProductForIdResponse response = client.getMatchingProductForId(request);
-        response.getGetMatchingProductForIdResult().get(0).getProducts().getProduct().get(0);*/
-        return response.getGetMyFeesEstimateResult().getFeesEstimateResultList().getFeesEstimateResult().get(0);
+        return response.getGetMatchingProductForIdResult().get(0).getProducts().getProduct().get(0);
     }
 
     /**
@@ -312,9 +310,15 @@ public class OrderManageController {
      */
     @ResponseBody
     @RequestMapping(value = "selectLocalOrder", produces = "text/plain;charset=UTF-8")
-    public String selectLocalOrder(String data, Integer draw, Integer start, Integer length) {
+    public String selectLocalOrder(HttpSession session,String data, Integer draw, Integer start, Integer length) {
         Map<String, Object> map = new HashMap<>();
         Map<String, Object> paramMap = JSON.parseObject(data, Map.class);
+        Map<String, Object> user = (Map<String, Object>) session.getAttribute("user");
+        if (user.get("ROLE_ID").toString().equals("600")) {
+            paramMap.put("salesMan", user.get("USER_ID"));
+        } else if (user.get("ROLE_ID").toString().equals("500")) {
+            paramMap.put("salesCompany", user.get("USER_COMPANY"));
+        }
         List<Map<String, Object>> localOrderList = new ArrayList<>();
         /*if (paramMap.get("localStatus").toString().equals("0")) {
             paramMap.put("localStatus", "");

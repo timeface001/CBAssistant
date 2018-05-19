@@ -383,12 +383,13 @@
             $("#addressLine3").attr("readOnly", false);
         }
     }
+    var itemTable;
     function initOrderItem() {
         var vis = true;
         if (roleId == 400) {
             vis = false;
         }
-        $("#itemTable").DataTable({
+        itemTable = $("#itemTable").DataTable({
             "serverSide": true,
             "ajax": {
                 "url": "<%=request.getContextPath()%>/order/selectLocalOrderItem",
@@ -490,7 +491,7 @@
                                         "&nbsp;&nbsp;&nbsp;&nbsp;" +
                                         "<a style='text-decoration:none' title='缺货'  onClick=\"updateOrder(3,'" + full.ORDERITEMID + "')\"'>缺货</a>" +
                                         "&nbsp;&nbsp;&nbsp;&nbsp;" +
-                                        "<a style='text-decoration:none' title='退款'  onClick=\"updateOrder(6,'" + full.SELLERSKU + "')\"'>退款</a>" +
+                                        "<a style='text-decoration:none' title='退款'  onClick=\"updateOrder(6,'" + full.ORDERITEMID + "')\"'>退款</a>" +
                                         "&nbsp;&nbsp;&nbsp;&nbsp;" +
                                         "<a style='text-decoration:none' title='问题'  onClick=\"updateOrder(5,'" + full.ORDERITEMID + "')\"'>问题</a>" +
                                         "&nbsp;&nbsp;&nbsp;&nbsp;";
@@ -565,7 +566,7 @@
         });
     }
     var customsTable;
-    var count = 1;
+    var count = 0;
     function initCustomsTable() {
         customsTable = $("#customsTable").DataTable({
             "ordering": false,
@@ -756,7 +757,6 @@
         });
     }
     function updateOrder(status, orderItemId) {
-        alert(orderItemId);
         if (status == 2) {
             layer_show("备货", "<%=request.getContextPath()%>/assistant/index/order/stocking.jsp?amazonOrderId=" + amazonOrderId + "&orderItemId=" + orderItemId + "&preStatus=" + preStatus, 400, 300);
         } else if (status == 3) {
@@ -795,6 +795,7 @@
                 "orderItemId": orderItemId
             },
             success: function (data) {
+                itemTable.ajax.reload();
                 layer.msg('更新订单成功!', {icon: 1, time: 1000});
             },
             error: function (data) {
@@ -869,6 +870,7 @@
         wayBill.ShippingInfo = ShippingInfo;
         var tableData = getFormJson("#tableForm");
         if (count > 1) {
+            alert(tableData.count);
             for (var i = 0; i < tableData.enName.length; i++) {
                 if (tableData.chnName[i] == null || tableData.chnName[i] == '' || tableData.chnName[i] == undefined) {
                     layer.msg('中文品名不能为空', {icon: 2, time: 2000});
@@ -941,11 +943,11 @@
                 if (data.code == 0) {
                     layer.msg('发货成功!', {icon: 1, time: 1000});
                 } else {
-                    layer.msg('发货失败!', {icon: 1, time: 1000});
+                    layer.msg(data.msg, {icon: 1, time: 1000});
                 }
             },
             error: function (data) {
-                layer.msg('发货失败!', {icon: 2, time: 1000});
+                layer.msg(data.msg, {icon: 2, time: 1000});
             }
         });
     }

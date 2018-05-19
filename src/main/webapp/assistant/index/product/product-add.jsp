@@ -23,7 +23,10 @@
           href="<%=request.getContextPath()%>/assistant/static/h-ui.admin/css/style.css"/>
     <link rel="stylesheet" type="text/css"
           href="<%=request.getContextPath()%>/assistant/lib/layui/css/layui.css"/>
-
+    <link rel="stylesheet" type="text/css"
+          href="<%=request.getContextPath()%>/assistant/release/wangEditor.min.css"/>
+    <script type="text/javascript" charset="utf-8"
+            src="<%=request.getContextPath()%>/assistant/release/wangEditor.min.js"></script>
     <!--[if IE 6]>
     <script type="text/javascript"
             src="<%=request.getContextPath()%>/assistant/lib/DD_belatedPNG_0.0.8a-min.js"></script>
@@ -50,7 +53,7 @@
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>产品主图：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input name="mainPath" type="hidden"/>
+                <input name="mainPath" type="hidden" lay-verify="required"/>
                 <button type="button" class="layui-btn" id="mainPath">
                     <i class="layui-icon">&#xe67c;</i>上传图片
                 </button>
@@ -66,7 +69,7 @@
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>产品附图：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input name="imagePath" type="hidden"/>
+                <input name="imagePath" type="hidden" lay-verify="required"/>
                 <button type="button" class="layui-btn" id="imagePath">
                     <i class="layui-icon">&#xe67c;</i>上传图片
                 </button>
@@ -82,7 +85,8 @@
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>产品分类：</label>
             <div class="formControls col-xs-6 col-sm-7">
-                <input type="text" class="input-text" value="" placeholder="请选择" id="typeName" name="typeName" required readonly>
+                <input type="text" class="input-text" value="" placeholder="请选择" id="typeName" name="typeName"
+                       lay-verify="required" readonly>
                 <input type="hidden" name="typeId" id="typeId">
             </div>
             <div class="formControls col-xs-2 col-sm-2">
@@ -109,8 +113,8 @@
 
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>产品信息：</label>
-            <div class="formControls col-xs-8 col-sm-9">
-                <textarea name="info" placeholder="" class="layui-textarea" id="pInfo" lay-verify="required"></textarea>
+            <div class="formControls col-xs-8 col-sm-9" id="editor">
+                <textarea name="info" id="pInfo" style="width: 100%" maxlength="2000"></textarea>
             </div>
         </div>
         <input type="hidden" name="id" id="id"/>
@@ -227,6 +231,9 @@
         src="<%=request.getContextPath()%>/assistant/lib/jquery.validation/1.14.0/messages_zh.js"></script>
 <script type="text/javascript" src="<%=request.getContextPath()%>/assistant/lib/layui/layui.js"></script>
 <script type="text/javascript">
+    /*var E = window.wangEditor;
+     var editor = new E('#editor');
+     editor.create();*/
     function getParam(paramName) {
         paramValue = "", isFound = !1;
         if (this.location.search.indexOf("?") == 0 && this.location.search.indexOf("=") > 1) {
@@ -236,22 +243,22 @@
         return paramValue == "" && (paramValue = null), paramValue
     }
     var id = '';
+    var pInfo;
+    var layedit;
     $(function () {
         id = getParam("id");
         if (id != null && id != "") {
             initProductInfo();
         }
-
+        layui.use('layedit', function () {
+            layedit = layui.layedit;
+            pInfo = layedit.build('pInfo');
+        });
         layui.use('form', function () {
             var form = layui.form;
-
             form.on("submit", function (data) {
                 var url = '<%=request.getContextPath()%>/product/save';
-                var imgs = [];
-                $("#imagePathSrc img").each(function (i, val) {
-                    imgs.push($(val).attr("val"));
-                });
-                $("input[name='imagePath']").val(imgs.join(","));
+                $("#pInfo").val(layedit.getContent(pInfo));
                 $.ajax({
                     type: 'POST',
                     url: url,
@@ -266,14 +273,12 @@
                         } else {
                             layer.msg(data.msg, {icon: 5, time: 1000});
                         }
-
                     },
                     error: function (data) {
                         layer.msg(data.msg, {icon: 5, time: 1000});
                     }
                 });
             });
-            //各种基于事件的操作，下面会有进一步介绍
         });
         layui.use('upload', function () {
             var upload = layui.upload;
@@ -292,8 +297,6 @@
                     //请求异常回调
                 }
             });
-
-
             var uploadMuti = upload.render({
                 accept: "images",
                 acceptMime: "image/*",
@@ -303,10 +306,15 @@
                 , url: '<%=request.getContextPath()%>/upload/image' //上传接口
                 , done: function (res) {
                     $("#imagePathSrc").append("<img width='100px' height='90px' style='margin-left:2px;margin-top:2px' src=<%=request.getContextPath()%>/upload/" + res.data + " val='" + res.data + "' />")
+                    var imgs = [];
+                    $("#imagePathSrc img").each(function (i, val) {
+                        imgs.push($(val).attr("val"));
+                    });
+                    $("input[name='imagePath']").val(imgs.join(","));
                     //上传完毕回调
-                    if ($("#imagePathSrc img").length > 9) {//最多上传9张
+                    if ($("#imagePathSrc img").length > 8) {//最多上传9张
                         $("#imagePathSrc img").each(function (i, val) {
-                            if (i > 9) {
+                            if (i > 8) {
                                 $(val).remove();
                             } else {
 
@@ -337,6 +345,7 @@
                         $("#pName").val(data.NAME);
                         $("#mainPathSrc").html("<img width='100px' height='90px' src=<%=request.getContextPath()%>/upload/" + data.MAIN_PATH + " />")
                         $("input[name='mainPath']").val(data.MAIN_PATH);
+                        $("input[name='imagePath']").val(data.IMAGE_PATH);
                         $("#pSource").val(data.SOURCE);
                         if (data.IMAGE_PATH != null) {
                             var ims = data.IMAGE_PATH.split(",");
@@ -349,7 +358,8 @@
                         $("#typeId").val(data.TYPE_ID);
                         $("#typeName").val(data.TYPENAME);
                         $("#pPrice").val(data.PRICE);
-                        $("#pInfo").val(data.INFO);
+                        layedit.setContent(pInfo, data.INFO);
+                        /*$("#pInfo").val(data.INFO);*/
                     } else {
                         layer.msg(data.msg, {icon: 5, time: 1000});
                     }
@@ -407,10 +417,7 @@
                         $("#level-" + index).append($('<option value=' + data[i].L_C_ID + '>' + data[i].L_C_NAME + '</option>'));
                     }
                 } else if (data.code == 1) {
-                    /*document.getElementById("content-div").style.width = (index - 1) * 262 + "px";
-                     for (var i = 0; i <= (10 - index); i++) {
-                     document.getElementById("div" + (index + i)).style.display = "none";
-                     }*/
+
                 }
             },
             error: function (data) {

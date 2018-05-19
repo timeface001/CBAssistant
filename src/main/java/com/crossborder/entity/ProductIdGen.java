@@ -1,6 +1,6 @@
 package com.crossborder.entity;
 
-import java.util.Date;
+import java.sql.Timestamp;
 
 public class ProductIdGen {
     private Integer id;
@@ -11,9 +11,13 @@ public class ProductIdGen {
 
     private String useStatus;
 
-    private Date createTime;
+    private Timestamp createTime;
 
     private String amzUploadId;
+
+    private String userName;
+
+    private String createUser;
 
     public Integer getId() {
         return id;
@@ -47,11 +51,11 @@ public class ProductIdGen {
         this.useStatus = useStatus == null ? null : useStatus.trim();
     }
 
-    public Date getCreateTime() {
+    public Timestamp getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(Timestamp createTime) {
         this.createTime = createTime;
     }
 
@@ -61,5 +65,21 @@ public class ProductIdGen {
 
     public void setAmzUploadId(String amzUploadId) {
         this.amzUploadId = amzUploadId == null ? null : amzUploadId.trim();
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getCreateUser() {
+        return createUser;
+    }
+
+    public void setCreateUser(String createUser) {
+        this.createUser = createUser;
     }
 }

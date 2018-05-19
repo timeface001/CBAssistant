@@ -58,9 +58,9 @@ public class ProductClaimController extends BaseController {
             params = new HashMap<>();
         }
         Map<String, Object> user = (Map<String, Object>) session.getAttribute("user");
-        if (user.get("ROLE_ID").toString().equals("500")) {
+        if (user.get("ROLE_ID").toString().equals("600")) {
             params.put("userId", user.get("USER_ID"));
-        } else if (user.get("ROLE_ID").toString().equals("600")) {
+        } else if (user.get("ROLE_ID").toString().equals("500")) {
             params.put("companyId", user.get("USER_COMPANY"));
         }
         Map<String, Object> result = new HashMap<>();
@@ -81,7 +81,9 @@ public class ProductClaimController extends BaseController {
         ProductItemVar var = new ProductItemVar();
         var.setProductId(product.getId());
         var.setPrice(product.getPrice());
-        var.setSalePrice(new BigDecimal(salePrice));
+        if (!StringUtils.isEmpty(salePrice)) {
+            var.setSalePrice(new BigDecimal(salePrice));
+        }
         var.setQuantity(product.getQuantity());
         var.setSaleStartTime(GeneralUtils.getDateFromStr(saleStartTime));
         var.setSaleEndTime(GeneralUtils.getDateFromStr(saleEndTime));
@@ -110,7 +112,7 @@ public class ProductClaimController extends BaseController {
         ClaimProduct claimProduct = productManagerService.selectClaimProduct(id);
         //view.addObject("product", claimProduct);
         request.setAttribute("typeList", productSkuTypeService.selectTypeList());
-        claimProduct.setSku(StringUtils.isNoneBlank(claimProduct.getSku()) ? claimProduct.getSku() : GeneralUtils.getRandomString(16));
+        claimProduct.setSku(StringUtils.isNoneBlank(claimProduct.getSku()) ? claimProduct.getSku() : GeneralUtils.getRandomString(8));
         request.setAttribute("product", claimProduct);
         request.setAttribute("productStr", JSON.toJSONString(claimProduct));
         //关键词返回
@@ -236,36 +238,35 @@ public class ProductClaimController extends BaseController {
             lang = Lang.FRA;
         }
         for (String s : zhs) {
-            s = s.replaceAll("\n", "<br>");
             querier.setParams(lang, Lang.ZH, s);
             String zh = querier.execute().get(0);
-            zh = zh.substring(1, zh.length() - 1).replace("<br>", "\n");
+            zh = zh.substring(1, zh.length() - 1);
             querier.setParams(lang, Lang.EN, s);
             String uk = querier.execute().get(0);
-            uk = uk.substring(1, uk.length() - 1).replace("<br>", "\n");
+            uk = uk.substring(1, uk.length() - 1);
             querier.setParams(lang, Lang.JP, s);
             String jp = querier.execute().get(0);
-            jp = jp.substring(1, jp.length() - 1).replace("<br>", "\n");
+            jp = jp.substring(1, jp.length() - 1);
             querier.setParams(lang, Lang.DE, s);
             String de = querier.execute().get(0);
-            de = de.substring(1, de.length() - 1).replace("<br>", "\n");
+            de = de.substring(1, de.length() - 1);
             querier.setParams(lang, Lang.FRA, s);
             String fra = querier.execute().get(0);
-            fra = fra.substring(1, fra.length() - 1).replace("<br>", "\n");
+            fra = fra.substring(1, fra.length() - 1);
             querier.setParams(lang, Lang.SPA, s);
             String spa = querier.execute().get(0);
-            spa = spa.substring(1, spa.length() - 1).replace("<br>", "\n");
+            spa = spa.substring(1, spa.length() - 1);
             querier.setParams(lang, Lang.IT, s);
             String it = querier.execute().get(0);
-            it = it.substring(1, it.length() - 1).replace("<br>", "\n");
+            it = it.substring(1, it.length() - 1);
             TranslateDto dto = new TranslateDto();
-            dto.setCn(zh.replace("<br>", "\n"));
-            dto.setJp(jp.replace("<br>", "\n"));
-            dto.setDe(de.replace("<br>", "\n"));
-            dto.setEs(spa.replace("<br>", "\n"));
-            dto.setFr(fra.replace("<br>", "\n"));
-            dto.setIt(it.replace("<br>", "\n"));
-            dto.setUk(uk.replace("<br>", "\n"));
+            dto.setCn(zh);
+            dto.setJp(jp);
+            dto.setDe(de);
+            dto.setEs(spa);
+            dto.setFr(fra);
+            dto.setIt(it);
+            dto.setUk(uk);
             list.add(dto);
         }
         querier.detach(google);

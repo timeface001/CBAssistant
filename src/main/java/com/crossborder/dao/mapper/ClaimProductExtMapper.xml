@@ -7,6 +7,8 @@
         FROM T_PRODUCT_ITEM_AMZ a
         LEFT JOIN T_PRODUCT_TYPE_LOCAL b
         ON a.type_id = b.l_c_id
+        left join t_user_info c
+        on a.create_user= c.user_id
         <where>
             <if test="typeId!=null and typeId!=''">
                 AND a.TYPE_ID=#{typeId}
@@ -21,10 +23,10 @@
                 AND a.ITEM_CN LIKE #{name}
             </if>
             <if test="userId != null and userId !=''">
-                AND a.create_user_id=#{userId}
+                AND a.CREATE_USER=#{userId}
             </if>
             <if test="companyId != null and companyId !=''">
-                AND a.create_user_id in (SELECT user_id from t_user_info where user_company = #{companyId})
+                AND a.CREATE_USER in (SELECT user_id from t_user_info where user_company = #{companyId})
             </if>
         </where>
         ORDER BY a.CREATE_TIME DESC
@@ -74,6 +76,7 @@
         <result column="a_SOURCE" jdbcType="VARCHAR" property="source"/>
         <result column="a_TYPE_ID" jdbcType="VARCHAR" property="typeId"/>
         <result column="b_L_C_NAME" jdbcType="VARCHAR" property="typeName"/>
+        <result column="c_USER_NAME" jdbcType="VARCHAR" property="userName"/>
         <result column="a_IS_PREPUBLISH" jdbcType="CHAR" property="isPrepublish"/>
     </resultMap>
     <sql id="Base_Column_List">
@@ -90,7 +93,8 @@
         a.PRODUCT_DESCRIPTION_ES as a_PRODUCT_DESCRIPTION_ES, a.PRODUCT_DESCRIPTION_JP as a_PRODUCT_DESCRIPTION_JP,
         a.PRODUCT_DESCRIPTION_CN as a_PRODUCT_DESCRIPTION_CN, a.CREATE_TIME as a_CREATE_TIME,
         a.UPDATE_TIME as a_UPDATE_TIME, a.PRODUCT_ID as a_PRODUCT_ID, a.UPDATE_STATE as a_UPDATE_STATE,
-        a.SKU_TYPE as a_SKU_TYPE, a.SOURCE as a_SOURCE, a.TYPE_ID as a_TYPE_ID, a.IS_PREPUBLISH as a_IS_PREPUBLISH,b.L_C_NAME as b_L_C_NAME
+        a.SKU_TYPE as a_SKU_TYPE, a.SOURCE as a_SOURCE, a.TYPE_ID as a_TYPE_ID, a.IS_PREPUBLISH as a_IS_PREPUBLISH,b.L_C_NAME as b_L_C_NAME,
+        c.USER_NAME as c_USER_NAME
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
         select
@@ -98,6 +102,8 @@
         from T_PRODUCT_ITEM_AMZ a
         LEFT JOIN T_PRODUCT_TYPE_LOCAL b
         ON a.type_id = b.l_c_id
+        left join t_user_info c
+        on a.create_user= c.user_id
         where a.ID = #{id,jdbcType=VARCHAR}
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
@@ -133,7 +139,7 @@
         #{productDescriptionUk,jdbcType=VARCHAR}, #{productDescriptionFr,jdbcType=VARCHAR},
         #{productDescriptionDe,jdbcType=VARCHAR}, #{productDescriptionIt,jdbcType=VARCHAR},
         #{productDescriptionEs,jdbcType=VARCHAR}, #{productDescriptionJp,jdbcType=VARCHAR},
-        #{productDescriptionCn,jdbcType=VARCHAR}, #{createTime,jdbcType=DATE}, #{updateTime,jdbcType=DATE},
+        #{productDescriptionCn,jdbcType=VARCHAR}, CURRENT_DATE, CURRENT_DATE,
         #{productId,jdbcType=VARCHAR}, #{updateState,jdbcType=CHAR}, #{skuType,jdbcType=CHAR},
         #{source,jdbcType=VARCHAR}, #{typeId,jdbcType=VARCHAR}, #{isPrepublish,jdbcType=CHAR}
         )
@@ -241,12 +247,8 @@
             <if test="productDescriptionCn != null">
                 PRODUCT_DESCRIPTION_CN,
             </if>
-            <if test="createTime != null">
-                CREATE_TIME,
-            </if>
-            <if test="updateTime != null">
-                UPDATE_TIME,
-            </if>
+            CREATE_TIME,
+            UPDATE_TIME,
             <if test="productId != null">
                 PRODUCT_ID,
             </if>
@@ -367,12 +369,8 @@
             <if test="productDescriptionCn != null">
                 #{productDescriptionCn,jdbcType=VARCHAR},
             </if>
-            <if test="createTime != null">
-                #{createTime,jdbcType=DATE},
-            </if>
-            <if test="updateTime != null">
-                #{updateTime,jdbcType=DATE},
-            </if>
+            CURRENT_DATE,
+            CURRENT_DATE,
             <if test="productId != null">
                 #{productId,jdbcType=VARCHAR},
             </if>
@@ -495,12 +493,7 @@
             <if test="productDescriptionCn != null">
                 PRODUCT_DESCRIPTION_CN = #{productDescriptionCn,jdbcType=VARCHAR},
             </if>
-            <if test="createTime != null">
-                CREATE_TIME = #{createTime,jdbcType=DATE},
-            </if>
-            <if test="updateTime != null">
-                UPDATE_TIME = #{updateTime,jdbcType=DATE},
-            </if>
+            UPDATE_TIME = CURRENT_DATE,
             <if test="productId != null">
                 PRODUCT_ID = #{productId,jdbcType=VARCHAR},
             </if>
@@ -557,8 +550,7 @@
       PRODUCT_DESCRIPTION_ES = #{productDescriptionEs,jdbcType=VARCHAR},
       PRODUCT_DESCRIPTION_JP = #{productDescriptionJp,jdbcType=VARCHAR},
       PRODUCT_DESCRIPTION_CN = #{productDescriptionCn,jdbcType=VARCHAR},
-      CREATE_TIME = #{createTime,jdbcType=DATE},
-      UPDATE_TIME = #{updateTime,jdbcType=DATE},
+      UPDATE_TIME = CURRENT_DATE,
       PRODUCT_ID = #{productId,jdbcType=VARCHAR},
       UPDATE_STATE = #{updateState,jdbcType=CHAR},
       SKU_TYPE = #{skuType,jdbcType=CHAR},

@@ -4,6 +4,10 @@ import com.alibaba.fastjson.JSON;
 import com.crossborder.dao.*;
 import com.crossborder.entity.*;
 import com.crossborder.utils.*;
+import com.crossborder.utils.lang.Lang;
+import com.crossborder.utils.querier.Querier;
+import com.crossborder.utils.trans.Google;
+import com.crossborder.utils.util.ChineseAndEnglish;
 import org.apache.commons.lang3.StringUtils;
 import org.jdom2.Element;
 import org.jdom2.input.SAXBuilder;
@@ -62,9 +66,11 @@ public class ProductManagerService {
 
     @Transactional(readOnly = false, rollbackFor = Exception.class)
     public void updateState(String[] ids, ProductStateEnum stateEnum) {
+        Querier querier = Querier.getQuerier();
+        Google google = new Google();
+        querier.attach(google);
         for (String id : ids) {
-            productManagerDao.updateState(GeneralUtils.genMap("id", id, "pState", stateEnum.getValue()));
-            if (stateEnum.compareTo(ProductStateEnum.claim) == 0) {//认领插入
+            if (stateEnum.compareTo(ProductStateEnum.claim) == 0) {
                 Map<String, Object> product = productManagerDao.selectOne(id);
                 ClaimProduct claimProduct = new ClaimProduct();
                 claimProduct.setCreateUser(GeneralUtils.getUserId());
@@ -75,30 +81,71 @@ public class ProductManagerService {
 
                 //产品描述翻译
                 String productDesc = GeneralUtils.nullToEmpty(product.get("INFO"));
+                /*querier.setParams(Lang.ZH, Lang.EN, productDesc);
+                String uk = querier.execute().get(0);
+                uk = uk.substring(1, uk.length() - 1);
+                querier.setParams(Lang.ZH, Lang.JP, productDesc);
+                String jp = querier.execute().get(0);
+                jp = jp.substring(1, jp.length() - 1);
+                querier.setParams(Lang.ZH, Lang.DE, productDesc);
+                String de = querier.execute().get(0);
+                de = de.substring(1, de.length() - 1);
+                querier.setParams(Lang.ZH, Lang.FRA, productDesc);
+                String fra = querier.execute().get(0);
+                fra = fra.substring(1, fra.length() - 1);
+                querier.setParams(Lang.ZH, Lang.SPA, productDesc);
+                String spa = querier.execute().get(0);
+                spa = spa.substring(1, spa.length() - 1);
+                querier.setParams(Lang.ZH, Lang.IT, productDesc);
+                String it = querier.execute().get(0);
+                it = it.substring(1, it.length() - 1);*/
+                if (ChineseAndEnglish.isChinese(productDesc)) {
+                    claimProduct.setProductDescriptionCn(productDesc);
+                    claimProduct.setProductDescriptionUk("");
+                } else {
+                    claimProduct.setProductDescriptionCn("");
+                    claimProduct.setProductDescriptionUk(productDesc);
+                }
                 claimProduct.setProductDescriptionCn(productDesc);
-                claimProduct.setProductDescriptionDe(BaiduTranApi.getInstance().zh2De(productDesc));
-                claimProduct.setProductDescriptionEs(BaiduTranApi.getInstance().zh2Es(productDesc));
-                claimProduct.setProductDescriptionIt(BaiduTranApi.getInstance().zh2It(productDesc));
-                claimProduct.setProductDescriptionJp(BaiduTranApi.getInstance().zh2Jp(productDesc));
-                claimProduct.setProductDescriptionUk(BaiduTranApi.getInstance().zh2Uk(productDesc));
-                claimProduct.setProductDescriptionFr(BaiduTranApi.getInstance().zh2Fr(productDesc));
+                claimProduct.setProductDescriptionDe("");
+                claimProduct.setProductDescriptionEs("");
+                claimProduct.setProductDescriptionIt("");
+                claimProduct.setProductDescriptionJp("");
+                claimProduct.setProductDescriptionFr("");
 
                 //标题翻译
                 String name = GeneralUtils.nullToEmpty(product.get("NAME"));
+                querier.setParams(Lang.ZH, Lang.EN, name);
+                String uk = querier.execute().get(0);
+                uk = uk.substring(1, uk.length() - 1);
+                querier.setParams(Lang.ZH, Lang.JP, name);
+                String jp = querier.execute().get(0);
+                jp = jp.substring(1, jp.length() - 1);
+                querier.setParams(Lang.ZH, Lang.DE, name);
+                String de = querier.execute().get(0);
+                de = de.substring(1, de.length() - 1);
+                querier.setParams(Lang.ZH, Lang.FRA, name);
+                String fra = querier.execute().get(0);
+                fra = fra.substring(1, fra.length() - 1);
+                querier.setParams(Lang.ZH, Lang.SPA, name);
+                String spa = querier.execute().get(0);
+                spa = spa.substring(1, spa.length() - 1);
+                querier.setParams(Lang.ZH, Lang.IT, name);
+                String it = querier.execute().get(0);
+                it = it.substring(1, it.length() - 1);
                 claimProduct.setItemCn(name);
-                claimProduct.setItemDe(BaiduTranApi.getInstance().zh2De(name));
-                claimProduct.setItemEs(BaiduTranApi.getInstance().zh2Es(name));
-                claimProduct.setItemIt(BaiduTranApi.getInstance().zh2It(name));
-                claimProduct.setItemJp(BaiduTranApi.getInstance().zh2Jp(name));
-                claimProduct.setItemUk(BaiduTranApi.getInstance().zh2Uk(name));
-                claimProduct.setItemFr(BaiduTranApi.getInstance().zh2Fr(name));
+                claimProduct.setItemDe(de);
+                claimProduct.setItemEs(spa);
+                claimProduct.setItemIt(it);
+                claimProduct.setItemJp(jp);
+                claimProduct.setItemUk(uk);
+                claimProduct.setItemFr(fra);
 
-                claimProduct.setCreateTime(new Date());
                 claimProduct.setCreateUser(GeneralUtils.getUserId());
                 claimProduct.setSkuType("1");
                 claimProduct.setSource(product.get("SOURCE") != null ? product.get("SOURCE").toString() : "");
                 claimProductExtMapper.insertSelective(claimProduct);
-
+                productManagerDao.updateState(GeneralUtils.genMap("id", id, "pState", stateEnum.getValue()));
             }
         }
     }
@@ -119,16 +166,16 @@ public class ProductManagerService {
         //翻译产品描述  产品概要  关键词翻译
         List<String> keyList = JSON.parseArray(product.getKeywordsCn(), String.class);
         List<String> pointList = JSON.parseArray(product.getBulletPointCn(), String.class);
-        String productDesc = product.getProductDescriptionCn();
+/*        String productDesc = product.getProductDescriptionCn();
         product.setProductDescriptionCn(productDesc);
         product.setProductDescriptionDe(BaiduTranApi.getInstance().zh2De(productDesc));
         product.setProductDescriptionEs(BaiduTranApi.getInstance().zh2Es(productDesc));
         product.setProductDescriptionIt(BaiduTranApi.getInstance().zh2It(productDesc));
         product.setProductDescriptionJp(BaiduTranApi.getInstance().zh2Jp(productDesc));
         product.setProductDescriptionUk(BaiduTranApi.getInstance().zh2Uk(productDesc));
-        product.setProductDescriptionFr(BaiduTranApi.getInstance().zh2Fr(productDesc));
+        product.setProductDescriptionFr(BaiduTranApi.getInstance().zh2Fr(productDesc));*/
 
-        List<String> keyDe = new ArrayList<>();
+        /*List<String> keyDe = new ArrayList<>();
         List<String> keyEs = new ArrayList<>();
         List<String> keyIt = new ArrayList<>();
         List<String> keyJp = new ArrayList<>();
@@ -149,10 +196,10 @@ public class ProductManagerService {
         product.setKeywordsIt(JSON.toJSONString(keyIt));
         product.setKeywordsJp(JSON.toJSONString(keyJp));
         product.setKeywordsUk(JSON.toJSONString(keyUk));
-        product.setKeywordsFr(JSON.toJSONString(keyFr));
+        product.setKeywordsFr(JSON.toJSONString(keyFr));*/
 
 
-        List<String> pointDe = new ArrayList<>();
+/*        List<String> pointDe = new ArrayList<>();
         List<String> pointEs = new ArrayList<>();
         List<String> pointIt = new ArrayList<>();
         List<String> pointJp = new ArrayList<>();
@@ -173,9 +220,8 @@ public class ProductManagerService {
         product.setBulletPointIt(JSON.toJSONString(pointIt));
         product.setBulletPointJp(JSON.toJSONString(pointJp));
         product.setBulletPointUk(JSON.toJSONString(pointUk));
-        product.setBulletPointFr(JSON.toJSONString(pointFr));
+        product.setBulletPointFr(JSON.toJSONString(pointFr));*/
         product.setUpdateState("1");//已编辑
-        product.setUpdateTime(new Date());
         claimProductExtMapper.updateByPrimaryKeySelective(product);
     }
 
@@ -364,24 +410,21 @@ public class ProductManagerService {
         return productIdGenDao.selectProductIdGenList(params);
     }
 
-    public boolean saveProductId(String type, List<String> ids) {
-
+    public boolean saveProductId(String type,String createUser, List<String> ids) {
         for (String id : ids) {
             ProductIdGen gen = new ProductIdGen();
             gen.setProductId(id);
             gen.setType(type);
-            gen.setCreateTime(new Date());
+            gen.setCreateUser(createUser);
             if (productIdGenDao.selectProductIdExist(type, id) == 0L) {
                 productIdGenDao.insertSelective(gen);
-
             }
         }
-
         return true;
     }
 
-    public ProductIdGen selectProductIdForUse(String type) {
-        return productIdGenDao.selectProductIdForUse(type);
+    public List<ProductIdGen> selectProductIdForUse(Map<String, Object> params) {
+        return productIdGenDao.selectProductIdForUse(params);
     }
 
 

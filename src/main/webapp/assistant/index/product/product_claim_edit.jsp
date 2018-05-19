@@ -13,12 +13,6 @@
     <!--[if lt IE 9]>
     <script type="text/javascript" src="<%=request.getContextPath()%>/assistant/lib/html5shiv.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/assistant/lib/respond.min.js"></script>
-    <script type="text/javascript" charset="utf-8"
-            src="<%=request.getContextPath()%>/assistant/ueditor/ueditor.config.js"></script>
-    <script type="text/javascript" charset="utf-8"
-            src="<%=request.getContextPath()%>/assistant/ueditor/ueditor.all.min.js"></script>
-    <script type="text/javascript" charset="utf-8"
-            src="<%=request.getContextPath()%>/assistant/ueditor/lang/lang/zh-cn/zh-cn.js"></script>
     <![endif]-->
     <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/assistant/static/h-ui/css/H-ui.min.css"/>
     <link rel="stylesheet" type="text/css"
@@ -31,7 +25,6 @@
           href="<%=request.getContextPath()%>/assistant/static/h-ui.admin/css/style.css"/>
     <link rel="stylesheet" type="text/css"
           href="<%=request.getContextPath()%>/assistant/lib/layui/css/layui.css"/>
-
 
     <!--[if IE 6]>
     <script type="text/javascript"
@@ -47,7 +40,6 @@
 </head>
 <body>
 <article class="page-container">
-
     <blockquote class="layui-elem-quote">产品信息</blockquote>
     <form class="layui-form" action="">
         <input name="id" type="hidden" value="${product.id}"/>
@@ -66,7 +58,6 @@
                        class="layui-input" value="${product.sku}">
             </div>
         </div>
-
         <div class="layui-form-item">
             <label class="layui-form-label">产品标题</label>
             <div class="layui-inline">
@@ -110,7 +101,6 @@
             <div class="layui-inline">
                 <button class="layui-btn translate" type="button" style="margin-bottom: 75px;">一键翻译</button>
             </div>
-
         </div>
         </div>
 
@@ -205,42 +195,42 @@
                         <li>西班牙语</li>
                         <li>意大利语</li>
                     </ul>
-                    <div class="layui-tab-content" style="height: 100px;">
-                        <div class="layui-tab-item layui-show"><textarea id="productDescriptionCn"
-                                                                         name="productDescriptionCn" placeholder=""
-                                                                         class="layui-textarea"
-                                                                         style="resize: none"
-                                                                         maxlength="600">${product.productDescriptionCn}</textarea>
+                    <div class="layui-tab-content" style="height: 320px;">
+                        <div class="layui-tab-item layui-show">
+                            <textarea id="productDescriptionCn"
+                                      name="productDescriptionCn"
+                                      style="width: 100%;height: 150px"
+                                      maxlength="600">${product.productDescriptionCn}</textarea>
                         </div>
-                        <div class="layui-tab-item"><textarea name="productDescriptionUk" placeholder=""
-                                                              class="layui-textarea"
-                                                              style="resize: none"
-                                                              maxlength="1800">${product.productDescriptionUk}</textarea>
+                        <div class="layui-tab-item">
+                            <textarea id="productDescriptionUk" name="productDescriptionUk"
+                                      style="width: 100%;height: 150px"
+                                      maxlength="1800">${product.productDescriptionUk}</textarea>
                         </div>
-                        <div class="layui-tab-item "><textarea name="productDescriptionJp" placeholder=""
-                                                               class="layui-textarea"
-                                                               style="resize: none"
-                                                               maxlength="600">${product.productDescriptionJp}</textarea>
+                        <div class="layui-tab-item ">
+                            <textarea id="productDescriptionJp" name="productDescriptionJp"
+                                      style="width: 100%;height: 140px"
+                                      maxlength="600">${product.productDescriptionJp}</textarea>
                         </div>
-                        <div class="layui-tab-item "><textarea name="productDescriptionDe" placeholder=""
-                                                               class="layui-textarea"
-                                                               style="resize: none"
-                                                               maxlength="1800">${product.productDescriptionDe}</textarea>
+                        <div class="layui-tab-item ">
+                            <textarea id="productDescriptionDe" name="productDescriptionDe"
+                                      style="width: 100%;height: 150px"
+                                      maxlength="1800">${product.productDescriptionDe}</textarea>
                         </div>
-                        <div class="layui-tab-item "><textarea name="productDescriptionFr" placeholder=""
-                                                               class="layui-textarea"
-                                                               style="resize: none"
-                                                               maxlength="1800">${product.productDescriptionFr}</textarea>
+                        <div class="layui-tab-item ">
+                            <textarea id="productDescriptionFr" name="productDescriptionFr"
+                                      style="width: 100%;height: 150px"
+                                      maxlength="1800">${product.productDescriptionFr}</textarea>
                         </div>
-                        <div class="layui-tab-item "><textarea name="productDescriptionEs" placeholder=""
-                                                               class="layui-textarea"
-                                                               style="resize: none"
-                                                               maxlength="1800">${product.productDescriptionEs}</textarea>
+                        <div class="layui-tab-item ">
+                            <textarea id="productDescriptionEs" name="productDescriptionEs"
+                                      style="width: 100%; height: 150px"
+                                      maxlength="1800">${product.productDescriptionEs}</textarea>
                         </div>
-                        <div class="layui-tab-item "><textarea name="productDescriptionIt" placeholder=""
-                                                               class="layui-textarea"
-                                                               style="resize: none"
-                                                               maxlength="1800">${product.productDescriptionIt}</textarea>
+                        <div class="layui-tab-item ">
+                            <textarea id="productDescriptionIt" name="productDescriptionIt"
+                                      style="width: 100%;height: 150px"
+                                      maxlength="1800">${product.productDescriptionIt}</textarea>
                         </div>
                     </div>
                 </div>
@@ -263,205 +253,205 @@
                         <li>西班牙语</li>
                         <li>意大利语</li>
                     </ul>
-                    <div class="layui-tab-content" style="height: 150px;">
+                    <div class="layui-tab-content" style="height: 210px;">
                         <div class="layui-tab-item layui-show" id="pointsCn">
                             <div class="layui-inline">
-                                <input type="text" name="bulletPoint1" style="width: 300px" value="${pointsCn[0]}"
+                                <input type="text" name="bulletPoint1" style="width: 600px" value="${pointsCn[0]}"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="150">
                             </div>
                             <div class="layui-inline">
-                                <input type="text" name="bulletPoint2" style="width: 300px" value="${pointsCn[1]}"
+                                <input type="text" name="bulletPoint2" style="width: 600px" value="${pointsCn[1]}"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="150">
                             </div>
                             <div class="layui-inline">
-                                <input type="text" name="bulletPoint3" value="${pointsCn[2]}" style="width: 300px"
+                                <input type="text" name="bulletPoint3" value="${pointsCn[2]}" style="width: 600px"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="150">
                             </div>
                             <div class="layui-inline">
-                                <input type="text" name="bulletPoint4" value="${pointsCn[3]}" style="width: 300px"
+                                <input type="text" name="bulletPoint4" value="${pointsCn[3]}" style="width: 600px"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="150">
                             </div>
 
                             <div class="layui-inline">
-                                <input type="text" name="bulletPoint5" value="${pointsCn[4]}" style="width: 300px"
+                                <input type="text" name="bulletPoint5" value="${pointsCn[4]}" style="width: 600px"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="150">
                             </div>
                         </div>
                         <div class="layui-tab-item" id="pointsUk">
                             <div class="layui-inline">
-                                <input type="text" name="bulletPoint1" style="width: 300px" value="${pointsUk[0]}"
+                                <input type="text" name="bulletPoint1" style="width: 600px" value="${pointsUk[0]}"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="450">
                             </div>
                             <div class="layui-inline">
-                                <input type="text" name="bulletPoint2" style="width: 300px" value="${pointsUk[1]}"
-                                       placeholder="" autocomplete="off" class="layui-input"
-                                       maxlength="450">
-                            </div>
-
-                            <div class="layui-inline">
-                                <input type="text" name="bulletPoint3" value="${pointsUk[2]}" style="width: 300px"
-                                       placeholder="" autocomplete="off" class="layui-input"
-                                       maxlength="450">
-                            </div>
-                            <div class="layui-inline">
-                                <input type="text" name="bulletPoint4" value="${pointsUk[3]}" style="width: 300px"
+                                <input type="text" name="bulletPoint2" style="width: 600px" value="${pointsUk[1]}"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="450">
                             </div>
 
                             <div class="layui-inline">
-                                <input type="text" name="bulletPoint5" value="${pointsUk[4]}" style="width: 300px"
+                                <input type="text" name="bulletPoint3" value="${pointsUk[2]}" style="width: 600px"
+                                       placeholder="" autocomplete="off" class="layui-input"
+                                       maxlength="450">
+                            </div>
+                            <div class="layui-inline">
+                                <input type="text" name="bulletPoint4" value="${pointsUk[3]}" style="width: 600px"
+                                       placeholder="" autocomplete="off" class="layui-input"
+                                       maxlength="450">
+                            </div>
+
+                            <div class="layui-inline">
+                                <input type="text" name="bulletPoint5" value="${pointsUk[4]}" style="width: 600px"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="450">
                             </div>
                         </div>
                         <div class="layui-tab-item " id="pointsJp">
                             <div class="layui-inline">
-                                <input type="text" name="bulletPoint1" style="width: 300px" value="${pointsJp[0]}"
+                                <input type="text" name="bulletPoint1" style="width: 600px" value="${pointsJp[0]}"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="150">
                             </div>
                             <div class="layui-inline">
-                                <input type="text" name="bulletPoint2" style="width: 300px" value="${pointsJp[1]}"
-                                       placeholder="" autocomplete="off" class="layui-input"
-                                       maxlength="150">
-                            </div>
-
-                            <div class="layui-inline">
-                                <input type="text" name="bulletPoint3" value="${pointsJp[2]}" style="width: 300px"
-                                       placeholder="" autocomplete="off" class="layui-input"
-                                       maxlength="150">
-                            </div>
-                            <div class="layui-inline">
-                                <input type="text" name="bulletPoint4" value="${pointsJp[3]}" style="width: 300px"
+                                <input type="text" name="bulletPoint2" style="width: 600px" value="${pointsJp[1]}"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="150">
                             </div>
 
                             <div class="layui-inline">
-                                <input type="text" name="bulletPoint5" value="${pointsJp[4]}" style="width: 300px"
+                                <input type="text" name="bulletPoint3" value="${pointsJp[2]}" style="width: 600px"
+                                       placeholder="" autocomplete="off" class="layui-input"
+                                       maxlength="150">
+                            </div>
+                            <div class="layui-inline">
+                                <input type="text" name="bulletPoint4" value="${pointsJp[3]}" style="width: 600px"
+                                       placeholder="" autocomplete="off" class="layui-input"
+                                       maxlength="150">
+                            </div>
+
+                            <div class="layui-inline">
+                                <input type="text" name="bulletPoint5" value="${pointsJp[4]}" style="width: 600px"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="150">
                             </div>
                         </div>
                         <div class="layui-tab-item " id="pointsDe">
                             <div class="layui-inline">
-                                <input type="text" name="bulletPoint1" style="width: 300px" value="${pointsDe[0]}"
+                                <input type="text" name="bulletPoint1" style="width: 600px" value="${pointsDe[0]}"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="450">
                             </div>
                             <div class="layui-inline">
-                                <input type="text" name="bulletPoint2" style="width: 300px" value="${pointsDe[1]}"
-                                       placeholder="" autocomplete="off" class="layui-input"
-                                       maxlength="450">
-                            </div>
-
-                            <div class="layui-inline">
-                                <input type="text" name="bulletPoint3" value="${pointsDe[2]}" style="width: 300px"
-                                       placeholder="" autocomplete="off" class="layui-input"
-                                       maxlength="450">
-                            </div>
-                            <div class="layui-inline">
-                                <input type="text" name="bulletPoint4" value="${pointsDe[3]}" style="width: 300px"
+                                <input type="text" name="bulletPoint2" style="width: 600px" value="${pointsDe[1]}"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="450">
                             </div>
 
                             <div class="layui-inline">
-                                <input type="text" name="bulletPoint5" value="${pointsDe[4]}" style="width: 300px"
+                                <input type="text" name="bulletPoint3" value="${pointsDe[2]}" style="width: 600px"
+                                       placeholder="" autocomplete="off" class="layui-input"
+                                       maxlength="450">
+                            </div>
+                            <div class="layui-inline">
+                                <input type="text" name="bulletPoint4" value="${pointsDe[3]}" style="width: 600px"
+                                       placeholder="" autocomplete="off" class="layui-input"
+                                       maxlength="450">
+                            </div>
+
+                            <div class="layui-inline">
+                                <input type="text" name="bulletPoint5" value="${pointsDe[4]}" style="width: 600px"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="450">
                             </div>
                         </div>
                         <div class="layui-tab-item" id="pointsFr">
                             <div class="layui-inline">
-                                <input type="text" name="bulletPoint1" style="width: 300px" value="${pointsFr[0]}"
+                                <input type="text" name="bulletPoint1" style="width: 600px" value="${pointsFr[0]}"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="450">
                             </div>
                             <div class="layui-inline">
-                                <input type="text" name="bulletPoint2" style="width: 300px" value="${pointsFr[1]}"
-                                       placeholder="" autocomplete="off" class="layui-input"
-                                       maxlength="450">
-                            </div>
-
-                            <div class="layui-inline">
-                                <input type="text" name="bulletPoint3" value="${pointsFr[2]}" style="width: 300px"
-                                       placeholder="" autocomplete="off" class="layui-input"
-                                       maxlength="450">
-                            </div>
-                            <div class="layui-inline">
-                                <input type="text" name="bulletPoint4" value="${pointsFr[3]}" style="width: 300px"
+                                <input type="text" name="bulletPoint2" style="width: 600px" value="${pointsFr[1]}"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="450">
                             </div>
 
                             <div class="layui-inline">
-                                <input type="text" name="bulletPoint5" value="${pointsFr[4]}" style="width: 300px"
+                                <input type="text" name="bulletPoint3" value="${pointsFr[2]}" style="width: 600px"
+                                       placeholder="" autocomplete="off" class="layui-input"
+                                       maxlength="450">
+                            </div>
+                            <div class="layui-inline">
+                                <input type="text" name="bulletPoint4" value="${pointsFr[3]}" style="width: 600px"
+                                       placeholder="" autocomplete="off" class="layui-input"
+                                       maxlength="450">
+                            </div>
+
+                            <div class="layui-inline">
+                                <input type="text" name="bulletPoint5" value="${pointsFr[4]}" style="width: 600px"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="450">
                             </div>
                         </div>
                         <div class="layui-tab-item" id="pointsEs">
                             <div class="layui-inline">
-                                <input type="text" name="bulletPoint1" style="width: 300px" value="${pointsEs[0]}"
+                                <input type="text" name="bulletPoint1" style="width: 600px" value="${pointsEs[0]}"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="450">
                             </div>
                             <div class="layui-inline">
-                                <input type="text" name="bulletPoint2" style="width: 300px" value="${pointsEs[1]}"
-                                       placeholder="" autocomplete="off" class="layui-input"
-                                       maxlength="450">
-                            </div>
-
-                            <div class="layui-inline">
-                                <input type="text" name="bulletPoint3" value="${pointsEs[2]}" style="width: 300px"
-                                       placeholder="" autocomplete="off" class="layui-input"
-                                       maxlength="450">
-                            </div>
-                            <div class="layui-inline">
-                                <input type="text" name="bulletPoint4" value="${pointsEs[3]}" style="width: 300px"
+                                <input type="text" name="bulletPoint2" style="width: 600px" value="${pointsEs[1]}"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="450">
                             </div>
 
                             <div class="layui-inline">
-                                <input type="text" name="bulletPoint5" value="${pointsEs[4]}" style="width: 300px"
+                                <input type="text" name="bulletPoint3" value="${pointsEs[2]}" style="width: 600px"
+                                       placeholder="" autocomplete="off" class="layui-input"
+                                       maxlength="450">
+                            </div>
+                            <div class="layui-inline">
+                                <input type="text" name="bulletPoint4" value="${pointsEs[3]}" style="width: 600px"
+                                       placeholder="" autocomplete="off" class="layui-input"
+                                       maxlength="450">
+                            </div>
+
+                            <div class="layui-inline">
+                                <input type="text" name="bulletPoint5" value="${pointsEs[4]}" style="width: 600px"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="450">
                             </div>
                         </div>
                         <div class="layui-tab-item" id="pointsIt">
                             <div class="layui-inline">
-                                <input type="text" name="pointsIt0" style="width: 300px" value="${pointsIt[0]}"
+                                <input type="text" name="pointsIt0" style="width: 600px" value="${pointsIt[0]}"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="450">
                             </div>
                             <div class="layui-inline">
-                                <input type="text" name="pointsIt1" style="width: 300px" value="${pointsIt[1]}"
-                                       placeholder="" autocomplete="off" class="layui-input"
-                                       maxlength="450">
-                            </div>
-
-                            <div class="layui-inline">
-                                <input type="text" name="pointsIt2" value="${pointsIt[2]}" style="width: 300px"
-                                       placeholder="" autocomplete="off" class="layui-input"
-                                       maxlength="450">
-                            </div>
-                            <div class="layui-inline">
-                                <input type="text" name="pointsIt3" value="${pointsIt[3]}" style="width: 300px"
+                                <input type="text" name="pointsIt1" style="width: 600px" value="${pointsIt[1]}"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="450">
                             </div>
 
                             <div class="layui-inline">
-                                <input type="text" name="pointsIt4" value="${pointsIt[4]}" style="width: 300px"
+                                <input type="text" name="pointsIt2" value="${pointsIt[2]}" style="width: 600px"
+                                       placeholder="" autocomplete="off" class="layui-input"
+                                       maxlength="450">
+                            </div>
+                            <div class="layui-inline">
+                                <input type="text" name="pointsIt3" value="${pointsIt[3]}" style="width: 600px"
+                                       placeholder="" autocomplete="off" class="layui-input"
+                                       maxlength="450">
+                            </div>
+
+                            <div class="layui-inline">
+                                <input type="text" name="pointsIt4" value="${pointsIt[4]}" style="width: 600px"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="450">
                             </div>
@@ -488,192 +478,192 @@
                         <li>西班牙语</li>
                         <li>意大利语</li>
                     </ul>
-                    <div class="layui-tab-content" style="height: 150px;">
+                    <div class="layui-tab-content" style="height: 210px;">
                         <div class="layui-tab-item layui-show" id="keywordsCn">
                             <div class="layui-inline">
-                                <input type="text" name="keywordsCn0" style="width: 300px" value="${keywordsCn[0]}"
+                                <input type="text" name="keywordsCn0" style="width: 600px" value="${keywordsCn[0]}"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="15">
                             </div>
                             <div class="layui-inline">
-                                <input type="text" name="keywordsCn1" style="width: 300px" value="${keywordsCn[1]}"
+                                <input type="text" name="keywordsCn1" style="width: 600px" value="${keywordsCn[1]}"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="15">
                             </div>
                             <div class="layui-inline">
-                                <input type="text" name="keywordsCn2" value="${keywordsCn[2]}" style="width: 300px"
+                                <input type="text" name="keywordsCn2" value="${keywordsCn[2]}" style="width: 600px"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="15">
                             </div>
                             <div class="layui-inline">
-                                <input type="text" name="keywordsCn3" value="${keywordsCn[3]}" style="width: 300px"
+                                <input type="text" name="keywordsCn3" value="${keywordsCn[3]}" style="width: 600px"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="15">
                             </div>
                             <div class="layui-inline">
-                                <input type="text" name="keywordsCn4" value="${keywordsCn[4]}" style="width: 300px"
+                                <input type="text" name="keywordsCn4" value="${keywordsCn[4]}" style="width: 600px"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="15">
                             </div>
                         </div>
                         <div class="layui-tab-item" id="keywordsUk">
                             <div class="layui-inline">
-                                <input type="text" name="keywordsUk0" style="width: 300px" value="${keywordsUk[0]}"
+                                <input type="text" name="keywordsUk0" style="width: 600px" value="${keywordsUk[0]}"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="45">
                             </div>
                             <div class="layui-inline">
-                                <input type="text" name="keywordsUk1" style="width: 300px" value="${keywordsUk[1]}"
+                                <input type="text" name="keywordsUk1" style="width: 600px" value="${keywordsUk[1]}"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="45">
                             </div>
                             <div class="layui-inline">
-                                <input type="text" name="keywordsUk2" value="${keywordsUk[2]}" style="width: 300px"
+                                <input type="text" name="keywordsUk2" value="${keywordsUk[2]}" style="width: 600px"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="45">
                             </div>
                             <div class="layui-inline">
-                                <input type="text" name="keywordsUk3" value="${keywordsUk[3]}" style="width: 300px"
+                                <input type="text" name="keywordsUk3" value="${keywordsUk[3]}" style="width: 600px"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="45">
                             </div>
                             <div class="layui-inline">
-                                <input type="text" name="keywordsUk4" value="${keywordsUk[4]}" style="width: 300px"
+                                <input type="text" name="keywordsUk4" value="${keywordsUk[4]}" style="width: 600px"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="45">
                             </div>
                         </div>
                         <div class="layui-tab-item" id="keywordsJp">
                             <div class="layui-inline">
-                                <input type="text" name="keywordsJp0" style="width: 300px" value="${keywordsJp[0]}"
+                                <input type="text" name="keywordsJp0" style="width: 600px" value="${keywordsJp[0]}"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="15">
                             </div>
                             <div class="layui-inline">
-                                <input type="text" name="keywordsJp1" style="width: 300px" value="${keywordsJp[1]}"
+                                <input type="text" name="keywordsJp1" style="width: 600px" value="${keywordsJp[1]}"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="15">
                             </div>
                             <div class="layui-inline">
-                                <input type="text" name="keywordsJp2" value="${keywordsJp[2]}" style="width: 300px"
+                                <input type="text" name="keywordsJp2" value="${keywordsJp[2]}" style="width: 600px"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="15">
                             </div>
                             <div class="layui-inline">
-                                <input type="text" name="keywordsJp3" value="${keywordsJp[3]}" style="width: 300px"
+                                <input type="text" name="keywordsJp3" value="${keywordsJp[3]}" style="width: 600px"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="15">
                             </div>
                             <div class="layui-inline">
-                                <input type="text" name="keywordsJp4" value="${keywordsJp[4]}" style="width: 300px"
+                                <input type="text" name="keywordsJp4" value="${keywordsJp[4]}" style="width: 600px"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="15">
                             </div>
                         </div>
                         <div class="layui-tab-item" id="keywordsDe">
                             <div class="layui-inline">
-                                <input type="text" name="keywordsUk0" style="width: 300px" value="${keywordsDe[0]}"
+                                <input type="text" name="keywordsUk0" style="width: 600px" value="${keywordsDe[0]}"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="45">
                             </div>
                             <div class="layui-inline">
-                                <input type="text" name="keywordsDe1" style="width: 300px" value="${keywordsDe[1]}"
+                                <input type="text" name="keywordsDe1" style="width: 600px" value="${keywordsDe[1]}"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="45">
                             </div>
                             <div class="layui-inline">
-                                <input type="text" name="keywordsDe2" value="${keywordsDe[2]}" style="width: 300px"
+                                <input type="text" name="keywordsDe2" value="${keywordsDe[2]}" style="width: 600px"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="45">
                             </div>
                             <div class="layui-inline">
-                                <input type="text" name="keywordsDe3" value="${keywordsDe[3]}" style="width: 300px"
+                                <input type="text" name="keywordsDe3" value="${keywordsDe[3]}" style="width: 600px"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="45">
                             </div>
                             <div class="layui-inline">
-                                <input type="text" name="keywordsDe4" value="${keywordsDe[4]}" style="width: 300px"
+                                <input type="text" name="keywordsDe4" value="${keywordsDe[4]}" style="width: 600px"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="45">
                             </div>
                         </div>
                         <div class="layui-tab-item" id="keywordsFr">
                             <div class="layui-inline">
-                                <input type="text" name="keywordsFr0" style="width: 300px" value="${keywordsFr[0]}"
+                                <input type="text" name="keywordsFr0" style="width: 600px" value="${keywordsFr[0]}"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="45">
                             </div>
                             <div class="layui-inline">
-                                <input type="text" name="keywordsFr1" style="width: 300px" value="${keywordsFr[1]}"
+                                <input type="text" name="keywordsFr1" style="width: 600px" value="${keywordsFr[1]}"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="45">
                             </div>
                             <div class="layui-inline">
-                                <input type="text" name="keywordsFr2" value="${keywordsFr[2]}" style="width: 300px"
+                                <input type="text" name="keywordsFr2" value="${keywordsFr[2]}" style="width: 600px"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="45">
                             </div>
                             <div class="layui-inline">
-                                <input type="text" name="keywordsFr3" value="${keywordsFr[3]}" style="width: 300px"
+                                <input type="text" name="keywordsFr3" value="${keywordsFr[3]}" style="width: 600px"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="45">
                             </div>
                             <div class="layui-inline">
-                                <input type="text" name="keywordsFr4" value="${keywordsFr[4]}" style="width: 300px"
+                                <input type="text" name="keywordsFr4" value="${keywordsFr[4]}" style="width: 600px"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="45">
                             </div>
                         </div>
                         <div class="layui-tab-item" id="keywordsEs">
                             <div class="layui-inline">
-                                <input type="text" name="keywordsEs0" style="width: 300px" value="${keywordsEs[0]}"
+                                <input type="text" name="keywordsEs0" style="width: 600px" value="${keywordsEs[0]}"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="45">
                             </div>
                             <div class="layui-inline">
-                                <input type="text" name="keywordsEs1" style="width: 300px" value="${keywordsEs[1]}"
+                                <input type="text" name="keywordsEs1" style="width: 600px" value="${keywordsEs[1]}"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="45">
                             </div>
                             <div class="layui-inline">
-                                <input type="text" name="keywordsEs2" value="${keywordsEs[2]}" style="width: 300px"
+                                <input type="text" name="keywordsEs2" value="${keywordsEs[2]}" style="width: 600px"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="45">
                             </div>
                             <div class="layui-inline">
-                                <input type="text" name="keywordsEs3" value="${keywordsEs[3]}" style="width: 300px"
+                                <input type="text" name="keywordsEs3" value="${keywordsEs[3]}" style="width: 600px"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="45">
                             </div>
                             <div class="layui-inline">
-                                <input type="text" name="keywordsEs4" value="${keywordsEs[4]}" style="width: 300px"
+                                <input type="text" name="keywordsEs4" value="${keywordsEs[4]}" style="width: 600px"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="45">
                             </div>
                         </div>
                         <div class="layui-tab-item" id="keywordsIt">
                             <div class="layui-inline">
-                                <input type="text" name="keywordsUk0" style="width: 300px" value="${keywordsIt[0]}"
+                                <input type="text" name="keywordsUk0" style="width: 600px" value="${keywordsIt[0]}"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="45">
                             </div>
                             <div class="layui-inline">
-                                <input type="text" name="keywordsIt1" style="width: 300px" value="${keywordsIt[1]}"
+                                <input type="text" name="keywordsIt1" style="width: 600px" value="${keywordsIt[1]}"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="45">
                             </div>
                             <div class="layui-inline">
-                                <input type="text" name="keywordsIt2" value="${keywordsIt[2]}" style="width: 300px"
+                                <input type="text" name="keywordsIt2" value="${keywordsIt[2]}" style="width: 600px"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="45">
                             </div>
                             <div class="layui-inline">
-                                <input type="text" name="keywordsIt3" value="${keywordsIt[3]}" style="width: 300px"
+                                <input type="text" name="keywordsIt3" value="${keywordsIt[3]}" style="width: 600px"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="45">
                             </div>
                             <div class="layui-inline">
-                                <input type="text" name="keywordsIt4" value="${keywordsIt[4]}" style="width: 300px"
+                                <input type="text" name="keywordsIt4" value="${keywordsIt[4]}" style="width: 600px"
                                        placeholder="" autocomplete="off" class="layui-input"
                                        maxlength="45">
                             </div>
@@ -718,62 +708,33 @@
         src="<%=request.getContextPath()%>/assistant/lib/jquery.validation/1.14.0/messages_zh.js"></script>
 <script type="text/javascript" src="<%=request.getContextPath()%>/assistant/lib/layui/layui.js"></script>
 <script type="text/javascript">
-    /*  UE.getEditor('productDescriptionCn');*/
     var imagePathSrc = '${product.imagePath}';
     var imagePathArr = imagePathSrc.split(',');
+    var skuType = '${skuType}';
     var id = '';
+    var layedit;
+    var cnedit;
+    var ukedit;
+    var jpedit;
+    var deedit;
+    var fredit;
+    var esedit;
+    var itedit;
     $(function () {
-        var skuArr = [];
-        //singleSku();
-        //日期
-        initSku('${product}')
-        var skuType = '${skuType}';
-        function initSku() {
-
-        }
         layui.use('element', function () {
             var element = layui.element;
-
-            //…
         });
-        for (var i = 0; i < imagePathArr.length; i++) {
-            $("#imagePathSrc").append("<div style='width:100px;height:110px;margin-left:2px;float:left;'><img width='100px' height='90px' style='padding-right:5px;' src=<%=request.getContextPath()%>/upload/" + imagePathArr[i] + " /><i class='layui-icon delImage' style='font-size:20px;margin-left:35px;'>&#xe640;</i></div>");
-            $(".delImage").on("click", function () {
-                var pprent = $(this).parent().parent();
-                var ppKey = $(this).prev().attr("src").substring(20);
-                var exVal = $("#imagePathValue").val();
-                var exArr = exVal.split(",");
-                var delVals = [];
-                for (var i = 0; i < exArr.length; i++) {
-                    if (exArr[i] != "" && ppKey != exArr[i]) {
-                        delVals.push(exArr[i]);
-                    }
-                }
-                $("#imagePathValue").val(delVals.join(","));
-                $(this).parent().remove();
-                if (pprent.find("div").length == 0) {
-                    pprent.append("<img class='pathDemo' src='http://bpic.588ku.com/element_origin_min_pic/01/47/02/12574338a640011.jpg!r650' width='100' height='90' />");
-                }
-            })
-        }
-        initSingleImage();
-        layui.use('laydate', function () {
-            var laydate = layui.laydate;
-            laydate.render({
-                elem: '#saleStartTime' //促销开始时间
-            });
-
-            laydate.render({
-                elem: '#saleEndTime' //促销结束时间
-            });
-
-            laydate.render({
-                elem: '.saleStart' //促销开始时间
-            });
-
-            laydate.render({
-                elem: '.saleEnd' //促销结束时间
-            });
+        layui.use('layedit', function () {
+            layedit = layui.layedit;
+            cnedit = layedit.build('productDescriptionCn');
+            ukedit = layedit.build('productDescriptionUk');
+            jpedit = layedit.build('productDescriptionJp');
+            deedit = layedit.build('productDescriptionDe');
+            fredit = layedit.build('productDescriptionFr');
+            esedit = layedit.build('productDescriptionEs');
+            itedit = layedit.build('productDescriptionIt');
+            /*layedit.setContent(cnedit, '
+            ${product.productDescriptionCn}');*/
         });
         function initSkuSaleDate() {
             var laydate = layui.laydate;
@@ -792,7 +753,7 @@
         var selectValue = null;
         layui.use('form', function () {
             var form = layui.form;
-            form.on('radio(skuType)', function (data) {//切换变体类型
+            form.on('radio(skuType)', function (data) {
                 if ($(this).val() == "2") {//选中多变体
                     mutiSku();
                 } else {//单体
@@ -803,14 +764,12 @@
                 mutiSku();
                 $("input[name='skuType']").eq(1).attr("checked", 'checked');
                 $("input[name='skuType']").eq(0).removeAttr("checked");
-
                 var vars = JSON.parse('${productVars}');
                 $("#selectMuti").val("Color");
                 form.render("select", "skuMuti");
                 selectValue = vars[0].variationType;
                 $("#skuRender").html("");
                 $("#skuRender").append(genSkuTypeDom($("#skuMutiDiv option:selected").text()));
-
                 $(".skuBtn").on("click", function () {
                     var $this = $(this);
                     var text = $(this).parent().parent().find("input").val();
@@ -833,18 +792,13 @@
                             form.render(null, "skuTable");
                             $this.parent().parent().find("input").val('');
                         }
-
                     }
                 });
-
                 for (var i = 0; i < vars.length; i++) {
                     var vvType = vars[i].variationType;
-                    console.log(vvType);
                     if (vvType != null && vvType != 'undefined') {
-                        console.log(vars[i]);
                         if (vvType = 'Color') {
                             $("#skuRender button").parent().prev().find('input').val(vars[i].colorMap);
-
                         }
                         $(".skuBtn").click();
                         form.render(null, 'skuRender');
@@ -865,15 +819,12 @@
                         for (var j = 0; j < ttImages.length; j++) {
                             ttHtml += "<div style='width:100px;height:110px;margin-left:2px;float:left;'><img width='100px' height='90px' style='padding-right:5px;' src=<%=request.getContextPath()%>/upload/" + ttImages[j] + " /><i class='layui-icon delImage' style='font-size:20px;margin-left:35px;'>&#xe640;</i></div>";
                         }
-
                         $("#skuMutiPath > div :eq(" + (index * 3 + 2) + ")").html(ttHtml);
-
                         $("#skuTable> tbody tr").eq(index).find("td").each(function (ii, val) {
                             var isTwo = $(val).parent().attr("val").indexOf(":") > 0;
                             if (ii == 0) {
                                 $(val).find(".trOtherPath").val(ttImages.join(","));
                             }
-
                             if (isTwo) {
                                 if (ii == 3) {
                                     $(val).find("input").val(vars[i].price);
@@ -881,12 +832,10 @@
                                 if (ii == 4) {
                                     $(val).find("input").val(vars[i].salePrice);
                                 }
-
                                 if (ii == 5) {
                                     $(val).find("input:eq(0)").val(getMyDate(vars[i].saleStartTime));
                                     $(val).find("input:eq(1)").val(getMyDate(vars[i].saleEndTime));
                                 }
-
                                 if (ii == 6) {
                                     $(val).find("input").val(vars[i].quantity);
                                 }
@@ -894,16 +843,13 @@
                                 if (ii == 2) {
                                     $(val).find("input").val(vars[i].price);
                                 }
-
                                 if (ii == 3) {
                                     $(val).find("input").val(vars[i].salePrice);
                                 }
-
                                 if (ii == 4) {
                                     $(val).find("input:eq(0)").val(getMyDate(vars[i].saleStartTime));
                                     $(val).find("input:eq(1)").val(getMyDate(vars[i].saleEndTime));
                                 }
-
                                 if (ii == 5) {
                                     $(val).find("input").val(vars[i].quantity);
                                 }
@@ -917,10 +863,8 @@
                     var pprent = $(this).parent().parent();
                     var ppKey = $(this).prev().attr("src").substring(20);
                     $("#skuTable tbody tr").each(function (i, val) {
-
                         var exVal = $(val).find(".trOtherPath").val();
                         var delVals = [];
-
                         if (exVal != null && exVal != "") {
                             var exArr = exVal.split(",");
                             for (var i = 0; i < exArr.length; i++) {
@@ -976,13 +920,12 @@
                         }
                     }
                 });
-
                 form.render(null, 'skuRender');
                 form.render('checkbox');
-
             });
 
             form.on('submit', function (data) {
+                console.log(data.field);
                 var skuTypeA = data.field.skuType;
                 //组合关键词和简要描述
                 data.field["bulletPointCn"] = getContentByLanguage("pointsCn");
@@ -1078,27 +1021,27 @@
                     return false;
                 }
                 data.field["vars"] = JSON.stringify(skuVar);
+
                 var url = '<%=request.getContextPath()%>/product/claim/save';
+                layer.load();
                 $.ajax({
                     type: 'POST',
                     url: url,
                     dataType: 'json',
-                    data: data.field
-                    ,
+                    data: data.field,
                     success: function (data) {
-                        layer.msg(data.msg, {icon: 6, time: 1000});
+                        layer.closeAll('loading');
                         if (data.success) {
                             layer.msg("保存成功", {icon: 6, time: 1000});
                             setTimeout(function () {
                                 location.href = '<%=request.getContextPath()%>/assistant/index/product/product_claim_list.jsp';
                             }, 500);
-
                         } else {
                             layer.msg(data.msg, {icon: 5, time: 1000});
                         }
-
                     },
                     error: function (data) {
+                        layer.closeAll('loading');
                         layer.msg("保存失败", {icon: 5, time: 1000});
                     }
                 });
@@ -1316,18 +1259,6 @@
         }
 
 
-        function singleSku() {
-            $("#skuMutiDiv").css("display", "none");
-            $("#skuSingleDiv").css("display", "");
-            $("#priceInfo").css("display", "");
-        }
-
-        function mutiSku() {
-            $("#skuMutiDiv").css("display", "");
-            $("#skuSingleDiv").css("display", "none");
-            $("#priceInfo").css("display", "none");
-        }
-
         function initSKuPath(id, sid) {
             layui.use('upload', function () {
                 var upload = layui.upload;
@@ -1428,60 +1359,6 @@
             });
         }
 
-        function initSingleImage() {
-            layui.use('upload', function () {
-                var upload = layui.upload;
-                var uploadMuti = upload.render({
-                    accept: "images",
-                    acceptMime: "image/*",
-                    elem: "#imagePathBtn", //绑定元素
-                    multiple: true,
-                    number: 9,
-                    url: '<%=request.getContextPath()%>/upload/image', //上传接口
-                    done: function (res, index, upload) {
-                        var $this = $($(this)[0].item[0]);
-                        var key = $this.parent().prev().attr("val");
-                        $this.parent().next().find(".pathDemo").remove();
-                        $this.parent().next().append("<div style='width:100px;height:110px;margin-left:2px;float:left;'><img width='100px' height='90px' style='padding-right:5px;' src=<%=request.getContextPath()%>/upload/" + res.data + " /><i class='layui-icon delImage' style='font-size:20px;margin-left:35px;'>&#xe640;</i></div>");
-                        var exVal = $("#imagePathValue").val();
-                        if (exVal == null || exVal == "") {
-                            exVal = res.data;
-                        } else {
-                            exVal = exVal + "," + res.data;
-                        }
-                        $("#imagePathValue").val(exVal);
-                        //上传完毕回调
-                        if ($this.parent().next().find("img").length > 9) {//最多上传9张
-                            $this.parent().next().find("img").each(function (i, val) {
-                                if (i > 9) {
-                                    $(val).parent().remove();
-                                }
-                            });
-                        }
-                        $(".delImage").on("click", function () {
-                            var pprent = $(this).parent().parent();
-                            var ppKey = $(this).prev().attr("src").substring(20);
-                            var exVal = $("#imagePathValue").val();
-                            var exArr = exVal.split(",");
-                            var delVals = [];
-                            for (var i = 0; i < exArr.length; i++) {
-                                if (exArr[i] != "" && ppKey != exArr[i]) {
-                                    delVals.push(exArr[i]);
-                                }
-                            }
-                            $("#imagePathValue").val(delVals.join(","));
-                            $(this).parent().remove();
-                            if (pprent.find("div").length == 0) {
-                                pprent.append("<img class='pathDemo' src='http://bpic.588ku.com/element_origin_min_pic/01/47/02/12574338a640011.jpg!r650' width='100' height='90' />");
-                            }
-                        })
-                    }
-                    , error: function () {
-                        //请求异常回调
-                    }
-                });
-            });
-        }
 
         function getContentByLanguage(id) {
             var arr = [];
@@ -1494,63 +1371,87 @@
         //一键翻译
         $(".translate").click(function () {
             var currentLanguage = $(this).parent().prev().find(".layui-this").text();
-            var inputs = $(this).parent().prev().find(".layui-show input");
-            var vArr = [];
-
+            var textareas = $(this).parent().prev().find(".layui-show textarea");
             var isContainsEmpty = false;
-            if (inputs.length > 0) {
+            var vArr = [];
+            alert(textareas.length);
+            if (textareas.length < 1) {
+                var inputs = $(this).parent().prev().find(".layui-show input");
                 for (var i = 0; i < inputs.length; i++) {
                     vArr.push($(inputs[i]).val());
                     if ($(inputs[i]).val() == null || $.trim($(inputs[i]).val()).length == 0) {
                         isContainsEmpty = true;
                     }
                 }
+                var content = $(this).parent().prev().find(".layui-tab-content");
+                if (currentLanguage === "中文") {
+                    valueDisplay("cn", content, vArr);
+                } else if (currentLanguage === "英语") {
+                    valueDisplay("uk", content, vArr);
+                } else if (currentLanguage === "日语") {
+                    valueDisplay("jp", content, vArr);
+                } else if (currentLanguage === "德语") {
+                    valueDisplay("de", content, vArr);
+                } else if (currentLanguage === "法语") {
+                    valueDisplay("fr", content, vArr);
+                } else if (currentLanguage === "西班牙语") {
+                    valueDisplay("es", content, vArr);
+                } else if (currentLanguage === "意大利语") {
+                    valueDisplay("it", content, vArr);
+                }
             } else {
-                var areas = $(this).parent().prev().find(".layui-show textarea");
-                for (var i = 0; i < areas.length; i++) {
-                    vArr.push($(areas[i]).val());
-                    if ($(areas[i]).val() == null || $.trim($(areas[i]).val()).length == 0) {
-                        isContainsEmpty = true;
-                    }
+                var content = $(this).parent().prev().find(".layui-tab-content");
+                if (currentLanguage === "中文") {
+                    vArr.push(layedit.getContent(cnedit));
+                    valueDisplay("cn", content, vArr);
+                } else if (currentLanguage === "英语") {
+                    vArr.push(layedit.getContent(ukedit));
+                    valueDisplay("uk", content, vArr);
+                } else if (currentLanguage === "日语") {
+                    vArr.push(layedit.getContent(jpedit));
+                    valueDisplay("jp", content, vArr);
+                } else if (currentLanguage === "德语") {
+                    vArr.push(layedit.getContent(deedit));
+                    valueDisplay("de", content, vArr);
+                } else if (currentLanguage === "法语") {
+                    vArr.push(layedit.getContent(fredit));
+                    valueDisplay("fr", content, vArr);
+                } else if (currentLanguage === "西班牙语") {
+                    vArr.push(layedit.getContent(esedit));
+                    valueDisplay("es", content, vArr);
+                } else if (currentLanguage === "意大利语") {
+                    vArr.push(layedit.getContent(itedit));
+                    valueDisplay("it", content, vArr);
                 }
             }
-            if (isContainsEmpty) {
-                layer.msg('翻译词条不能为空', {icon: 5, time: 1000});
-                return;
-            }
-            var content = $(this).parent().prev().find(".layui-tab-content");
-            if (currentLanguage === "中文") {
-                valueDisplay("cn", content, vArr);
-            } else if (currentLanguage === "英语") {
-                valueDisplay("uk", content, vArr);
-            } else if (currentLanguage === "日语") {
-                valueDisplay("jp", content, vArr);
-            } else if (currentLanguage === "德语") {
-                valueDisplay("de", content, vArr);
-            } else if (currentLanguage === "法语") {
-                valueDisplay("fr", content, vArr);
-            } else if (currentLanguage === "西班牙语") {
-                valueDisplay("es", content, vArr);
-            } else if (currentLanguage === "意大利语") {
-                valueDisplay("it", content, vArr);
-            }
+            /*if (isContainsEmpty) {
+             layer.msg('翻译词条不能为空', {icon: 5, time: 1000});
+             return;
+             }*/
         });
 
         function valueDisplay(language, $content, arrv) {
+            layer.load();
             $.ajax({
                 type: 'POST',
                 url: '<%=request.getContextPath()%>/product/translate',
                 dataType: 'json',
                 data: {"data": JSON.stringify(arrv), language: language},
                 success: function (data) {
-
+                    layer.closeAll('loading');
                     if (data.success) {
                         var arr = data.data;
                         $content.children("div ").each(function (i, val) {
                             var isSingle = arr.length == 1, isContainsTextarea = $(val).find("textarea").length > 0;
                             if (isSingle) {
                                 if (isContainsTextarea) {
-                                    $(val).find("textarea").eq(0).val(getSingleValue(arr[0], i));
+                                    layedit.setContent(cnedit, arr[0].cn);
+                                    layedit.setContent(ukedit, arr[0].uk);
+                                    layedit.setContent(jpedit, arr[0].jp);
+                                    layedit.setContent(deedit, arr[0].de);
+                                    layedit.setContent(fredit, arr[0].fr);
+                                    layedit.setContent(esedit, arr[0].es);
+                                    layedit.setContent(itedit, arr[0].it);
                                 } else {
                                     $(val).find("input").eq(0).val(getSingleValue(arr[0], i));
                                 }
@@ -1568,6 +1469,7 @@
                     }
                 },
                 error: function (data) {
+                    layer.closeAll('loading');
                     layer.msg('翻译失败!', {icon: 5, time: 1000});
                 }
             });
@@ -1600,7 +1502,101 @@
         }
     });
 
+    /*初始化单体信息*/
+    function initSingleImage() {
+        layui.use('upload', function () {
+            var upload = layui.upload;
+            var uploadMuti = upload.render({
+                accept: "images",
+                acceptMime: "image/*",
+                elem: "#imagePathBtn", //绑定元素
+                multiple: true,
+                number: 9,
+                url: '<%=request.getContextPath()%>/upload/image', //上传接口
+                done: function (res, index, upload) {
+                    var $this = $($(this)[0].item[0]);
+                    var key = $this.parent().prev().attr("val");
+                    $this.parent().next().find(".pathDemo").remove();
+                    $this.parent().next().append("<div style='width:100px;height:110px;margin-left:2px;float:left;'><img width='100px' height='90px' style='padding-right:5px;' src=<%=request.getContextPath()%>/upload/" + res.data + " /><i class='layui-icon delImage' style='font-size:20px;margin-left:35px;'>&#xe640;</i></div>");
+                    var exVal = $("#imagePathValue").val();
+                    if (exVal == null || exVal == "") {
+                        exVal = res.data;
+                    } else {
+                        exVal = exVal + "," + res.data;
+                    }
+                    $("#imagePathValue").val(exVal);
+                    if ($this.parent().next().find("img").length > 9) {//最多上传9张
+                        $this.parent().next().find("img").each(function (i, val) {
+                            if (i > 9) {
+                                $(val).parent().remove();
+                            }
+                        });
+                    }
+                    $(".delImage").on("click", function () {
+                        var pprent = $(this).parent().parent();
+                        var ppKey = $(this).prev().attr("src").substring(20);
+                        var exVal = $("#imagePathValue").val();
+                        var exArr = exVal.split(",");
+                        var delVals = [];
+                        for (var i = 0; i < exArr.length; i++) {
+                            if (exArr[i] != "" && ppKey != exArr[i]) {
+                                delVals.push(exArr[i]);
+                            }
+                        }
+                        $("#imagePathValue").val(delVals.join(","));
+                        $(this).parent().remove();
+                        if (pprent.find("div").length == 0) {
+                            pprent.append("<img class='pathDemo' src='http://bpic.588ku.com/element_origin_min_pic/01/47/02/12574338a640011.jpg!r650' width='100' height='90' />");
+                        }
+                    })
+                }
+                , error: function () {
 
+                }
+            });
+        });
+        layui.use('laydate', function () {
+            var laydate = layui.laydate;
+            laydate.render({
+                elem: '#saleStartTime' //促销开始时间
+            });
+            laydate.render({
+                elem: '#saleEndTime' //促销结束时间
+            });
+        });
+    }
+    function singleSku() {
+        $("#skuMutiDiv").css("display", "none");
+        $("#skuSingleDiv").css("display", "");
+        $("#priceInfo").css("display", "");
+        initSingleImage();
+        for (var i = 0; i < imagePathArr.length; i++) {
+            $("#imagePathSrc").append("<div style='width:100px;height:110px;margin-left:2px;float:left;'><img width='100px' height='90px' style='padding-right:5px;' src=<%=request.getContextPath()%>/upload/" + imagePathArr[i] + " /><i class='layui-icon delImage' style='font-size:20px;margin-left:35px;'>&#xe640;</i></div>");
+            $(".delImage").on("click", function () {
+                var pprent = $(this).parent().parent();
+                var ppKey = $(this).prev().attr("src").substring(20);
+                var exVal = $("#imagePathValue").val();
+                var exArr = exVal.split(",");
+                var delVals = [];
+                for (var i = 0; i < exArr.length; i++) {
+                    if (exArr[i] != "" && ppKey != exArr[i]) {
+                        delVals.push(exArr[i]);
+                    }
+                }
+                $("#imagePathValue").val(delVals.join(","));
+                $(this).parent().remove();
+                if (pprent.find("div").length == 0) {
+                    pprent.append("<img class='pathDemo' src='http://bpic.588ku.com/element_origin_min_pic/01/47/02/12574338a640011.jpg!r650' width='100' height='90' />");
+                }
+            })
+        }
+    }
+
+    function mutiSku() {
+        $("#skuMutiDiv").css("display", "");
+        $("#skuSingleDiv").css("display", "none");
+        $("#priceInfo").css("display", "none");
+    }
     //将时间戳格式化
     function getMyDate(time) {
         if (typeof(time) == "undefined") {

@@ -58,19 +58,22 @@
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>Merchant ID：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="" placeholder="" id="merchantId" name="merchantId">
+                <input type="text" class="input-text" value="" placeholder="" id="merchantId" name="merchantId"
+                       onkeyup="this.value=this.value.replace(/(^\s+)|(\s+$)/g,'')">
             </div>
         </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>AWS Access Key ID：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="" placeholder="" id="accesskeyId" name="accesskeyId">
+                <input type="text" class="input-text" value="" placeholder="" id="accesskeyId" name="accesskeyId"
+                       onkeyup="this.value=this.value.replace(/(^\s+)|(\s+$)/g,'')">
             </div>
         </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>Secret Key：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="" placeholder="" id="secretKey" name="secretKey">
+                <input type="text" class="input-text" value="" placeholder="" id="secretKey" name="secretKey"
+                       onkeyup="this.value=this.value.replace(/(^\s+)|(\s+$)/g,'')">
             </div>
         </div>
         <div class="row cl">

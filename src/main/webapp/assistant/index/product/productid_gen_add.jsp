@@ -38,29 +38,30 @@
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-3">类型：</label>
             <div class="formControls col-xs-8 col-sm-9">
-            <select  lay-verify="required" name="type" id="externalProductIdType">
-                <option value="">--</option>
-                <option value="ISBN">ISBN</option>
-                <option value="UPC">UPC</option>
-                <option value="EAN">EAN</option>
-                <option value="ASIN">ASIN</option>
-                <option value="GTIN">GTIN</option>
-                <option value="GCID">GCID</option>
-                <option value="PZN">PZN</option>
-            </select>
+                <select lay-verify="required" name="type" id="externalProductIdType">
+                    <option value="">--</option>
+                    <option value="ISBN">ISBN</option>
+                    <option value="UPC">UPC</option>
+                    <option value="EAN">EAN</option>
+                    <option value="ASIN">ASIN</option>
+                    <option value="GTIN">GTIN</option>
+                    <option value="GCID">GCID</option>
+                    <option value="PZN">PZN</option>
+                </select>
             </div>
         </div>
 
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-3">产品ID：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <textarea type="text"  class="layui-textarea" value="" placeholder="" id="pName" name="data" lay-verify="required" required></textarea>
+                <textarea type="text" class="layui-textarea" value="" placeholder="" id="pName" name="data"
+                          lay-verify="required" required></textarea>
             </div>
         </div>
 
         <div class="row cl">
             <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
-                <button type="button" class="btn btn-success radius " lay-submit  name="product_save"><i
+                <button type="button" class="btn btn-success radius " lay-submit name="product_save"><i
                         class="icon-ok"></i>保存
                 </button>
             </div>
@@ -96,21 +97,20 @@
     var id = '';
     $(function () {
         id = getParam("id");
-        if(id!=null&&id!=""){
+        if (id != null && id != "") {
             initProductInfo();
         }
 
         layui.use('form', function () {
             var form = layui.form;
 
-            form.on("submit",function (data) {
+            form.on("submit", function (data) {
                 var url = '<%=request.getContextPath()%>/productid/add';
                 $.ajax({
                     type: 'POST',
                     url: url,
                     dataType: 'json',
-                    data:
-                        data.field
+                    data: data.field
                     ,
                     success: function (data) {
                         if (data.success) {
@@ -147,8 +147,6 @@
                     //请求异常回调
                 }
             });
-
-
             var uploadMuti = upload.render({
                 accept: "images",
                 acceptMime: "image/*",
@@ -157,13 +155,13 @@
                 , number: 9
                 , url: '<%=request.getContextPath()%>/upload/image' //上传接口
                 , done: function (res) {
-                    $("#imagePathSrc").append("<img width='100px' height='90px' style='margin-left:2px;margin-top:2px' src=<%=request.getContextPath()%>/upload/" + res.data + " val='"+res.data+"' />")
+                    $("#imagePathSrc").append("<img width='100px' height='90px' style='margin-left:2px;margin-top:2px' src=<%=request.getContextPath()%>/upload/" + res.data + " val='" + res.data + "' />")
                     //上传完毕回调
                     if ($("#imagePathSrc img").length > 9) {//最多上传9张
                         $("#imagePathSrc img").each(function (i, val) {
                             if (i > 9) {
                                 $(val).remove();
-                            }else{
+                            } else {
 
                             }
                         });
@@ -187,22 +185,19 @@
                     "id": id
                 },
                 success: function (data) {
-
                     if (data.success) {
                         var data = data.data;
                         $("#pName").val(data.NAME);
                         $("#mainPathSrc").html("<img width='100px' height='90px' src=<%=request.getContextPath()%>/upload/" + data.MAIN_PATH + " />")
                         $("input[name='mainPath']").val(data.MAIN_PATH);
                         $("#pSource").val(data.SOURCE);
-                        if(data.IMAGE_PATH!=null){
-                             var ims=data.IMAGE_PATH.split(",");
-                             if(ims.length>0){
-                                 for(var i=0;i<ims.length;i++){
-                                     $("#imagePathSrc").append("<img width='100px' style='margin-left:2px;margin-top:2px' height='90px' src=<%=request.getContextPath()%>/upload/" + ims[i] + " val='"+ims[i]+"' />")
-                                 }
-
-                             }
-
+                        if (data.IMAGE_PATH != null) {
+                            var ims = data.IMAGE_PATH.split(",");
+                            if (ims.length > 0) {
+                                for (var i = 0; i < ims.length; i++) {
+                                    $("#imagePathSrc").append("<img width='100px' style='margin-left:2px;margin-top:2px' height='90px' src=<%=request.getContextPath()%>/upload/" + ims[i] + " val='" + ims[i] + "' />")
+                                }
+                            }
                         }
                         $("#pPrice").val(data.PRICE);
                         $("#pInfo").val(data.INFO);
@@ -217,7 +212,6 @@
         }
     }
     $("#product_save").click(function () {
-
 
 
     });

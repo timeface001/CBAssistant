@@ -93,6 +93,7 @@
                 <th width="150">描述</th>
                 <th width="60">售价</th>
                 <th width="100">认领记录</th>
+                <th width="100">创建人</th>
                 <th width="100">创建时间</th>
                 <th width="100">操作</th>
             </tr>
@@ -128,7 +129,10 @@
         var index = layer.open({
             type: 2,
             title: title,
-            content: url
+            content: url,
+            end: function () {
+                location.reload();
+            }
         });
         layer.full(index);
     }
@@ -207,6 +211,11 @@
                 },
                 {
                     "data": function (val) {
+                        return val.USER_NAME == null ? "" : val.USER_NAME;
+                    }
+                },
+                {
+                    "data": function (val) {
                         return getMyDate(val.CREATE_TIME);
                     }
                 }
@@ -225,7 +234,7 @@
                     "visible": false
                 },
                 {
-                    "targets": [10],
+                    "targets": [11],
                     "data": "ID",
                     "render": function (data, type, full) {
                         return ( full.P_STATE == "1" ? "<a style='text-decoration:none' title='认领'  onClick=\"claimProduct('" + full.ID + "')\"')>认领</a>" +
@@ -273,8 +282,15 @@
     }
 
     function editProduct(id) {
-        layer_show("编辑产品", '<%=request.getContextPath()%>/assistant/index/product/product-add.jsp?id=' + id, 800);
-
+        var index = layer.open({
+            type: 2,
+            title: "编辑产品",
+            content: '<%=request.getContextPath()%>/assistant/index/product/product-add.jsp?id=' + id,
+            end: function () {
+                location.reload();
+            }
+        });
+        layer.full(index);
     }
 
     /**
@@ -287,6 +303,7 @@
         }
 
         layer.confirm('确定认领商品吗？', function (index) {
+            layer.load();
             $.ajax({
                 type: 'POST',
                 url: '<%=request.getContextPath()%>/product/state',
@@ -296,6 +313,7 @@
                     "type": 2
                 },
                 success: function (data) {
+                    layer.closeAll('loading');
                     if (data.success) {
                         layer.msg(data.msg, {icon: 6, time: 1000});
                         setTimeout(function () {
@@ -305,6 +323,7 @@
                     }
                 },
                 error: function (data) {
+                    layer.closeAll('loading');
                     layer.msg(data.msg, {icon: 2, time: 1000});
                 }
             });
@@ -361,10 +380,8 @@
                 oMin = oDate.getMinutes(),
                 oSen = oDate.getSeconds(),
                 oTime = oYear + '-' + getzf(oMonth) + '-' + getzf(oDay) + ' ' + getzf(oHour) + ':' + getzf(oMin) + ':' + getzf(oSen);//最后拼接时间
-
         return oTime;
     }
-    ;
 
     //补0操作,当时间数据小于10的时候，给该数据前面加一个0
     function getzf(num) {

@@ -35,9 +35,9 @@ public class ProductManagerController extends BaseController {
             params.put("endTime", endTime + " 23:59:59");
         }
         Map<String, Object> user = (Map<String, Object>) session.getAttribute("user");
-        if (user.get("ROLE_ID").toString().equals("500")) {
+        if (user.get("ROLE_ID").toString().equals("600")) {
             params.put("userId", user.get("USER_ID"));
-        } else if (user.get("ROLE_ID").toString().equals("600")) {
+        } else if (user.get("ROLE_ID").toString().equals("500")) {
             params.put("companyId", user.get("USER_COMPANY"));
         }
         Map<String, Object> result = new HashMap<>();
@@ -54,7 +54,6 @@ public class ProductManagerController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/product/save", produces = "text/plain;charset=UTF-8")
     public String save(String data) {
-
         Map<String, Object> result = new HashMap<>();
         try {
             Map<String, Object> params = JSON.parseObject(data, Map.class);
@@ -67,10 +66,7 @@ public class ProductManagerController extends BaseController {
             result.put("success", false);
             result.put("msg", "保存失败");
         }
-
         return JSON.toJSONString(result);
-
-
     }
 
     /**
@@ -82,7 +78,6 @@ public class ProductManagerController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/product/state", produces = "text/plain;charset=UTF-8")
     public String save(String data, int type) {
-
         Map<String, Object> result = new HashMap<>();
         try {
             productManagerService.updateState(data.split(","), ProductStateEnum.claim.generate(type));
@@ -93,10 +88,7 @@ public class ProductManagerController extends BaseController {
             result.put("success", false);
             result.put("msg", "操作失败");
         }
-
         return JSON.toJSONString(result);
-
-
     }
 
     /**

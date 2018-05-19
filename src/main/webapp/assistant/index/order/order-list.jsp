@@ -279,7 +279,7 @@
             },
             error: function (data) {
                 layer.msg(data.msg, {icon: 2, time: 1000});
-            },
+            }
         });
         $.ajax({
             type: 'POST',
@@ -390,9 +390,12 @@
                 success: function (data) {
                     if (data.code == 0) {
                         var data = data.data;
+                        $("#salesCompany").empty();
                         for (var i = 0; i < data.length; i++) {
                             $("#salesCompany").append($('<option value=' + data[i].COMPANY_ID + '>' + data[i].COMPANY_NAME + '</option>'));
                         }
+                        /*var salesCompany = document.getElementById('salesCompany');
+                        salesCompany[0].selected = true;*/
                     }
                 },
                 error: function (data) {
@@ -628,6 +631,7 @@
     }
     /*下载订单*/
     function downloadOrder() {
+        layer.load();
         $.ajax({
             type: 'POST',
             url: '<%=request.getContextPath()%>/order/downloadOrder',
@@ -636,6 +640,7 @@
                 "data": JSON.stringify(getFormJson("#orderForm"))
             },
             success: function (data) {
+                layer.closeAll("loading");
                 if (data.code == 0) {
                     layer.msg(data.msg, {icon: 1, time: 1000});
                     reloadTable(0)
@@ -644,6 +649,7 @@
                 }
             },
             error: function (data) {
+                layer.closeAll("loading");
                 layer.msg(data.msg, {icon: 2, time: 1000});
             }
         });
@@ -653,7 +659,10 @@
         var index = layer.open({
             type: 2,
             title: '订单详情',
-            content: 'order-Detail.jsp?amazonOrderId=' + amazonOrderId
+            content: 'order-Detail.jsp?amazonOrderId=' + amazonOrderId,
+            end: function () {
+                location.reload();
+            }
         });
         layer.full(index);
     }

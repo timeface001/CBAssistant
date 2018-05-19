@@ -34,7 +34,7 @@
         #{orderItemId,jdbcType=VARCHAR},
         #{typePid,jdbcType=VARCHAR},
         CURRENT_DATE,
-        #{updateTime,jdbcType=DATE},
+        CURRENT_DATE,
         1,
         #{price,jdbcType=DOUBLE},
         #{createUserID,jdbcType=VARCHAR},
@@ -43,13 +43,24 @@
     </insert>
 
     <insert id="updateProduct" parameterType="java.util.Map">
-        UPDATE  T_PRODUCT_ITEM SET NAME=#{name},IMAGE_PATH=#{imagePath},MAIN_PATH=#{mainPath},SOURCE=#{source},PRICE=#{price},INFO=#{info},UPDATE_TIME=CURRENT_DATE WHERE ID=#{id}
+        UPDATE  T_PRODUCT_ITEM
+        SET
+        NAME=#{name},
+        IMAGE_PATH=#{imagePath},
+        MAIN_PATH=#{mainPath},
+        SOURCE=#{source},
+        PRICE=#{price},
+        INFO=#{info},
+        UPDATE_TIME=CURRENT_DATE
+        WHERE ID=#{id}
     </insert>
 
     <select id="selectList" parameterType="java.util.Map" resultType="java.util.Map">
-        SELECT a.*,b.l_c_name typeName FROM T_PRODUCT_ITEM a
+        SELECT a.*,b.l_c_name typeName,c.user_name FROM T_PRODUCT_ITEM a
         LEFT JOIN T_PRODUCT_TYPE_LOCAL b
         ON a.type_id = b.l_c_id
+        left join t_user_info c
+        on a.create_user_id= c.user_id
         where
         a.STATUS=0
         <if test="pState != null and pState!= ''">
@@ -61,7 +72,7 @@
         <if test="startTime != null and startTime !=''">
             AND a.CREATE_TIME >= TO_DATE(#{startTime},'yyyy-MM-dd HH24:mi:ss')
         </if>
-        <if test="source != null">
+        <if test="endTime != null and endTime != ''">
             AND a.CREATE_TIME <![CDATA[<=]]>  TO_DATE(#{endTime},'yyyy-MM-dd HH24:mi:ss')
         </if>
         <if test="userId != null and userId !=''">

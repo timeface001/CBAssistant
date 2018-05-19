@@ -27,8 +27,7 @@
 <body>
 <div class="pd-20">
     <div class="Huiform">
-        <form id="refundForm" class="form form-horizontal" method="post"
-              action="<%=request.getContextPath()%>/order/updateOrderInfo">
+        <form id="refundForm" class="form form-horizontal">
             <input type="hidden" value="<%=amazonOrderId%>" name="amazonOrderId">
             <input type="hidden" value="<%=orderItemId%>" name="orderItemId">
             <input type="hidden" value="6" name="status">
@@ -71,12 +70,32 @@
             focusCleanup: true,
             success: "valid",
             submitHandler: function (form) {
-                $(form).ajaxSubmit();
-                var index = parent.layer.getFrameIndex(window.name);
-                parent.layer.close(index);
+                ajaxSubmit();
             }
         });
     });
+    function ajaxSubmit() {
+        layer.load();
+        $.ajax({
+            type: 'POST',
+            dataType: 'json',
+            data: $("#refundForm").serialize(),
+            url: "<%=request.getContextPath()%>/order/updateOrderInfo",//请求的action路径
+            error: function () {//请求失败处理函数
+                layer.closeAll("loading");
+                layer.msg('退款失败!', {icon: 2, time: 1000});
+            },
+            success: function (data) { //请求成功后处理函数。
+                layer.closeAll("loading");
+                if (data.code == 0) {
+                    var index = parent.layer.getFrameIndex(window.name);
+                    parent.layer.close(index);
+                } else {
+                    layer.msg('退款失败!', {icon: 2, time: 1000});
+                }
+            }
+        });
+    }
 </script>
 </body>
 </html>

@@ -27,8 +27,7 @@
 <body>
 <div class="pd-20">
     <div class="Huiform">
-        <form id="shippingForm" class="form form-horizontal" method="post"
-              action="<%=request.getContextPath()%>/order/updateOrderInfo">
+        <form id="shippingForm" class="form form-horizontal">
             <input type="hidden" value="<%=amazonOrderId%>" name="amazonOrderId">
             <input type="hidden" value="<%=orderItemId%>" name="orderItemId">
             <input type="hidden" value="6" name="status">
@@ -36,7 +35,8 @@
             <div class="row cl">
                 <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>运费：</label>
                 <div class="formControls col-xs-8 col-sm-9">
-                    <input type="text" class="input-text" value="" placeholder="" id="shippingPrice" name="shippingPrice">
+                    <input type="text" class="input-text" value="" placeholder="" id="shippingPrice"
+                           name="shippingPrice">
                 </div>
             </div>
             <div class="row cl">
@@ -52,9 +52,12 @@
 <script type="text/javascript" src="<%=request.getContextPath()%>/assistant/static/h-ui/js/H-ui.min.js"></script>
 <script type="text/javascript"
         src="<%=request.getContextPath()%>/assistant/static/h-ui.admin/js/H-ui.admin.js"></script>
-<script type="text/javascript" src="<%=request.getContextPath()%>/assistant/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
-<script type="text/javascript" src="<%=request.getContextPath()%>/assistant/lib/jquery.validation/1.14.0/validate-methods.js"></script>
-<script type="text/javascript" src="<%=request.getContextPath()%>/assistant/lib/jquery.validation/1.14.0/messages_zh.js"></script>
+<script type="text/javascript"
+        src="<%=request.getContextPath()%>/assistant/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
+<script type="text/javascript"
+        src="<%=request.getContextPath()%>/assistant/lib/jquery.validation/1.14.0/validate-methods.js"></script>
+<script type="text/javascript"
+        src="<%=request.getContextPath()%>/assistant/lib/jquery.validation/1.14.0/messages_zh.js"></script>
 <script type="text/javascript">
     $(function () {
         $("#shippingForm").validate({
@@ -67,12 +70,34 @@
             focusCleanup: true,
             success: "valid",
             submitHandler: function (form) {
-                $(form).ajaxSubmit();
+                ajaxSubmit();
                 var index = parent.layer.getFrameIndex(window.name);
                 parent.layer.close(index);
             }
         });
     });
+    function ajaxSubmit() {
+        layer.load();
+        $.ajax({
+            type: 'POST',
+            dataType: 'json',
+            data: $("#shippingForm").serialize(),
+            url: "<%=request.getContextPath()%>/order/updateOrderInfo",//请求的action路径
+            error: function () {//请求失败处理函数
+                layer.closeAll("loading");
+                layer.msg('修改失败!', {icon: 2, time: 1000});
+            },
+            success: function (data) { //请求成功后处理函数。
+                layer.closeAll("loading");
+                if (data.code == 0) {
+                    var index = parent.layer.getFrameIndex(window.name);
+                    parent.layer.close(index);
+                } else {
+                    layer.msg('修改失败!', {icon: 2, time: 1000});
+                }
+            }
+        });
+    }
 </script>
 </body>
 </html>

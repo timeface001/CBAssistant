@@ -23,8 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 预发布产品--
- * >>>>>>>>>>>预发布产品列表
+ * 预发布产品
  * <p>
  * Created by fengsong on 2018/4/14.
  */
@@ -77,7 +76,7 @@ public class ProductPublishController extends BaseController {
         request.setAttribute("product",product);
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("status", 1);
-        params.put("user",GeneralUtils.getUserId());
+        params.put("createUser",GeneralUtils.getUserId());
         List<Map<String, Object>> result = shopManageService.selectShops(params);
 
         Map<String, Object> shopKey = new HashMap<>();
@@ -95,7 +94,6 @@ public class ProductPublishController extends BaseController {
                     resultMap.put(key, new HashMap<String, Object>());
                 }
             }
-
             for(Map.Entry<String,Map<String,Object>> entry:resultMap.entrySet()){
                 Object newKey=shopKey.get(entry.getKey());
                 if(newKey!=null){
@@ -103,7 +101,6 @@ public class ProductPublishController extends BaseController {
                 }
             }
         }
-
 
         request.setAttribute("shops", shopKey);
         request.setAttribute("country", countryKey);

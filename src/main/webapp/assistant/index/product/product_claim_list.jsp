@@ -99,7 +99,8 @@
                 <th width="60">售价</th>
                 <th width="100">库存</th>
                 <th width="100">状态</th>
-                <th width="100">日期</th>
+                <th width="100">创建人</th>
+                <th width="100">操作时间</th>
                 <th width="100">操作</th>
             </tr>
             </thead>
@@ -173,7 +174,7 @@
                 {
                     "data": function (val) {
                         var imagePath = "";
-                        if (val.imagePath != null && val.imagePath != "" && val.imagePath != undefined &&val.imagePath.indexOf(",") != -1) {
+                        if (val.imagePath != null && val.imagePath != "" && val.imagePath != undefined && val.imagePath.indexOf(",") != -1) {
                             imagePath = val.imagePath.substring(0, val.imagePath.indexOf(","));
                         } else {
                             imagePath = val.imagePath;
@@ -209,7 +210,12 @@
                 },
                 {
                     "data": function (val) {
-                        return "<p style='text-align: left'>创建</p><p style='text-align: left'>" + getMyDate(val.createTime) + "</p>" + (val.publishTime != null ? ("<p style='text-align: left'>更新</p><p style='text-align: left'>" + getMyDate(val.publishTime) + "</p>") : "");
+                        return val.userName == null ? "" : val.userName;
+                    }
+                },
+                {
+                    "data": function (val) {
+                        return "<p style='text-align: left'>创建于</p><p style='text-align: left'>" + getMyDate(val.createTime) + "</p>" + (val.publishTime != null ? ("<p style='text-align: left'>发布于</p><p style='text-align: left'>" + getMyDate(val.publishTime) + "</p>") : "");
                     }
                 }
             ],
@@ -222,7 +228,7 @@
                     }
                 },
                 {
-                    "targets": [9],
+                    "targets": [10],
                     "data": "id",
                     "render": function (data, type, full) {
                         return ( full.updateState == "1" ? "<a style='text-decoration:none' title='发布'  onClick=\"prePublish('" + full.id + "')\"')>发布</a>" : "") +
@@ -328,11 +334,9 @@
                 oHour = oDate.getHours(),
                 oMin = oDate.getMinutes(),
                 oSen = oDate.getSeconds(),
-                oTime = oYear + '-' + getzf(oMonth) + '-' + getzf(oDay);//+' '+ getzf(oHour) +':'+ getzf(oMin) +':'+getzf(oSen);//最后拼接时间
-
+                oTime = oYear + '-' + getzf(oMonth) + '-' + getzf(oDay) + ' ' + getzf(oHour) + ':' + getzf(oMin) + ':' + getzf(oSen);//最后拼接时间
         return oTime;
     }
-    ;
 
     //补0操作,当时间数据小于10的时候，给该数据前面加一个0
     function getzf(num) {

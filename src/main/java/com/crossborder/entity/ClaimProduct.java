@@ -1,6 +1,7 @@
 package com.crossborder.entity;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.Date;
 
 public class ClaimProduct {
@@ -72,9 +73,9 @@ public class ClaimProduct {
 
     private String productDescriptionCn;
 
-    private Date createTime;
+    private Timestamp createTime;
 
-    private Date updateTime;
+    private Timestamp updateTime;
 
     private String productId;
 
@@ -87,6 +88,8 @@ public class ClaimProduct {
     private String typeId;
 
     private String typeName;
+
+    private String userName;
 
     private String isPrepublish;
 
@@ -362,11 +365,11 @@ public class ClaimProduct {
         this.productDescriptionCn = productDescriptionCn == null ? null : productDescriptionCn.trim();
     }
 
-    public Date getCreateTime() {
+    public Timestamp getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(Timestamp createTime) {
         this.createTime = createTime;
     }
 
@@ -374,7 +377,7 @@ public class ClaimProduct {
         return updateTime;
     }
 
-    public void setUpdateTime(Date updateTime) {
+    public void setUpdateTime(Timestamp updateTime) {
         this.updateTime = updateTime;
     }
 
@@ -432,5 +435,13 @@ public class ClaimProduct {
 
     public void setTypeName(String typeName) {
         this.typeName = typeName;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }
