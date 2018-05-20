@@ -176,7 +176,7 @@
                 {"data": "ID"},
                 {
                     "data": function (val) {
-                        return val.MAIN_PATH == null ? "" : "<img width='100px' height='90px'  src='<%=request.getContextPath()%>/upload/" + val.MAIN_PATH + "'/>";
+                        return val.MAIN_PATH == null ? "" : "<img width='100px' height='90px'  src='<%=session.getAttribute("productPath")%>" + val.MAIN_PATH + "'/>";
                     }
                 },
                 {

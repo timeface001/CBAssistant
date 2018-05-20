@@ -5,6 +5,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -130,6 +131,12 @@ public class GeneralUtils {
         java.text.DecimalFormat myformat = new java.text.DecimalFormat("0.00");
 
         return myformat.format(val);
+    }
+
+    public static String mutiHalfTwo(BigDecimal val) {
+        DecimalFormat df1 = new DecimalFormat("0.00");
+        return df1.format(val);
+
     }
 
 }

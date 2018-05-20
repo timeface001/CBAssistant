@@ -1,4 +1,4 @@
-package com.crossborder.utils;
+package com.crossborder.utils.amz.upload;
 
 
 import com.alibaba.fastjson.JSON;
@@ -8,6 +8,9 @@ import com.crossborder.entity.ProductAmzUpload;
 import com.crossborder.entity.ProductUploadLog;
 import com.crossborder.service.ProductManagerService;
 import com.crossborder.service.ShopManageService;
+import com.crossborder.utils.PublishStatusEnum;
+import com.crossborder.utils.ResponseDto;
+import com.crossborder.utils.amz.upload.AmzUpload;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;

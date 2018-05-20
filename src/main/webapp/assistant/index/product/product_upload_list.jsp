@@ -155,7 +155,7 @@
                 {"data": "id"},
                 {
                     "data": function (val) {
-                        return val.mainPath == null ? "" : "<img width='100px' height='90px'  src='<%=request.getContextPath()%>/upload/" + val.mainPath + "'/>";
+                        return val.mainPath == null ? "" : "<img width='100px' height='90px'  src='<%=session.getAttribute("productPath")%>" + val.mainPath + "'/>";
                     }
                 },
                 {

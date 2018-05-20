@@ -179,7 +179,7 @@
                         } else {
                             imagePath = val.imagePath;
                         }
-                        return val.imagePath == null ? "" : "<img width='100px' height='90px'  src='<%=request.getContextPath()%>/upload/" + imagePath + "'/>";
+                        return val.imagePath == null ? "" : "<img width='100px' height='90px'  src='<%=session.getAttribute("productPath")%>" + imagePath + "'/>";
                     }
                 },
                 {

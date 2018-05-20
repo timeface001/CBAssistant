@@ -333,37 +333,22 @@
         layui.use('form', function () {
             var form = layui.form;
             form.on('submit', function (data) {
-<<<<<<< HEAD
-                data.field['type'] = getParam("type");
-=======
-                console.log(123);
                 data.field['type'] = '${type}';
->>>>>>> b7ca62d071ab09ac651414a45bdae639469b8fae
                 $.ajax({
                     type: 'POST',
                     url: '<%=request.getContextPath()%>/product/publish',
                     dataType: 'json',
-<<<<<<< HEAD
-                    data: data.field,
-                    success: function (data) {
-=======
                     data:
                          data.field
                     ,
                     success: function (data, index) {
->>>>>>> b7ca62d071ab09ac651414a45bdae639469b8fae
                         if (data.success) {
                             layer.msg(data.msg, {icon: 6, time: 2000});
                             setTimeout(function () {
-<<<<<<< HEAD
-                                layer_close();
-                            }, 1000);
-=======
                                 layer_close(index);
-                            },1000);
+                            }, 1000);
 
 
->>>>>>> b7ca62d071ab09ac651414a45bdae639469b8fae
                         } else {
                             layer.msg(data.msg, {icon: 5, time: 1000});
                             //layer_close(index);
@@ -375,7 +360,6 @@
                 });
             });
 
-<<<<<<< HEAD
             form.on('select(shop)', function (data) {
                 $.ajax({
                     type: 'POST',
@@ -389,7 +373,12 @@
                             countryCode = data.data[0].COUNTRY_CODE;
                         } else {
                             layer.msg(data.msg, {icon: 5, time: 1000});
-=======
+                        }
+                    },
+                        error: function (data) {
+                            layer.msg(data.msg, {icon: 5, time: 1000});
+                        }
+                    }); });
             $("#productType").click(function () {
 
                 if (id == null) {
@@ -407,14 +396,10 @@
                         content: '<%=request.getContextPath()%>/assistant/index/product/product_category.jsp?shopId='+id,
                         end: function () {
 
->>>>>>> b7ca62d071ab09ac651414a45bdae639469b8fae
                         }
-                    },
-                    error: function (data) {
-                        layer.msg(data.msg, {icon: 5, time: 1000});
-                    }
-                });
-            });
+
+
+                    });
 
             $("#genPid").click(function () {
                 $.ajax({
@@ -516,6 +501,7 @@
         $("#productType").val(typeName.substring(0, typeName.length - 3));
         $("#typeId").val(typeId);
     }
+        });
 </script>
 </body>
 </html>

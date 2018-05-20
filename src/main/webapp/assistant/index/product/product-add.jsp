@@ -291,7 +291,7 @@
                 elem: '#mainPath' //绑定元素
                 , url: '<%=request.getContextPath()%>/upload/image' //上传接口
                 , done: function (res) {
-                    $("#mainPathSrc").html("<img width='100px' height='90px' src=<%=request.getContextPath()%>/upload/" + res.data + " />")
+                    $("#mainPathSrc").html("<img width='100px' height='90px' src=<%=session.getAttribute("productPath")%>" + res.data + " />")
                     $("input[name='mainPath']").val(res.data);
                     //上传完毕回调
                 }
@@ -307,7 +307,7 @@
                 , number: 8
                 , url: '<%=request.getContextPath()%>/upload/image' //上传接口
                 , done: function (res) {
-                    $("#imagePathSrc").append("<img width='100px' height='90px' style='margin-left:2px;margin-top:2px' src=<%=request.getContextPath()%>/upload/" + res.data + " val='" + res.data + "' />")
+                    $("#imagePathSrc").append("<img width='100px' height='90px' style='margin-left:2px;margin-top:2px' src=<%=session.getAttribute("productPath")%>" + res.data + " val='" + res.data + "' />")
                     var imgs = [];
                     $("#imagePathSrc img").each(function (i, val) {
                         imgs.push($(val).attr("val"));

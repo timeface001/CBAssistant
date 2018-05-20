@@ -16,7 +16,7 @@
  */
 
 
-package com.crossborder.utils;
+package com.crossborder.utils.amz.test;
 
 import java.io.FileNotFoundException;
 import java.util.List;

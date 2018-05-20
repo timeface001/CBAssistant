@@ -1,7 +1,9 @@
-package com.crossborder.utils;
+package com.crossborder.utils.amz.upload;
 
 import com.crossborder.entity.ProductAmzUpload;
 import com.crossborder.entity.ProductItemVar;
+import com.crossborder.utils.FileUtils;
+import com.crossborder.utils.GeneralUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.FileInputStream;
@@ -13,9 +15,11 @@ import java.util.Map;
 public class AmzXmlTemplate {
 
 
+
     public static FileInputStream uploadProduct(ProductAmzUpload product, Map<String, Object> shop, String path, ProductItemVar var) {
 
         boolean isParent = StringUtils.isBlank(var.getVariationType());
+        boolean isSingle = StringUtils.isBlank(product.getVariationTheme());
         String text = "<?xml version=\"1.0\" ?>" +
                 "<AmazonEnvelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"amznenvelope.xsd\">\n" +
                 "<Header>" +
@@ -53,10 +57,10 @@ public class AmzXmlTemplate {
                 "</DescriptionData>\n" +
                 "<ProductData>\n" +
                 "<Sports>\n" + getByProductType(product) +
-                "<VariationData>" +
-                "<Parentage>" + (isParent ? "parent" : "child") + "</Parentage>\n" +
-                (isParent ? variationTheme(product.getVariationTheme()) : (variationData(var))) +
-                "</VariationData>" +//variationData(product)+
+                (isSingle ? "" : ("<VariationData>" +
+                        "<Parentage>" + (isParent ? "parent" : "child") + "</Parentage>\n" +
+                        (isParent ? variationTheme(product.getVariationTheme()) : (variationData(var))) +
+                        "</VariationData>")) +
 
                 "</Sports>\n" +
                 "</ProductData>\n" +
@@ -183,23 +187,22 @@ public class AmzXmlTemplate {
                     "<MessageID>" + i + "</MessageID>" +
                     "<Price>" +
                     "<SKU>" + product.getItemSku() + "-" + var.getSku() + "</SKU>" +
-                    "<StandardPrice currency=\"USD\">204.99</StandardPrice>\n" +
+                    getPriceStr(new BigDecimal(shop.get("EXRATE").toString()), var.getPrice(), shop.get("COUNTRY_CODE").toString()) +
                     saleStr +
                     "</Price>" +
                     "</Message>";
         }
-        String text = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n" +
+        String text = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>" +
                 "<AmazonEnvelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"amznenvelope.xsd\">\n" +
-                "<Header>\n" +
-                "<DocumentVersion>1.01</DocumentVersion>\n" +
+                "<Header>" +
+                "<DocumentVersion>1.01</DocumentVersion>" +
                 "<MerchantIdentifier>" + shop.get("MERCHANT_ID") + "</MerchantIdentifier>\n" +
-                "</Header>\n" +
-                "<MessageType>Price</MessageType>\n" +
+                "</Header>" +
+                "<MessageType>Price</MessageType>" +
                 varStr +
                 "</AmazonEnvelope>";
 
         System.out.println(text);
-
 
         try {
             return new FileInputStream(FileUtils.byte2File(text.getBytes(), path, product.getId() + "product_price.txt"));
@@ -211,11 +214,35 @@ public class AmzXmlTemplate {
 
     }
 
-    private String getPriceStr(BigDecimal rate,BigDecimal price,String code){
+    private static String getPriceStr(BigDecimal rate, BigDecimal price, String code) {
 
-        /*if(){
+        if (CountryCodeEnum.US.equal(code)) {
+            return "<StandardPrice currency='USD'>" + GeneralUtils.mutiHalfTwo(rate.multiply(price)) + "</StandardPrice>";
+        }
 
-        }*/
+        if (CountryCodeEnum.GB.equal(code)) {
+            return "<StandardPrice currency='GBP'>" + GeneralUtils.mutiHalfTwo(rate.multiply(price)) + "</StandardPrice>";
+        }
+
+        if (CountryCodeEnum.CA.equal(code)) {
+            return "<StandardPrice currency='CAD'>" + GeneralUtils.mutiHalfTwo(rate.multiply(price)) + "</StandardPrice>";
+        }
+
+        if (CountryCodeEnum.DE.equal(code)) {
+            return "<StandardPrice currency='EUR'>" + GeneralUtils.mutiHalfTwo(rate.multiply(price)) + "</StandardPrice>";
+        }
+
+        if (CountryCodeEnum.IT.equal(code)) {
+            return "<StandardPrice currency='EUR'>" + GeneralUtils.mutiHalfTwo(rate.multiply(price)) + "</StandardPrice>";
+        }
+
+        if (CountryCodeEnum.FR.equal(code)) {
+            return "<StandardPrice currency='EUR'>" + GeneralUtils.mutiHalfTwo(rate.multiply(price)) + "</StandardPrice>";
+        }
+
+        if (CountryCodeEnum.CN.equal(code)) {
+            return "<StandardPrice currency='DEFAULT'>" + price + "</StandardPrice>";
+        }
         return "";
     }
 
@@ -261,7 +288,7 @@ public class AmzXmlTemplate {
 
     }
 
-    public static FileInputStream uploadImage(ProductAmzUpload product, Map<String, Object> shop, String path, List<ProductItemVar> vars) {
+    public static FileInputStream uploadImage(ProductAmzUpload product, Map<String, Object> shop, String path, List<ProductItemVar> vars, String prePath) {
 
         String varStr = "";
         int i = 0;
@@ -273,7 +300,7 @@ public class AmzXmlTemplate {
                     "<ProductImage>" +
                     "<SKU>" + product.getItemSku() + "-" + var.getSku() + "</SKU>" +
                     "<ImageType>Main</ImageType>" +
-                    "<ImageLocation>" + var.getMainPath() + "</ImageLocation>" +
+                    "<ImageLocation>" +prePath+ var.getMainPath() + "</ImageLocation>" +
                     "</ProductImage>" +
                     "</Message>";
             if (StringUtils.isNotBlank(var.getAttachPath())) {
@@ -288,7 +315,7 @@ public class AmzXmlTemplate {
                                 "<ProductImage>" +
                                 "<SKU>" + product.getItemSku() + "-" + var.getSku() + "</SKU>" +
                                 "<ImageType>PT" + index + "</ImageType>" +
-                                "<ImageLocation>" + str + "</ImageLocation>" +
+                                "<ImageLocation>" + prePath + str + "</ImageLocation>" +
                                 "</ProductImage>" +
                                 "</Message>";
                         index++;

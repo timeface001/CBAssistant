@@ -1,4 +1,4 @@
-package com.crossborder.utils;
+package com.crossborder.utils.amz.upload;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -12,6 +12,7 @@ import com.crossborder.dao.ProductIdGenDao;
 import com.crossborder.entity.ProductAmzUpload;
 import com.crossborder.entity.ProductIdGen;
 import com.crossborder.entity.ProductItemVar;
+import com.crossborder.utils.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.jdom2.JDOMException;
@@ -63,16 +64,24 @@ public class AmzUpload {
 
     public ResponseDto uploadSingleProduct(ProductAmzUpload product, Map<String, Object> shop, List<ProductItemVar> vars) {
 
-        FileInputStream productIs = AmzXmlTemplate.uploadProduct(product, shop, commonSet.getAmzUploadProductPath(), vars.get(0));
+        //FileInputStream productIs = AmzXmlTemplate.uploadProduct(product, shop, commonSet.getAmzUploadProductPath(), vars.get(0));
         FileInputStream inventoryIs = AmzXmlTemplate.uploadInventory(product, shop, commonSet.getAmzUploadProductPath(), vars);
         FileInputStream priceIs = AmzXmlTemplate.uploadPrice(product, shop, commonSet.getAmzUploadProductPath(), vars);
-        FileInputStream imIs = AmzXmlTemplate.uploadImage(product, shop, commonSet.getAmzUploadProductPath(), vars);
+        FileInputStream imIs = AmzXmlTemplate.uploadImage(product, shop, commonSet.getAmzUploadProductPath(), vars,commonSet.getProductImagePath());
 
         List<ResponseDto> resList = new ArrayList<>();
-        resList.add(getUploadResult(getService(shop), getSubmitFeedRequest(productIs, shop, AmzFeeType.SINGLE_FORMAT_ITEM_FEED)));
-        ////resList.add(getUploadResult(getService(shop), getSubmitFeedRequest(inventoryIs, shop, AmzFeeType.INVENTORY_FEED)));
-        //resList.add(getUploadResult(getService(shop), getSubmitFeedRequest(priceIs, shop, AmzFeeType.PRICING_FEED)));
-        //resList.add(getUploadResult(getService(shop), getSubmitFeedRequest(imIs, shop, AmzFeeType.PRODUCT_IMAGES_FEED)));
+        ProductIdGen gen = productIdGenDao.selectProductIdForUseOne(null);
+        if (gen != null) {
+            product.setExternalProductId(gen.getProductId());
+            product.setExternalProductIdType(gen.getType());
+            FileInputStream productIs = AmzXmlTemplate.uploadProduct(product, shop, commonSet.getAmzUploadProductPath(), vars.get(0));
+            resList.add(getUploadResult(getService(shop), getSubmitFeedRequest(productIs, shop, AmzFeeType.PRODUCT_FEED)));
+            productIdGenDao.updateUsed(gen.getType(), product.getId(), gen.getProductId());
+            resList.add(getUploadResult(getService(shop), getSubmitFeedRequest(productIs, shop, AmzFeeType.SINGLE_FORMAT_ITEM_FEED)));
+        }
+        resList.add(getUploadResult(getService(shop), getSubmitFeedRequest(inventoryIs, shop, AmzFeeType.INVENTORY_FEED)));
+        resList.add(getUploadResult(getService(shop), getSubmitFeedRequest(priceIs, shop, AmzFeeType.PRICING_FEED)));
+        resList.add(getUploadResult(getService(shop), getSubmitFeedRequest(imIs, shop, AmzFeeType.PRODUCT_IMAGES_FEED)));
         ResponseDto result = new ResponseDto();
         String str = "";
         for (ResponseDto dto : resList) {
@@ -88,7 +97,7 @@ public class AmzUpload {
         ResponseDto result = new ResponseDto();
         FileInputStream inventoryIs = AmzXmlTemplate.uploadInventory(product, shop, commonSet.getAmzUploadProductPath(), vars);
         FileInputStream priceIs = AmzXmlTemplate.uploadPrice(product, shop, commonSet.getAmzUploadProductPath(), vars);
-        FileInputStream imIs = AmzXmlTemplate.uploadImage(product, shop, commonSet.getAmzUploadProductPath(), vars);
+        FileInputStream imIs = AmzXmlTemplate.uploadImage(product, shop, commonSet.getAmzUploadProductPath(), vars,commonSet.getProductImagePath());
         FileInputStream relations = AmzXmlTemplate.uploadRelationShop(product, shop, commonSet.getAmzUploadProductPath(), vars);
 
         List<ResponseDto> resList = new ArrayList<>();
@@ -107,10 +116,10 @@ public class AmzUpload {
                 return result;
             }
         }
-        //resList.add(getUploadResult(getService(shop), getSubmitFeedRequest(inventoryIs, shop, AmzFeeType.INVENTORY_FEED)));
-        //resList.add(getUploadResult(getService(shop), getSubmitFeedRequest(priceIs, shop, AmzFeeType.PRICING_FEED)));
+        resList.add(getUploadResult(getService(shop), getSubmitFeedRequest(inventoryIs, shop, AmzFeeType.INVENTORY_FEED)));
+        resList.add(getUploadResult(getService(shop), getSubmitFeedRequest(priceIs, shop, AmzFeeType.PRICING_FEED)));
         resList.add(getUploadResult(getService(shop), getSubmitFeedRequest(imIs, shop, AmzFeeType.PRODUCT_IMAGES_FEED)));
-        //resList.add(getUploadResult(getService(shop), getSubmitFeedRequest(relations, shop, AmzFeeType.RELATIONSHIPS_FEED)));
+        resList.add(getUploadResult(getService(shop), getSubmitFeedRequest(relations, shop, AmzFeeType.RELATIONSHIPS_FEED)));
 
         String str = "";
         for (ResponseDto dto : resList) {

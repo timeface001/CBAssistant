@@ -7,8 +7,10 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.crossborder.entity.Menu;
 import com.crossborder.service.CommonService;
 import com.crossborder.service.OrderManageService;
+import com.crossborder.utils.CommonSet;
 import com.crossborder.utils.HttpClientUtil;
 import com.crossborder.utils.Tools;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,7 +31,8 @@ public class CommonController {
     private CommonService commonService;
     @Resource
     private OrderManageService orderManageService;
-
+    @Autowired
+    private CommonSet commonSet;
     /**
      * 登录
      *
@@ -57,6 +60,7 @@ public class CommonController {
                 map.put("data", list.get(0));
                 map.put("code", "0");
                 map.put("msg", "登录成功");
+                session.setAttribute("productPath",commonSet.getProductImagePath());
                /* }*/
             } else {
                 map.put("code", "-10");
