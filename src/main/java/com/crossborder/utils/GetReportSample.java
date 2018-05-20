@@ -48,9 +48,8 @@ public class GetReportSample {
          * Access Key ID and Secret Access Key ID, obtained from:
          * http://aws.amazon.com
          ***********************************************************************/
-        final String accessKeyId = "AKIAIWNVZFF7XJ7LV32A";
-        final String secretAccessKey = "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";
-
+        final String accessKeyId = "AKIAJWGBACWXIRQPOELQ";
+        final String secretAccessKey = "Ml9iBQOmQO4vHNmWckgCbvY8Kgg+HZvuYXrWHOfN";
 
 
         final String appName = "<Your Application or Company Name>";
@@ -64,35 +63,6 @@ public class GetReportSample {
         // US
         config.setServiceURL("https://mws.amazonservices.com/");
         // UK
-        // config.setServiceURL("https://mws.amazonservices.co.uk/");
-        // Germany
-        // config.setServiceURL("https://mws.amazonservices.de/");
-        // France
-        // config.setServiceURL("https://mws.amazonservices.fr/");
-        // Italy
-        // config.setServiceURL("https://mws.amazonservices.it/");
-        // Japan
-        // config.setServiceURL("https://mws.amazonservices.jp/");
-        // China
-         //config.setServiceURL("https://mws.amazonservices.com.cn/");
-        // Canada
-        // config.setServiceURL("https://mws.amazonservices.ca/");
-        // India
-        // config.setServiceURL("https://mws.amazonservices.in/");
-
-        /************************************************************************
-         * You can also try advanced configuration options. Available options are:
-         *
-         *  - Signature Version
-         *  - Proxy Host and Proxy Port
-         *  - User Agent String to be sent to Marketplace Web Service
-         *
-         ***********************************************************************/
-
-        /************************************************************************
-         * Instantiate Http Client Implementation of Marketplace Web Service        
-         ***********************************************************************/
-
         MarketplaceWebService service = new MarketplaceWebServiceClient(
                 accessKeyId, secretAccessKey, appName, appVersion, config);
 
@@ -105,14 +75,14 @@ public class GetReportSample {
          * Marketplace and Merchant IDs are required parameters for all 
          * Marketplace Web Service calls.
          ***********************************************************************/
-        final String merchantId = "AX2JQLLAWG3JN";
+        final String merchantId = "A3QYTECAYFZL4M";
         final String sellerDevAuthToken = "<Merchant Developer MWS Auth Token>";
 
         GetReportRequest request = new GetReportRequest();
         request.setMerchant( merchantId );
         //request.setMWSAuthToken(sellerDevAuthToken);
 
-        request.setReportId( "9497489579017662" );
+        request.setReportId( "9551429505017667" );
         request.setReportOutputStream(new FileOutputStream("/Users/fengsong/Downloads/11.txt"));
 
         // Note that depending on the type of report being downloaded, a report can reach 

@@ -8,8 +8,12 @@ import com.amazonaws.mws.MarketplaceWebServiceClient;
 import com.amazonaws.mws.MarketplaceWebServiceConfig;
 import com.amazonaws.mws.MarketplaceWebServiceException;
 import com.amazonaws.mws.model.*;
+import com.crossborder.dao.ProductIdGenDao;
 import com.crossborder.entity.ProductAmzUpload;
+import com.crossborder.entity.ProductIdGen;
+import com.crossborder.entity.ProductItemVar;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.jdom2.JDOMException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -18,16 +22,15 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.*;
-import java.util.Arrays;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class AmzUpload {
 
     @Autowired
     private CommonSet commonSet;
+    @Autowired
+    private ProductIdGenDao productIdGenDao;
 
     private MarketplaceWebService getService(Map<String, Object> shop) {
         final String accessKeyId = shop.get("ACCESSKEY_ID").toString();
@@ -45,10 +48,97 @@ public class AmzUpload {
 
     }
 
-    public ResponseDto uploadProduct(ProductAmzUpload product, Map<String, Object> shop) {
+    public ResponseDto uploadProduct(ProductAmzUpload product, Map<String, Object> shop, List<ProductItemVar> vars) {
 
-        FileInputStream fis = AmzXmlTemplate.uploadProduct(product, shop, commonSet.getAmzUploadProductPath());
-        SubmitFeedRequest request = getRequest(shop, AmzFeeType.PRODUCT_FEED);
+        if (vars.size() == 1) {
+            return uploadSingleProduct(product, shop, vars);
+        } else {
+
+
+            ResponseDto result = uploadMutiProduct(product, shop, vars);
+
+            return result;
+        }
+    }
+
+    public ResponseDto uploadSingleProduct(ProductAmzUpload product, Map<String, Object> shop, List<ProductItemVar> vars) {
+
+        FileInputStream productIs = AmzXmlTemplate.uploadProduct(product, shop, commonSet.getAmzUploadProductPath(), vars.get(0));
+        FileInputStream inventoryIs = AmzXmlTemplate.uploadInventory(product, shop, commonSet.getAmzUploadProductPath(), vars);
+        FileInputStream priceIs = AmzXmlTemplate.uploadPrice(product, shop, commonSet.getAmzUploadProductPath(), vars);
+        FileInputStream imIs = AmzXmlTemplate.uploadImage(product, shop, commonSet.getAmzUploadProductPath(), vars);
+
+        List<ResponseDto> resList = new ArrayList<>();
+        resList.add(getUploadResult(getService(shop), getSubmitFeedRequest(productIs, shop, AmzFeeType.SINGLE_FORMAT_ITEM_FEED)));
+        ////resList.add(getUploadResult(getService(shop), getSubmitFeedRequest(inventoryIs, shop, AmzFeeType.INVENTORY_FEED)));
+        //resList.add(getUploadResult(getService(shop), getSubmitFeedRequest(priceIs, shop, AmzFeeType.PRICING_FEED)));
+        //resList.add(getUploadResult(getService(shop), getSubmitFeedRequest(imIs, shop, AmzFeeType.PRODUCT_IMAGES_FEED)));
+        ResponseDto result = new ResponseDto();
+        String str = "";
+        for (ResponseDto dto : resList) {
+            str += dto.getData() + ",";
+        }
+        result.setData(str);
+        result.setSuccess(true);
+        return result;
+    }
+
+    public ResponseDto uploadMutiProduct(ProductAmzUpload product, Map<String, Object> shop, List<ProductItemVar> vars) {
+
+        ResponseDto result = new ResponseDto();
+        FileInputStream inventoryIs = AmzXmlTemplate.uploadInventory(product, shop, commonSet.getAmzUploadProductPath(), vars);
+        FileInputStream priceIs = AmzXmlTemplate.uploadPrice(product, shop, commonSet.getAmzUploadProductPath(), vars);
+        FileInputStream imIs = AmzXmlTemplate.uploadImage(product, shop, commonSet.getAmzUploadProductPath(), vars);
+        FileInputStream relations = AmzXmlTemplate.uploadRelationShop(product, shop, commonSet.getAmzUploadProductPath(), vars);
+
+        List<ResponseDto> resList = new ArrayList<>();
+        for (ProductItemVar var : vars) {
+            ProductIdGen gen = productIdGenDao.selectProductIdForUseOne(null);
+            if (gen != null) {
+                product.setExternalProductId(gen.getProductId());
+                product.setExternalProductIdType(gen.getType());
+                FileInputStream productIs = AmzXmlTemplate.uploadProduct(product, shop, commonSet.getAmzUploadProductPath(), var);
+                resList.add(getUploadResult(getService(shop), getSubmitFeedRequest(productIs, shop, AmzFeeType.PRODUCT_FEED)));
+                productIdGenDao.updateUsed(gen.getType(), product.getId(), gen.getProductId());
+            } else {
+                result.setMsg("UPC库中没有可用ID");
+                result.setCode("001");
+                result.setSuccess(false);
+                return result;
+            }
+        }
+        //resList.add(getUploadResult(getService(shop), getSubmitFeedRequest(inventoryIs, shop, AmzFeeType.INVENTORY_FEED)));
+        //resList.add(getUploadResult(getService(shop), getSubmitFeedRequest(priceIs, shop, AmzFeeType.PRICING_FEED)));
+        resList.add(getUploadResult(getService(shop), getSubmitFeedRequest(imIs, shop, AmzFeeType.PRODUCT_IMAGES_FEED)));
+        //resList.add(getUploadResult(getService(shop), getSubmitFeedRequest(relations, shop, AmzFeeType.RELATIONSHIPS_FEED)));
+
+        String str = "";
+        for (ResponseDto dto : resList) {
+            str += dto.getData() + ",";
+        }
+        result.setData(str);
+        result.setSuccess(true);
+        return result;
+    }
+
+    private SubmitFeedRequest getSubmitFeedRequest(FileInputStream fis, Map<String, Object> shop, AmzFeeType type) {
+
+        SubmitFeedRequest request = getRequest(shop, type);
+        try {
+            request.setFeedContent(fis);
+            request.setContentMD5(MD5.computeContentMD5HeaderValue(fis));
+            request.setMarketplaceIdList(new IdList(Arrays.asList(shop.get("MARKETPLACEID").toString())));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return request;
+    }
+
+    public ResponseDto uploadProductRelations(ProductAmzUpload product, Map<String, Object> shop, List<ProductItemVar> vars) {
+
+        FileInputStream fis = AmzXmlTemplate.uploadRelationShop(product, shop, commonSet.getAmzUploadProductPath(), vars);
+        SubmitFeedRequest request = getRequest(shop, AmzFeeType.RELATIONSHIPS_FEED);
         try {
             request.setFeedContent(fis);
             request.setContentMD5(MD5.computeContentMD5HeaderValue(fis));
@@ -100,7 +190,7 @@ public class AmzUpload {
                 resultRequest.setFeedSubmissionId(submitId);
 
                 OutputStream processingResult = null;
-                String path = commonSet.getAmzUploadProductPath() + shop.get("SHOP_ID") + "feedSubmissionResult.xml";
+                String path = commonSet.getAmzUploadProductPath() + submitId + "feedSubmissionResult.xml";
                 try {
                     processingResult = new FileOutputStream(path);
                     resultRequest.setFeedSubmissionResultOutputStream(processingResult);
@@ -112,8 +202,12 @@ public class AmzUpload {
                 try {
                     JSONObject res = XmlUtil.xml2JSON(FileUtils.File2byte(new File(path)));
                     System.out.println(JSON.toJSONString(res));
-                    dto.setSuccess(false);
                     dto.setMsg(getErrorMsg(res));
+                    if (StringUtils.isNotBlank(dto.getMsg())) {
+                        dto.setSuccess(false);
+                    } else {
+                        dto.setSuccess(true);
+                    }
                 } catch (JDOMException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
@@ -137,6 +231,9 @@ public class AmzUpload {
         for (int i = 0; i < array.size(); i++) {
             JSONArray reports = array.getJSONObject(i).getJSONArray("ProcessingReport");
             for (int k = 0; k < reports.size(); k++) {
+                if (reports.getJSONObject(k).getString("StatusCode").equals("[Complete]")) {
+                    return "";
+                }
                 JSONArray list = reports.getJSONObject(k).getJSONArray("Result");
                 for (int j = 0; j < list.size(); j++) {
                     JSONObject object = list.getJSONObject(j);
@@ -163,6 +260,7 @@ public class AmzUpload {
         return isDone;
     }
 
+    Logger logger = Logger.getLogger(AmzUpload.class);
 
     public ResponseDto<String> getUploadResult(MarketplaceWebService service, SubmitFeedRequest request) {
 
@@ -171,14 +269,12 @@ public class AmzUpload {
         try {
             response = service.submitFeed(request);
 
+            logger.debug("submit fee......");
             if (response.isSetSubmitFeedResult()) {
-                System.out.print("        SubmitFeedResult");
-                System.out.println();
                 SubmitFeedResult submitFeedResult = response
                         .getSubmitFeedResult();
+                logger.debug("submit result:" + JSON.toJSONString(submitFeedResult, true));
                 if (submitFeedResult.isSetFeedSubmissionInfo()) {
-                    System.out.print("            FeedSubmissionInfo");
-                    System.out.println();
                     FeedSubmissionInfo feedSubmissionInfo = submitFeedResult
                             .getFeedSubmissionInfo();
                     if (feedSubmissionInfo.isSetFeedSubmissionId()) {
@@ -186,20 +282,13 @@ public class AmzUpload {
                         dto.setData(feedSubmissionInfo.getFeedSubmissionId());
                     }
 
-                    if (feedSubmissionInfo.isSetFeedProcessingStatus()) {
-                        System.out
-                                .print("                FeedProcessingStatus");
-                        System.out.println();
-                        System.out.print("                    "
-                                + feedSubmissionInfo.getFeedProcessingStatus());
-                        System.out.println();
-                    }
-
                 }
             } else {
                 dto.setSuccess(false);
                 dto.setMsg("发布失败，系统原因");
             }
+
+            logger.debug("submit feed end....");
 
         } catch (MarketplaceWebServiceException ex) {
 
@@ -240,7 +329,7 @@ public class AmzUpload {
 
         System.out.println("shopId:"+shop.get("SHOP_ID"));
         try {
-            RequestReportResponse response = service.requestReport(request);
+            RequestReportResponse response = getService(shop).requestReport(request);
             String reportRequestId = null;
             if (response.isSetRequestReportResult()) {
                 RequestReportResult requestReportResult = response.getRequestReportResult();
@@ -255,28 +344,17 @@ public class AmzUpload {
             System.out.println("REQUEST_ID:"+reportRequestId);
             if (reportRequestId != null) {
                 String reportId = null;
-                GetReportListRequest requestqq = new GetReportListRequest();
-                requestqq.setMerchant(merchantId);
-                TypeList typeList = new TypeList();
-                typeList.setType(Arrays.asList("_GET_XML_BROWSE_TREE_DATA_"));
-                requestqq.setReportTypeList(typeList);
-
-                requestqq.setReportRequestIdList(new IdList(Arrays.asList(reportRequestId)));
-
-                GetReportListResponse listReponse = getService(shop).getReportList(requestqq);
-
-                if (listReponse.isSetGetReportListResult()) {
-
-                    GetReportListResult getReportListResult = listReponse.getGetReportListResult();
-
-                    java.util.List<ReportInfo> reportInfoListList = getReportListResult.getReportInfoList();
-                    for (ReportInfo reportInfoList : reportInfoListList) {
-
-                        if (reportInfoList.isSetReportId()) {
-                            reportId = reportInfoList.getReportId();
-                        }
+                int i = 0;
+                do {
+                    try {
+                        Thread.sleep(3000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
-                }
+                    reportId = getCategoryReportId(shop, merchantId, reportRequestId);
+                    i++;
+                    System.out.println("第" + i + "次:  获取reportId-- " + reportId);
+                } while (reportId == null && i < 6);
 
                 System.out.println("REPORTID:"+reportId);
                 //reportId="9497489579017662";
@@ -302,5 +380,32 @@ public class AmzUpload {
         } catch (MarketplaceWebServiceException e) {
             e.printStackTrace();
         }
+    }
+
+    private String getCategoryReportId(Map<String, Object> shop, String merchantId, String reportRequestId) throws MarketplaceWebServiceException {
+
+        GetReportListRequest requestqq = new GetReportListRequest();
+        requestqq.setMerchant(merchantId);
+        TypeList typeList = new TypeList();
+        typeList.setType(Arrays.asList("_GET_XML_BROWSE_TREE_DATA_"));
+        requestqq.setReportTypeList(typeList);
+
+        requestqq.setReportRequestIdList(new IdList(Arrays.asList(reportRequestId)));
+
+        GetReportListResponse listReponse = getService(shop).getReportList(requestqq);
+
+        if (listReponse.isSetGetReportListResult()) {
+
+            GetReportListResult getReportListResult = listReponse.getGetReportListResult();
+
+            List<ReportInfo> reportInfoListList = getReportListResult.getReportInfoList();
+            for (ReportInfo reportInfoList : reportInfoListList) {
+
+                if (reportInfoList.isSetReportId()) {
+                    return reportInfoList.getReportId();
+                }
+            }
+        }
+        return null;
     }
 }

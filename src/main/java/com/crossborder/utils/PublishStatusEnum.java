@@ -6,7 +6,7 @@ public enum PublishStatusEnum {
     SUCCESS(2),
     PROCESS(3);
 
-    //0未发布  1发布失败 2发布成功
+    //0未发布  1发布失败 2发布成功 3发布中
 
 
     private int val;

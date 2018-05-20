@@ -110,7 +110,7 @@ public class GetFeedSubmissionResultSample {
         request.setMerchant( merchantId );
         //request.setMWSAuthToken(sellerDevAuthToken);
         
-        request.setFeedSubmissionId( "50431017663" );
+        request.setFeedSubmissionId( "50483017666" );
 
         // Note that depending on the size of the feed sent in, and the number of errors and warnings,
         // the result can reach sizes greater than 1GB. For this reason we recommend that you _always_ 

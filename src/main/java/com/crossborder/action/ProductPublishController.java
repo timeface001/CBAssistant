@@ -2,6 +2,7 @@ package com.crossborder.action;
 
 import com.alibaba.fastjson.JSON;
 import com.crossborder.dao.ProductAmzUploadDao;
+import com.crossborder.entity.ClaimProduct;
 import com.crossborder.entity.ProductAmzUpload;
 import com.crossborder.entity.ProductUploadCategory;
 import com.crossborder.service.ProductManagerService;
@@ -11,6 +12,8 @@ import com.crossborder.utils.ResponseDto;
 import com.crossborder.utils.ResponseGen;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -35,6 +38,8 @@ public class ProductPublishController extends BaseController {
     private ProductManagerService productManagerService;
     @Resource
     private ShopManageService shopManageService;
+
+    Logger logger = Logger.getLogger(ProductPublishController.class);
 
     /**
      * 产品列表
@@ -73,8 +78,29 @@ public class ProductPublishController extends BaseController {
     @RequestMapping(value = "/product/publish/detail", produces = "text/plain;charset=UTF-8")
     public ModelAndView detail(HttpSession session, String id, HttpServletRequest request) {
         ModelAndView view = new ModelAndView("forward:/assistant/index/product/product_upload_edit.jsp");
+<<<<<<< HEAD
         ProductAmzUpload product = productManagerService.selectAmzUploadProduct(id);
         request.setAttribute("product", product);
+=======
+        String type = request.getParameter("type");
+        ProductAmzUpload product;
+        if (type.equals("1")) {
+            product = productManagerService.selectAmzUploadProduct(id);
+            request.setAttribute("type", 1);
+        } else {
+            product = productManagerService.selectOneByAmzID(id);
+            if (product == null || product.getId() == null) {
+                product = new ProductAmzUpload();
+                ClaimProduct claimProduct = productManagerService.selectClaimProduct(id);
+                product.setId(claimProduct.getId());
+                product.setItemName(claimProduct.getItemCn());
+                request.setAttribute("type", 0);
+            } else {
+                request.setAttribute("type", 1);
+            }
+        }
+        request.setAttribute("product",product);
+>>>>>>> b7ca62d071ab09ac651414a45bdae639469b8fae
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("state", 1);
         Map<String, Object> user = (Map<String, Object>) session.getAttribute("user");
@@ -112,6 +138,7 @@ public class ProductPublishController extends BaseController {
         request.setAttribute("shops", shopKey);
         request.setAttribute("country", countryKey);
         request.setAttribute("maps", resultD);
+        request.setAttribute("id", id);
         return view;
     }
 
@@ -125,6 +152,7 @@ public class ProductPublishController extends BaseController {
         dto.setSuccess(true);
         dto.setMsg("数据提交成功");
         try {
+<<<<<<< HEAD
             if (type.equals("1")) {
                 Map<String, Object> params = new HashMap<>();
                 params.put("id", product.getShopId());
@@ -142,6 +170,29 @@ public class ProductPublishController extends BaseController {
                 }
                 product.setId(null);
                 productManagerService.uploadProduct(product, list.get(0));
+=======
+            if(type.equals("1")){
+                if (StringUtils.isNotBlank(product.getShopId())) {
+                    Map<String, Object> params = new HashMap<>();
+                    params.put("id", product.getShopId());
+                    productAmzUploadDao.updateByPrimaryKeySelective(product);
+                    product = productAmzUploadDao.selectByPrimaryKey(product.getId());
+                    productManagerService.uploadProduct(product, shopManageService.selectShops(params).get(0));
+                }
+            }else{//认领列表直接发布
+                Map<String,Object> params=new HashMap<>();
+                params.put("id", product.getShopId());
+                List<Map<String, Object>> list = shopManageService.selectShops(params);
+                String id = "";
+                try {
+                    id = productManagerService.prePublishProduct(product.getId(), list.get(0).get("COUNTRY_CODE").toString());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                logger.debug("publish from claim list: upload id :" + id);
+                product = productAmzUploadDao.selectByPrimaryKey(id);
+                productManagerService.uploadProduct(product,list.get(0));
+>>>>>>> b7ca62d071ab09ac651414a45bdae639469b8fae
             }
         } catch (Exception e) {
             e.printStackTrace();

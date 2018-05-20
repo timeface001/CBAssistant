@@ -33,6 +33,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import com.amazonaws.mws.*;
 import com.amazonaws.mws.model.*;
 import com.amazonaws.mws.mock.MarketplaceWebServiceMock;
+import com.amazonservices.mws.products.model.Product;
 import org.apache.axis.encoding.Base64;
 import sun.misc.BASE64Encoder;
 
@@ -130,71 +131,36 @@ public class SubmitFeedSample {
         //request.setMWSAuthToken(sellerDevAuthToken);
         request.setMarketplaceIdList(marketplaces);
 
-        request.setFeedType("_POST_PRODUCT_DATA_");
+        request.setFeedType(AmzFeeType.PRODUCT_IMAGES_FEED.getVal());
 
-        // MWS exclusively offers a streaming interface for uploading your
-        // feeds. This is because
-        // feed sizes can grow to the 1GB+ range - and as your business grows
-        // you could otherwise
-        // silently reach the feed size where your in-memory solution will no
-        // longer work, leaving you
-        // puzzled as to why a solution that worked for a long time suddenly
-        // stopped working though
-        // you made no changes. For the same reason, we strongly encourage you
-        // to generate your feeds to
-        // local disk then upload them directly from disk to MWS via Java -
-        // without buffering them in Java
-        // memory in their entirety.
-        // Note: MarketplaceWebServiceClient will not retry a submit feed request
-        // because there is no way to reset the InputStream from our client. 
-        // To enable retry, recreate the InputStream and resubmit the feed
-        // with the new InputStream. 
-        //
-        // request.setFeedContent( new FileInputStream("my-feed.xml" /*or
-        // "my-flat-file.txt" if you use flat files*/);
-
-        String text="<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
-                "<AmazonEnvelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
-                "    xsi:noNamespaceSchemaLocation=\"amzn-envelope.xsd\">\n" +
-                "  <Header>\n" +
-                "    <DocumentVersion>1.01</DocumentVersion>\n" +
-                "    <MerchantIdentifier>M_EXAMPLE_123456</MerchantIdentifier>\n" +
-                "  </Header>\n" +
-                "  <MessageType>Product</MessageType>\n" +
-                "  <PurgeAndReplace>false</PurgeAndReplace>\n" +
-                "  <Message>\n" +
-                "    <MessageID>1</MessageID>\n" +
-                "    <OperationType>Update</OperationType>\n" +
-                "    <Product>\n" +
-                "      <SKU>56789</SKU>\n" +
-                "      <StandardProductID>\n" +
-                "        <Type>ASIN</Type>\n" +
-                "        <Value>B0EXAMPLEG</Value>\n" +
-                "      </StandardProductID>\n" +
-                "      <ProductTaxCode>A_GEN_NOTAX</ProductTaxCode>\n" +
-                "      <DescriptionData>\n" +
-                "        <Title>Example Product Title</Title>\n" +
-                "        <Brand>Example Product Brand</Brand>\n" +
-                "        <Description>This is an example product description.</Description>\n" +
-                "        <BulletPoint>Example Bullet Point 1</BulletPoint>\n" +
-                "        <BulletPoint>Example Bullet Point 2</BulletPoint>\n" +
-                "        <MSRP currency=\"USD\">25.19</MSRP>\n" +
-                "        <Manufacturer>Example Product Manufacturer</Manufacturer>\n" +
-                "        <ItemType>example-item-type</ItemType>\n" +
-                "      </DescriptionData>\n" +
-                "      <ProductData>\n" +
-                "        <Health>\n" +
-                "          <ProductType>\n" +
-                "            <HealthMisc>\n" +
-                "              <Ingredients>Example Ingredients</Ingredients>\n" +
-                "              <Directions>Example Directions</Directions>\n" +
-                "            </HealthMisc>\n" +
-                "          </ProductType>\n" +
-                "        </Health>\n" +
-                "      </ProductData>\n" +
-                "    </Product>\n" +
-                "  </Message>\n" +
-                "</AmazonEnvelope>";
+        String text="<?xml version=\"1.0\" encoding=\"utf-8\" ?><AmazonEnvelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"amznenvelope.xsd\">\n" +
+                "<Header>\n" +
+                "<DocumentVersion>1.01</DocumentVersion><MerchantIdentifier>A3QYTECAYFZL4M</MerchantIdentifier>\n" +
+                "</Header>\n" +
+                "<MessageType>ProductImage</MessageType><Message>" +
+                "<MessageID>2</MessageID><OperationType>Update</OperationType><ProductImage>" +
+                "<SKU>TESTDUO-B6ZLRFU1TU892Z0O-Red</SKU><ImageType>Main</ImageType><ImageLocation>http://fmsbb.oss-cn-shanghai.aliyuncs.com/avatar/default.jpg</ImageLocation>" +
+                "</ProductImage></Message>" +
+                "<Message><MessageID>3</MessageID><OperationType>Update</OperationType>" +
+                "<ProductImage><SKU>TESTDUO-B6ZLRFU1TU892Z0O-Red</SKU><ImageType>PT1</ImageType><ImageLocation>http://fmsbb.oss-cn-shanghai.aliyuncs.com/avatar/default.jpg</ImageLocation></ProductImage></Message>" +
+                "<Message><MessageID>4</MessageID><OperationType>Update</OperationType><ProductImage><SKU>TESTDUO-B6ZLRFU1TU892Z0O-Red</SKU><ImageType>PT2</ImageType><ImageLocation>http://fmsbb.oss-cn-shanghai.aliyuncs.com/avatar/default.jpg</ImageLocation>" +
+                "</ProductImage></Message>" +
+                "" +
+                "" +
+                "<Message><MessageID>5</MessageID>" +
+                "<OperationType>Update</OperationType><ProductImage><SKU>TESTDUO-B6ZLRFU1TU892Z0O-Red</SKU>" +
+                "<ImageType>PT3</ImageType><ImageLocation>http://fmsbb.oss-cn-shanghai.aliyuncs.com/avatar/default.jpg</ImageLocation></ProductImage>" +
+                "</Message><Message><MessageID>6</MessageID><OperationType>Update</OperationType><ProductImage>" +
+                "<SKU>TESTDUO-B6ZLRFU1TU892Z0O-Glod</SKU><ImageType>Main</ImageType><ImageLocation>http://fmsbb.oss-cn-shanghai.aliyuncs.com/avatar/default.jpg</ImageLocation>" +
+                "</ProductImage></Message><Message><MessageID>7</MessageID><OperationType>Update</OperationType><ProductImage>" +
+                "<SKU>TESTDUO-B6ZLRFU1TU892Z0O-Glod</SKU><ImageType>PT1</ImageType><ImageLocation>http://fmsbb.oss-cn-shanghai.aliyuncs.com/avatar/default.jpg</ImageLocation>" +
+                "</ProductImage></Message><Message><MessageID>8</MessageID><OperationType>Update</OperationType><ProductImage>" +
+                "<SKU>TESTDUO-B6ZLRFU1TU892Z0O-Glod</SKU><ImageType>PT2</ImageType><ImageLocation>http://fmsbb.oss-cn-shanghai.aliyuncs.com/avatar/default.jpg</ImageLocation>" +
+                "</ProductImage></Message><Message><MessageID>9</MessageID><OperationType>Update</OperationType><ProductImage>" +
+                "<SKU>TESTDUO-B6ZLRFU1TU892Z0O-Glod</SKU><ImageType>PT3</ImageType><ImageLocation>http://fmsbb.oss-cn-shanghai.aliyuncs.com/avatar/default.jpg</ImageLocation>" +
+                "</ProductImage></Message><Message><MessageID>10</MessageID><OperationType>Update</OperationType><ProductImage>" +
+                "<SKU>TESTDUO-B6ZLRFU1TU892Z0O-Glod</SKU><ImageType>PT4</ImageType><ImageLocation>http://fmsbb.oss-cn-shanghai.aliyuncs.com/avatar/default.jpg</ImageLocation>" +
+                "</ProductImage></Message></AmazonEnvelope>";
         FileUtils.byte2File(text.getBytes(),"/Users/fengsong/Downloads/","rule_chain.txt");
 
         String s="/Users/fengsong/Downloads/rule_chain.txt";

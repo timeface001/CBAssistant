@@ -43,8 +43,8 @@ public class GetReportListSample {
          * Access Key ID and Secret Access Key ID, obtained from:
          * http://aws.amazon.com
          ***********************************************************************/
-        final String accessKeyId = "AKIAIWNVZFF7XJ7LV32A";
-        final String secretAccessKey = "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";
+        final String accessKeyId = "AKIAJWGBACWXIRQPOELQ";
+        final String secretAccessKey = "Ml9iBQOmQO4vHNmWckgCbvY8Kgg+HZvuYXrWHOfN";
 
         final String appName = "<Your Application or Company Name>";
         final String appVersion = "<Your Application Version or Build Number or Release Date>";
@@ -56,31 +56,13 @@ public class GetReportListSample {
          ************************************************************************/
         // US
         config.setServiceURL("https://mws.amazonservices.com/");
-        // UK
-        // config.setServiceURL("https://mws.amazonservices.co.uk/");
-        // Germany
-        // config.setServiceURL("https://mws.amazonservices.de/");
-        // France
-        // config.setServiceURL("https://mws.amazonservices.fr/");
-        // Italy
-        // config.setServiceURL("https://mws.amazonservices.it/");
-        // Japan
-        // config.setServiceURL("https://mws.amazonservices.jp/");
-        // China
-        // config.setServiceURL("https://mws.amazonservices.com.cn/");
-        // Canada
-        // config.setServiceURL("https://mws.amazonservices.ca/");
-        // India
-        // config.setServiceURL("https://mws.amazonservices.in/");
+        // U
 
 
         MarketplaceWebService service = new MarketplaceWebServiceClient(
                 accessKeyId, secretAccessKey, appName, appVersion, config);
 
-        final String merchantId = "AX2JQLLAWG3JN";
-        final String sellerDevAuthToken = "<Merchant Developer MWS Auth Token>";
-        final IdList marketplaces = new IdList(Arrays.asList(
-                "A2EUQ1WTGCTBG2"));
+        final String merchantId = "A3QYTECAYFZL4M";
 
         GetReportListRequest request = new GetReportListRequest();
         request.setMerchant(merchantId);
@@ -88,9 +70,7 @@ public class GetReportListSample {
         typeList.setType(Arrays.asList("_GET_XML_BROWSE_TREE_DATA_"));
         request.setReportTypeList(typeList);
 
-        // @TODO: set request parameters here
-
-        request.setReportRequestIdList(new IdList(Arrays.asList("50425017663")));
+        request.setReportRequestIdList(new IdList(Arrays.asList("52210017667")));
 
 
         invokeGetReportList(service, request);

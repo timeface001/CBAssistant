@@ -170,7 +170,7 @@
 
         <div class="layui-form-item">
             <div class="layui-input-block">
-                <button class="layui-btn" lay-submit lay-filter="formDemo">发布</button>
+                <button class="layui-btn" type="button" lay-submit lay-filter="formDemo">发布</button>
             </div>
         </div>
     </form>
@@ -333,21 +333,40 @@
         layui.use('form', function () {
             var form = layui.form;
             form.on('submit', function (data) {
+<<<<<<< HEAD
                 data.field['type'] = getParam("type");
+=======
+                console.log(123);
+                data.field['type'] = '${type}';
+>>>>>>> b7ca62d071ab09ac651414a45bdae639469b8fae
                 $.ajax({
                     type: 'POST',
                     url: '<%=request.getContextPath()%>/product/publish',
                     dataType: 'json',
+<<<<<<< HEAD
                     data: data.field,
                     success: function (data) {
+=======
+                    data:
+                         data.field
+                    ,
+                    success: function (data, index) {
+>>>>>>> b7ca62d071ab09ac651414a45bdae639469b8fae
                         if (data.success) {
-                            layer.msg(data.msg, {icon: 6, time: 1000});
+                            layer.msg(data.msg, {icon: 6, time: 2000});
                             setTimeout(function () {
+<<<<<<< HEAD
                                 layer_close();
                             }, 1000);
+=======
+                                layer_close(index);
+                            },1000);
+
+
+>>>>>>> b7ca62d071ab09ac651414a45bdae639469b8fae
                         } else {
                             layer.msg(data.msg, {icon: 5, time: 1000});
-                            layer_close();
+                            //layer_close(index);
                         }
                     },
                     error: function (data) {
@@ -356,6 +375,7 @@
                 });
             });
 
+<<<<<<< HEAD
             form.on('select(shop)', function (data) {
                 $.ajax({
                     type: 'POST',
@@ -369,6 +389,25 @@
                             countryCode = data.data[0].COUNTRY_CODE;
                         } else {
                             layer.msg(data.msg, {icon: 5, time: 1000});
+=======
+            $("#productType").click(function () {
+
+                if (id == null) {
+                    layer.msg("请选择店铺！", {icon: 5, time: 1000});
+                    return;
+                }
+
+                    layer.open({
+                        type: 2,
+                        area: [800 + 'px', ($(window).height() - 50) + 'px'],
+                        fix: false, //不固定
+                        maxmin: true,
+                        shade: 0.4,
+                        title: "产品类型选择",
+                        content: '<%=request.getContextPath()%>/assistant/index/product/product_category.jsp?shopId='+id,
+                        end: function () {
+
+>>>>>>> b7ca62d071ab09ac651414a45bdae639469b8fae
                         }
                     },
                     error: function (data) {
