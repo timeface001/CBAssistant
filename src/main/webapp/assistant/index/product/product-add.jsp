@@ -187,13 +187,15 @@
                         </div>
                         <div id="div8"
                              style="display: none;width: 240px;height: 300px; float: left;border: 1px solid #ddd;border-radius: 4px;padding: 5px 5px 5px 5px;margin-right: 10px;">
-                            <select id="level-8" name="level-8" class="select" style="height: 32px">
+                            <select id="level-8" name="level-8" class="select" style="height: 32px"
+                                    onchange="loadTypes(this.value,9)">
                                 <option value="">请选择</option>
                             </select>
                         </div>
                         <div id="div9"
                              style="display: none;width: 240px;height: 300px; float: left;border: 1px solid #ddd;border-radius: 4px;padding: 5px 5px 5px 5px;margin-right: 10px;">
-                            <select id="level-9" name="level-9" class="select" style="height: 32px">
+                            <select id="level-9" name="level-9" class="select" style="height: 32px"
+                                    onchange="loadTypes(this.value,10)">
                                 <option value="">请选择</option>
                             </select>
                         </div>

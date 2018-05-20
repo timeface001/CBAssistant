@@ -176,6 +176,15 @@ public class ProductClaimController extends BaseController {
         try {
             List<String> dataList = JSON.parseArray(data, String.class);
             resultList = getTanslateList(dataList, language);
+            if (resultList != null && resultList.size() > 0) {
+                if (!(resultList.get(0).getCn().equals("Translate failed"))) {
+                    return ResponseGen.genSuccessData(resultList);
+                } else {
+                    return JSON.toJSONString(ResponseGen.genFail());
+                }
+            } else {
+                return JSON.toJSONString(ResponseGen.genFail());
+            }
             /*if (language.equals("cn")) {
                 resultList = getTanslateList(dataList);
             } else if (language.equals("uk")) {
@@ -213,7 +222,6 @@ public class ProductClaimController extends BaseController {
             e.printStackTrace();
             return JSON.toJSONString(ResponseGen.genFail());
         }
-        return ResponseGen.genSuccessData(resultList);
     }
 
     public List<TranslateDto> getTanslateList(List<String> zhs, String language) {

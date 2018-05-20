@@ -799,6 +799,24 @@
                     if (vvType != null && vvType != 'undefined') {
                         if (vvType = 'Color') {
                             $("#skuRender button").parent().prev().find('input').val(vars[i].colorMap);
+                        } else if (vvType = 'Size') {
+                            $("#skuRender button").parent().prev().find('input').val(vars[i].sizeMap);
+                        } else if (vvType = 'colorsize') {
+                            $("#skuRender button").parent().prev().find('input').val(vars[i].colorMap);
+                        } else if (vvType = 'material') {
+                            $("#skuRender button").parent().prev().find('input').val(vars[i].materialType);
+                        } else if (vvType = 'size-material') {
+                            $("#skuRender button").parent().prev().find('input').val(vars[i].sizeMap);
+                        } else if (vvType = 'color-material') {
+                            $("#skuRender button").parent().prev().find('input').val(vars[i].colorMap);
+                        } else if (vvType = 'itempackagequantity') {
+                            $("#skuRender button").parent().prev().find('input').val(vars[i].itempackagequantity);
+                        } else if (vvType = 'color-itempackagequantity') {
+                            $("#skuRender button").parent().prev().find('input').val(vars[i].colorMap);
+                        } else if (vvType = 'itempackagequantity-size') {
+                            $("#skuRender button").parent().prev().find('input').val(vars[i].itempackagequantity);
+                        } else if (vvType = 'itempackagequantity-material') {
+                            $("#skuRender button").parent().prev().find('input').val(vars[i].itempackagequantity);
                         }
                         $(".skuBtn").click();
                         form.render(null, 'skuRender');
@@ -810,7 +828,7 @@
                     var vvType = vars[i].variationType;
                     if (vvType != null && vvType != 'undefined') {
                         var ttImages = new Array();
-                        if (vars[i].attachPath == null || vars[i].attachPath == "") {
+                        if (vars[i].attachPath == null || vars[i].attachPath == "") {//如果没有附图就加载主图
                             ttImages.push(vars[i].mainPath);
                         } else {
                             ttImages = (vars[i].mainPath + "," + vars[i].attachPath).split(",");
@@ -895,7 +913,6 @@
                 selectValue = data.value;
                 $("#skuRender").html("");
                 $("#skuRender").append(genSkuTypeDom($("#skuMutiDiv option:selected").text()));
-
                 $(".skuBtn").on("click", function () {
                     var $this = $(this);
                     var text = $(this).parent().parent().find("input").val();
@@ -925,7 +942,6 @@
             });
 
             form.on('submit', function (data) {
-                console.log(data.field);
                 var skuTypeA = data.field.skuType;
                 //组合关键词和简要描述
                 data.field["bulletPointCn"] = getContentByLanguage("pointsCn");
@@ -986,30 +1002,35 @@
                         if (selectValue == "Color") {
                             item["colorName"] = firstValue;
                             item["colorMap"] = firstValue;
-                        } else if (secondValue == "Size") {
+                        } else if (selectValue == "Size") {
                             item["sizeMap"] = firstValue;
                             item["sizeName"] = firstValue;
-                        } else if (secondValue == "material") {
+                        } else if (selectValue == "colorsize") {
+                            item["colorName"] = firstValue;
+                            item["colorMap"] = firstValue;
+                            item["sizeMap"] = secondValue;
+                            item["sizeName"] = secondValue;
+                        } else if (selectValue == "material") {
                             item["materialType"] = firstValue;
-                        } else if (secondValue == "size-material") {
+                        } else if (selectValue == "size-material") {
                             item["sizeMap"] = firstValue;
                             item["sizeName"] = firstValue;
                             item["materialType"] = secondValue;
-                        } else if (secondValue == "color-material") {
+                        } else if (selectValue == "color-material") {
                             item["colorName"] = firstValue;
                             item["colorMap"] = firstValue;
                             item["materialType"] = secondValue;
-                        } else if (secondValue == "itempackagequantity") {
+                        } else if (selectValue == "itempackagequantity") {
                             item["itemPackageQuantity"] = firstValue;
-                        } else if (secondValue == "color-itempackagequantity") {
+                        } else if (selectValue == "color-itempackagequantity") {
                             item["colorName"] = firstValue;
                             item["colorMap"] = firstValue;
                             item["itemPackageQuantity"] = secondValue;
-                        } else if (secondValue == "itempackagequantity-size") {
+                        } else if (selectValue == "itempackagequantity-size") {
                             item["itemPackageQuantity"] = firstValue;
                             item["sizeMap"] = secondValue;
                             item["sizeName"] = secondValue;
-                        } else if (secondValue == "itempackagequantity-material") {
+                        } else if (selectValue == "itempackagequantity-material") {
                             item["itempackagequantity"] = firstValue;
                             item["materialType"] = secondValue;
                         }
@@ -1169,34 +1190,27 @@
             if (type == "") {
                 return;
             }
-
             if (type.indexOf("-") > 0) {
                 var arr = type.split("-");
                 for (var i = 0; i < arr.length; i++) {
                     dom += (getSkuItemDom(arr[i]));
                 }
-
             } else {
                 dom = (getSkuItemDom(type));
             }
-
             dom += "<div class=\"layui-form-item\" id='skuMutiPath' lay-filter=\"skuMutiPath\" >\n" +
                     "            <label class=\"layui-form-label\">变种图片</label>\n" +
                     "</div>";
-
             dom += "<div class=\"layui-form-item\">" +
                     "<label class=\"layui-form-label\">变种参数</label>" +
                     "<div class=\"layui-input-block\">" +
                     "<table class=\"layui-table\" id=\"skuTable\" lay-filter='skuTable'>" +
                     " <colgroup>" +
-
                     "   </colgroup><thead></thead> <tbody>" +
-
                     "</tbody>" +
                     "</table>" +
                     "</div>" +
                     "</div>";
-
             return dom;
         }
 
@@ -1204,7 +1218,6 @@
             if (arr == null || arr.length == 0) {
                 return "";
             }
-
             var dom = "";
             for (var i = 0; i < arr.length; i++) {
                 var id = "skuMainPath" + i;
@@ -1212,18 +1225,6 @@
                 dom += "<div class=\"layui-input-block\" val=" + (arr[i].substring(arr[i].indexOf(":") + 1)) + ">" +
                         "    <div class='layui-inline layui-bg-gray' style='margin-top: 10px;'>变种属性    " + arr[i] + "</div>" +
                         "            </div>" +
-                            /*"            <div class=\"layui-input-block\">\n" +
-                             "                <button id=" + id + " type=\"button\" class=\"layui-btn skuMainPath\" >\n" +
-                             "            <i class=\"layui-icon\">&#xe67c;</i>上传主图\n" +
-                             "        </button>" +
-                             "            </div>\n" +*/
-
-
-                            /*  "            <div class=\"layui-input-block\" style='margin-top: 5px'>" +
-                             "<img src='http://bpic.588ku.com/element_origin_min_pic/01/47/02/12574338a640011.jpg!r650' width='100' height='90' />" +
-                             "                     </div>" +*/
-
-
                         "            <div class=\"layui-input-block\" style='margin-top: 10px;'>\n" +
                         "                <button type=\"button\" id=" + sid + " class=\"layui-btn skuOtherPath\"  >\n" +
                         "            <i class=\"layui-icon\">&#xe67c;</i>上传图片\n" +
@@ -1232,8 +1233,6 @@
                         "            <div class=\"layui-input-block\" style='margin-top: 5px;height: 110px;'>" +
                         "<img class=\"pathDemo\" src='http://bpic.588ku.com/element_origin_min_pic/01/47/02/12574338a640011.jpg!r650' width='100' height='90' />" +
                         "                     </div>";
-
-
             }
             return dom;
         }
@@ -1257,7 +1256,6 @@
                     "</div> " +
                     "</div>";
         }
-
 
         function initSKuPath(id, sid) {
             layui.use('upload', function () {
@@ -1306,7 +1304,6 @@
                         var $this = $($(this)[0].item[0]);
                         var key = $this.parent().prev().attr("val");
                         $this.parent().next().find(".pathDemo").remove();
-                        console.log($this);
                         $this.parent().next().append("<div style='width:100px;height:110px;margin-left:2px;float:left;'><img width='100px' height='90px' style='padding-right:5px;' src=<%=request.getContextPath()%>/upload/" + res.data + " /><i class='layui-icon delImage' style='font-size:20px;margin-left:35px;'>&#xe640;</i></div>");
                         $("#skuTable tbody tr").each(function (i, val) {
                             if ($(val).attr("val") == key) {
@@ -1374,7 +1371,6 @@
             var textareas = $(this).parent().prev().find(".layui-show textarea");
             var isContainsEmpty = false;
             var vArr = [];
-            alert(textareas.length);
             if (textareas.length < 1) {
                 var inputs = $(this).parent().prev().find(".layui-show input");
                 for (var i = 0; i < inputs.length; i++) {

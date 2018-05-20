@@ -35,8 +35,8 @@
         <if test="id != null and id != '' and id != 'null'">
             AND t1.SHOP_ID = #{id,jdbcType=VARCHAR}
         </if>
-        <if test="status !=null and status !=''">
-            AND t1.SHOP_STATE = #{status}
+        <if test="state !=null and state !=''">
+            AND t1.SHOP_STATE = #{state}
         </if>
         <if test="createUser !=null and createUser !=''">
             AND t1.CREATE_USER = #{createUser,jdbcType=VARCHAR}
@@ -79,6 +79,9 @@
         </if>
         <if test="companyId !=null and companyId !=''">
             AND CREATE_USER IN (select user_id from t_user_info where user_company = #{companyId,jdbcType=VARCHAR})
+        </if>
+        <if test="state != null and state != ''">
+            AND SHOP_STATE = #{state,jdbcType=VARCHAR}
         </if>
     </select>
 </mapper>

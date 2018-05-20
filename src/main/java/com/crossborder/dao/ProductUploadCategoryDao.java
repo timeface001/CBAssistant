@@ -16,9 +16,9 @@ public interface ProductUploadCategoryDao extends ProductUploadCategoryMapper {
 
     void deleteByShopId(@Param("shopId") String shopId, @Param("code") String code);
 
-    List<ProductUploadCategory> selectListParent(@Param("shopId") String shopId);
+    List<ProductUploadCategory> selectListParent(@Param("countryCode") String countryCode);
 
-    List<ProductUploadCategory> selectList(@Param("parentId") String parentId, @Param("shopId") String shopId);
+    List<ProductUploadCategory> selectList(@Param("parentId") String parentId, @Param("countryCode") String countryCode);
 
     void batchInsert(@Param("list") List<ProductUploadCategory> list);
 

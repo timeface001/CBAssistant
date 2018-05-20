@@ -22,7 +22,7 @@ public abstract class Translator {
     }
 
     public String run(Lang from, Lang to, String text) {
-        String result = "Translate failed !";
+        String result = " Translate failed ";
         getParams(from, to, text);
         try {
             result = parses(query());

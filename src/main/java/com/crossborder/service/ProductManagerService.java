@@ -543,12 +543,12 @@ public class ProductManagerService {
     }
 
 
-    public List<ProductUploadCategory> selectList(String parentId, String shopId) {
-        return productUploadCategoryDao.selectList(parentId, shopId);
+    public List<ProductUploadCategory> selectList(String parentId, String countryCode) {
+        return productUploadCategoryDao.selectList(parentId, countryCode);
     }
 
-    public List<ProductUploadCategory> selectListParent(String shopId) {
-        return productUploadCategoryDao.selectListParent(shopId);
+    public List<ProductUploadCategory> selectListParent(String countryCode) {
+        return productUploadCategoryDao.selectListParent(countryCode);
     }
 
 

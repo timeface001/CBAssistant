@@ -1,6 +1,7 @@
 package com.crossborder.utils.trans;
 
 import com.crossborder.utils.lang.Lang;
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -72,23 +73,27 @@ public final class Google extends Translator {
         HttpUriRequest request = new HttpGet(uri.toString());
         CloseableHttpResponse response = httpClient.execute(request);
         HttpEntity entity = response.getEntity();
-
         String result = EntityUtils.toString(entity, "utf-8");
-
         EntityUtils.consume(entity);
         response.getEntity().getContent().close();
         response.close();
-
+        System.out.println("TEXT1====" + result);
         return result;
     }
 
     @Override
     public String parses(String text) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
+        //允许使用未带引号的字段名
+        mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+        //允许使用单引号
+        mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
         String result = "";
+        System.out.println("TEXT2====" + text);
         for (int i = 0; i < mapper.readTree(text).get(0).size(); i++) {
             result = result + mapper.readTree(text).get(0).get(i).get(0).toString();
         }
+        System.out.println("result===" + result);
         return result;
     }
 
@@ -96,7 +101,7 @@ public final class Google extends Translator {
         String tk = "";
         ScriptEngine engine = new ScriptEngineManager().getEngineByName("js");
         try {
-            FileReader reader = new FileReader("C:\\Users\\s\\Downloads\\MTrans-master\\tk\\Google.js");
+            FileReader reader = new FileReader("/home/tk/Google.js");
             engine.eval(reader);
             if (engine instanceof Invocable) {
                 Invocable invoke = (Invocable) engine;

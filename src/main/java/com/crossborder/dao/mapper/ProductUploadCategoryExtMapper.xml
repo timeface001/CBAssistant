@@ -9,13 +9,16 @@
   <select id="selectList" parameterType="java.util.Map" resultMap="BaseResultMap">
     SELECT
      <include refid="Base_Column_List"/>
-     from T_PRODUCT_UPLOAD_CATEGORY a WHERE a.PARENT_ID=#{parentId} AND SHOP_ID=#{shopId} ORDER BY a.NAME
+     from T_PRODUCT_UPLOAD_CATEGORY a WHERE a.PARENT_ID=#{parentId} AND COUNTRY_CODE=#{countryCode} ORDER BY a.NAME
   </select>
 
   <select id="selectListParent" parameterType="java.util.Map" resultMap="BaseResultMap">
     SELECT
     <include refid="Base_Column_List"/>
-    from T_PRODUCT_UPLOAD_CATEGORY a where a.PARENT_ID in (SELECT ID from T_PRODUCT_UPLOAD_CATEGORY where NAME='Categories')  AND a.SHOP_ID=#{shopId}
+    from T_PRODUCT_UPLOAD_CATEGORY a
+    where a.PARENT_ID
+    in (SELECT ID from T_PRODUCT_UPLOAD_CATEGORY where NAME='Categories')  AND a.COUNTRY_CODE=#{countryCode}
+    ORDER BY a.NAME
   </select>
 
   <insert id="batchInsert">

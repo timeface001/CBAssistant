@@ -25,7 +25,6 @@
           href="<%=request.getContextPath()%>/assistant/static/h-ui.admin/css/style.css"/>
     <link rel="stylesheet" type="text/css"
           href="<%=request.getContextPath()%>/assistant/lib/layui/css/layui.css"/>
-
     <!--[if IE 6]>
     <script type="text/javascript"
             src="<%=request.getContextPath()%>/assistant/lib/DD_belatedPNG_0.0.8a-min.js"></script>
@@ -40,12 +39,9 @@
 </head>
 <body>
 <article class="page-container">
-
     <form class="layui-form" action="">
         <input name="id" type="hidden" value="${product.id}"/>
-
         <div id="cateDiv">
-
             <div class="layui-form-item">
                 <label class="layui-form-label"></label>
                 <div class="layui-input-block layui-form" lay-filter="cate1">
@@ -64,9 +60,6 @@
                 </div>
             </div>
         </div>
-
-
-
 
         <div class="layui-form-item">
             <div class="layui-input-block">
@@ -95,26 +88,17 @@
 <script type="text/javascript">
     var id = '';
     $(function () {
-
-
-        console.log("<%=request.getParameter("shopId")%>");
-
-
         layui.use('element', function () {
             var element = layui.element;
-
             //…
         });
-
 
         function initSkuSaleDate() {
             var laydate = layui.laydate;
             layui.use('laydate', function () {
-
                 laydate.render({
                     elem: '.saleStart' //促销开始时间
                 });
-
                 laydate.render({
                     elem: '.saleEnd' //促销结束时间
                 });
@@ -124,7 +108,6 @@
         var selectValue = null;
         layui.use('form', function () {
             var form = layui.form;
-
             $.ajax({
                 type: 'POST',
                 url: '<%=request.getContextPath()%>/publish/category',
@@ -153,11 +136,9 @@
                             for (var i = 0; i < data.length; i++) {
                                 $("#cate2").append("<option value='"+data[i].id+","+data[i].hasChild+"' val="+data[i].hasChild+" type="+data[i]+">"+data[i].name+"</option>");
                             }
-
                             $("#cateDiv > div").each(function (i,val) {
                                 if(i>1){
                                     $(val).remove();
-
                                 }
                             });
                             form.render("select","cate2");
@@ -168,9 +149,7 @@
                     });
                 }
             });
-
             $("").click();
-
             form.on('select(cate22)', function (data) {
                 if(data.value!=null &&data.value!=''&&data.value.split(",")[1]=="1"){
                     $.ajax({
@@ -182,7 +161,6 @@
                             $("#cateDiv > div").each(function (i,val) {
                                 if(i>1){
                                     $(val).remove();
-
                                 }
                             });
                             $("#cateDiv > div :eq(1)").after(addNext(data,3));
@@ -196,7 +174,6 @@
                     $("#cateDiv > div").each(function (i,val) {
                         if(i>1){
                             $(val).remove();
-
                         }
                     });
                 }
@@ -213,7 +190,6 @@
                             $("#cateDiv > div").each(function (i,val) {
                                 if(i>2){
                                     $(val).remove();
-
                                 }
                             });
                             $("#cateDiv > div :eq(2)").after(addNext(data,4));
@@ -227,13 +203,10 @@
                     $("#cateDiv > div").each(function (i,val) {
                         if(i>3){
                             $(val).remove();
-
                         }
                     });
                 }
             });
-
-
         });
 
 
@@ -265,10 +238,8 @@
                 oMin = oDate.getMinutes(),
                 oSen = oDate.getSeconds(),
                 oTime = oYear + '-' + getzf(oMonth) + '-' + getzf(oDay);//+' '+ getzf(oHour) +':'+ getzf(oMin) +':'+getzf(oSen);//最后拼接时间
-
             return oTime;
         }
-
 
         //补0操作,当时间数据小于10的时候，给该数据前面加一个0
         function getzf(num) {
@@ -277,7 +248,6 @@
             }
             return num;
         }
-
     });
 
 

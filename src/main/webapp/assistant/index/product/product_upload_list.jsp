@@ -30,7 +30,8 @@
 </head>
 <body>
 <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 产品管理 <span
-        class="c-gray en">&gt;</span> 发布产品 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" id="refresh"
+        class="c-gray en">&gt;</span> 发布产品 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px"
+                                              id="refresh"
                                               href="javascript:location.replace(location.href);" title="刷新"><i
         class="Hui-iconfont">&#xe68f;</i></a></nav>
 <div class="page-container">
@@ -152,39 +153,53 @@
             },
             "columns": [
                 {"data": "id"},
-                {"data": function (val) {
-                    return val.mainPath==null?"":"<img width='100px' height='90px'  src='<%=request.getContextPath()%>/upload/"+val.mainPath+"'/>";
-                }},
-                {"data": function (val) {
-                    return getCountryName(val.languageId);
-                }},
-                {"data": function (val) {
-                    return val.itemName==null?"":val.itemName;
-                }},
-                {"data": function (val) {
-                    return val.itemSku==null?"":val.itemSku;
-                }},
+                {
+                    "data": function (val) {
+                        return val.mainPath == null ? "" : "<img width='100px' height='90px'  src='<%=request.getContextPath()%>/upload/" + val.mainPath + "'/>";
+                    }
+                },
+                {
+                    "data": function (val) {
+                        return getCountryName(val.languageId);
+                    }
+                },
+                {
+                    "data": function (val) {
+                        return val.itemName == null ? "" : val.itemName;
+                    }
+                },
+                {
+                    "data": function (val) {
+                        return val.itemSku == null ? "" : val.itemSku;
+                    }
+                },
                 {"data": "standardPrice"},
-                {"data": function (val) {
-                    return val.quantity==null?"":val.quantity;
-                }},
-                {"data": function (val) {
-                    if(val.publishStatus=="0"){
-                        return "未发布";
+                {
+                    "data": function (val) {
+                        return val.quantity == null ? "" : val.quantity;
                     }
-                    if(val.publishStatus=="1"){
-                        return "<p style='text-align: left'>发布失败：</p><p title='"+val.uploadDesc+"' style='color: #ff515b'>"+getUploadDesc(val.uploadDesc)+"</p>";
+                },
+                {
+                    "data": function (val) {
+                        if (val.publishStatus == "0") {
+                            return "未发布";
+                        }
+                        if (val.publishStatus == "1") {
+                            return "<p style='text-align: left'>发布失败：</p><p title='" + val.uploadDesc + "' style='color: #ff515b'>" + getUploadDesc(val.uploadDesc) + "</p>";
+                        }
+                        if (val.publishStatus == "2") {
+                            return "发布成功";
+                        }
+                        if (val.publishStatus == "3") {
+                            return "发布中";
+                        }
                     }
-                    if(val.publishStatus=="2"){
-                        return "发布成功";
+                },
+                {
+                    "data": function (val) {
+                        return "<p style='text-align: left'>创建:</p><p style='text-align: left'>" + getMyDate(val.createTime) + "</p>" + "<p style='text-align: left'>发布时间</p><p style='text-align: left'>" + getMyDate(val.publishTime) + "</p>";
                     }
-                    if(val.publishStatus=="3"){
-                        return "发布中";
-                    }
-                }},
-                {"data": function (val) {
-                    return "<p style='text-align: left'>创建:</p><p style='text-align: left'>"+getMyDate(val.createTime)+"</p>"+"<p style='text-align: left'>发布时间</p><p style='text-align: left'>"+getMyDate(val.publishTime)+"</p>";
-                }}
+                }
             ],
             "columnDefs": [
                 {
@@ -198,9 +213,9 @@
                     "targets": [9],
                     "data": "id",
                     "render": function (data, type, full) {
-                        return( "<a style='text-decoration:none' title=''  onClick=\"publishProduct('" + full.id + "')\"')>发布</a>") +
-                            "&nbsp;&nbsp;" +
-                            "<a style='text-decoration:none' title='删除'  onClick=\"deleteProduct('" + full.id + "')\"')>删除</a>" ;
+                        return ( "<a style='text-decoration:none' title=''  onClick=\"publishProduct('" + full.id + "')\"')>发布</a>") +
+                                "&nbsp;&nbsp;" +
+                                "<a style='text-decoration:none' title='删除'  onClick=\"deleteProduct('" + full.id + "')\"')>删除</a>";
                     }
                 }
             ],
@@ -232,25 +247,25 @@
     }
 
     function getCountryName(id) {
-        if(id==="GB"){
+        if (id === "GB") {
             return "英国";
         }
-        if(id==="JP"){
+        if (id === "JP") {
             return "日本";
         }
-        if(id==="CN"){
+        if (id === "CN") {
             return "中国";
         }
-        if(id==="DE"){
+        if (id === "DE") {
             return "德国";
         }
-        if(id==="FR"){
+        if (id === "FR") {
             return "法国";
         }
-        if(id==="ES"){
+        if (id === "ES") {
             return "西班牙";
         }
-        if(id==="IT"){
+        if (id === "IT") {
             return "意大利";
         }
 
@@ -259,17 +274,17 @@
     }
 
     function getUploadDesc(str) {
-        if(str==null||str==""){
+        if (str == null || str == "") {
             return str;
         }
 
-        if(str =="undefined"){
+        if (str == "undefined") {
             return '';
         }
 
 
-        if(str.length>200){
-            return str.substring(0,200)+"...";
+        if (str.length > 200) {
+            return str.substring(0, 200) + "...";
         }
 
         return str;
@@ -286,7 +301,7 @@
     }
 
     function editProduct(id) {
-        location.href='<%=request.getContextPath()%>/product/claim/detail?id='+id;
+        location.href = '<%=request.getContextPath()%>/product/claim/detail?id=' + id;
 
     }
 
@@ -295,29 +310,30 @@
      * @param ids
      */
     function claimProduct(ids) {
-        if(ids==null){
-            ids=getIDs();
+        if (ids == null) {
+            ids = getIDs();
         }
 
         layer.confirm('确定认领商品吗？', function (index) {
-        $.ajax({
-            type: 'POST',
-            url: '<%=request.getContextPath()%>/product/state',
-            dataType: 'json',
-            data: {
-                "data": ids,
-                "type": 2
-            },
-            success: function (data) {
-                if (data.success) {
-                    setTimeout(layer.msg(data.msg, {icon: 6, time: 1000}), 1000);
-                    document.getElementById("refresh").click();
+            $.ajax({
+                type: 'POST',
+                url: '<%=request.getContextPath()%>/product/state',
+                dataType: 'json',
+                data: {
+                    "data": ids,
+                    "type": 2
+                },
+                success: function (data) {
+                    if (data.success) {
+                        setTimeout(layer.msg(data.msg, {icon: 6, time: 1000}), 1000);
+                        document.getElementById("refresh").click();
+                    }
+                },
+                error: function (data) {
+                    layer.msg(data.msg, {icon: 2, time: 1000});
                 }
-            },
-            error: function (data) {
-                layer.msg(data.msg, {icon: 2, time: 1000});
-            }
-        }); });
+            });
+        });
     }
 
     /*产品-删除*/
@@ -325,9 +341,9 @@
 
         alert("删除等等");
         return
-            ;
-        if(id==null||id==""){
-            id=getIDs();
+        ;
+        if (id == null || id == "") {
+            id = getIDs();
         }
         layer.confirm('产品删除须谨慎，确认要删除吗？', function (index) {
             $.ajax({
@@ -351,38 +367,47 @@
     }
 
     function getIDs() {
-        var ids=[];
-         $("#productTable td input:checkbox:checked").each(function (i,val) {
+        var ids = [];
+        $("#productTable td input:checkbox:checked").each(function (i, val) {
             ids.push($(val).val());
         });
-         return ids.join(",");
+        return ids.join(",");
     }
-    
+
     function publishProduct(id) {
-        layer_show("发布", '<%=request.getContextPath()%>/product/publish/detail?id='+id+"&type=1", 800);
+        var index = layer.open({
+            type: 2,
+            title: "发布产品",
+            content: '<%=request.getContextPath()%>/product/publish/detail?id=' + id + "&type=1",
+            end: function () {
+                location.reload();
+            }
+        });
+        layer.full(index);
     }
 
     //将时间戳格式化
-    function getMyDate(time){
-        if(typeof(time)=="undefined"){
+    function getMyDate(time) {
+        if (typeof(time) == "undefined") {
             return "";
         }
         var oDate = new Date(time),
-            oYear = oDate.getFullYear(),
-            oMonth = oDate.getMonth()+1,
-            oDay = oDate.getDate(),
-            oHour = oDate.getHours(),
-            oMin = oDate.getMinutes(),
-            oSen = oDate.getSeconds(),
-            oTime = oYear +'-'+ getzf(oMonth) +'-'+ getzf(oDay) ;//+' '+ getzf(oHour) +':'+ getzf(oMin) +':'+getzf(oSen);//最后拼接时间
+                oYear = oDate.getFullYear(),
+                oMonth = oDate.getMonth() + 1,
+                oDay = oDate.getDate(),
+                oHour = oDate.getHours(),
+                oMin = oDate.getMinutes(),
+                oSen = oDate.getSeconds(),
+                oTime = oYear + '-' + getzf(oMonth) + '-' + getzf(oDay);//+' '+ getzf(oHour) +':'+ getzf(oMin) +':'+getzf(oSen);//最后拼接时间
 
         return oTime;
-    };
+    }
+    ;
 
     //补0操作,当时间数据小于10的时候，给该数据前面加一个0
-    function getzf(num){
-        if(parseInt(num) < 10){
-            num = '0'+num;
+    function getzf(num) {
+        if (parseInt(num) < 10) {
+            num = '0' + num;
         }
         return num;
     }
