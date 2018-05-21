@@ -353,7 +353,7 @@
                             var ims = data.IMAGE_PATH.split(",");
                             if (ims.length > 0) {
                                 for (var i = 0; i < ims.length; i++) {
-                                    $("#imagePathSrc").append("<img width='100px' style='margin-left:2px;margin-top:2px' height='90px' src=<%=request.getContextPath()%>/upload/" + ims[i] + " val='" + ims[i] + "' />")
+                                    $("#imagePathSrc").append("<img width='100px' style='margin-left:2px;margin-top:2px' height='90px' src=<%=session.getAttribute("productPath")%>" + ims[i] + " val='" + ims[i] + "' />")
                                 }
                             }
                         }
