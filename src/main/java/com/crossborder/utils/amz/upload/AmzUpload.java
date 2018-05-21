@@ -62,31 +62,63 @@ public class AmzUpload {
         }
     }
 
-    public ResponseDto uploadSingleProduct(ProductAmzUpload product, Map<String, Object> shop, List<ProductItemVar> vars) {
+    public ResponseDto uploadSingleProduct(final ProductAmzUpload product, final Map<String, Object> shop, final List<ProductItemVar> vars) {
 
-        //FileInputStream productIs = AmzXmlTemplate.uploadProduct(product, shop, commonSet.getAmzUploadProductPath(), vars.get(0));
-        FileInputStream inventoryIs = AmzXmlTemplate.uploadInventory(product, shop, commonSet.getAmzUploadProductPath(), vars);
-        FileInputStream priceIs = AmzXmlTemplate.uploadPrice(product, shop, commonSet.getAmzUploadProductPath(), vars);
-        FileInputStream imIs = AmzXmlTemplate.uploadImage(product, shop, commonSet.getAmzUploadProductPath(), vars,commonSet.getProductImagePath());
 
-        List<ResponseDto> resList = new ArrayList<>();
+        ResponseDto result = new ResponseDto();
         ProductIdGen gen = productIdGenDao.selectProductIdForUseOne(null, GeneralUtils.getUserId());
-        if (gen != null) {
+        if (gen == null) {
+            System.out.println("UPC库中没有可用ID...");
+            result.setMsg("UPC库中没有可用ID");
+            result.setCode("001");
+            result.setSuccess(false);
+            return result;
+        }
+        final ResponseDto<String> dto;
             product.setExternalProductId(gen.getProductId());
             product.setExternalProductIdType(gen.getType());
             FileInputStream productIs = AmzXmlTemplate.uploadProduct(product, shop, commonSet.getAmzUploadProductPath(), vars.get(0));
-            resList.add(getUploadResult(getService(shop), getSubmitFeedRequest(productIs, shop, AmzFeeType.SINGLE_FORMAT_ITEM_FEED)));
+        dto = getUploadResult(getService(shop), getSubmitFeedRequest(productIs, shop, AmzFeeType.PRODUCT_FEED));
+
             productIdGenDao.updateUsed(gen.getType(), product.getId(), gen.getProductId());
-        }
-        resList.add(getUploadResult(getService(shop), getSubmitFeedRequest(inventoryIs, shop, AmzFeeType.INVENTORY_FEED)));
-        resList.add(getUploadResult(getService(shop), getSubmitFeedRequest(priceIs, shop, AmzFeeType.PRICING_FEED)));
-        resList.add(getUploadResult(getService(shop), getSubmitFeedRequest(imIs, shop, AmzFeeType.PRODUCT_IMAGES_FEED)));
-        ResponseDto result = new ResponseDto();
-        String str = "";
-        for (ResponseDto dto : resList) {
-            str += dto.getData() + ",";
-        }
-        result.setData(str);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                FileInputStream inventoryIs = AmzXmlTemplate.uploadInventory(product, shop, commonSet.getAmzUploadProductPath(), vars);
+                FileInputStream priceIs = AmzXmlTemplate.uploadPrice(product, shop, commonSet.getAmzUploadProductPath(), vars);
+                FileInputStream imIs = AmzXmlTemplate.uploadImage(product, shop, commonSet.getAmzUploadProductPath(), vars, commonSet.getProductImagePath());
+
+                System.out.println("开始请求。。。");
+
+
+                System.out.println("等待20秒");
+                try {
+                    Thread.sleep(60000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                ResponseDto dto1 = null;
+                int i = 0;
+                do {
+                    dto1 = getFeedSubResult(shop, dto.getData());
+                    i++;
+                    try {
+                        Thread.sleep(10000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    System.out.println("第" + i + "次请求。。。。");
+                } while (!dto1.isSuccess() && i < 3);
+                System.out.println(JSON.toJSONString(dto1));
+                System.out.println("上传其他信息");
+                getUploadResult(getService(shop), getSubmitFeedRequest(inventoryIs, shop, AmzFeeType.INVENTORY_FEED));
+                getUploadResult(getService(shop), getSubmitFeedRequest(priceIs, shop, AmzFeeType.PRICING_FEED));
+                getUploadResult(getService(shop), getSubmitFeedRequest(imIs, shop, AmzFeeType.PRODUCT_IMAGES_FEED));
+            }
+        }).start();
+
+        result.setData(dto.getData());
         result.setSuccess(true);
         return result;
     }
@@ -115,6 +147,8 @@ public class AmzUpload {
                 return result;
             }
         }
+
+
         resList.add(getUploadResult(getService(shop), getSubmitFeedRequest(inventoryIs, shop, AmzFeeType.INVENTORY_FEED)));
         resList.add(getUploadResult(getService(shop), getSubmitFeedRequest(priceIs, shop, AmzFeeType.PRICING_FEED)));
         resList.add(getUploadResult(getService(shop), getSubmitFeedRequest(imIs, shop, AmzFeeType.PRODUCT_IMAGES_FEED)));
