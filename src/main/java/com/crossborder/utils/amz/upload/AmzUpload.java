@@ -70,7 +70,7 @@ public class AmzUpload {
         FileInputStream imIs = AmzXmlTemplate.uploadImage(product, shop, commonSet.getAmzUploadProductPath(), vars,commonSet.getProductImagePath());
 
         List<ResponseDto> resList = new ArrayList<>();
-        ProductIdGen gen = productIdGenDao.selectProductIdForUseOne(null);
+        ProductIdGen gen = productIdGenDao.selectProductIdForUseOne(null, GeneralUtils.getUserId());
         if (gen != null) {
             product.setExternalProductId(gen.getProductId());
             product.setExternalProductIdType(gen.getType());
@@ -102,7 +102,7 @@ public class AmzUpload {
 
         List<ResponseDto> resList = new ArrayList<>();
         for (ProductItemVar var : vars) {
-            ProductIdGen gen = productIdGenDao.selectProductIdForUseOne(null);
+            ProductIdGen gen = productIdGenDao.selectProductIdForUseOne(null, GeneralUtils.getUserId());
             if (gen != null) {
                 product.setExternalProductId(gen.getProductId());
                 product.setExternalProductIdType(gen.getType());
