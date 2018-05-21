@@ -112,11 +112,13 @@ public class HttpClientUtil {
         }
     }
     public static void main(String... args) throws Exception {
+        String key = "AIzaSyD9ZFuiV0CJYppKv9G6DQ08QQc2JDpOnHk";
         String url = "https://translation.googleapis.com/language/translate/v2";
         Map<String,String> map = new HashMap<>();
         map.put("q","您好，李兵！");
         map.put("target","en");
-        map.put("key","您好，李兵！");
+        map.put("key",key);
         String result = doPost(url,map);
+        System.out.print(result);
     }
 }

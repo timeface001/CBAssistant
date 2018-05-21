@@ -338,8 +338,7 @@
                     type: 'POST',
                     url: '<%=request.getContextPath()%>/product/publish',
                     dataType: 'json',
-                    data:
-                    data.field
+                    data: data.field
                     ,
                     success: function (data, index) {
                         if (data.success) {
@@ -378,130 +377,109 @@
                     error: function (data) {
                         layer.msg(data.msg, {icon: 5, time: 1000});
                     }
-                }); });
-            $("#productType").click(function () {
-
-                if (id == null) {
-                    layer.msg("请选择店铺！", {icon: 5, time: 1000});
-                    return;
-                }
-
-                layer.open({
-                    type: 2,
-                    area: [800 + 'px', ($(window).height() - 50) + 'px'],
-                    fix: false, //不固定
-                    maxmin: true,
-                    shade: 0.4,
-                    title: "产品类型选择",
-                    content: '<%=request.getContextPath()%>/assistant/index/product/product_category.jsp?shopId='+id,
-                    end: function () {
-
-                    }
-
-
-                });
-
-                $("#genPid").click(function () {
-                    $.ajax({
-                        type: 'POST',
-                        url: '<%=request.getContextPath()%>/productid/use',
-                        dataType: 'json',
-                        data: {
-                            "type": $("#externalProductIdType").val()
-                        },
-                        success: function (data) {
-                            if (data.success) {
-                                if (data.data != null) {
-                                    $("#externalProductIdType").val(data.data.type);
-                                    $("#externalProductId").val(data.data.productId);
-                                } else {
-                                    layer.msg("该类型产品ID库中都已使用完", {icon: 5, time: 1000});
-                                    $("#externalProductId").val("");
-                                }
-                                form.render("select");
-                            } else {
-                                layer.msg(data.msg, {icon: 5, time: 1000});
-                            }
-                        },
-                        error: function (data) {
-                            layer.msg(data.msg, {icon: 5, time: 1000});
-                        }
-                    });
                 });
             });
-        });
 
-        $("#productType").click(function () {
-            $("#modal-demo").modal("show");
-            initLevel1();
         });
-
-        function initLevel1() {
-            $.ajax({
-                type: 'POST',
-                url: '<%=request.getContextPath()%>/publish/category',
-                dataType: 'json',
-                data: {
-                    "countryCode": countryCode,
-                    "parentId": '-1'
-                },
-                success: function (data) {
-                    if (data.code == 0) {
-                        var data = data.data;
-                        for (var i = 0; i < data.length; i++) {
-                            $("#level-1").append($('<option value=' + data[i].id + '>' + data[i].name + '</option>'));
-                        }
-                    }
-                },
-                error: function (data) {
-                    layer.msg(data.msg, {icon: 2, time: 1000});
-                },
-            });
-        }
-        function loadTypes(value, index) {
-            $.ajax({
-                type: 'POST',
-                url: '<%=request.getContextPath()%>/publish/category',
-                dataType: 'json',
-                data: {
-                    "countryCode": countryCode,
-                    "parentId": value
-                },
-                success: function (data) {
-                    document.getElementById("content-div").style.width = (index - 1) * 262 + "px";
-                    for (var i = 0; i <= (10 - index); i++) {
-                        document.getElementById("div" + (index + i)).style.display = "none";
-                    }
-                    if (data.code == 0) {
-                        document.getElementById("content-div").style.width = index * 262 + "px";
-                        document.getElementById("div" + index).style.display = "block";
-                        var data = data.data;
-                        $("#level-" + index).empty();
-                        for (var i = 0; i < data.length; i++) {
-                            $("#level-" + index).append($('<option value=' + data[i].id + '>' + data[i].name + '</option>'));
-                        }
-                    }
-                },
-                error: function (data) {
-                    layer.msg(data.msg, {icon: 2, time: 1000});
-                }
-            });
-        }
-        function chooseType() {
-            $("#modal-demo").modal("hide");
-            var typeName = "";
-            var typeId = "";
-            for (var i = 1; i <= 10; i++) {
-                var options = $("#level-" + i + " option:selected");
-                if (options.val() != null && options.val() != "") {
-                    typeName += (options.text() + " > ");
-                    typeId = options.val();
-                }
-            }
-            $("#productType").val(typeName.substring(0, typeName.length - 3));
-            $("#typeId").val(typeId);
-        }
     });
+    $("#genPid").click(function () {
+        $.ajax({
+            type: 'POST',
+            url: '<%=request.getContextPath()%>/productid/use',
+            dataType: 'json',
+            data: {
+                "type": $("#externalProductIdType").val()
+            },
+            success: function (data) {
+                if (data.success) {
+                    if (data.data != null) {
+                        $("#externalProductIdType").val(data.data.type);
+                        $("#externalProductId").val(data.data.productId);
+                    } else {
+                        layer.msg("该类型产品ID库中都已使用完", {icon: 5, time: 1000});
+                        $("#externalProductId").val("");
+                    }
+                    form.render("select");
+                } else {
+                    layer.msg(data.msg, {icon: 5, time: 1000});
+                }
+            },
+            error: function (data) {
+                layer.msg(data.msg, {icon: 5, time: 1000});
+            }
+        });
+    });
+    $("#productType").click(function () {
+        $("#modal-demo").modal("show");
+        initLevel1();
+    });
+
+    function initLevel1() {
+        $.ajax({
+            type: 'POST',
+            url: '<%=request.getContextPath()%>/publish/category',
+            dataType: 'json',
+            data: {
+                "countryCode": countryCode,
+                "parentId": '-1'
+            },
+            success: function (data) {
+                if (data.code == 0) {
+                    var data = data.data;
+                    for (var i = 0; i < data.length; i++) {
+                        $("#level-1").append($('<option value=' + data[i].id + '>' + data[i].name + '</option>'));
+                    }
+                }
+            },
+            error: function (data) {
+                layer.msg(data.msg, {icon: 2, time: 1000});
+            },
+        });
+    }
+    function loadTypes(value, index) {
+        $.ajax({
+            type: 'POST',
+            url: '<%=request.getContextPath()%>/publish/category',
+            dataType: 'json',
+            data: {
+                "countryCode": countryCode,
+                "parentId": value
+            },
+            success: function (data) {
+                document.getElementById("content-div").style.width = (index - 1) * 262 + "px";
+                for (var i = 0; i <= (10 - index); i++) {
+                    document.getElementById("div" + (index + i)).style.display = "none";
+                }
+                if (data.code == 0) {
+                    document.getElementById("content-div").style.width = index * 262 + "px";
+                    document.getElementById("div" + index).style.display = "block";
+                    var data = data.data;
+                    $("#level-" + index).empty();
+                    for (var i = 0; i < data.length; i++) {
+                        $("#level-" + index).append($('<option value=' + data[i].id + '>' + data[i].name + '</option>'));
+                    }
+                }
+            },
+            error: function (data) {
+                layer.msg(data.msg, {icon: 2, time: 1000});
+            }
+        });
+    }
+    function chooseType() {
+        $("#modal-demo").modal("hide");
+        var typeName = "";
+        var typeId = "";
+        for (var i = 1; i <= 10; i++) {
+            var options = $("#level-" + i + " option:selected");
+            if (options.val() != null && options.val() != "") {
+                typeName += (options.text() + " > ");
+                typeId = options.val();
+            }
+        }
+        $("#productType").val(typeName.substring(0, typeName.length - 3));
+        $("#typeId").val(typeId);
+    }
+
 </script>
 </body>
 </html>

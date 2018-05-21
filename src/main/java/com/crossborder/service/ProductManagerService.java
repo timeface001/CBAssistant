@@ -5,10 +5,10 @@ import com.crossborder.dao.*;
 import com.crossborder.entity.*;
 import com.crossborder.utils.*;
 import com.crossborder.utils.amz.upload.AmzUpload;
-import com.crossborder.utils.lang.Lang;
-import com.crossborder.utils.querier.Querier;
-import com.crossborder.utils.trans.Google;
 import com.crossborder.utils.util.ChineseAndEnglish;
+import com.google.cloud.translate.Translate;
+import com.google.cloud.translate.TranslateOptions;
+import com.google.cloud.translate.Translation;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -65,9 +68,6 @@ public class ProductManagerService {
 
     @Transactional(readOnly = false, rollbackFor = Exception.class)
     public void updateState(String[] ids, ProductStateEnum stateEnum) {
-        Querier querier = Querier.getQuerier();
-        Google google = new Google();
-        querier.attach(google);
         for (String id : ids) {
             if (stateEnum.compareTo(ProductStateEnum.claim) == 0) {
                 Map<String, Object> product = productManagerDao.selectOne(id);
@@ -114,27 +114,46 @@ public class ProductManagerService {
 
                 //标题翻译
                 String name = GeneralUtils.nullToEmpty(product.get("NAME"));
-                querier.setParams(Lang.ZH, Lang.EN, name);
-                String uk = querier.execute().get(0);
-                uk = uk.substring(1, uk.length() - 1);
-                querier.setParams(Lang.ZH, Lang.JP, name);
-                String jp = querier.execute().get(0);
-                jp = jp.substring(1, jp.length() - 1);
-                querier.setParams(Lang.ZH, Lang.DE, name);
-                String de = querier.execute().get(0);
-                de = de.substring(1, de.length() - 1);
-                querier.setParams(Lang.ZH, Lang.FRA, name);
-                String fra = querier.execute().get(0);
-                fra = fra.substring(1, fra.length() - 1);
-                querier.setParams(Lang.ZH, Lang.SPA, name);
-                String spa = querier.execute().get(0);
-                spa = spa.substring(1, spa.length() - 1);
-                querier.setParams(Lang.ZH, Lang.IT, name);
-                String it = querier.execute().get(0);
-                it = it.substring(1, it.length() - 1);
+                String key = "AIzaSyD9ZFuiV0CJYppKv9G6DQ08QQc2JDpOnHk";
+                Translate translate = TranslateOptions.newBuilder().setApiKey(key).build().getService();
+                Translation translation =
+                        translate.translate(
+                                name,
+                                Translate.TranslateOption.targetLanguage("zh-CN"));
+               String cn = translation.getTranslatedText();
+                translation =
+                        translate.translate(
+                                name,
+                                Translate.TranslateOption.targetLanguage("en"));
+                String uk = translation.getTranslatedText();
+                translation =
+                        translate.translate(
+                                name,
+                                Translate.TranslateOption.targetLanguage("ja"));
+                String jp = translation.getTranslatedText();
+                translation =
+                        translate.translate(
+                                name,
+                                Translate.TranslateOption.targetLanguage("de"));
+                String de = translation.getTranslatedText();
+                translation =
+                        translate.translate(
+                                name,
+                                Translate.TranslateOption.targetLanguage("fr"));
+                String fra = translation.getTranslatedText();
+                translation =
+                        translate.translate(
+                                name,
+                                Translate.TranslateOption.targetLanguage("es"));
+                String es = translation.getTranslatedText();
+                translation =
+                        translate.translate(
+                                name,
+                                Translate.TranslateOption.targetLanguage("it"));
+                String it = translation.getTranslatedText();
                 claimProduct.setItemCn(name);
                 claimProduct.setItemDe(de);
-                claimProduct.setItemEs(spa);
+                claimProduct.setItemEs(es);
                 claimProduct.setItemIt(it);
                 claimProduct.setItemJp(jp);
                 claimProduct.setItemUk(uk);

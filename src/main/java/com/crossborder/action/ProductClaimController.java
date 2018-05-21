@@ -8,11 +8,11 @@ import com.crossborder.service.ProductSkuTypeService;
 import com.crossborder.utils.GeneralUtils;
 import com.crossborder.utils.ResponseGen;
 import com.crossborder.utils.TranslateDto;
-import com.crossborder.utils.lang.Lang;
-import com.crossborder.utils.querier.Querier;
-import com.crossborder.utils.trans.Google;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.google.cloud.translate.Translate;
+import com.google.cloud.translate.TranslateOptions;
+import com.google.cloud.translate.Translation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -247,61 +247,312 @@ public class ProductClaimController extends BaseController {
     }
 
     public List<TranslateDto> getTanslateList(List<String> zhs, String language) {
-        Querier querier = Querier.getQuerier();
-        Google google = new Google();
-        querier.attach(google);
+        String key = "AIzaSyD9ZFuiV0CJYppKv9G6DQ08QQc2JDpOnHk";
+        Translate translate = TranslateOptions.newBuilder().setApiKey(key).build().getService();
+        Translation translation = null;
         List<TranslateDto> list = new ArrayList<>();
-        Lang lang = Lang.ZH;
+        String lang = "zh-CN";
         if (language.equals("cn")) {
-            lang = Lang.ZH;
+            lang = "zh-CN";
         } else if (language.equals("uk")) {
-            lang = Lang.EN;
+            lang = "en";
         } else if (language.equals("de")) {
-            lang = Lang.DE;
+            lang = "de";
         } else if (language.equals("es")) {
-            lang = Lang.SPA;
+            lang = "es";
         } else if (language.equals("it")) {
-            lang = Lang.IT;
+            lang = "it";
         } else if (language.equals("jp")) {
-            lang = Lang.JP;
+            lang = "ja";
         } else if (language.equals("fr")) {
-            lang = Lang.FRA;
+            lang = "fr";
         }
         for (String s : zhs) {
-            querier.setParams(lang, Lang.ZH, s);
-            String zh = querier.execute().get(0);
-            zh = zh.substring(1, zh.length() - 1);
-            querier.setParams(lang, Lang.EN, s);
-            String uk = querier.execute().get(0);
-            uk = uk.substring(1, uk.length() - 1);
-            querier.setParams(lang, Lang.JP, s);
-            String jp = querier.execute().get(0);
-            jp = jp.substring(1, jp.length() - 1);
-            querier.setParams(lang, Lang.DE, s);
-            String de = querier.execute().get(0);
-            de = de.substring(1, de.length() - 1);
-            querier.setParams(lang, Lang.FRA, s);
-            String fra = querier.execute().get(0);
-            fra = fra.substring(1, fra.length() - 1);
-            querier.setParams(lang, Lang.SPA, s);
-            String spa = querier.execute().get(0);
-            spa = spa.substring(1, spa.length() - 1);
-            querier.setParams(lang, Lang.IT, s);
-            String it = querier.execute().get(0);
-            it = it.substring(1, it.length() - 1);
+            String zh = "";
+            String uk = "";
+            String jp = "";
+            String de = "";
+            String fr = "";
+            String es = "";
+            String it = "";
+            if (lang.equals("zh-CN")) {
+                zh = s;
+                translation =
+                        translate.translate(
+                                s,
+                                Translate.TranslateOption.sourceLanguage(lang),
+                                Translate.TranslateOption.targetLanguage("en"));
+                uk = translation.getTranslatedText();
+                translation =
+                        translate.translate(
+                                s,
+                                Translate.TranslateOption.sourceLanguage(lang),
+                                Translate.TranslateOption.targetLanguage("ja"));
+                jp = translation.getTranslatedText();
+                translation =
+                        translate.translate(
+                                s,
+                                Translate.TranslateOption.sourceLanguage(lang),
+                                Translate.TranslateOption.targetLanguage("de"));
+                de = translation.getTranslatedText();
+                translation =
+                        translate.translate(
+                                s,
+                                Translate.TranslateOption.sourceLanguage(lang),
+                                Translate.TranslateOption.targetLanguage("fr"));
+                fr = translation.getTranslatedText();
+                translation =
+                        translate.translate(
+                                s,
+                                Translate.TranslateOption.sourceLanguage(lang),
+                                Translate.TranslateOption.targetLanguage("es"));
+                es = translation.getTranslatedText();
+                translation =
+                        translate.translate(
+                                s,
+                                Translate.TranslateOption.sourceLanguage(lang),
+                                Translate.TranslateOption.targetLanguage("it"));
+                it = translation.getTranslatedText();
+            } else if (lang.equals("en")) {
+                translation =
+                        translate.translate(
+                                s,
+                                Translate.TranslateOption.sourceLanguage(lang),
+                                Translate.TranslateOption.targetLanguage("zh-CN"));
+                zh = translation.getTranslatedText();
+                uk = s;
+                translation =
+                        translate.translate(
+                                s,
+                                Translate.TranslateOption.sourceLanguage(lang),
+                                Translate.TranslateOption.targetLanguage("ja"));
+                jp = translation.getTranslatedText();
+                translation =
+                        translate.translate(
+                                s,
+                                Translate.TranslateOption.sourceLanguage(lang),
+                                Translate.TranslateOption.targetLanguage("de"));
+                de = translation.getTranslatedText();
+                translation =
+                        translate.translate(
+                                s,
+                                Translate.TranslateOption.sourceLanguage(lang),
+                                Translate.TranslateOption.targetLanguage("fr"));
+                fr = translation.getTranslatedText();
+                translation =
+                        translate.translate(
+                                s,
+                                Translate.TranslateOption.sourceLanguage(lang),
+                                Translate.TranslateOption.targetLanguage("es"));
+                es = translation.getTranslatedText();
+                translation =
+                        translate.translate(
+                                s,
+                                Translate.TranslateOption.sourceLanguage(lang),
+                                Translate.TranslateOption.targetLanguage("it"));
+                it = translation.getTranslatedText();
+            } else if (lang.equals("ja")) {
+                translation =
+                        translate.translate(
+                                s,
+                                Translate.TranslateOption.sourceLanguage(lang),
+                                Translate.TranslateOption.targetLanguage("zh-CN"));
+                zh = translation.getTranslatedText();
+                translation =
+                        translate.translate(
+                                s,
+                                Translate.TranslateOption.sourceLanguage(lang),
+                                Translate.TranslateOption.targetLanguage("en"));
+                uk = translation.getTranslatedText();
+                jp = s;
+                translation =
+                        translate.translate(
+                                s,
+                                Translate.TranslateOption.sourceLanguage(lang),
+                                Translate.TranslateOption.targetLanguage("de"));
+                de = translation.getTranslatedText();
+                translation =
+                        translate.translate(
+                                s,
+                                Translate.TranslateOption.sourceLanguage(lang),
+                                Translate.TranslateOption.targetLanguage("fr"));
+                fr = translation.getTranslatedText();
+                translation =
+                        translate.translate(
+                                s,
+                                Translate.TranslateOption.sourceLanguage(lang),
+                                Translate.TranslateOption.targetLanguage("es"));
+                es = translation.getTranslatedText();
+                translation =
+                        translate.translate(
+                                s,
+                                Translate.TranslateOption.sourceLanguage(lang),
+                                Translate.TranslateOption.targetLanguage("it"));
+                it = translation.getTranslatedText();
+            } else if (lang.equals("de")) {
+                translation =
+                        translate.translate(
+                                s,
+                                Translate.TranslateOption.sourceLanguage(lang),
+                                Translate.TranslateOption.targetLanguage("zh-CN"));
+                zh = translation.getTranslatedText();
+                translation =
+                        translate.translate(
+                                s,
+                                Translate.TranslateOption.sourceLanguage(lang),
+                                Translate.TranslateOption.targetLanguage("en"));
+                uk = translation.getTranslatedText();
+                translation =
+                        translate.translate(
+                                s,
+                                Translate.TranslateOption.sourceLanguage(lang),
+                                Translate.TranslateOption.targetLanguage("ja"));
+                jp = translation.getTranslatedText();
+                de = s;
+                translation =
+                        translate.translate(
+                                s,
+                                Translate.TranslateOption.sourceLanguage(lang),
+                                Translate.TranslateOption.targetLanguage("fr"));
+                fr = translation.getTranslatedText();
+                translation =
+                        translate.translate(
+                                s,
+                                Translate.TranslateOption.sourceLanguage(lang),
+                                Translate.TranslateOption.targetLanguage("es"));
+                es = translation.getTranslatedText();
+                translation =
+                        translate.translate(
+                                s,
+                                Translate.TranslateOption.sourceLanguage(lang),
+                                Translate.TranslateOption.targetLanguage("it"));
+                it = translation.getTranslatedText();
+            } else if (lang.equals("fr")) {
+                translation =
+                        translate.translate(
+                                s,
+                                Translate.TranslateOption.sourceLanguage(lang),
+                                Translate.TranslateOption.targetLanguage("zh-CN"));
+                zh = translation.getTranslatedText();
+                translation =
+                        translate.translate(
+                                s,
+                                Translate.TranslateOption.sourceLanguage(lang),
+                                Translate.TranslateOption.targetLanguage("en"));
+                uk = translation.getTranslatedText();
+                translation =
+                        translate.translate(
+                                s,
+                                Translate.TranslateOption.sourceLanguage(lang),
+                                Translate.TranslateOption.targetLanguage("ja"));
+                jp = translation.getTranslatedText();
+                translation =
+                        translate.translate(
+                                s,
+                                Translate.TranslateOption.sourceLanguage(lang),
+                                Translate.TranslateOption.targetLanguage("de"));
+                de = translation.getTranslatedText();
+                fr = s;
+                translation =
+                        translate.translate(
+                                s,
+                                Translate.TranslateOption.sourceLanguage(lang),
+                                Translate.TranslateOption.targetLanguage("es"));
+                es = translation.getTranslatedText();
+                translation =
+                        translate.translate(
+                                s,
+                                Translate.TranslateOption.sourceLanguage(lang),
+                                Translate.TranslateOption.targetLanguage("it"));
+                it = translation.getTranslatedText();
+            } else if (lang.equals("es")) {
+                translation =
+                        translate.translate(
+                                s,
+                                Translate.TranslateOption.sourceLanguage(lang),
+                                Translate.TranslateOption.targetLanguage("zh-CN"));
+                zh = translation.getTranslatedText();
+                translation =
+                        translate.translate(
+                                s,
+                                Translate.TranslateOption.sourceLanguage(lang),
+                                Translate.TranslateOption.targetLanguage("en"));
+                uk = translation.getTranslatedText();
+                translation =
+                        translate.translate(
+                                s,
+                                Translate.TranslateOption.sourceLanguage(lang),
+                                Translate.TranslateOption.targetLanguage("ja"));
+                jp = translation.getTranslatedText();
+                translation =
+                        translate.translate(
+                                s,
+                                Translate.TranslateOption.sourceLanguage(lang),
+                                Translate.TranslateOption.targetLanguage("de"));
+                de = translation.getTranslatedText();
+                translation =
+                        translate.translate(
+                                s,
+                                Translate.TranslateOption.sourceLanguage(lang),
+                                Translate.TranslateOption.targetLanguage("fr"));
+                fr = translation.getTranslatedText();
+                es = s;
+                translation =
+                        translate.translate(
+                                s,
+                                Translate.TranslateOption.sourceLanguage(lang),
+                                Translate.TranslateOption.targetLanguage("it"));
+                it = translation.getTranslatedText();
+            } else if (lang.equals("it")){
+                translation =
+                        translate.translate(
+                                s,
+                                Translate.TranslateOption.sourceLanguage(lang),
+                                Translate.TranslateOption.targetLanguage("zh-CN"));
+                zh = translation.getTranslatedText();
+                translation =
+                        translate.translate(
+                                s,
+                                Translate.TranslateOption.sourceLanguage(lang),
+                                Translate.TranslateOption.targetLanguage("en"));
+                uk = translation.getTranslatedText();
+                translation =
+                        translate.translate(
+                                s,
+                                Translate.TranslateOption.sourceLanguage(lang),
+                                Translate.TranslateOption.targetLanguage("ja"));
+                jp = translation.getTranslatedText();
+                translation =
+                        translate.translate(
+                                s,
+                                Translate.TranslateOption.sourceLanguage(lang),
+                                Translate.TranslateOption.targetLanguage("de"));
+                de = translation.getTranslatedText();
+                translation =
+                        translate.translate(
+                                s,
+                                Translate.TranslateOption.sourceLanguage(lang),
+                                Translate.TranslateOption.targetLanguage("fr"));
+                fr = translation.getTranslatedText();
+                translation =
+                        translate.translate(
+                                s,
+                                Translate.TranslateOption.sourceLanguage(lang),
+                                Translate.TranslateOption.targetLanguage("es"));
+                es = translation.getTranslatedText();
+                it = s;
+            }
             TranslateDto dto = new TranslateDto();
             dto.setCn(zh);
             dto.setJp(jp);
             dto.setDe(de);
-            dto.setEs(spa);
-            dto.setFr(fra);
+            dto.setEs(es);
+            dto.setFr(fr);
             dto.setIt(it);
             dto.setUk(uk);
             list.add(dto);
         }
-        querier.detach(google);
         return list;
     }
-
 
 }

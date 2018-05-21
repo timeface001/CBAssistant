@@ -1373,7 +1373,6 @@
             var textareas = $(this).parent().prev().find(".layui-show textarea");
             var isContainsEmpty = false;
             var vArr = [];
-            alert(textareas.length);
             if (textareas.length < 1) {
                 var inputs = $(this).parent().prev().find(".layui-show input");
                 for (var i = 0; i < inputs.length; i++) {
