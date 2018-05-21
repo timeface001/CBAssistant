@@ -121,6 +121,7 @@ public class ProductPublishController extends BaseController {
                     resultMap.get(key).put(map.get("SHOP_ID").toString(), map.get("COUNTRY_NAME").toString());
                 } else {
                     resultMap.put(key, new HashMap<String, Object>());
+                    resultMap.get(key).put(map.get("SHOP_ID").toString(), map.get("COUNTRY_NAME").toString());
                 }
             }
             for (Map.Entry<String, Map<String, Object>> entry : resultMap.entrySet()) {

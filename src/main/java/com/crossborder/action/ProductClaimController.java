@@ -89,7 +89,6 @@ public class ProductClaimController extends BaseController {
         }
         map.put("main", main);
         map.put("attach", attach);
-
         return map;
     }
 

@@ -116,48 +116,61 @@ public class ProductManagerService {
                 String name = GeneralUtils.nullToEmpty(product.get("NAME"));
                 String key = "AIzaSyD9ZFuiV0CJYppKv9G6DQ08QQc2JDpOnHk";
                 Translate translate = TranslateOptions.newBuilder().setApiKey(key).build().getService();
-                Translation translation =
-                        translate.translate(
-                                name,
-                                Translate.TranslateOption.targetLanguage("zh-CN"));
-               String cn = translation.getTranslatedText();
-                translation =
-                        translate.translate(
-                                name,
-                                Translate.TranslateOption.targetLanguage("en"));
-                String uk = translation.getTranslatedText();
+                Translation translation = null;
+                String cn = "";
+                String uk = "";
+                String jp = "";
+                String de = "";
+                String fr = "";
+                String es = "";
+                String it = "";
+                if (ChineseAndEnglish.isChinese(name)) {
+                    cn = name;
+                    translation =
+                            translate.translate(
+                                    name,
+                                    Translate.TranslateOption.targetLanguage("en"));
+                    uk = translation.getTranslatedText();
+                } else {
+                    translation =
+                            translate.translate(
+                                    name,
+                                    Translate.TranslateOption.targetLanguage("zh-CN"));
+                    cn = translation.getTranslatedText();
+                    uk = name;
+                }
                 translation =
                         translate.translate(
                                 name,
                                 Translate.TranslateOption.targetLanguage("ja"));
-                String jp = translation.getTranslatedText();
+                jp = translation.getTranslatedText();
                 translation =
                         translate.translate(
                                 name,
                                 Translate.TranslateOption.targetLanguage("de"));
-                String de = translation.getTranslatedText();
+                de = translation.getTranslatedText();
                 translation =
                         translate.translate(
                                 name,
                                 Translate.TranslateOption.targetLanguage("fr"));
-                String fra = translation.getTranslatedText();
+                fr = translation.getTranslatedText();
                 translation =
                         translate.translate(
                                 name,
                                 Translate.TranslateOption.targetLanguage("es"));
-                String es = translation.getTranslatedText();
+                es = translation.getTranslatedText();
                 translation =
                         translate.translate(
                                 name,
                                 Translate.TranslateOption.targetLanguage("it"));
-                String it = translation.getTranslatedText();
-                claimProduct.setItemCn(name);
+                it = translation.getTranslatedText();
+                claimProduct.setItemCn(cn);
                 claimProduct.setItemDe(de);
                 claimProduct.setItemEs(es);
                 claimProduct.setItemIt(it);
                 claimProduct.setItemJp(jp);
                 claimProduct.setItemUk(uk);
-                claimProduct.setItemFr(fra);
+                claimProduct.setItemFr(fr);
 
                 claimProduct.setCreateUser(GeneralUtils.getUserId());
                 claimProduct.setSkuType("1");
@@ -453,7 +466,7 @@ public class ProductManagerService {
         return productIdGenDao.selectProductIdGenList(params);
     }
 
-    public boolean saveProductId(String type,String createUser, List<String> ids) {
+    public boolean saveProductId(String type, String createUser, List<String> ids) {
         for (String id : ids) {
             ProductIdGen gen = new ProductIdGen();
             gen.setProductId(id);

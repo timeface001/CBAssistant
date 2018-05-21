@@ -57,10 +57,10 @@ public class CommonController {
                 paramMap.put("isLogin", 1);
                 commonService.updateLogin(paramMap);
                 session.setAttribute("user", list.get(0));
+                session.setAttribute("productPath",commonSet.getProductImagePath());
                 map.put("data", list.get(0));
                 map.put("code", "0");
                 map.put("msg", "登录成功");
-                session.setAttribute("productPath",commonSet.getProductImagePath());
                /* }*/
             } else {
                 map.put("code", "-10");
