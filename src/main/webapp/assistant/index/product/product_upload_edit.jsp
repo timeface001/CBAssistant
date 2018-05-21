@@ -101,7 +101,7 @@
             </div>
         </div>
 
-        <div class="layui-form-item">
+        <%--<div class="layui-form-item">
             <label class="layui-form-label">产品ID</label>
             <div class="layui-inline">
                 <input type="text" name="externalProductId" value="${product.externalProductId}" id="externalProductId"
@@ -123,7 +123,7 @@
             <div class="layui-inline">
                 <button class="layui-btn" type="button" id="genPid">一键生成</button>
             </div>
-        </div>
+        </div>--%>
 
         <div class="layui-form-item">
             <label class="layui-form-label">品牌</label>

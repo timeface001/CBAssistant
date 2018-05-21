@@ -287,6 +287,7 @@
             return str.substring(0, 200) + "...";
         }
 
+        console.log(str=='undefined');
         return str;
     }
 
