@@ -74,6 +74,25 @@ public class ProductClaimController extends BaseController {
         return JSON.toJSONString(result);
     }
 
+    private Map<String, String> imagePath(String paths) {
+        String main = "";
+        String attach = "";
+        Map<String, String> map = new HashMap<>();
+        if (StringUtils.isNotBlank(paths)) {
+            String[] arr = paths.split(",");
+            if (arr.length > 1) {
+                main = paths.substring(0, paths.indexOf(","));
+                attach = paths.substring(paths.indexOf(",") + 1);
+            } else {
+                main = paths;
+            }
+        }
+        map.put("main", main);
+        map.put("attach", attach);
+
+        return map;
+    }
+
     @RequestMapping(value = "/product/claim/save", produces = "text/plain;charset=UTF-8")
     @ResponseBody
     public String save(ClaimProduct product, String saleStartTime, String saleEndTime, String salePrice, String vars) {
@@ -88,6 +107,9 @@ public class ProductClaimController extends BaseController {
         var.setSaleStartTime(GeneralUtils.getDateFromStr(saleStartTime));
         var.setSaleEndTime(GeneralUtils.getDateFromStr(saleEndTime));
         var.setSku(product.getSku());
+        Map<String, String> map = new HashMap<>();
+        var.setMainPath(map.get("main"));
+        var.setAttachPath(map.get("attach"));
         if (product.getSkuType().equals("2")) {//变体
             if (org.apache.commons.lang3.StringUtils.isNotBlank(vars)) {
                 list = JSON.parseArray(vars, ProductItemVar.class);

@@ -80,6 +80,8 @@ public class ProductPublishController extends BaseController {
         ModelAndView view = new ModelAndView("forward:/assistant/index/product/product_upload_edit.jsp");
         ProductAmzUpload product = productManagerService.selectAmzUploadProduct(id);
         request.setAttribute("product", product);
+        //ProductAmzUpload product = productManagerService.selectAmzUploadProduct(id);
+        //request.setAttribute("product", product);
         String type = request.getParameter("type");
         if (type.equals("1")) {
             product = productManagerService.selectAmzUploadProduct(id);

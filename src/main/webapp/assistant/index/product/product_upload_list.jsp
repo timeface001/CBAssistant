@@ -155,7 +155,7 @@
                 {"data": "id"},
                 {
                     "data": function (val) {
-                        return val.mainPath == null ? "" : "<img width='100px' height='90px'  src='<%=request.getContextPath()%>/upload/" + val.mainPath + "'/>";
+                        return val.mainPath == null ? "" : "<img width='100px' height='90px'  src='<%=session.getAttribute("productPath")%>" + val.mainPath + "'/>";
                     }
                 },
                 {
@@ -185,7 +185,7 @@
                             return "未发布";
                         }
                         if (val.publishStatus == "1") {
-                            return "<p style='text-align: left'>发布失败：</p><p title='" + val.uploadDesc + "' style='color: #ff515b'>" + getUploadDesc(val.uploadDesc) + "</p>";
+                            return "<p style='text-align: left'>发布失败：</p><p title='" + val.uploadDesc + "' style='color: #ff515b'>" + (typeof(val.uploadDesc) =='undefined'?'': getUploadDesc(val.uploadDesc)) + "</p>";
                         }
                         if (val.publishStatus == "2") {
                             return "发布成功";
@@ -287,6 +287,7 @@
             return str.substring(0, 200) + "...";
         }
 
+        console.log(str=='undefined');
         return str;
     }
 

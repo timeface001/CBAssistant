@@ -15,14 +15,10 @@
   <select id="selectListParent" parameterType="java.util.Map" resultMap="BaseResultMap">
     SELECT
     <include refid="Base_Column_List"/>
-<<<<<<< HEAD
     from T_PRODUCT_UPLOAD_CATEGORY a
     where a.PARENT_ID
     in (SELECT ID from T_PRODUCT_UPLOAD_CATEGORY where NAME='Categories')  AND a.COUNTRY_CODE=#{countryCode}
     ORDER BY a.NAME
-=======
-    from T_PRODUCT_UPLOAD_CATEGORY a where a.PARENT_ID in (SELECT ID from T_PRODUCT_UPLOAD_CATEGORY where (NAME='Categories' OR NAME='Categorías'))  AND a.SHOP_ID=#{shopId}
->>>>>>> b7ca62d071ab09ac651414a45bdae639469b8fae
   </select>
 
   <insert id="batchInsert">

@@ -15,27 +15,18 @@
  * 
  */
 
-package com.crossborder.utils;
+package com.crossborder.utils.amz.test;
 
 import java.io.*;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.ArrayList;
-
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
 
 import com.amazonaws.mws.*;
 import com.amazonaws.mws.model.*;
-import com.amazonaws.mws.mock.MarketplaceWebServiceMock;
-import com.amazonservices.mws.products.model.Product;
-import org.apache.axis.encoding.Base64;
-import sun.misc.BASE64Encoder;
+import com.crossborder.utils.FileUtils;
+import com.crossborder.utils.amz.upload.AmzFeeType;
 
 /**
  * 
@@ -134,33 +125,9 @@ public class SubmitFeedSample {
         request.setFeedType(AmzFeeType.PRODUCT_IMAGES_FEED.getVal());
 
         String text="<?xml version=\"1.0\" encoding=\"utf-8\" ?><AmazonEnvelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"amznenvelope.xsd\">\n" +
-                "<Header>\n" +
-                "<DocumentVersion>1.01</DocumentVersion><MerchantIdentifier>A3QYTECAYFZL4M</MerchantIdentifier>\n" +
+                "<Header><DocumentVersion>1.01</DocumentVersion><MerchantIdentifier>A3QYTECAYFZL4M</MerchantIdentifier>\n" +
                 "</Header>\n" +
-                "<MessageType>ProductImage</MessageType><Message>" +
-                "<MessageID>2</MessageID><OperationType>Update</OperationType><ProductImage>" +
-                "<SKU>TESTDUO-B6ZLRFU1TU892Z0O-Red</SKU><ImageType>Main</ImageType><ImageLocation>http://fmsbb.oss-cn-shanghai.aliyuncs.com/avatar/default.jpg</ImageLocation>" +
-                "</ProductImage></Message>" +
-                "<Message><MessageID>3</MessageID><OperationType>Update</OperationType>" +
-                "<ProductImage><SKU>TESTDUO-B6ZLRFU1TU892Z0O-Red</SKU><ImageType>PT1</ImageType><ImageLocation>http://fmsbb.oss-cn-shanghai.aliyuncs.com/avatar/default.jpg</ImageLocation></ProductImage></Message>" +
-                "<Message><MessageID>4</MessageID><OperationType>Update</OperationType><ProductImage><SKU>TESTDUO-B6ZLRFU1TU892Z0O-Red</SKU><ImageType>PT2</ImageType><ImageLocation>http://fmsbb.oss-cn-shanghai.aliyuncs.com/avatar/default.jpg</ImageLocation>" +
-                "</ProductImage></Message>" +
-                "" +
-                "" +
-                "<Message><MessageID>5</MessageID>" +
-                "<OperationType>Update</OperationType><ProductImage><SKU>TESTDUO-B6ZLRFU1TU892Z0O-Red</SKU>" +
-                "<ImageType>PT3</ImageType><ImageLocation>http://fmsbb.oss-cn-shanghai.aliyuncs.com/avatar/default.jpg</ImageLocation></ProductImage>" +
-                "</Message><Message><MessageID>6</MessageID><OperationType>Update</OperationType><ProductImage>" +
-                "<SKU>TESTDUO-B6ZLRFU1TU892Z0O-Glod</SKU><ImageType>Main</ImageType><ImageLocation>http://fmsbb.oss-cn-shanghai.aliyuncs.com/avatar/default.jpg</ImageLocation>" +
-                "</ProductImage></Message><Message><MessageID>7</MessageID><OperationType>Update</OperationType><ProductImage>" +
-                "<SKU>TESTDUO-B6ZLRFU1TU892Z0O-Glod</SKU><ImageType>PT1</ImageType><ImageLocation>http://fmsbb.oss-cn-shanghai.aliyuncs.com/avatar/default.jpg</ImageLocation>" +
-                "</ProductImage></Message><Message><MessageID>8</MessageID><OperationType>Update</OperationType><ProductImage>" +
-                "<SKU>TESTDUO-B6ZLRFU1TU892Z0O-Glod</SKU><ImageType>PT2</ImageType><ImageLocation>http://fmsbb.oss-cn-shanghai.aliyuncs.com/avatar/default.jpg</ImageLocation>" +
-                "</ProductImage></Message><Message><MessageID>9</MessageID><OperationType>Update</OperationType><ProductImage>" +
-                "<SKU>TESTDUO-B6ZLRFU1TU892Z0O-Glod</SKU><ImageType>PT3</ImageType><ImageLocation>http://fmsbb.oss-cn-shanghai.aliyuncs.com/avatar/default.jpg</ImageLocation>" +
-                "</ProductImage></Message><Message><MessageID>10</MessageID><OperationType>Update</OperationType><ProductImage>" +
-                "<SKU>TESTDUO-B6ZLRFU1TU892Z0O-Glod</SKU><ImageType>PT4</ImageType><ImageLocation>http://fmsbb.oss-cn-shanghai.aliyuncs.com/avatar/default.jpg</ImageLocation>" +
-                "</ProductImage></Message></AmazonEnvelope>";
+                "<MessageType>ProductImage</MessageType><Message><MessageID>1</MessageID><OperationType>Update</OperationType><ProductImage><SKU>TESTDUO123IM12-B6ZLRFU1TU892Z0O</SKU><ImageType>Main</ImageType><ImageLocation>http://cbassistant.oss-cn-beijing.aliyuncs.com/product/ea3b2e39-7519-4bd5-8d29-32467bc766b9.jpg</ImageLocation></ProductImage></Message><Message><MessageID>2</MessageID><OperationType>Update</OperationType><ProductImage><SKU>TESTDUO123IM12-B6ZLRFU1TU892Z0O</SKU><ImageType>PT1</ImageType><ImageLocation>http://cbassistant.oss-cn-beijing.aliyuncs.com/product/ea3b2e39-7519-4bd5-8d29-32467bc766b9.jpg</ImageLocation></ProductImage></Message><Message><MessageID>3</MessageID><OperationType>Update</OperationType><ProductImage><SKU>TESTDUO123IM12-B6ZLRFU1TU892Z0O</SKU><ImageType>PT2</ImageType><ImageLocation>http://cbassistant.oss-cn-beijing.aliyuncs.com/product/ea3b2e39-7519-4bd5-8d29-32467bc766b9.jpg</ImageLocation></ProductImage></Message><Message><MessageID>4</MessageID><OperationType>Update</OperationType><ProductImage><SKU>TESTDUO123IM12-B6ZLRFU1TU892Z0O</SKU><ImageType>PT3</ImageType><ImageLocation>http://cbassistant.oss-cn-beijing.aliyuncs.com/product/ea3b2e39-7519-4bd5-8d29-32467bc766b9.jpg</ImageLocation></ProductImage></Message><Message><MessageID>5</MessageID><OperationType>Update</OperationType><ProductImage><SKU>TESTDUO123IM12-B6ZLRFU1TU892Z0O-Red</SKU><ImageType>Main</ImageType><ImageLocation>http://cbassistant.oss-cn-beijing.aliyuncs.com/product/ea3b2e39-7519-4bd5-8d29-32467bc766b9.jpg</ImageLocation></ProductImage></Message><Message><MessageID>6</MessageID><OperationType>Update</OperationType><ProductImage><SKU>TESTDUO123IM12-B6ZLRFU1TU892Z0O-Red</SKU><ImageType>PT1</ImageType><ImageLocation>http://cbassistant.oss-cn-beijing.aliyuncs.com/product/ea3b2e39-7519-4bd5-8d29-32467bc766b9.jpg</ImageLocation></ProductImage></Message><Message><MessageID>7</MessageID><OperationType>Update</OperationType><ProductImage><SKU>TESTDUO123IM12-B6ZLRFU1TU892Z0O-Red</SKU><ImageType>PT2</ImageType><ImageLocation>http://cbassistant.oss-cn-beijing.aliyuncs.com/product/ea3b2e39-7519-4bd5-8d29-32467bc766b9.jpg</ImageLocation></ProductImage></Message><Message><MessageID>8</MessageID><OperationType>Update</OperationType><ProductImage><SKU>TESTDUO123IM12-B6ZLRFU1TU892Z0O-Red</SKU><ImageType>PT3</ImageType><ImageLocation>http://cbassistant.oss-cn-beijing.aliyuncs.com/product/ea3b2e39-7519-4bd5-8d29-32467bc766b9.jpg</ImageLocation></ProductImage></Message><Message><MessageID>9</MessageID><OperationType>Update</OperationType><ProductImage><SKU>TESTDUO123IM12-B6ZLRFU1TU892Z0O-Glod</SKU><ImageType>Main</ImageType><ImageLocation>http://cbassistant.oss-cn-beijing.aliyuncs.com/product/ea3b2e39-7519-4bd5-8d29-32467bc766b9.jpg</ImageLocation></ProductImage></Message><Message><MessageID>10</MessageID><OperationType>Update</OperationType><ProductImage><SKU>TESTDUO123IM12-B6ZLRFU1TU892Z0O-Glod</SKU><ImageType>PT1</ImageType><ImageLocation>http://cbassistant.oss-cn-beijing.aliyuncs.com/product/ea3b2e39-7519-4bd5-8d29-32467bc766b9.jpg</ImageLocation></ProductImage></Message><Message><MessageID>11</MessageID><OperationType>Update</OperationType><ProductImage><SKU>TESTDUO123IM12-B6ZLRFU1TU892Z0O-Glod</SKU><ImageType>PT2</ImageType><ImageLocation>http://cbassistant.oss-cn-beijing.aliyuncs.com/product/ea3b2e39-7519-4bd5-8d29-32467bc766b9.jpg</ImageLocation></ProductImage></Message><Message><MessageID>12</MessageID><OperationType>Update</OperationType><ProductImage><SKU>TESTDUO123IM12-B6ZLRFU1TU892Z0O-Glod</SKU><ImageType>PT3</ImageType><ImageLocation>http://cbassistant.oss-cn-beijing.aliyuncs.com/product/ea3b2e39-7519-4bd5-8d29-32467bc766b9.jpg</ImageLocation></ProductImage></Message></AmazonEnvelope>";
         FileUtils.byte2File(text.getBytes(),"/Users/fengsong/Downloads/","rule_chain.txt");
 
         String s="/Users/fengsong/Downloads/rule_chain.txt";

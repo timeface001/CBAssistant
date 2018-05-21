@@ -16,7 +16,7 @@
  */
 
 
-package com.crossborder.utils;
+package com.crossborder.utils.amz.test;
 
 import com.amazonaws.mws.MarketplaceWebService;
 import com.amazonaws.mws.MarketplaceWebServiceClient;
