@@ -109,10 +109,8 @@ public class ProductPublishController extends BaseController {
             params.put("companyId", user.get("USER_COMPANY").toString());
         }
         List<Map<String, Object>> result = shopManageService.selectShops(params);
-
         Map<String, Object> shopKey = new HashMap<>();
         Map<String, List<String>> countryKey = new HashMap<>();
-
         Map<String, Map<String, Object>> resultD = new HashMap<>();
         if (GeneralUtils.isNotNullOrEmpty(result)) {
             Map<String, Map<String, Object>> resultMap = new HashMap<>();
