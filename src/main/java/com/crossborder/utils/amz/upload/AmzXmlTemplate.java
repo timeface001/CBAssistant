@@ -35,24 +35,24 @@ public class AmzXmlTemplate {
                 "<SKU>" + product.getItemSku() + "-" + var.getSku() + "</SKU>" +
                 "<StandardProductID>" +
                 "<Type>" + product.getExternalProductIdType() + "</Type><Value>" + product.getExternalProductId() + "</Value></StandardProductID>" +
-                "<ItemPackageQuantity>" + product.getItemPackageQuantity() + "</ItemPackageQuantity>\n" +
+                "<ItemPackageQuantity>" + var.getQuantity() + "</ItemPackageQuantity>" +
                 /*"<LaunchDate>" + GeneralUtils.formatDate(new Date(), "yyyy-MM-dd'T'hh:mm:ss") + "</LaunchDate>" +*/
                 "<DescriptionData>" +
                 "<Title>" + product.getItemName() + "</Title>" +
-                "<Brand>" + product.getBrandName() + "</Brand> <Description>" + product.getProductDescription() + "</Description>\n" +
-                "<BulletPoint>" + product.getBulletPoint1() + "</BulletPoint>" +
-                "<BulletPoint>" + product.getBulletPoint2() + "</BulletPoint>" +
-                "<BulletPoint>" + product.getBulletPoint3() + "</BulletPoint>" +
-                "<BulletPoint>" + product.getBulletPoint4() + "</BulletPoint>" +
-                "<BulletPoint>" + product.getBulletPoint5() + "</BulletPoint>" +
-                "<Manufacturer>" + product.getManufacturer() + "</Manufacturer>\n" +
-                "<SearchTerms>" + product.getGenericKeywords1() + "</SearchTerms>" +
-                "<SearchTerms>" + product.getGenericKeywords2() + "</SearchTerms>" +
-                "<SearchTerms>" + product.getGenericKeywords3() + "</SearchTerms>" +
-                "<SearchTerms>" + product.getGenericKeywords4() + "</SearchTerms>" +
-                "<SearchTerms>" + product.getGenericKeywords5() + "</SearchTerms>" +
+                "<Brand>" + product.getBrandName() + "</Brand> <Description>" + GeneralUtils.replaceHtmlSign(product.getProductDescription()) + "</Description>\n" +
+                "<BulletPoint>" + GeneralUtils.replaceHtmlSign(product.getBulletPoint1()) + "</BulletPoint>" +
+                "<BulletPoint>" + GeneralUtils.replaceHtmlSign(product.getBulletPoint2()) + "</BulletPoint>" +
+                "<BulletPoint>" + GeneralUtils.replaceHtmlSign(product.getBulletPoint3()) + "</BulletPoint>" +
+                "<BulletPoint>" + GeneralUtils.replaceHtmlSign(product.getBulletPoint4()) + "</BulletPoint>" +
+                "<BulletPoint>" + GeneralUtils.replaceHtmlSign(product.getBulletPoint5()) + "</BulletPoint>" +
+                "<Manufacturer>" + product.getManufacturer() + "</Manufacturer>" +
+                "<SearchTerms>" + GeneralUtils.replaceHtmlSign(product.getGenericKeywords1()) + "</SearchTerms>" +
+                "<SearchTerms>" + GeneralUtils.replaceHtmlSign(product.getGenericKeywords2()) + "</SearchTerms>" +
+                "<SearchTerms>" + GeneralUtils.replaceHtmlSign(product.getGenericKeywords3()) + "</SearchTerms>" +
+                "<SearchTerms>" + GeneralUtils.replaceHtmlSign(product.getGenericKeywords4()) + "</SearchTerms>" +
+                "<SearchTerms>" + GeneralUtils.replaceHtmlSign(product.getGenericKeywords5()) + "</SearchTerms>" +
                 //"<ItemType>flat-sheets</ItemType>" +
-                "<IsGiftWrapAvailable>false</IsGiftWrapAvailable>\n" +
+                "<IsGiftWrapAvailable>false</IsGiftWrapAvailable>" +
                 "<IsGiftMessageAvailable>false</IsGiftMessageAvailable>\n" +
                 "</DescriptionData>\n" +
                 "<ProductData>\n" +

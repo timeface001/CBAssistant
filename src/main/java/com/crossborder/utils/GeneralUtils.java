@@ -139,4 +139,12 @@ public class GeneralUtils {
 
     }
 
+    public static String replaceHtmlSign(String str) {
+        if (org.apache.commons.lang3.StringUtils.isNotBlank(str)) {
+            return str.replace("<", "&lt;").replace(">", "&gt;");
+        }
+
+        return str;
+    }
+
 }
