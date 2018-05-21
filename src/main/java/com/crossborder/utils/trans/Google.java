@@ -5,7 +5,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.util.EntityUtils;
@@ -70,7 +70,7 @@ public final class Google extends Translator {
             String value = params.get(key);
             uri.addParameter(key, value);
         }
-        HttpUriRequest request = new HttpGet(uri.toString());
+        HttpUriRequest request = new HttpPost(uri.toString());
         CloseableHttpResponse response = httpClient.execute(request);
         HttpEntity entity = response.getEntity();
         String result = EntityUtils.toString(entity, "utf-8");
