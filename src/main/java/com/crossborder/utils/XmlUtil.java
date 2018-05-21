@@ -2,9 +2,9 @@ package com.crossborder.utils;
 
 
 import com.alibaba.fastjson.JSONObject;
-import org.jdom2.Element;
-import org.jdom2.JDOMException;
-import org.jdom2.input.SAXBuilder;
+import org.jdom.Element;
+import org.jdom.JDOMException;
+import org.jdom.input.SAXBuilder;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -22,7 +22,7 @@ public class XmlUtil {
         InputStream is = new ByteArrayInputStream(xml);
         InputStreamReader isr = new InputStreamReader(is, "UTF-8");
         SAXBuilder sb = new SAXBuilder();
-        org.jdom2.Document doc = sb.build(isr);
+        org.jdom.Document doc = sb.build(isr);
         Element root = doc.getRootElement();
         json.put(root.getName(), iterateElement(root));
         return json;
