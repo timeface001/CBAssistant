@@ -318,6 +318,7 @@ public class ProductManagerService {
                 if (StringUtils.isBlank(var.getVariationType())) {//主体
                     upload.setParentChild("parent");
                     upload.setVariationTheme(var.getVariationType());
+                    upload.setMainPath(var.getMainPath());
 
                 } else {//变体
                     upload.setParentChild("child");
@@ -340,6 +341,7 @@ public class ProductManagerService {
                 upload.setProductAmzId(product.getId());
                 upload.setCreateTime(new Date());
                 upload.setAmzSku(product.getSku());
+
 
                 //清除之前预发布的数据
                 productAmzUploadDao.deleteByAmzId(product.getId());
