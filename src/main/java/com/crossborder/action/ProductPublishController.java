@@ -79,7 +79,7 @@ public class ProductPublishController extends BaseController {
     public ModelAndView detail(HttpSession session, String id, HttpServletRequest request) {
         ModelAndView view = new ModelAndView("forward:/assistant/index/product/product_upload_edit.jsp");
         ProductAmzUpload product = productManagerService.selectAmzUploadProduct(id);
-        request.setAttribute("product", product);
+        //request.setAttribute("product", product);
         //ProductAmzUpload product = productManagerService.selectAmzUploadProduct(id);
         //request.setAttribute("product", product);
         String type = request.getParameter("type");
