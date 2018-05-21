@@ -150,24 +150,6 @@ public class ProductPublishController extends BaseController {
         dto.setMsg("数据提交成功");
         try {
             if (type.equals("1")) {
-                Map<String, Object> params = new HashMap<>();
-                params.put("id", product.getShopId());
-                productAmzUploadDao.updateByPrimaryKeySelective(product);
-                product = productAmzUploadDao.selectByPrimaryKey(product.getId());
-                productManagerService.uploadProduct(product, shopManageService.selectShops(params).get(0));
-            } else {//认领列表直接发布
-                Map<String, Object> params = new HashMap<>();
-                params.put("shopId", product.getShopId());
-                List<Map<String, Object>> list = shopManageService.selectShopsById(params);
-                try {
-                    productManagerService.prePublishProduct(product.getId(), list.get(0).get("COUNTRY_CODE").toString());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                product.setId(null);
-                productManagerService.uploadProduct(product, list.get(0));
-            }
-            if (type.equals("1")) {
                 if (StringUtils.isNotBlank(product.getShopId())) {
                     Map<String, Object> params = new HashMap<>();
                     params.put("id", product.getShopId());

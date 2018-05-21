@@ -345,7 +345,7 @@
                     if (data.success) {
                         var data = data.data;
                         $("#pName").val(data.NAME);
-                        $("#mainPathSrc").html("<img width='100px' height='90px' src=<%=request.getContextPath()%>/upload/" + data.MAIN_PATH + " />")
+                        $("#mainPathSrc").html("<img width='100px' height='90px' src=<%=session.getAttribute("productPath")%>" + data.MAIN_PATH + " />")
                         $("input[name='mainPath']").val(data.MAIN_PATH);
                         $("input[name='imagePath']").val(data.IMAGE_PATH);
                         $("#pSource").val(data.SOURCE);

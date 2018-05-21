@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Component
+@Component("taskJob")
 public class QuartProduct {
     @Resource
     private ProductManagerService productManagerService;
@@ -57,7 +57,7 @@ public class QuartProduct {
     public void testTask() {
         List<ProductUploadLog> logs = productManagerService.selectLogList("3");
         for (ProductUploadLog log : logs) {
-            if((log.getSubmitDate().getTime()+20000)<(new Date().getTime())){
+            if((log.getSubmitDate().getTime()+20000)>(new Date().getTime())){
                 continue;
             }
             Map<String, Object> params = new HashMap<>();
