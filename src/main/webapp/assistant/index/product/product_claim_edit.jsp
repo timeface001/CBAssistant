@@ -1271,7 +1271,7 @@
                     , done: function (res) {
                         var $this = $($(this)[0].item[0]);
                         var key = $this.parent().prev().attr("val");
-                        $this.parent().next().html("<div style='width:100px;height:110px;'><img width='100px' height='90px' src=<%=request.getContextPath()%>/upload/" + res.data + " /><i class='layui-icon delImageMain' style='font-size:20px;margin-left:35px;'>&#xe640;</i>  </div>");
+                        $this.parent().next().html("<div style='width:100px;height:110px;'><img width='100px' height='90px' src=<%=session.getAttribute("productPath")%>" + res.data + " /><i class='layui-icon delImageMain' style='font-size:20px;margin-left:35px;'>&#xe640;</i>  </div>");
                         $("#skuTable tbody tr").each(function (i, val) {
                             if ($(val).attr("val") == key) {
                                 $(val).find(".trMainPath").val(res.data);
@@ -1516,7 +1516,7 @@
                     var $this = $($(this)[0].item[0]);
                     var key = $this.parent().prev().attr("val");
                     $this.parent().next().find(".pathDemo").remove();
-                    $this.parent().next().append("<div style='width:100px;height:110px;margin-left:2px;float:left;'><img width='100px' height='90px' style='padding-right:5px;' src=<%=request.getContextPath()%>/upload/" + res.data + " /><i class='layui-icon delImage' style='font-size:20px;margin-left:35px;'>&#xe640;</i></div>");
+                    $this.parent().next().append("<div style='width:100px;height:110px;margin-left:2px;float:left;'><img width='100px' height='90px' style='padding-right:5px;' src=<%=session.getAttribute("productPath")%>" + res.data + " /><i class='layui-icon delImage' style='font-size:20px;margin-left:35px;'>&#xe640;</i></div>");
                     var exVal = $("#imagePathValue").val();
                     if (exVal == null || exVal == "") {
                         exVal = res.data;
@@ -1570,7 +1570,7 @@
         $("#priceInfo").css("display", "");
         initSingleImage();
         for (var i = 0; i < imagePathArr.length; i++) {
-            $("#imagePathSrc").append("<div style='width:100px;height:110px;margin-left:2px;float:left;'><img width='100px' height='90px' style='padding-right:5px;' src=<%=request.getContextPath()%>/upload/" + imagePathArr[i] + " /><i class='layui-icon delImage' style='font-size:20px;margin-left:35px;'>&#xe640;</i></div>");
+            $("#imagePathSrc").append("<div style='width:100px;height:110px;margin-left:2px;float:left;'><img width='100px' height='90px' style='padding-right:5px;' src=<%=session.getAttribute("productPath")%>" + imagePathArr[i] + " /><i class='layui-icon delImage' style='font-size:20px;margin-left:35px;'>&#xe640;</i></div>");
             $(".delImage").on("click", function () {
                 var pprent = $(this).parent().parent();
                 var ppKey = $(this).prev().attr("src").substring(20);
