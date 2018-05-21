@@ -57,7 +57,7 @@ public class QuartProduct {
     public void testTask() {
         List<ProductUploadLog> logs = productManagerService.selectLogList("3");
         for (ProductUploadLog log : logs) {
-            if(log.getSubmitDate().getTime()>(new Date().getTime()-20000)){
+            if((log.getSubmitDate().getTime()+20000)<(new Date().getTime())){
                 continue;
             }
             Map<String, Object> params = new HashMap<>();
