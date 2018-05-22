@@ -72,6 +72,7 @@ public class AmzUpload {
             result.setMsg("UPC库中没有可用ID");
             result.setCode("001");
             result.setSuccess(false);
+            result.setData("");
             return result;
         }
         final ResponseDto<String> dto;

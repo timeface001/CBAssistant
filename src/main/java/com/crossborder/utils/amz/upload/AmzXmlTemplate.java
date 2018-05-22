@@ -179,7 +179,7 @@ public class AmzXmlTemplate {
                 saleStr = " <Sale>" +
                         " <StartDate>" + GeneralUtils.localToUTC(var.getSaleStartTime()) + "</StartDate>" +
                         " <EndDate>" + GeneralUtils.localToUTC(var.getSaleEndTime()) + "</EndDate>" +
-                        " <SalePrice currency='USD'>" + GeneralUtils.formatTwo(var.getSalePrice().multiply(new BigDecimal(shop.get("EXRATE").toString()))) + "</SalePrice>" +
+                        " <SalePrice currency='USD'>" + GeneralUtils.formatTwo(var.getSalePrice().divide(new BigDecimal(shop.get("EXRATE").toString()))) + "</SalePrice>" +
                         " </Sale>";
             }
             varStr += "<Message>" +
