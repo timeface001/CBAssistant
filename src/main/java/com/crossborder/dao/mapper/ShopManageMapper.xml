@@ -49,6 +49,15 @@
         </if>
         ORDER BY t1.create_time DESC
     </select>
+
+    <select id="selectShopsForImport" parameterType="java.util.Map" resultType="java.util.Map">
+        select t1.*, t2.name country_Name,t2.MARKETPLACEID,t2.ENDPOINT,t2.EXRATE from T_SHOP t1
+        left join T_COUNTRY t2 on t2.id = t1.country_code
+        LEFT JOIN (SELECT MAX(SHOP_ID) AS shopId FROM T_SHOP GROUP BY COUNTRY_CODE) t3 ON t1.SHOP_ID=t3.shopId
+        WHERE t3.shopId is not NULL
+
+
+    </select>
     <update id="updateShopState" parameterType="java.util.Map">
         UPDATE T_SHOP
         set

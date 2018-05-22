@@ -19,6 +19,16 @@ public class ProductUploadCategory {
 
     private String shopId;
 
+    private String itemType;
+
+    public String getItemType() {
+        return itemType;
+    }
+
+    public void setItemType(String itemType) {
+        this.itemType = itemType;
+    }
+
     public String getId() {
         return id;
     }

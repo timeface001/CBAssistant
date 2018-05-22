@@ -23,6 +23,10 @@ public class ShopManageService {
         return shopManageDao.selectShops(map);
     }
 
+    public List<Map<String, Object>> selectShopsForImportCategory() {
+        return shopManageDao.selectShopsForImport();
+    }
+
     public int updateShopState(Map<String, Object> map) {
         return shopManageDao.updateShopState(map);
     }

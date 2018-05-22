@@ -3,7 +3,7 @@
 
 <mapper namespace="com.crossborder.dao.ProductUploadCategoryDao">
 <delete id="deleteByShopId" parameterType="java.util.Map">
-  DELETE  FROM T_PRODUCT_UPLOAD_CATEGORY a where a.SHOP_ID=#{shopId} AND COUNTRY_CODE=#{code}
+  DELETE  FROM T_PRODUCT_UPLOAD_CATEGORY a where COUNTRY_CODE=#{code}
 </delete>
 
   <select id="selectList" parameterType="java.util.Map" resultMap="BaseResultMap">
@@ -25,8 +25,8 @@
     INSERT ALL
 
     <foreach collection="list" separator="" open="" close="" item="i">
-      INTO T_PRODUCT_UPLOAD_CATEGORY (ID,PARENT_ID,NAME,HAS_CHILD,CHILD_COUNT,TYPE_DEF,COUNTRY_CODE,PATH,SHOP_ID) VALUES
-      (#{i.id},#{i.parentId},#{i.name},#{i.hasChild},#{i.childCount},#{i.typeDef},#{i.countryCode},#{i.path},#{i.shopId})
+      INTO T_PRODUCT_UPLOAD_CATEGORY (ID,PARENT_ID,NAME,HAS_CHILD,CHILD_COUNT,TYPE_DEF,COUNTRY_CODE,PATH,SHOP_ID,ITEM_TYPE) VALUES
+      (#{i.id},#{i.parentId},#{i.name},#{i.hasChild},#{i.childCount},#{i.typeDef},#{i.countryCode},#{i.path},#{i.shopId},#{i.itemType})
     </foreach>
       SELECT 1 FROM dual
   </insert>
@@ -42,6 +42,7 @@
     <result column="a_COUNTRY_CODE" jdbcType="VARCHAR" property="countryCode" />
     <result column="a_PATH" jdbcType="VARCHAR" property="path" />
     <result column="a_SHOP_ID" jdbcType="VARCHAR" property="shopId" />
+    <result column="a_ITEM_TYPE" jdbcType="VARCHAR" property="itemType" />
   </resultMap>
   <sql id="Base_Column_List">
     a.ID as a_ID, a.PARENT_ID as a_PARENT_ID, a.NAME as a_NAME, a.HAS_CHILD as a_HAS_CHILD,
@@ -127,6 +128,9 @@
       <if test="shopId != null">
         #{shopId,jdbcType=VARCHAR},
       </if>
+      <if test="itemType != null">
+        #{itemType,jdbcType=VARCHAR},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.crossborder.entity.ProductUploadCategory">
@@ -155,6 +159,9 @@
       </if>
       <if test="shopId != null">
         SHOP_ID = #{shopId,jdbcType=VARCHAR},
+      </if>
+      <if test="itemType != null">
+        ITEM_TYPE = #{itemType,jdbcType=VARCHAR},
       </if>
     </set>
     where ID = #{id,jdbcType=VARCHAR}

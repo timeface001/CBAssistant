@@ -11,16 +11,18 @@ import com.google.cloud.translate.TranslateOptions;
 import com.google.cloud.translate.Translation;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.jdom2.Element;
+import org.jdom2.input.SAXBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -495,7 +497,7 @@ public class ProductManagerService {
         ThreadPoolExecutor executor = new ThreadPoolExecutor(2, 5, 100, TimeUnit.MINUTES, new ArrayBlockingQueue<Runnable>(10));
 
         for (Map<String, Object> shop : shops) {
-            if (shop.get("SHOP_ID").toString().equals("1038")) {
+            if (!shop.get("COUNTRY_CODE").toString().equals("US")) {
 
                 initCategory(set.getProductCategoryPath() + shop.get("SHOP_ID") + ".txt", shop);
             }
@@ -528,9 +530,7 @@ public class ProductManagerService {
 
         amzUpload.write(path, shop);
 
-
-
-        /*InputStreamReader isr = null;
+        InputStreamReader isr = null;
         try {
             isr = new InputStreamReader(new FileInputStream(path));
 
@@ -580,6 +580,7 @@ public class ProductManagerService {
 
                 category.setParentId(pathp.split(",")[pathp.split(",").length - 2]);
                 category.setPath(pathp);
+                //category.setItemType();
                 category.setCountryCode(code);
                 category.setShopId(shop.get("SHOP_ID").toString());
                 category.setTypeDef(e.getChildText("productTypeDefinitions"));
@@ -605,7 +606,7 @@ public class ProductManagerService {
                     e.printStackTrace();
                 }
             }
-        }*/
+        }
     }
 
 

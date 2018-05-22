@@ -390,7 +390,7 @@ public class AmzUpload {
                 int i = 0;
                 do {
                     try {
-                        Thread.sleep(3000);
+                        Thread.sleep(5000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
