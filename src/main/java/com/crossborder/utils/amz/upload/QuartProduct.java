@@ -53,8 +53,9 @@ public class QuartProduct {
     /**
      * 每天5点触发（清空验证码表t_captcha中的数据）
      */
-    @Scheduled(cron = "0/5 * * * * ?")
+    @Scheduled(cron = "0 0/5 * * * ?")
     public void testTask() {
+        System.out.println("execte quart......");
         List<ProductUploadLog> logs = productManagerService.selectLogList("3");
         for (ProductUploadLog log : logs) {
             if((log.getSubmitDate().getTime()+20000)>(new Date().getTime())){

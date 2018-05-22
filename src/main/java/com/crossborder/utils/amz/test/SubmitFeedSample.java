@@ -122,12 +122,39 @@ public class SubmitFeedSample {
         //request.setMWSAuthToken(sellerDevAuthToken);
         request.setMarketplaceIdList(marketplaces);
 
-        request.setFeedType(AmzFeeType.PRODUCT_IMAGES_FEED.getVal());
+        request.setFeedType(AmzFeeType.PRODUCT_FEED.getVal());
 
-        String text="<?xml version=\"1.0\" encoding=\"utf-8\" ?><AmazonEnvelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"amznenvelope.xsd\">\n" +
+        String text="<?xml version=\"1.0\" ?><AmazonEnvelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"amznenvelope.xsd\">\n" +
                 "<Header><DocumentVersion>1.01</DocumentVersion><MerchantIdentifier>A3QYTECAYFZL4M</MerchantIdentifier>\n" +
-                "</Header>\n" +
-                "<MessageType>ProductImage</MessageType><Message><MessageID>1</MessageID><OperationType>Update</OperationType><ProductImage><SKU>TESTDUO123IM12-B6ZLRFU1TU892Z0O</SKU><ImageType>Main</ImageType><ImageLocation>http://cbassistant.oss-cn-beijing.aliyuncs.com/product/ea3b2e39-7519-4bd5-8d29-32467bc766b9.jpg</ImageLocation></ProductImage></Message><Message><MessageID>2</MessageID><OperationType>Update</OperationType><ProductImage><SKU>TESTDUO123IM12-B6ZLRFU1TU892Z0O</SKU><ImageType>PT1</ImageType><ImageLocation>http://cbassistant.oss-cn-beijing.aliyuncs.com/product/ea3b2e39-7519-4bd5-8d29-32467bc766b9.jpg</ImageLocation></ProductImage></Message><Message><MessageID>3</MessageID><OperationType>Update</OperationType><ProductImage><SKU>TESTDUO123IM12-B6ZLRFU1TU892Z0O</SKU><ImageType>PT2</ImageType><ImageLocation>http://cbassistant.oss-cn-beijing.aliyuncs.com/product/ea3b2e39-7519-4bd5-8d29-32467bc766b9.jpg</ImageLocation></ProductImage></Message><Message><MessageID>4</MessageID><OperationType>Update</OperationType><ProductImage><SKU>TESTDUO123IM12-B6ZLRFU1TU892Z0O</SKU><ImageType>PT3</ImageType><ImageLocation>http://cbassistant.oss-cn-beijing.aliyuncs.com/product/ea3b2e39-7519-4bd5-8d29-32467bc766b9.jpg</ImageLocation></ProductImage></Message><Message><MessageID>5</MessageID><OperationType>Update</OperationType><ProductImage><SKU>TESTDUO123IM12-B6ZLRFU1TU892Z0O-Red</SKU><ImageType>Main</ImageType><ImageLocation>http://cbassistant.oss-cn-beijing.aliyuncs.com/product/ea3b2e39-7519-4bd5-8d29-32467bc766b9.jpg</ImageLocation></ProductImage></Message><Message><MessageID>6</MessageID><OperationType>Update</OperationType><ProductImage><SKU>TESTDUO123IM12-B6ZLRFU1TU892Z0O-Red</SKU><ImageType>PT1</ImageType><ImageLocation>http://cbassistant.oss-cn-beijing.aliyuncs.com/product/ea3b2e39-7519-4bd5-8d29-32467bc766b9.jpg</ImageLocation></ProductImage></Message><Message><MessageID>7</MessageID><OperationType>Update</OperationType><ProductImage><SKU>TESTDUO123IM12-B6ZLRFU1TU892Z0O-Red</SKU><ImageType>PT2</ImageType><ImageLocation>http://cbassistant.oss-cn-beijing.aliyuncs.com/product/ea3b2e39-7519-4bd5-8d29-32467bc766b9.jpg</ImageLocation></ProductImage></Message><Message><MessageID>8</MessageID><OperationType>Update</OperationType><ProductImage><SKU>TESTDUO123IM12-B6ZLRFU1TU892Z0O-Red</SKU><ImageType>PT3</ImageType><ImageLocation>http://cbassistant.oss-cn-beijing.aliyuncs.com/product/ea3b2e39-7519-4bd5-8d29-32467bc766b9.jpg</ImageLocation></ProductImage></Message><Message><MessageID>9</MessageID><OperationType>Update</OperationType><ProductImage><SKU>TESTDUO123IM12-B6ZLRFU1TU892Z0O-Glod</SKU><ImageType>Main</ImageType><ImageLocation>http://cbassistant.oss-cn-beijing.aliyuncs.com/product/ea3b2e39-7519-4bd5-8d29-32467bc766b9.jpg</ImageLocation></ProductImage></Message><Message><MessageID>10</MessageID><OperationType>Update</OperationType><ProductImage><SKU>TESTDUO123IM12-B6ZLRFU1TU892Z0O-Glod</SKU><ImageType>PT1</ImageType><ImageLocation>http://cbassistant.oss-cn-beijing.aliyuncs.com/product/ea3b2e39-7519-4bd5-8d29-32467bc766b9.jpg</ImageLocation></ProductImage></Message><Message><MessageID>11</MessageID><OperationType>Update</OperationType><ProductImage><SKU>TESTDUO123IM12-B6ZLRFU1TU892Z0O-Glod</SKU><ImageType>PT2</ImageType><ImageLocation>http://cbassistant.oss-cn-beijing.aliyuncs.com/product/ea3b2e39-7519-4bd5-8d29-32467bc766b9.jpg</ImageLocation></ProductImage></Message><Message><MessageID>12</MessageID><OperationType>Update</OperationType><ProductImage><SKU>TESTDUO123IM12-B6ZLRFU1TU892Z0O-Glod</SKU><ImageType>PT3</ImageType><ImageLocation>http://cbassistant.oss-cn-beijing.aliyuncs.com/product/ea3b2e39-7519-4bd5-8d29-32467bc766b9.jpg</ImageLocation></ProductImage></Message></AmazonEnvelope>";
+                "</Header><MessageType>Product</MessageType><PurgeAndReplace>false</PurgeAndReplace><Message><MessageID>1</MessageID><OperationType>Update</OperationType><Product><SKU>QWESAA-F4348IM2</SKU><StandardProductID><Type>EAN</Type><Value>6034533092946</Value></StandardProductID><ItemPackageQuantity>30</ItemPackageQuantity><DescriptionData><Title>Modern Oletto Single Lever Pull Down Kitchen Faucet, Stainless Steel</Title><Brand>1</Brand> <Description>&lt;p&gt;Give your kitchen decor a quick modern makeover with a new \n" +
+                "easy-to-install DIY faucet from Kraus. The Oletto Single Lever Pull Down\n" +
+                " Faucet has clean lines and a sleek design that create a look with \n" +
+                "maximum visual impact. For enhanced functionality, the pull-down \n" +
+                "sprayhead is ergonomically designed with a comfortable grip. A single \n" +
+                "button allows you to instantly switch between aerated stream and spray. \n" +
+                "The swivel adaptor offers additional flexibility, as well as an \n" +
+                "optimized range of motion. &lt;br&gt;&lt;br&gt; All faucets in the Oletto series are\n" +
+                " designed with a QuickDock mounting assembly, for exceptionally easy top\n" +
+                " mount installation. This innovative feature allows you to install the \n" +
+                "faucet from above the counter, eliminating the need to secure it \n" +
+                "underneath the sink. &lt;br&gt;&lt;br&gt; Every Kraus faucet is manufactured with \n" +
+                "top-quality components in order to ensure lasting value and superior \n" +
+                "performance. Technology highlights of this model include an \n" +
+                "ultra-durable Kerox ceramic cartridge, for lifelong drip-free use. The \n" +
+                "best-in-industry Neoperl aerator reduces water waste without sacrificing\n" +
+                " pressure, with easy-clean rubber nozzles to prevent hard water and lime\n" +
+                " scale build-up.&lt;br&gt;&lt;br&gt; Combine this kitchen faucet with a bar faucet \n" +
+                "from the Oletto series for an instant upgrade to modern style, and build\n" +
+                " a better kitchen with Kraus.&lt;/p&gt;</Description>\n" +
+                "<BulletPoint>Kerox Ceramic Cartridge (tested w/ 500,000 cycles) High Performance / Low Flow Neoperl Aerator w/ Easy-Clean Rubber Nozzles to Prevent Hard Water Build-Up</BulletPoint><BulletPoint>Superior Corrosion &amp; Rust-Resistant Finish</BulletPoint><BulletPoint>All-Metal Body for Maximum Durability</BulletPoint><BulletPoint>Kerox Ceramic Cartridge (tested w/ 500,000 cycles)</BulletPoint><BulletPoint>null</BulletPoint><Manufacturer>2</Manufacturer><SearchTerms>Kerox Ceramic Cartridge (tested w/ 500,000 cy</SearchTerms><SearchTerms>Kerox Ceramic Cartridge (tested w/ 500,000 cy</SearchTerms><SearchTerms>null</SearchTerms><SearchTerms>null</SearchTerms><SearchTerms>null</SearchTerms><IsGiftWrapAvailable>false</IsGiftWrapAvailable><IsGiftMessageAvailable>false</IsGiftMessageAvailable>\n" +
+                "</DescriptionData>\n" +
+                "<ProductData>\n" +
+                "<Sports>\n" +
+                "<ProductType>SportingGoods</ProductType></Sports>\n" +
+                "</ProductData>\n" +
+                "</Product>\n" +
+                "</Message>\n" +
+                "</AmazonEnvelope>";
         FileUtils.byte2File(text.getBytes(),"/Users/fengsong/Downloads/","rule_chain.txt");
 
         String s="/Users/fengsong/Downloads/rule_chain.txt";

@@ -102,13 +102,14 @@ public class ProductClaimController extends BaseController {
         if (!StringUtils.isEmpty(salePrice)) {
             var.setSalePrice(new BigDecimal(salePrice));
         }
+
+        Map<String, String> imags = imagePath(product.getImagePath());
         var.setQuantity(product.getQuantity());
+        var.setMainPath(imags.get("main"));
+        var.setAttachPath(imags.get("attach"));
         var.setSaleStartTime(GeneralUtils.getDateFromStr(saleStartTime));
         var.setSaleEndTime(GeneralUtils.getDateFromStr(saleEndTime));
         var.setSku(product.getSku());
-        Map<String, String> map = new HashMap<>();
-        var.setMainPath(map.get("main"));
-        var.setAttachPath(map.get("attach"));
         if (product.getSkuType().equals("2")) {//变体
             if (org.apache.commons.lang3.StringUtils.isNotBlank(vars)) {
                 list = JSON.parseArray(vars, ProductItemVar.class);
