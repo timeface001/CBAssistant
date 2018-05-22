@@ -274,7 +274,8 @@ public class AmzUpload {
         for (int i = 0; i < array.size(); i++) {
             JSONArray reports = array.getJSONObject(i).getJSONArray("ProcessingReport");
             for (int k = 0; k < reports.size(); k++) {
-                if (reports.getJSONObject(k).getString("StatusCode").equals("[Complete]")) {
+                JSONObject report=reports.getJSONObject(k);
+                if (report.getString("StatusCode").equals("[Complete]")&&report.getJSONArray("ProcessingSummary").getJSONObject(0).getString("MessagesWithError").equals("[0]")) {
                     return "";
                 }
                 JSONArray list = reports.getJSONObject(k).getJSONArray("Result");

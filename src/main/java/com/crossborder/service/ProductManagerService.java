@@ -346,15 +346,16 @@ public class ProductManagerService {
         if (GeneralUtils.isNotNullOrEmpty(vars)) {
             for (ProductItemVar var : vars) {
                 upload.setpState("1");
-                upload.setQuantity(var.getQuantity());
                 upload.setPublishStatus("0");
 
                 if (StringUtils.isBlank(var.getVariationType())) {//主体
+                    upload.setQuantity(product.getQuantity());
                     upload.setParentChild("parent");
                     upload.setVariationTheme(var.getVariationType());
                     upload.setMainPath(var.getMainPath());
 
                 } else {//变体
+                    upload.setQuantity(var.getQuantity());
                     upload.setParentChild("child");
                     upload.setRelationshipType("Variation");
                     upload.setVariationTheme(var.getVariationType());
@@ -493,14 +494,12 @@ public class ProductManagerService {
 
     public void initshopCategory() {
         Map<String, Object> params = new HashMap<>();
-        final List<Map<String, Object>> shops = shopManageService.selectShops(params);
+        final List<Map<String, Object>> shops = shopManageService.selectShopsForImportCategory();
         ThreadPoolExecutor executor = new ThreadPoolExecutor(2, 5, 100, TimeUnit.MINUTES, new ArrayBlockingQueue<Runnable>(10));
 
         for (Map<String, Object> shop : shops) {
-            if (!shop.get("COUNTRY_CODE").toString().equals("US")) {
 
                 initCategory(set.getProductCategoryPath() + shop.get("SHOP_ID") + ".txt", shop);
-            }
             /*executor.execute(new Runnable() {
                 @Override
                 public void run() {
@@ -567,6 +566,7 @@ public class ProductManagerService {
                     pc.setShopId(shop.get("SHOP_ID").toString());
                     pc.setHasChild("0");
                     pc.setTypeDef("");
+                    pc.setItemType("");
                     pc.setPath("");
                     pc.setChildCount(0);
 
@@ -580,7 +580,7 @@ public class ProductManagerService {
 
                 category.setParentId(pathp.split(",")[pathp.split(",").length - 2]);
                 category.setPath(pathp);
-                //category.setItemType();
+                category.setItemType("");
                 category.setCountryCode(code);
                 category.setShopId(shop.get("SHOP_ID").toString());
                 category.setTypeDef(e.getChildText("productTypeDefinitions"));

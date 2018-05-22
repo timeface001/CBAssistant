@@ -17,7 +17,7 @@
     <include refid="Base_Column_List"/>
     from T_PRODUCT_UPLOAD_CATEGORY a
     where a.PARENT_ID
-    in (SELECT ID from T_PRODUCT_UPLOAD_CATEGORY where NAME='Categories')  AND a.COUNTRY_CODE=#{countryCode}
+    in (SELECT ID from T_PRODUCT_UPLOAD_CATEGORY where PARENT_ID=0)  AND a.COUNTRY_CODE=#{countryCode}
     ORDER BY a.NAME
   </select>
 
