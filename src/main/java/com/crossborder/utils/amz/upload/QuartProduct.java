@@ -10,7 +10,6 @@ import com.crossborder.service.ProductManagerService;
 import com.crossborder.service.ShopManageService;
 import com.crossborder.utils.PublishStatusEnum;
 import com.crossborder.utils.ResponseDto;
-import com.crossborder.utils.amz.upload.AmzUpload;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -53,7 +52,7 @@ public class QuartProduct {
     /**
      * 每天5点触发（清空验证码表t_captcha中的数据）
      */
-    @Scheduled(cron = "0/10 * * * * ?")
+    @Scheduled(cron = "0 0/3 * * * ?")
     public void testTask() {
         System.out.println("execte quart......");
         List<ProductUploadLog> logs = productManagerService.selectLogList("3");
