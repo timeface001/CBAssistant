@@ -60,7 +60,7 @@ public class ProductPublishController extends BaseController {
             params.put("companyId", user.get("USER_COMPANY"));
         }
         Map<String, Object> result = new HashMap<>();
-        PageHelper.startPage((start == null || start < 1) ? 1 : start, (length == null || length < 1) ? 10 : length);
+        PageHelper.startPage(start == null ? 1 : (start / length + 1), length);
         List<ProductAmzUpload> list = productManagerService.selectAmzUploadList(params);
         PageInfo pageInfo = new PageInfo<>(list);
         result.put("data", list);

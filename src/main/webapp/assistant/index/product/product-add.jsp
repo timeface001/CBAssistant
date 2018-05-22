@@ -23,10 +23,6 @@
           href="<%=request.getContextPath()%>/assistant/static/h-ui.admin/css/style.css"/>
     <link rel="stylesheet" type="text/css"
           href="<%=request.getContextPath()%>/assistant/lib/layui/css/layui.css"/>
-    <link rel="stylesheet" type="text/css"
-          href="<%=request.getContextPath()%>/assistant/release/wangEditor.min.css"/>
-    <script type="text/javascript" charset="utf-8"
-            src="<%=request.getContextPath()%>/assistant/release/wangEditor.min.js"></script>
     <!--[if IE 6]>
     <script type="text/javascript"
             src="<%=request.getContextPath()%>/assistant/lib/DD_belatedPNG_0.0.8a-min.js"></script>
@@ -233,9 +229,6 @@
         src="<%=request.getContextPath()%>/assistant/lib/jquery.validation/1.14.0/messages_zh.js"></script>
 <script type="text/javascript" src="<%=request.getContextPath()%>/assistant/lib/layui/layui.js"></script>
 <script type="text/javascript">
-    /*var E = window.wangEditor;
-     var editor = new E('#editor');
-     editor.create();*/
     function getParam(paramName) {
         paramValue = "", isFound = !1;
         if (this.location.search.indexOf("?") == 0 && this.location.search.indexOf("=") > 1) {

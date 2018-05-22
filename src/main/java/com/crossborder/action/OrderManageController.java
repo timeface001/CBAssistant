@@ -310,7 +310,7 @@ public class OrderManageController {
      */
     @ResponseBody
     @RequestMapping(value = "selectLocalOrder", produces = "text/plain;charset=UTF-8")
-    public String selectLocalOrder(HttpSession session,String data, Integer draw, Integer start, Integer length) {
+    public String selectLocalOrder(HttpSession session, String data, Integer draw, Integer start, Integer length) {
         Map<String, Object> map = new HashMap<>();
         Map<String, Object> paramMap = JSON.parseObject(data, Map.class);
         Map<String, Object> user = (Map<String, Object>) session.getAttribute("user");
@@ -329,6 +329,11 @@ public class OrderManageController {
             PageHelper.startPage(start == null ? 1 : (start / length + 1), length);
             localOrderList = orderManageService.selectLocalOrder(paramMap);
             PageInfo<Map<String, Object>> pageInfo = new PageInfo<Map<String, Object>>(localOrderList);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            for (int i = 0; i < localOrderList.size(); i++) {
+                Date createDate = sdf.parse(localOrderList.get(i).get("PURCHASEDATE").toString());
+                localOrderList.get(i).put("RUNNINGTIME", Tools.timeDifference(createDate.getTime(), new Date().getTime()));
+            }
             map.put("data", localOrderList);
             map.put("draw", draw);
             map.put("recordsTotal", pageInfo.getTotal());
