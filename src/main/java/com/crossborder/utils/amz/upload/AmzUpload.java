@@ -77,7 +77,7 @@ public class AmzUpload {
         final ResponseDto<String> dto;
             product.setExternalProductId(gen.getProductId());
             product.setExternalProductIdType(gen.getType());
-            FileInputStream productIs = AmzXmlTemplate.uploadProduct(product, shop, commonSet.getAmzUploadProductPath(), vars.get(0));
+        FileInputStream productIs = AmzXmlTemplate.uploadProduct(product, shop, commonSet.getAmzUploadProductPath(), vars.get(0), true);
         dto = getUploadResult(getService(shop), getSubmitFeedRequest(productIs, shop, AmzFeeType.PRODUCT_FEED));
 
             productIdGenDao.updateUsed(gen.getType(), product.getId(), gen.getProductId());
@@ -137,7 +137,7 @@ public class AmzUpload {
             if (gen != null) {
                 product.setExternalProductId(gen.getProductId());
                 product.setExternalProductIdType(gen.getType());
-                FileInputStream productIs = AmzXmlTemplate.uploadProduct(product, shop, commonSet.getAmzUploadProductPath(), var);
+                FileInputStream productIs = AmzXmlTemplate.uploadProduct(product, shop, commonSet.getAmzUploadProductPath(), var, false);
                 resList.add(getUploadResult(getService(shop), getSubmitFeedRequest(productIs, shop, AmzFeeType.PRODUCT_FEED)));
                 productIdGenDao.updateUsed(gen.getType(), product.getId(), gen.getProductId());
             } else {

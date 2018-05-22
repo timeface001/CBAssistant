@@ -16,10 +16,9 @@ public class AmzXmlTemplate {
 
 
 
-    public static FileInputStream uploadProduct(ProductAmzUpload product, Map<String, Object> shop, String path, ProductItemVar var) {
+    public static FileInputStream uploadProduct(ProductAmzUpload product, Map<String, Object> shop, String path, ProductItemVar var,boolean isSingle) {
 
         boolean isParent = StringUtils.isBlank(var.getVariationType());
-        boolean isSingle = StringUtils.isBlank(product.getVariationTheme());
         String text = "<?xml version=\"1.0\" ?>" +
                 "<AmazonEnvelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"amznenvelope.xsd\">\n" +
                 "<Header>" +
