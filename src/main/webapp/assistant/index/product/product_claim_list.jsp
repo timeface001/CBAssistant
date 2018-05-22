@@ -160,6 +160,11 @@
     function initializeTable() {
         var table = $("#productTable").DataTable({
             "serverSide": true,
+            "pagingType": "full_numbers",
+            "processing": true,
+            "ordering": false,
+            "searching": false,
+            "bLengthChange": false,
             "ajax": {
                 "url": "<%=request.getContextPath()%>/product/claim/list",
                 "type": "POST",
@@ -243,7 +248,7 @@
             "initComplete": function (settings, json) {
 
             },
-            "dom": "t<'dataTables_info'il>p",
+            /*"dom": "t<'dataTables_info'il>p",*/
             "language": {
                 "sProcessing": "正在加载中......",
                 "lengthMenu": "每页 _MENU_ 条",
@@ -256,10 +261,7 @@
                     "next": "后一页",
                     "last": "末页"
                 }
-            },
-            "pagingType": "full_numbers",
-            "processing": true,
-            "ordering": false
+            }
         });
         return table;
     }
@@ -283,8 +285,15 @@
      * @param ids
      */
     function prePublish(id) {
-
-        layer_show("发布", '<%=request.getContextPath()%>/product/publish/detail?id=' + id + "&type=0", 800);
+        var index = layer.open({
+            type: 2,
+            title: "发布产品",
+            content: '<%=request.getContextPath()%>/product/publish/detail?id=' + id + "&type=0",
+            end: function () {
+                location.reload();
+            }
+        });
+        layer.full(index);
     }
 
     /*产品-删除*/

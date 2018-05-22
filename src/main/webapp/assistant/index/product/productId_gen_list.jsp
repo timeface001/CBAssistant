@@ -144,6 +144,11 @@
     function initializeTable() {
         var table = $("#productTable").DataTable({
             "serverSide": true,
+            "pagingType": "full_numbers",
+            "processing": true,
+            "ordering": false,
+            "searching": false,
+            "bLengthChange": false,
             "ajax": {
                 "url": "<%=request.getContextPath()%>/productid/gen/list",
                 "type": "POST",
@@ -196,7 +201,7 @@
             "initComplete": function (settings, json) {
 
             },
-            "dom": "t<'dataTables_info'il>p",
+           /* "dom": "t<'dataTables_info'il>p",*/
             "language": {
                 "sProcessing": "正在加载中......",
                 "lengthMenu": "每页 _MENU_ 条",
@@ -209,10 +214,7 @@
                     "next": "后一页",
                     "last": "末页"
                 }
-            },
-            "pagingType": "full_numbers",
-            "processing": true,
-            "ordering": false
+            }
         });
         return table;
     }
