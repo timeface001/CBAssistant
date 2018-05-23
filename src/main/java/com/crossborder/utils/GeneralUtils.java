@@ -145,7 +145,7 @@ public class GeneralUtils {
             return str.replace("<", "&lt;").replace(">", "&gt;");
         }
 
-        return str;
+        return "";
     }
 
 }
