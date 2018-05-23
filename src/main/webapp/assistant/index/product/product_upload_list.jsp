@@ -37,7 +37,7 @@
 <div class="page-container">
     <form id="productForm" class="form form-horizontal">
         <div class="row cl">
-            <label class="form-label col-xs-2 col-sm-2">语言：</label>
+            <label class="form-label col-xs-1 col-sm-1">语言：</label>
             <div class="formControls col-xs-2 col-sm-2">
                 <select id="language" name="language" class="select" style="height: 32px">
                     <option value="">请选择</option>
@@ -50,7 +50,7 @@
                     <option value="IT">意大利</option>
                 </select>
             </div>
-            <label class="form-label col-xs-2 col-sm-2">标题：</label>
+            <label class="form-label col-xs-1 col-sm-1">标题：</label>
             <div class="formControls col-xs-2 col-sm-2">
                 <input type="text" name="name" placeholder=" " class="input-text">
             </div>
@@ -94,8 +94,9 @@
             <tr class="text-c">
                 <th width="25"><input type="checkbox" value="" name=""></th>
                 <th width="100">产品图</th>
-                <th width="60">语言</th>
                 <th width="150">标题</th>
+                <th width="60">国家</th>
+                <th width="60">店铺</th>
                 <th width="100">SKU</th>
                 <th width="60">售价</th>
                 <th width="100">库存</th>
@@ -165,14 +166,20 @@
                 },
                 {
                     "data": function (val) {
+                        return val.itemName == null ? "" : val.itemName;
+                    }
+                },
+                {
+                    "data": function (val) {
                         return getCountryName(val.languageId);
                     }
                 },
                 {
                     "data": function (val) {
-                        return val.itemName == null ? "" : val.itemName;
+                        return val.shopName == null ? "" : val.shopName;
                     }
                 },
+
                 {
                     "data": function (val) {
                         return val.itemSku == null ? "" : val.itemSku;
@@ -190,7 +197,7 @@
                             return "未发布";
                         }
                         if (val.publishStatus == "1") {
-                            return "<p style='text-align: left'>发布失败：</p><p title='" + val.uploadDesc + "' style='color: #ff515b'>" + (typeof(val.uploadDesc) =='undefined'?'': getUploadDesc(val.uploadDesc)) + "</p>";
+                            return "<p style='text-align: left'>发布失败：</p><p title='" + val.uploadDesc + "' style='color: #ff515b'>" + (typeof(val.uploadDesc) == 'undefined' ? '' : getUploadDesc(val.uploadDesc)) + "</p>";
                         }
                         if (val.publishStatus == "2") {
                             return "发布成功";
@@ -215,7 +222,7 @@
                     }
                 },
                 {
-                    "targets": [9],
+                    "targets": [10],
                     "data": "id",
                     "render": function (data, type, full) {
                         return ( "<a style='text-decoration:none' title=''  onClick=\"publishProduct('" + full.id + "')\"')>发布</a>") +
@@ -289,7 +296,7 @@
             return str.substring(0, 200) + "...";
         }
 
-        console.log(str=='undefined');
+        console.log(str == 'undefined');
         return str;
     }
 

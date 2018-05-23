@@ -55,7 +55,7 @@
             <label class="form-label col-xs-4 col-sm-3">产品ID：</label>
             <div class="formControls col-xs-8 col-sm-9">
                 <textarea type="text" class="layui-textarea" value="" placeholder="" id="pName" name="data"
-                          lay-verify="required" onkeyup="this.value=this.value.replace(/[^\d]/g,'')"></textarea>
+                          lay-verify="required" onkeyup="this.value=this.value.replace(/[^\d]/g,'')" maxlength="10"></textarea>
             </div>
         </div>
 

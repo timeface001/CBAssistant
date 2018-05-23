@@ -77,12 +77,12 @@ public class AmzUpload {
             return result;
         }
         final ResponseDto<String> dto;
-            product.setExternalProductId(gen.getProductId());
-            product.setExternalProductIdType(gen.getType());
+        product.setExternalProductId(gen.getProductId());
+        product.setExternalProductIdType(gen.getType());
         FileInputStream productIs = AmzXmlTemplate.uploadProduct(product, shop, commonSet.getAmzUploadProductPath(), vars.get(0), true);
         dto = getUploadResult(getService(shop), getSubmitFeedRequest(productIs, shop, AmzFeeType.PRODUCT_FEED));
 
-            productIdGenDao.updateUsed(gen.getType(), product.getId(), gen.getProductId());
+        productIdGenDao.updateUsed(gen.getType(), product.getId(), gen.getProductId());
 
         new Thread(new Runnable() {
             @Override
@@ -130,7 +130,7 @@ public class AmzUpload {
         ResponseDto result = new ResponseDto();
         FileInputStream inventoryIs = AmzXmlTemplate.uploadInventory(product, shop, commonSet.getAmzUploadProductPath(), vars);
         FileInputStream priceIs = AmzXmlTemplate.uploadPrice(product, shop, commonSet.getAmzUploadProductPath(), vars);
-        FileInputStream imIs = AmzXmlTemplate.uploadImage(product, shop, commonSet.getAmzUploadProductPath(), vars,commonSet.getProductImagePath());
+        FileInputStream imIs = AmzXmlTemplate.uploadImage(product, shop, commonSet.getAmzUploadProductPath(), vars, commonSet.getProductImagePath());
         FileInputStream relations = AmzXmlTemplate.uploadRelationShop(product, shop, commonSet.getAmzUploadProductPath(), vars);
 
         List<ResponseDto> resList = new ArrayList<>();
@@ -252,9 +252,7 @@ public class AmzUpload {
                     } else {
                         dto.setSuccess(true);
                     }
-                } catch (JDOMException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
@@ -275,8 +273,8 @@ public class AmzUpload {
         for (int i = 0; i < array.size(); i++) {
             JSONArray reports = array.getJSONObject(i).getJSONArray("ProcessingReport");
             for (int k = 0; k < reports.size(); k++) {
-                JSONObject report=reports.getJSONObject(k);
-                if (report.getString("StatusCode").equals("[Complete]")&&report.getJSONArray("ProcessingSummary").getJSONObject(0).getString("MessagesWithError").equals("[0]")) {
+                JSONObject report = reports.getJSONObject(k);
+                if (report.getString("StatusCode").equals("[Complete]") && report.getJSONArray("ProcessingSummary").getJSONObject(0).getString("MessagesWithError").equals("[0]")) {
                     return "";
                 }
                 JSONArray list = reports.getJSONObject(k).getJSONArray("Result");
@@ -371,7 +369,7 @@ public class AmzUpload {
 
         System.out.println("***************");
 
-        System.out.println("shopId:"+shop.get("SHOP_ID"));
+        System.out.println("shopId:" + shop.get("SHOP_ID"));
         try {
             RequestReportResponse response = getService(shop).requestReport(request);
             String reportRequestId = null;
@@ -385,7 +383,7 @@ public class AmzUpload {
                 }
             }
 
-            System.out.println("REQUEST_ID:"+reportRequestId);
+            System.out.println("REQUEST_ID:" + reportRequestId);
             if (reportRequestId != null) {
                 String reportId = null;
                 int i = 0;
@@ -400,7 +398,7 @@ public class AmzUpload {
                     System.out.println("第" + i + "次:  获取reportId-- " + reportId);
                 } while (reportId == null && i < 6);
 
-                System.out.println("REPORTID:"+reportId);
+                System.out.println("REPORTID:" + reportId);
                 //reportId="9497489579017662";
                 long l1 = System.currentTimeMillis();
                 if (reportId != null) {

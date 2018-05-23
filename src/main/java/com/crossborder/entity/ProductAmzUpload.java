@@ -8,6 +8,8 @@ public class ProductAmzUpload {
 
     private String languageId;
 
+    private String countryName;
+
     private String templatetype;
 
     private String itemSku;
@@ -105,6 +107,8 @@ public class ProductAmzUpload {
     private Integer itemPackageQuantity;
 
     private String shopId;
+
+    private String shopName;
 
     private BigDecimal salePrice;
 
@@ -632,5 +636,21 @@ public class ProductAmzUpload {
 
     public void setUploadDesc(String uploadDesc) {
         this.uploadDesc = uploadDesc == null ? null : uploadDesc.trim();
+    }
+
+    public String getShopName() {
+        return shopName;
+    }
+
+    public void setShopName(String shopName) {
+        this.shopName = shopName;
+    }
+
+    public String getCountryName() {
+        return countryName;
+    }
+
+    public void setCountryName(String countryName) {
+        this.countryName = countryName;
     }
 }

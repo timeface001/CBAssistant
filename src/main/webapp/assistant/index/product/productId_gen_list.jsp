@@ -77,7 +77,7 @@
                onclick="addProduct('添加ID','<%=request.getContextPath()%>/assistant/index/product/productid_gen_add.jsp','800')"><i
                     class="Hui-iconfont">
                 &#xe600;</i> 添加产品ID</a> </span></div>
-        <table id="productTable" class="table table-border table-bordered table-bg table-hover mt-10">
+        <table id="productTable" class="table table-border table-bordered table-bg table-hover">
             <thead>
             <tr class="text-c">
                 <th width="25"><input type="checkbox" value="" name=""></th>

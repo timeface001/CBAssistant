@@ -281,7 +281,7 @@
         src="<%=request.getContextPath()%>/assistant/lib/jquery.validation/1.14.0/messages_zh.js"></script>
 <script type="text/javascript" src="<%=request.getContextPath()%>/assistant/lib/layui/layui.js"></script>
 <script type="text/javascript">
-    var countryCode = '';
+    var countryCode = '${product.languageId}';
     $(function () {
         function getParam(paramName) {
             paramValue = "", isFound = !1;
@@ -415,6 +415,7 @@
     });
 
     function initLevel1() {
+        $("#level-1").empty();
         $.ajax({
             type: 'POST',
             url: '<%=request.getContextPath()%>/publish/category',

@@ -370,6 +370,7 @@
         initLevel1();
     });
     function initLevel1() {
+        $("#level-1").empty();
         $.ajax({
             type: 'POST',
             url: '<%=request.getContextPath()%>/common/getList',

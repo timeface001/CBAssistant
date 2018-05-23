@@ -43,11 +43,11 @@
                     <option value="">请选择</option>
                 </select>
             </div>
-            <label class="form-label col-xs-2 col-sm-2">标题：</label>
+            <label class="form-label col-xs-1 col-sm-1">标题：</label>
             <div class="formControls col-xs-2 col-sm-2">
                 <input type="text" name="name" placeholder=" " class="input-text">
             </div>
-            <label class="form-label col-xs-2 col-sm-2">SKU：</label>
+            <label class="form-label col-xs-1 col-sm-1">SKU：</label>
             <div class="formControls col-xs-2 col-sm-2">
                 <input type="text" name="sku" placeholder=" " class="input-text">
             </div>

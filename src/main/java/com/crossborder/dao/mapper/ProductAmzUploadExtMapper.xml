@@ -6,6 +6,10 @@
         select
         <include refid="Base_Column_List"/>
         from T_PRODUCT_ITEM_AMZ_UPLOAD a
+        LEFT JOIN T_SHOP b
+        ON a.shop_id = b.shop_id
+        LEFT JOIN T_COUNTRY c
+        ON a.language_id = c.id
         WHERE a.P_STATE=1 AND a.PARENT_CHILD='parent'
         <if test="pStatus!=null and pStatus!=''">
             AND a.PUBLISH_STATUS=#{pStatus}
@@ -33,6 +37,10 @@
         select
         <include refid="Base_Column_List"/>
         from T_PRODUCT_ITEM_AMZ_UPLOAD a
+        LEFT JOIN T_SHOP b
+        ON a.shop_id = b.shop_id
+        LEFT JOIN T_COUNTRY c
+        ON a.language_id = c.id
         WHERE a.P_STATE=1 AND a.P_STATE=1 AND PRODUCT_AMZ_ID=#{amzId}
     </select>
 
@@ -40,6 +48,7 @@
     <resultMap id="BaseResultMap" type="com.crossborder.entity.ProductAmzUpload">
         <id column="a_ID" jdbcType="VARCHAR" property="id"/>
         <result column="a_LANGUAGE_ID" jdbcType="VARCHAR" property="languageId"/>
+        <result column="c_NAME" jdbcType="VARCHAR" property="countryName"/>
         <result column="a_TEMPLATETYPE" jdbcType="VARCHAR" property="templatetype"/>
         <result column="a_ITEM_SKU" jdbcType="VARCHAR" property="itemSku"/>
         <result column="a_EXTERNAL_PRODUCT_ID" jdbcType="VARCHAR" property="externalProductId"/>
@@ -89,6 +98,7 @@
         <result column="a_MATERIAL_TYPE" jdbcType="VARCHAR" property="materialType"/>
         <result column="a_ITEM_PACKAGE_QUANTITY" jdbcType="DECIMAL" property="itemPackageQuantity"/>
         <result column="a_SHOP_ID" jdbcType="VARCHAR" property="shopId"/>
+        <result column="b_SHOP_NAME" jdbcType="VARCHAR" property="shopName"/>
         <result column="a_SALE_PRICE" jdbcType="DECIMAL" property="salePrice"/>
         <result column="a_SALE_FROM_DATE" jdbcType="DATE" property="saleFromDate"/>
         <result column="a_SALE_END_DATE" jdbcType="DATE" property="saleEndDate"/>
@@ -125,12 +135,16 @@
         a.SALE_FROM_DATE as a_SALE_FROM_DATE, a.SALE_END_DATE as a_SALE_END_DATE, a.PUBLISH_STATUS as a_PUBLISH_STATUS,
         a.CREATE_TIME as a_CREATE_TIME, a.PRODUCT_AMZ_ID as a_PRODUCT_AMZ_ID, a.MAIN_PATH as a_MAIN_PATH,
         a.ATTACH_PATH as a_ATTACH_PATH, a.WEBSITE_TYPE as a_WEBSITE_TYPE, a.EXTERNAL_PRODUCT_ID_TYPE as a_EXTERNAL_PRODUCT_ID_TYPE,
-        a.AMZ_SKU as a_AMZ_SKU, a.UPLOAD_DESC as a_UPLOAD_DESC
+        a.AMZ_SKU as a_AMZ_SKU, a.UPLOAD_DESC as a_UPLOAD_DESC,b.SHOP_NAME as b_SHOP_NAME,c.NAME as c_name
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from T_PRODUCT_ITEM_AMZ_UPLOAD a
+        LEFT JOIN T_SHOP b
+        ON a.shop_id = b.shop_id
+        LEFT JOIN T_COUNTRY c
+        ON a.language_id = c.id
         where a.ID = #{id,jdbcType=VARCHAR}
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">

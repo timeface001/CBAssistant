@@ -11,8 +11,8 @@ import com.google.cloud.translate.TranslateOptions;
 import com.google.cloud.translate.Translation;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.jdom2.Element;
-import org.jdom2.input.SAXBuilder;
+import org.jdom.Element;
+import org.jdom.input.SAXBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -283,49 +283,49 @@ public class ProductManagerService {
 
             if (language.equals("GB") || language.equals("US") || language.equals("AU")) {
                 //GB 英国
-                ProductAmzUpload uploadGB = generateCommonProperties(product, "GB", product.getBulletPointUk(), product.getItemUk(), product.getProductDescriptionUk(), product.getKeywordsUk());
+                ProductAmzUpload uploadGB = generateCommonProperties(product, language, product.getBulletPointUk(), product.getItemUk(), product.getProductDescriptionUk(), product.getKeywordsUk());
                 saveAmzUploadBySku(uploadGB, product, vars);
                 return uploadGB.getId();
             }
 
             if (language.equals("JP")) {
                 //JP 日本
-                ProductAmzUpload uploadJP = generateCommonProperties(product, "JP", product.getBulletPointJp(), product.getItemJp(), product.getProductDescriptionJp(), product.getKeywordsJp());
+                ProductAmzUpload uploadJP = generateCommonProperties(product, language, product.getBulletPointJp(), product.getItemJp(), product.getProductDescriptionJp(), product.getKeywordsJp());
                 saveAmzUploadBySku(uploadJP, product, vars);
                 return uploadJP.getId();
             }
 
             if (language.equals("CN")) {
                 //CN
-                ProductAmzUpload uploadCN = generateCommonProperties(product, "CN", product.getBulletPointCn(), product.getItemCn(), product.getProductDescriptionCn(), product.getKeywordsCn());
+                ProductAmzUpload uploadCN = generateCommonProperties(product, language, product.getBulletPointCn(), product.getItemCn(), product.getProductDescriptionCn(), product.getKeywordsCn());
                 saveAmzUploadBySku(uploadCN, product, vars);
                 return uploadCN.getId();
             }
 
             if (language.equals("DE")) {
                 //DE 德国
-                ProductAmzUpload uploadDE = generateCommonProperties(product, "DE", product.getBulletPointDe(), product.getItemDe(), product.getProductDescriptionDe(), product.getKeywordsDe());
+                ProductAmzUpload uploadDE = generateCommonProperties(product, language, product.getBulletPointDe(), product.getItemDe(), product.getProductDescriptionDe(), product.getKeywordsDe());
                 saveAmzUploadBySku(uploadDE, product, vars);
                 return uploadDE.getId();
             }
 
             if (language.equals("FR")) {
                 //FR 法国
-                ProductAmzUpload uploadFR = generateCommonProperties(product, "FR", product.getBulletPointFr(), product.getItemFr(), product.getProductDescriptionFr(), product.getKeywordsFr());
+                ProductAmzUpload uploadFR = generateCommonProperties(product, language, product.getBulletPointFr(), product.getItemFr(), product.getProductDescriptionFr(), product.getKeywordsFr());
                 saveAmzUploadBySku(uploadFR, product, vars);
                 return uploadFR.getId();
             }
 
             if (language.equals("ES") || language.equals("MX")) {
                 //ES 西班牙
-                ProductAmzUpload uploadES = generateCommonProperties(product, "ES", product.getBulletPointEs(), product.getItemEs(), product.getProductDescriptionEs(), product.getKeywordsEs());
+                ProductAmzUpload uploadES = generateCommonProperties(product, language, product.getBulletPointEs(), product.getItemEs(), product.getProductDescriptionEs(), product.getKeywordsEs());
                 saveAmzUploadBySku(uploadES, product, vars);
                 return uploadES.getId();
             }
 
             if (language.equals("IT")) {
                 //IT意大利
-                ProductAmzUpload uploadIT = generateCommonProperties(product, "IT", product.getBulletPointIt(), product.getItemIt(), product.getProductDescriptionIt(), product.getKeywordsIt());
+                ProductAmzUpload uploadIT = generateCommonProperties(product, language, product.getBulletPointIt(), product.getItemIt(), product.getProductDescriptionIt(), product.getKeywordsIt());
                 saveAmzUploadBySku(uploadIT, product, vars);
                 return uploadIT.getId();
             }
@@ -540,7 +540,7 @@ public class ProductManagerService {
             isr = new InputStreamReader(new FileInputStream(path));
 
             SAXBuilder sb = new SAXBuilder();
-            org.jdom2.Document doc = sb.build(isr);
+            org.jdom.Document doc = sb.build(isr);
 
             Element root = doc.getRootElement();
             List<Element> list = root.getChildren("Node");
