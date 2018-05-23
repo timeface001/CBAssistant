@@ -12,6 +12,8 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
+import static java.math.BigDecimal.ROUND_HALF_DOWN;
+
 public class AmzXmlTemplate {
 
 
@@ -38,18 +40,19 @@ public class AmzXmlTemplate {
                 /*"<LaunchDate>" + GeneralUtils.formatDate(new Date(), "yyyy-MM-dd'T'hh:mm:ss") + "</LaunchDate>" +*/
                 "<DescriptionData>" +
                 "<Title>" + product.getItemName() + "</Title>" +
-                "<Brand>" + product.getBrandName() + "</Brand> <Description>" + GeneralUtils.replaceHtmlSign(product.getProductDescription()) + "</Description>\n" +
-                "<BulletPoint>" + GeneralUtils.replaceHtmlSign(product.getBulletPoint1()) + "</BulletPoint>" +
-                "<BulletPoint>" + GeneralUtils.replaceHtmlSign(product.getBulletPoint2()) + "</BulletPoint>" +
-                "<BulletPoint>" + GeneralUtils.replaceHtmlSign(product.getBulletPoint3()) + "</BulletPoint>" +
-                "<BulletPoint>" + GeneralUtils.replaceHtmlSign(product.getBulletPoint4()) + "</BulletPoint>" +
-                "<BulletPoint>" + GeneralUtils.replaceHtmlSign(product.getBulletPoint5()) + "</BulletPoint>" +
+                "<Brand>" + product.getBrandName() + "</Brand> " +
+                "<Description>" + GeneralUtils.replaceHtmlSign(product.getProductDescription()) + "</Description>" +
+                (StringUtils.isNotBlank(product.getBulletPoint1()) ? ("<BulletPoint>" + GeneralUtils.replaceHtmlSign(product.getBulletPoint1()) + "</BulletPoint>") : "") +
+                (StringUtils.isNotBlank(product.getBulletPoint2()) ? ("<BulletPoint>" + GeneralUtils.replaceHtmlSign(product.getBulletPoint2()) + "</BulletPoint>") : "") +
+                (StringUtils.isNotBlank(product.getBulletPoint3()) ? ("<BulletPoint>" + GeneralUtils.replaceHtmlSign(product.getBulletPoint3()) + "</BulletPoint>") : "") +
+                (StringUtils.isNotBlank(product.getBulletPoint4()) ? ("<BulletPoint>" + GeneralUtils.replaceHtmlSign(product.getBulletPoint4()) + "</BulletPoint>") : "") +
+                (StringUtils.isNotBlank(product.getBulletPoint5()) ? ("<BulletPoint>" + GeneralUtils.replaceHtmlSign(product.getBulletPoint5()) + "</BulletPoint>") : "") +
                 "<Manufacturer>" + product.getManufacturer() + "</Manufacturer>" +
-                "<SearchTerms>" + GeneralUtils.replaceHtmlSign(product.getGenericKeywords1()) + "</SearchTerms>" +
-                "<SearchTerms>" + GeneralUtils.replaceHtmlSign(product.getGenericKeywords2()) + "</SearchTerms>" +
-                "<SearchTerms>" + GeneralUtils.replaceHtmlSign(product.getGenericKeywords3()) + "</SearchTerms>" +
-                "<SearchTerms>" + GeneralUtils.replaceHtmlSign(product.getGenericKeywords4()) + "</SearchTerms>" +
-                "<SearchTerms>" + GeneralUtils.replaceHtmlSign(product.getGenericKeywords5()) + "</SearchTerms>" +
+                (StringUtils.isNotBlank(product.getGenericKeywords1()) ? ("<SearchTerms>" + GeneralUtils.replaceHtmlSign(product.getGenericKeywords1()) + "</SearchTerms>") : "") +
+                (StringUtils.isNotBlank(product.getGenericKeywords2()) ? ("<SearchTerms>" + GeneralUtils.replaceHtmlSign(product.getGenericKeywords2()) + "</SearchTerms>") : "") +
+                (StringUtils.isNotBlank(product.getGenericKeywords3()) ? ("<SearchTerms>" + GeneralUtils.replaceHtmlSign(product.getGenericKeywords3()) + "</SearchTerms>") : "") +
+                (StringUtils.isNotBlank(product.getGenericKeywords4()) ? ("<SearchTerms>" + GeneralUtils.replaceHtmlSign(product.getGenericKeywords4()) + "</SearchTerms>") : "") +
+                (StringUtils.isNotBlank(product.getGenericKeywords5()) ? ("<SearchTerms>" + GeneralUtils.replaceHtmlSign(product.getGenericKeywords5()) + "</SearchTerms>") : "") +
                 //"<ItemType>flat-sheets</ItemType>" +
                 "<IsGiftWrapAvailable>false</IsGiftWrapAvailable>" +
                 "<IsGiftMessageAvailable>false</IsGiftMessageAvailable>\n" +
@@ -179,7 +182,7 @@ public class AmzXmlTemplate {
                 saleStr = " <Sale>" +
                         " <StartDate>" + GeneralUtils.localToUTC(var.getSaleStartTime()) + "</StartDate>" +
                         " <EndDate>" + GeneralUtils.localToUTC(var.getSaleEndTime()) + "</EndDate>" +
-                        " <SalePrice currency='USD'>" + GeneralUtils.formatTwo(var.getSalePrice().divide(new BigDecimal(shop.get("EXRATE").toString()))) + "</SalePrice>" +
+                        " <SalePrice currency='USD'>" + GeneralUtils.formatTwo(var.getSalePrice().divide(new BigDecimal(shop.get("EXRATE").toString()), 2, ROUND_HALF_DOWN)) + "</SalePrice>" +
                         " </Sale>";
             }
             varStr += "<Message>" +
@@ -216,27 +219,27 @@ public class AmzXmlTemplate {
     private static String getPriceStr(BigDecimal rate, BigDecimal price, String code) {
 
         if (CountryCodeEnum.US.equal(code)) {
-            return "<StandardPrice currency='USD'>" + GeneralUtils.mutiHalfTwo(rate.multiply(price)) + "</StandardPrice>";
+            return "<StandardPrice currency='USD'>" + GeneralUtils.mutiHalfTwo(price.divide(rate, 2, ROUND_HALF_DOWN)) + "</StandardPrice>";
         }
 
         if (CountryCodeEnum.GB.equal(code)) {
-            return "<StandardPrice currency='GBP'>" + GeneralUtils.mutiHalfTwo(rate.multiply(price)) + "</StandardPrice>";
+            return "<StandardPrice currency='GBP'>" + GeneralUtils.mutiHalfTwo(price.divide(rate, 2, ROUND_HALF_DOWN)) + "</StandardPrice>";
         }
 
         if (CountryCodeEnum.CA.equal(code)) {
-            return "<StandardPrice currency='CAD'>" + GeneralUtils.mutiHalfTwo(rate.multiply(price)) + "</StandardPrice>";
+            return "<StandardPrice currency='CAD'>" + GeneralUtils.mutiHalfTwo(price.divide(rate, 2, ROUND_HALF_DOWN)) + "</StandardPrice>";
         }
 
         if (CountryCodeEnum.DE.equal(code)) {
-            return "<StandardPrice currency='EUR'>" + GeneralUtils.mutiHalfTwo(rate.multiply(price)) + "</StandardPrice>";
+            return "<StandardPrice currency='EUR'>" + GeneralUtils.mutiHalfTwo(price.divide(rate, 2, ROUND_HALF_DOWN)) + "</StandardPrice>";
         }
 
         if (CountryCodeEnum.IT.equal(code)) {
-            return "<StandardPrice currency='EUR'>" + GeneralUtils.mutiHalfTwo(rate.multiply(price)) + "</StandardPrice>";
+            return "<StandardPrice currency='EUR'>" + GeneralUtils.mutiHalfTwo(price.divide(rate, 2, ROUND_HALF_DOWN)) + "</StandardPrice>";
         }
 
         if (CountryCodeEnum.FR.equal(code)) {
-            return "<StandardPrice currency='EUR'>" + GeneralUtils.mutiHalfTwo(rate.multiply(price)) + "</StandardPrice>";
+            return "<StandardPrice currency='EUR'>" + GeneralUtils.mutiHalfTwo(rate.divide(price, 2, ROUND_HALF_DOWN)) + "</StandardPrice>";
         }
 
         if (CountryCodeEnum.CN.equal(code)) {

@@ -180,8 +180,8 @@ public class ProductPublishController extends BaseController {
 
     @RequestMapping("public/category/init")
     @ResponseBody
-    public String init() {
-        productManagerService.initshopCategory();
+    public String init(String id) {
+        productManagerService.initshopCategory(id);
         return "success";
     }
 

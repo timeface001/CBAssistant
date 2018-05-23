@@ -43,7 +43,8 @@ public class AmzUpload {
         MarketplaceWebServiceConfig config = new MarketplaceWebServiceConfig();
 
         config.setServiceURL(shop.get("ENDPOINT").toString());
-
+        config.setSoTimeout(2000000);
+        config.setConnectionTimeout(2000000);
         return new MarketplaceWebServiceClient(
                 accessKeyId, secretAccessKey, appName, appVersion, config);
 
@@ -348,7 +349,6 @@ public class AmzUpload {
     public void write(String path, Map<String, Object> shop) {
         MarketplaceWebService service = getService(shop);
 
-
         String merchantId = shop.get("MERCHANT_ID").toString();
 
         RequestReportRequest request = new RequestReportRequest()
@@ -402,19 +402,22 @@ public class AmzUpload {
 
                 System.out.println("REPORTID:"+reportId);
                 //reportId="9497489579017662";
+                long l1 = System.currentTimeMillis();
                 if (reportId != null) {
                     GetReportRequest requestpp = new GetReportRequest();
                     requestpp.setMerchant(merchantId);
 
                     requestpp.setReportId(reportId);
+                    System.out.println("请求开始");
                     try {
                         requestpp.setReportOutputStream(new FileOutputStream(path));
 
                         GetReportResponse respon = service.getReport(requestpp);
                         System.out.println(respon.isSetGetReportResult());
-                    } catch (FileNotFoundException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
+                    System.out.println("请求结束，耗时" + (System.currentTimeMillis() - l1));
                 }
 
 

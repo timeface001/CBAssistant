@@ -492,9 +492,15 @@ public class ProductManagerService {
     @Autowired
     private CommonSet set;
 
-    public void initshopCategory() {
+    public void initshopCategory(String id) {
         Map<String, Object> params = new HashMap<>();
-        final List<Map<String, Object>> shops = shopManageService.selectShopsForImportCategory();
+         List<Map<String, Object>> shops = new ArrayList<>();
+        if(StringUtils.isBlank(id)){
+           //shops= shopManageService.selectShopsForImportCategory();
+        }else{
+            Map<String, Object> shop=shopManageService.selectShopById(id);
+            shops.add(shop);
+        }
         ThreadPoolExecutor executor = new ThreadPoolExecutor(2, 5, 100, TimeUnit.MINUTES, new ArrayBlockingQueue<Runnable>(10));
 
         for (Map<String, Object> shop : shops) {

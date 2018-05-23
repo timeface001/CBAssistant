@@ -1,5 +1,6 @@
 package com.crossborder.dao;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -23,4 +24,6 @@ public interface ShopManageDao {
     public List<Map<String, Object>> selectShopsById(Map<String, Object> map);
 
     List<Map<String,Object>> selectShopsForImport();
+
+    Map<String,Object> selectShopById(@Param("id") String id);
 }

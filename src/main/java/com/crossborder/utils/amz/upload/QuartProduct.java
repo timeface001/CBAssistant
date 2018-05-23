@@ -76,7 +76,7 @@ public class QuartProduct {
                     ProductAmzUpload upload = new ProductAmzUpload();
                     upload.setId(log.getProductId());
                     upload.setPublishStatus(String.valueOf(PublishStatusEnum.SUCCESS.toString()));
-                    upload.setUploadDesc(dto.getMsg());
+                    upload.setUploadDesc(" ");
                     productAmzUploadDao.updateByPrimaryKeySelective(upload);
 
                     ProductUploadLog ll = new ProductUploadLog();
