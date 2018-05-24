@@ -257,25 +257,25 @@
 
     function getCountryName(id) {
         if (id === "GB") {
-            return "英国";
+            return "英语";
         }
         if (id === "JP") {
-            return "日本";
+            return "日语";
         }
         if (id === "CN") {
-            return "中国";
+            return "中文";
         }
         if (id === "DE") {
-            return "德国";
+            return "德语";
         }
         if (id === "FR") {
-            return "法国";
+            return "法语";
         }
         if (id === "ES") {
-            return "西班牙";
+            return "西班牙语";
         }
         if (id === "IT") {
-            return "意大利";
+            return "意大利语";
         }
 
         return "";

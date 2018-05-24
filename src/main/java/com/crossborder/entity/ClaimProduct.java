@@ -5,93 +5,93 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 public class ClaimProduct {
-    private String id;
+    protected String id;
 
-    private String sku;
+    protected String sku;
 
-    private String createUser;
+    protected String createUser;
 
-    private BigDecimal price;
+    protected BigDecimal price;
 
-    private Integer quantity;
+    protected Integer quantity;
 
-    private String imagePath;
+    protected String imagePath;
 
-    private String itemUk;
+    protected String itemUk;
 
-    private String itemFr;
+    protected String itemFr;
 
-    private String itemDe;
+    protected String itemDe;
 
-    private String itemIt;
+    protected String itemIt;
 
-    private String itemEs;
+    protected String itemEs;
 
-    private String itemJp;
+    protected String itemJp;
 
-    private String itemCn;
+    protected String itemCn;
 
-    private String bulletPointUk;
+    protected String bulletPointUk;
 
-    private String bulletPointFr;
+    protected String bulletPointFr;
 
-    private String bulletPointDe;
+    protected String bulletPointDe;
 
-    private String bulletPointIt;
+    protected String bulletPointIt;
 
-    private String bulletPointEs;
+    protected String bulletPointEs;
 
-    private String bulletPointJp;
+    protected String bulletPointJp;
 
-    private String bulletPointCn;
+    protected String bulletPointCn;
 
-    private String keywordsUk;
+    protected String keywordsUk;
 
-    private String keywordsFr;
+    protected String keywordsFr;
 
-    private String keywordsDe;
+    protected String keywordsDe;
 
-    private String keywordsIt;
+    protected String keywordsIt;
 
-    private String keywordsEs;
+    protected String keywordsEs;
 
-    private String keywordsJp;
+    protected String keywordsJp;
 
-    private String keywordsCn;
+    protected String keywordsCn;
 
-    private String productDescriptionUk;
+    protected String productDescriptionUk;
 
-    private String productDescriptionFr;
+    protected String productDescriptionFr;
 
-    private String productDescriptionDe;
+    protected String productDescriptionDe;
 
-    private String productDescriptionIt;
+    protected String productDescriptionIt;
 
-    private String productDescriptionEs;
+    protected String productDescriptionEs;
 
-    private String productDescriptionJp;
+    protected String productDescriptionJp;
 
-    private String productDescriptionCn;
+    protected String productDescriptionCn;
 
-    private Timestamp createTime;
+    protected Timestamp createTime;
 
-    private Timestamp updateTime;
+    protected Timestamp updateTime;
 
-    private String productId;
+    protected String productId;
 
-    private String updateState;
+    protected String updateState;
 
-    private String skuType;
+    protected String skuType;
 
-    private String source;
+    protected String source;
 
-    private String typeId;
+    protected String typeId;
 
-    private String typeName;
+    protected String typeName;
 
-    private String userName;
+    protected String userName;
 
-    private String isPrepublish;
+    protected String isPrepublish;
 
     public String getId() {
         return id;

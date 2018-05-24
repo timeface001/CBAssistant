@@ -210,7 +210,22 @@
                 },
                 {
                     "data": function (val) {
-                        return val.isPrepublish == 1 ? "已加入" : "未加入";
+                        switch (val.isPrepublish) {
+                            case "0":
+                                return "未发布";
+                                break;
+                            case "1":
+                                return "发布失败";
+                                break;
+                            case "2":
+                                return "发布成功";
+                                break;
+                            case "3":
+                                return "发布中";
+                                break;
+                            default:
+                                return " ";
+                        }
                     }
                 },
                 {

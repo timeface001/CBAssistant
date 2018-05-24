@@ -1,25 +1,25 @@
 package com.crossborder.utils;
 
 public enum PublishStatusEnum {
-    NOT(0),
-    FAILED(1),
-    SUCCESS(2),
-    PROCESS(3);
+    NOT("0"),
+    FAILED("1"),
+    SUCCESS("2"),
+    PROCESS("3");
 
     //0未发布  1发布失败 2发布成功 3发布中
 
 
-    private int val;
+    private String val;
 
-    PublishStatusEnum(int val) {
+    PublishStatusEnum(String val) {
         this.val = val;
     }
 
-    public int getVal() {
+    public String getVal() {
         return val;
     }
 
-    public void setVal(int val) {
+    public void setVal(String val) {
         this.val = val;
     }
 

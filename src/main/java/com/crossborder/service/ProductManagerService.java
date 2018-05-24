@@ -255,6 +255,7 @@ public class ProductManagerService {
         product.setBulletPointUk(JSON.toJSONString(pointUk));
         product.setBulletPointFr(JSON.toJSONString(pointFr));*/
         product.setUpdateState("1");//已编辑
+        product.setIsPrepublish(PublishStatusEnum.NOT.getVal());
         claimProductExtMapper.updateByPrimaryKeySelective(product);
     }
 
@@ -458,8 +459,17 @@ public class ProductManagerService {
         product.setUpdateDelete("update");
         product.setPublishTime(new Date());
 
+
+        updateClaimProduct(PublishStatusEnum.PROCESS, product.getProductAmzId());
         productAmzUploadDao.updateByPrimaryKeySelective(product);
         logger.debug("************  end upload product ****************  id -----> " + product.getId());
+    }
+
+    public void updateClaimProduct(PublishStatusEnum statusEnum, String claimId) {
+        ClaimProduct product = new ClaimProduct();
+        product.setId(claimId);
+        product.setIsPrepublish(statusEnum.toString());
+        claimProductExtMapper.updateByPrimaryKeySelective(product);
     }
 
     @Resource
@@ -533,7 +543,7 @@ public class ProductManagerService {
     // "C:\\Users\\fengsong\\Desktop\\cate.txt"
     public void initCategory(String path, Map<String, Object> shop) {
 
-        amzUpload.write(path, shop);
+        //amzUpload.write(path, shop);
 
         InputStreamReader isr = null;
         try {
@@ -551,6 +561,7 @@ public class ProductManagerService {
             List<ProductUploadCategory> categories = new ArrayList<>();
             for (Element e : list) {
                 i++;
+                String itemType = e.getChild("browseNodeAttributes").getChildText("attribute") == null ? "" : e.getChild("browseNodeAttributes").getChildText("attribute");
                 ProductUploadCategory category = new ProductUploadCategory();
                 boolean hasChildren = e.getChild("hasChildren").getText().equals("true");
                 if (hasChildren) {
@@ -572,7 +583,7 @@ public class ProductManagerService {
                     pc.setShopId(shop.get("SHOP_ID").toString());
                     pc.setHasChild("0");
                     pc.setTypeDef("");
-                    pc.setItemType("");
+                    pc.setItemType(itemType);
                     pc.setPath("");
                     pc.setChildCount(0);
 
@@ -586,7 +597,7 @@ public class ProductManagerService {
 
                 category.setParentId(pathp.split(",")[pathp.split(",").length - 2]);
                 category.setPath(pathp);
-                category.setItemType("");
+                category.setItemType(itemType);
                 category.setCountryCode(code);
                 category.setShopId(shop.get("SHOP_ID").toString());
                 category.setTypeDef(e.getChildText("productTypeDefinitions"));
