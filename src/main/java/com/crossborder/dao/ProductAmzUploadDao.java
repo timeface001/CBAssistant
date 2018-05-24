@@ -12,7 +12,7 @@ import java.util.Map;
 public interface ProductAmzUploadDao extends ProductAmzUploadMapper{
      List<ProductAmzUpload> selectList(Map<String, Object> params);
 
-    void deleteByAmzId(@Param("amzId") String id);
+    void deleteByAmzId(@Param("amzId") String id, @Param("shopId") String shopId);
 
-    List<ProductAmzUpload> selectByAmzId(@Param("amzId") String id);
+    List<ProductAmzUpload> selectByAmzId(@Param("amzId") String id, @Param("shopId") String shopId);
 }

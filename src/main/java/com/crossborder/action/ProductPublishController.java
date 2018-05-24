@@ -87,7 +87,7 @@ public class ProductPublishController extends BaseController {
             product = productManagerService.selectAmzUploadProduct(id);
             request.setAttribute("type", 1);
         } else {
-            product = productManagerService.selectOneByAmzID(id);
+            product = productManagerService.selectOneByAmzID(id, null);
             if (product == null || product.getId() == null) {
                 product = new ProductAmzUpload();
                 ClaimProduct claimProduct = productManagerService.selectClaimProduct(id);
@@ -95,7 +95,8 @@ public class ProductPublishController extends BaseController {
                 product.setItemName(claimProduct.getItemCn());
                 request.setAttribute("type", 0);
             } else {
-                request.setAttribute("type", 1);
+                request.setAttribute("type", 0);
+                product.setId(id);
             }
         }
         request.setAttribute("product", product);
@@ -161,13 +162,17 @@ public class ProductPublishController extends BaseController {
                 params.put("id", product.getShopId());
                 List<Map<String, Object>> list = shopManageService.selectShops(params);
                 String id = "";
+                System.out.println("claim publish start.....");
                 try {
-                    id = productManagerService.prePublishProduct(product.getId(), list.get(0).get("COUNTRY_CODE").toString(),getUserId());
+                    id = productManagerService.prePublishProduct(product.getId(), list.get(0).get("COUNTRY_CODE").toString(), getUserId(), product.getShopId());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
                 logger.debug("publish from claim list: upload id :" + id);
-                product = productAmzUploadDao.selectByPrimaryKey(id);
+                //product = productAmzUploadDao.selectByPrimaryKey(id);
+                System.out.println("publish product:" + id + " to shop:" + product.getShopId());
+                product.setProductAmzId(product.getId());
+                product.setId(id);
                 productManagerService.uploadProduct(product, list.get(0));
             }
         } catch (Exception e) {

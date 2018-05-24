@@ -84,6 +84,9 @@ public class QuartProduct {
                     ll.setStatus(PublishStatusEnum.SUCCESS.toString());
                     ll.setResponse(dto.getMsg());
                     productUploadLogDao.updateByPrimaryKeySelective(ll);
+
+                    ProductAmzUpload dd = productAmzUploadDao.selectByPrimaryKey(log.getProductId());
+                    productManagerService.updateClaimProduct(PublishStatusEnum.SUCCESS, dd.getProductAmzId());
                 } else if (StringUtils.isNotBlank(dto.getMsg())) {
                     ProductAmzUpload upload = new ProductAmzUpload();
                     upload.setId(log.getProductId());
@@ -96,6 +99,9 @@ public class QuartProduct {
                     ll.setStatus(PublishStatusEnum.FAILED.toString());
                     ll.setResponse(dto.getMsg());
                     productUploadLogDao.updateByPrimaryKeySelective(ll);
+
+                    ProductAmzUpload dd = productAmzUploadDao.selectByPrimaryKey(log.getProductId());
+                    productManagerService.updateClaimProduct(PublishStatusEnum.FAILED, dd.getProductAmzId());
                 }
             }
         }
