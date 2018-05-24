@@ -761,19 +761,19 @@
             layer_show("备货", "<%=request.getContextPath()%>/assistant/index/order/stocking.jsp?amazonOrderId=" + amazonOrderId + "&orderItemId=" + orderItemId + "&preStatus=" + preStatus, 400, 300);
         } else if (status == 3) {
             layer.confirm('您确定缺货吗？', function (index) {
-                confirm(3, orderItemId)
+                confirm(3, orderItemId);
             });
         } else if (status == 4) {
             layer_show("发货", "<%=request.getContextPath()%>/assistant/index/order/stocking.jsp?amazonOrderId=" + amazonOrderId + "&orderItemId=" + orderItemId + "&preStatus=" + preStatus, 400, 300);
         } else if (status == 5) {
             layer.confirm('您确定此订单有问题吗？', function (index) {
-                confirm(5, orderItemId)
+                confirm(5, orderItemId);
             });
         } else if (status == 6) {
             layer_show("退款", "<%=request.getContextPath()%>/assistant/index/order/refund.jsp?amazonOrderId=" + amazonOrderId + "&orderItemId=" + orderItemId + "&preStatus=" + preStatus, 400, 200);
         } else if (status == 7) {
             layer.confirm('您确定要妥投吗？', function (index) {
-                confirm(7, orderItemId)
+                confirm(7, orderItemId);
             });
         } else if (status == 8) {
             layer_show("修改运费", "<%=request.getContextPath()%>/assistant/index/order/stocking.jsp?amazonOrderId=" + amazonOrderId + "&sku=" + sku + "&preStatus=" + preStatus, 400, 300);

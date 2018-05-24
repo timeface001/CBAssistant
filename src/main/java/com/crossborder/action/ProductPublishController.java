@@ -162,7 +162,7 @@ public class ProductPublishController extends BaseController {
                 List<Map<String, Object>> list = shopManageService.selectShops(params);
                 String id = "";
                 try {
-                    id = productManagerService.prePublishProduct(product.getId(), list.get(0).get("COUNTRY_CODE").toString());
+                    id = productManagerService.prePublishProduct(product.getId(), list.get(0).get("COUNTRY_CODE").toString(),getUserId());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

@@ -65,4 +65,8 @@ public class OrderManageService {
     public List<Map<String, Object>> selectFees(Map<String, Object> map) {
         return orderManageDao.selectFees(map);
     }
+
+    public int delOrder(String amazonOrderId) {
+        return orderManageDao.delOrder(amazonOrderId);
+    }
 }

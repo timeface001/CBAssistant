@@ -395,7 +395,7 @@
                             $("#salesCompany").append($('<option value=' + data[i].COMPANY_ID + '>' + data[i].COMPANY_NAME + '</option>'));
                         }
                         /*var salesCompany = document.getElementById('salesCompany');
-                        salesCompany[0].selected = true;*/
+                         salesCompany[0].selected = true;*/
                     }
                 },
                 error: function (data) {
@@ -441,7 +441,9 @@
     }
     /*查询订单*/
     var isShowStatus = false;
+    var index = 0;
     function reloadTable(id) {
+        index = id;
         if (id == 8) {
             isShowStatus = true;
             document.getElementById('localStatus').value = "";
@@ -567,7 +569,7 @@
                         if (roleId == 100) {
                             return "<a style='text-decoration:none' title='获取佣金'  id='edit' data-id='" + data + "'  )>获取佣金</a>" +
                                     "&nbsp;&nbsp;" +
-                                    "<a style='text-decoration:none' title='删除'  id='del' data-id='" + data + "')>删除</a>";
+                                    "<a style='text-decoration:none' title='删除'  onClick=\"delOrder('" + full.AMAZONORDERID + "')\"'>删除</a>";
                         } else {
                             return "<a style='text-decoration:none' title='获取佣金'  id='edit' data-id='" + data + "'  )>获取佣金</a>";
                         }
@@ -643,7 +645,7 @@
                 layer.closeAll("loading");
                 if (data.code == 0) {
                     layer.msg(data.msg, {icon: 1, time: 1000});
-                    reloadTable(0)
+                    reloadTable(index)
                 } else {
                     layer.msg(data.msg, {icon: 2, time: 1000});
                 }
@@ -665,6 +667,30 @@
             }
         });
         layer.full(index);
+    }
+    function delOrder(amazonOrderId) {
+        layer.confirm('您确定要删除订单吗？', function (index) {
+            $.ajax({
+                type: 'POST',
+                url: '<%=request.getContextPath()%>/order/delOrder',
+                dataType: 'json',
+                data: {
+                    "amazonOrderId": amazonOrderId
+                },
+                success: function (data) {
+                    layer.closeAll("loading");
+                    if (data.code == 0) {
+                        layer.msg(data.msg, {icon: 1, time: 1000});
+                        reloadTable(0)
+                    } else {
+                        layer.msg(data.msg, {icon: 2, time: 1000});
+                    }
+                },
+                error: function (data) {
+                    layer.msg(data.msg, {icon: 2, time: 1000});
+                }
+            });
+        });
     }
 </script>
 </body>

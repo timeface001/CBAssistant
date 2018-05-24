@@ -359,4 +359,8 @@
             AND t2.TRACKNUM LIKE '%${trackNum}%'
         </if>
     </select>
+    <delete id="delOrder" parameterType="java.lang.String">
+        DELETE FROM T_ORDER
+        WHERE AMAZONORDERID = #{amazonOrderId,jdbcType=VARCHAR}
+    </delete>
 </mapper>

@@ -134,6 +134,10 @@ public class ProductAmzUpload {
 
     private String uploadDesc;
 
+    private String userName;
+
+    private String userId;
+
     public String getId() {
         return id;
     }
@@ -652,5 +656,21 @@ public class ProductAmzUpload {
 
     public void setCountryName(String countryName) {
         this.countryName = countryName;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }

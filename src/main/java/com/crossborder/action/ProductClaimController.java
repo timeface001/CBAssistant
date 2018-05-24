@@ -180,7 +180,7 @@ public class ProductClaimController extends BaseController {
     @ResponseBody
     public String prePublish(String id, String type) {
         try {
-            productManagerService.prePublishProduct(id, type);
+            productManagerService.prePublishProduct(id, type,getUserId());
         } catch (Exception e) {
             e.printStackTrace();
             return JSON.toJSONString(ResponseGen.genFail());

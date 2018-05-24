@@ -166,7 +166,7 @@ public class OrderManageController {
                 for (int j = 0; j < orderItemList.size(); j++) {
                     OrderItem orderItem = orderItemList.get(j);
                     //FeesEstimateResult feesEstimateResult = getProduct(orderItem, shop);
-                    Product product = getProduct(orderItem, shop);
+                    //Product product = getProduct(orderItem, shop);
                     LocalOrderItem localOrderItem = new LocalOrderItem();
                     /*for (Object obj : product.getAttributeSets().getAny()) {
                         Node nd = (Node) obj;
@@ -513,6 +513,28 @@ public class OrderManageController {
             e.printStackTrace();
             map.put("code", "-10");
             map.put("msg", "更新失败");
+        }
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
+    }
+
+    /**
+     * 删除订单
+     *
+     * @param amazonOrderId
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "delOrder", produces = "text/plain;charset=UTF-8")
+    public String delOrder(String amazonOrderId) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            orderManageService.delOrder(amazonOrderId);
+            map.put("code", "0");
+            map.put("msg", "删除成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("code", "-10");
+            map.put("msg", "删除失败");
         }
         return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }

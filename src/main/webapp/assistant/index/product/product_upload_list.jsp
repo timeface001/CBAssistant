@@ -37,17 +37,10 @@
 <div class="page-container">
     <form id="productForm" class="form form-horizontal">
         <div class="row cl">
-            <label class="form-label col-xs-1 col-sm-1">语言：</label>
+            <label class="form-label col-xs-1 col-sm-1">国家：</label>
             <div class="formControls col-xs-2 col-sm-2">
                 <select id="language" name="language" class="select" style="height: 32px">
                     <option value="">请选择</option>
-                    <option value="CN">中国</option>
-                    <option value="GB">英国</option>
-                    <option value="JP">日本</option>
-                    <option value="DE">德国</option>
-                    <option value="FR">法国</option>
-                    <option value="ES">西班牙</option>
-                    <option value="IT">意大利</option>
                 </select>
             </div>
             <label class="form-label col-xs-1 col-sm-1">标题：</label>
@@ -100,7 +93,8 @@
                 <th width="100">SKU</th>
                 <th width="60">售价</th>
                 <th width="100">库存</th>
-                <th width="150">发布状况描述</th>
+                <th width="150">状态</th>
+                <th width="100">发布人</th>
                 <th width="100">时间</th>
                 <th width="100">操作</th>
             </tr>
@@ -136,7 +130,25 @@
         layer_show(title, url, w);
     }
     function initSelect() {
-
+        $.ajax({
+            type: 'POST',
+            url: '<%=request.getContextPath()%>/common/getList',
+            dataType: 'json',
+            data: {
+                "code": "countries"
+            },
+            success: function (data) {
+                if (data.code == 0) {
+                    var data = data.data;
+                    for (var i = 0; i < data.length; i++) {
+                        $("#language").append($('<option value=' + data[i].ID + '>' + data[i].NAME + '</option>'));
+                    }
+                }
+            },
+            error: function (data) {
+                layer.msg(data.msg, {icon: 2, time: 1000});
+            }
+        });
     }
 
     /*初始化table*/
@@ -171,7 +183,7 @@
                 },
                 {
                     "data": function (val) {
-                        return getCountryName(val.languageId);
+                        return val.countryName == null ? "" : val.countryName;
                     }
                 },
                 {
@@ -209,6 +221,11 @@
                 },
                 {
                     "data": function (val) {
+                        return val.userName == null ? "" : val.userName;
+                    }
+                },
+                {
+                    "data": function (val) {
                         return "<p style='text-align: left'>创建:</p><p style='text-align: left'>" + getMyDate(val.createTime) + "</p>" + "<p style='text-align: left'>发布时间</p><p style='text-align: left'>" + getMyDate(val.publishTime) + "</p>";
                     }
                 }
@@ -222,7 +239,7 @@
                     }
                 },
                 {
-                    "targets": [10],
+                    "targets": [11],
                     "data": "id",
                     "render": function (data, type, full) {
                         return ( "<a style='text-decoration:none' title=''  onClick=\"publishProduct('" + full.id + "')\"')>发布</a>") +
