@@ -15,7 +15,6 @@ import com.crossborder.entity.ProductItemVar;
 import com.crossborder.utils.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.jdom.JDOMException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -82,6 +81,9 @@ public class AmzUpload {
         FileInputStream productIs = AmzXmlTemplate.uploadProduct(product, shop, commonSet.getAmzUploadProductPath(), vars.get(0), true);
         dto = getUploadResult(getService(shop), getSubmitFeedRequest(productIs, shop, AmzFeeType.PRODUCT_FEED));
 
+        if (!dto.isSuccess()) {
+            return dto;
+        }
         productIdGenDao.updateUsed(gen.getType(), product.getId(), gen.getProductId());
 
         new Thread(new Runnable() {

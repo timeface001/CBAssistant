@@ -171,7 +171,7 @@
                 },
                 {
                     "data": function (val) {
-                        return getCountryName(val.languageId);
+                        return val.countryName;
                     }
                 },
                 {
@@ -182,7 +182,7 @@
 
                 {
                     "data": function (val) {
-                        return val.itemSku == null ? "" : val.itemSku;
+                        return val.itemSku == null ? "" : val.itemSku+"-"+val.amzSku;
                     }
                 },
                 {"data": "standardPrice"},

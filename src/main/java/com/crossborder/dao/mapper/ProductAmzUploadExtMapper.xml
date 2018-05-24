@@ -30,7 +30,7 @@
     </select>
 
     <update id="deleteByAmzId" parameterType="java.util.Map">
-        UPDATE T_PRODUCT_ITEM_AMZ_UPLOAD SET P_STATE=0 WHERE PRODUCT_AMZ_ID=#{amzId}
+        UPDATE T_PRODUCT_ITEM_AMZ_UPLOAD SET P_STATE=0 WHERE PRODUCT_AMZ_ID=#{amzId} AND SHOP_ID=#{shopId}
     </update>
 
     <select id="selectByAmzId" parameterType="java.util.Map" resultMap="BaseResultMap">
@@ -38,10 +38,13 @@
         <include refid="Base_Column_List"/>
         from T_PRODUCT_ITEM_AMZ_UPLOAD a
         LEFT JOIN T_SHOP b
-        ON a.shop_id = b.shop_id
+        ON a.SHOP_ID = b.SHOP_ID
         LEFT JOIN T_COUNTRY c
-        ON a.language_id = c.id
-        WHERE a.P_STATE=1 AND a.P_STATE=1 AND PRODUCT_AMZ_ID=#{amzId}
+        ON a.LANGUAGE_ID = c.id
+        WHERE a.P_STATE=1 AND a.PRODUCT_AMZ_ID=#{amzId}
+        <if test="shopId != null">
+            AND a.SHOP_ID=#{shopId}
+        </if>
     </select>
 
 
