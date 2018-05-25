@@ -37,7 +37,7 @@
             <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>产品名称：</label>
             <div class="formControls col-xs-8 col-sm-9">
                 <input type="text" class="input-text" value="" placeholder="" id="pName" name="name"
-                       lay-verify="required" required>
+                       lay-verify="required">
             </div>
         </div>
         <div class="row cl">

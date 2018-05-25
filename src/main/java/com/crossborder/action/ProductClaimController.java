@@ -102,7 +102,6 @@ public class ProductClaimController extends BaseController {
         if (!StringUtils.isEmpty(salePrice)) {
             var.setSalePrice(new BigDecimal(salePrice));
         }
-
         Map<String, String> imags = imagePath(product.getImagePath());
         var.setQuantity(product.getQuantity());
         var.setMainPath(imags.get("main"));
@@ -122,9 +121,18 @@ public class ProductClaimController extends BaseController {
             }
         }
         list.add(var);
-        productManagerService.save(product);
-        productSkuTypeService.save(list, product.getId());
-        return JSON.toJSONString(ResponseGen.genSuccess());
+        try {
+            productManagerService.save(product);
+            productSkuTypeService.save(list, product.getId());
+            return JSON.toJSONString(ResponseGen.genSuccess());
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (e.getMessage().contains("值太大")) {
+                return JSON.toJSONString(ResponseGen.genFailMsg("产品描述过长，保存失败"));
+            } else {
+                return JSON.toJSONString(ResponseGen.genFailMsg("保存失败"));
+            }
+        }
     }
 
 
@@ -180,7 +188,7 @@ public class ProductClaimController extends BaseController {
     @ResponseBody
     public String prePublish(String id, String type) {
         try {
-            productManagerService.prePublishProduct(id, type,getUserId(),"");
+            productManagerService.prePublishProduct(id, type, getUserId(), "");
             //productManagerService.prePublishProduct(id, type);
         } catch (Exception e) {
             e.printStackTrace();
@@ -504,7 +512,7 @@ public class ProductClaimController extends BaseController {
                                 Translate.TranslateOption.sourceLanguage(lang),
                                 Translate.TranslateOption.targetLanguage("it"));
                 it = translation.getTranslatedText();
-            } else if (lang.equals("it")){
+            } else if (lang.equals("it")) {
                 translation =
                         translate.translate(
                                 s,

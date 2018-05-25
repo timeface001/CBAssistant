@@ -543,7 +543,7 @@ public class ProductManagerService {
     // "C:\\Users\\fengsong\\Desktop\\cate.txt"
     public void initCategory(String path, Map<String, Object> shop) {
 
-        //amzUpload.write(path, shop);
+        amzUpload.write(path, shop);
 
         InputStreamReader isr = null;
         try {

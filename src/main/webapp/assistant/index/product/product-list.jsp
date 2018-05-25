@@ -303,7 +303,6 @@
         if (ids == null) {
             ids = getIDs();
         }
-
         layer.confirm('确定认领商品吗？', function (index) {
             layer.load();
             $.ajax({
@@ -321,7 +320,8 @@
                         setTimeout(function () {
                             document.getElementById("refresh").click();
                         }, 1000);
-
+                    }else{
+                        layer.msg(data.msg, {icon: 5, time: 1000});
                     }
                 },
                 error: function (data) {

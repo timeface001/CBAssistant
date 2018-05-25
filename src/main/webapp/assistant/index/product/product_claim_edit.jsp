@@ -1032,7 +1032,7 @@
                     success: function (data) {
                         layer.closeAll('loading');
                         if (data.success) {
-                            layer.msg("保存成功", {icon: 6, time: 1000});
+                            layer.msg(data.msg, {icon: 6, time: 1000});
                             setTimeout(function () {
                                 location.href = '<%=request.getContextPath()%>/assistant/index/product/product_claim_list.jsp';
                             }, 500);

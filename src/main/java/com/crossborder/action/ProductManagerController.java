@@ -64,7 +64,11 @@ public class ProductManagerController extends BaseController {
         } catch (Exception e) {
             e.printStackTrace();
             result.put("success", false);
-            result.put("msg", "保存失败");
+            if (e.getMessage().contains("值太大")) {
+                result.put("msg", "产品描述过长，保存失败");
+            } else {
+                result.put("msg", "保存失败");
+            }
         }
         return JSON.toJSONString(result);
     }
@@ -82,11 +86,15 @@ public class ProductManagerController extends BaseController {
         try {
             productManagerService.updateState(data.split(","), ProductStateEnum.claim.generate(type));
             result.put("success", true);
-            result.put("msg", "操作成功");
+            result.put("msg", "认领成功");
         } catch (Exception e) {
             e.printStackTrace();
             result.put("success", false);
-            result.put("msg", "操作失败");
+            if (e.getMessage().contains("值太大")) {
+                result.put("msg", "产品描述过长，认领失败");
+            } else {
+                result.put("msg", "认领失败");
+            }
         }
         return JSON.toJSONString(result);
     }
