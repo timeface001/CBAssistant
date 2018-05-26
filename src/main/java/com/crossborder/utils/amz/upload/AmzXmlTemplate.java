@@ -242,8 +242,12 @@ public class AmzXmlTemplate {
             return "<StandardPrice currency='EUR'>" + GeneralUtils.mutiHalfTwo(rate.divide(price, 2, ROUND_HALF_DOWN)) + "</StandardPrice>";
         }
 
+        if (CountryCodeEnum.MX.equal(code)) {
+            return "<StandardPrice currency='MXN'>" + GeneralUtils.mutiHalfTwo(rate.divide(price, 2, ROUND_HALF_DOWN)) + "</StandardPrice>";
+        }
+
         if (CountryCodeEnum.CN.equal(code)) {
-            return "<StandardPrice currency='DEFAULT'>" + price + "</StandardPrice>";
+            return "<StandardPrice currency='RMB'>" + price + "</StandardPrice>";
         }
         return "";
     }
