@@ -15,4 +15,6 @@ public interface ProductAmzUploadDao extends ProductAmzUploadMapper{
     void deleteByAmzId(@Param("amzId") String id, @Param("shopId") String shopId);
 
     List<ProductAmzUpload> selectByAmzId(@Param("amzId") String id, @Param("shopId") String shopId);
+
+    ProductAmzUpload selectBySku(@Param("itemSku") String itemSku, @Param("amzSku") String amzSku);
 }

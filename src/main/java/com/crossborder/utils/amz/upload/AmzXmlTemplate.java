@@ -36,7 +36,7 @@ public class AmzXmlTemplate {
                 "<SKU>" + product.getItemSku() + "-" + var.getSku() + "</SKU>" +
                 "<StandardProductID>" +
                 "<Type>" + product.getExternalProductIdType() + "</Type><Value>" + product.getExternalProductId() + "</Value></StandardProductID>" +
-                "<ItemPackageQuantity>" + var.getQuantity() + "</ItemPackageQuantity>" +
+                "<ItemPackageQuantity>" + (var.getQuantity()==null?"0":var.getQuantity()) + "</ItemPackageQuantity>" +
                 /*"<LaunchDate>" + GeneralUtils.formatDate(new Date(), "yyyy-MM-dd'T'hh:mm:ss") + "</LaunchDate>" +*/
                 "<DescriptionData>" +
                 "<Title>" + product.getItemName() + "</Title>" +
@@ -340,7 +340,7 @@ public class AmzXmlTemplate {
 
 
         try {
-            return new FileInputStream(FileUtils.byte2File(text.getBytes(), path, product.getId() + "product_relationship.txt"));
+            return new FileInputStream(FileUtils.byte2File(text.getBytes(), path, product.getId() + "product_imgs.txt"));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

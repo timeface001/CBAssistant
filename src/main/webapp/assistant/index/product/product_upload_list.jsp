@@ -226,7 +226,7 @@
                 },
                 {
                     "data": function (val) {
-                        return "<p style='text-align: left'>创建:</p><p style='text-align: left'>" + getMyDate(val.createTime) + "</p>" + "<p style='text-align: left'>发布时间</p><p style='text-align: left'>" + getMyDate(val.publishTime) + "</p>";
+                        return "<p style='text-align: left'>创建:</p><p style='text-align: left'>" + getMyDate(val.createTime,true) + "</p>" + "<p style='text-align: left'>发布时间</p><p style='text-align: left'>" + getMyDate(val.publishTime,false) + "</p>";
                     }
                 }
             ],
@@ -414,19 +414,24 @@
     }
 
     //将时间戳格式化
-    function getMyDate(time) {
+    function getMyDate(time,bol) {
         if (typeof(time) == "undefined") {
             return "";
         }
         var oDate = new Date(time),
-                oYear = oDate.getFullYear(),
-                oMonth = oDate.getMonth() + 1,
-                oDay = oDate.getDate(),
-                oHour = oDate.getHours(),
-                oMin = oDate.getMinutes(),
-                oSen = oDate.getSeconds(),
+            oYear = oDate.getFullYear(),
+            oMonth = oDate.getMonth() + 1,
+            oDay = oDate.getDate(),
+            oHour = oDate.getHours(),
+            oMin = oDate.getMinutes(),
+            oSen = oDate.getSeconds(),oTime;
+        if(bol){
+
                 oTime = oYear + '-' + getzf(oMonth) + '-' + getzf(oDay);//+' '+ getzf(oHour) +':'+ getzf(oMin) +':'+getzf(oSen);//最后拼接时间
 
+        }else{
+            oTime = oYear + '-' + getzf(oMonth) + '-' + getzf(oDay)+' '+ getzf(oHour) +':'+ getzf(oMin) +':'+getzf(oSen);//最后拼接时间
+        }
         return oTime;
     }
     ;

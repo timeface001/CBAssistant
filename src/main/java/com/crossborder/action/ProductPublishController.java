@@ -10,6 +10,8 @@ import com.crossborder.service.ShopManageService;
 import com.crossborder.utils.GeneralUtils;
 import com.crossborder.utils.ResponseDto;
 import com.crossborder.utils.ResponseGen;
+import com.crossborder.utils.TranslateDto;
+import com.crossborder.utils.amz.upload.CountryCodeEnum;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.StringUtils;
@@ -22,6 +24,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,6 +71,12 @@ public class ProductPublishController extends BaseController {
         result.put("recordsTotal", pageInfo.getTotal());
         result.put("recordsFiltered", pageInfo.getTotal());
         return JSON.toJSONString(result);
+    }
+
+    @RequestMapping(value = "/product/claim/single", produces = "text/plain;charset=UTF-8")
+    @ResponseBody
+    public String productDetail(String id) {
+        return JSON.toJSONString(productManagerService.selectClaimProduct(id));
     }
 
     /**
@@ -142,37 +151,64 @@ public class ProductPublishController extends BaseController {
     @Resource
     private ProductAmzUploadDao productAmzUploadDao;
 
+    private String translate(String str, String lang, String responseLang) {
+        List<String> list = new ArrayList<>();
+        list.add(str);
+        TranslateDto dto = ProductClaimController.getTanslateList(list, lang).get(0);
+        if (CountryCodeEnum.FR.equal(responseLang)) {
+            return dto.getFr();
+        } else if (CountryCodeEnum.ES.equal(responseLang)) {
+            return dto.getEs();
+        } else if (CountryCodeEnum.JP.equal(responseLang)) {
+            return dto.getJp();
+        } else if (CountryCodeEnum.CN.equal(responseLang)) {
+            return dto.getCn();
+        } else if (CountryCodeEnum.GB.equal(responseLang)) {
+            return dto.getUk();
+        } else if (CountryCodeEnum.IT.equal(responseLang)) {
+            return dto.getIt();
+        } else if (CountryCodeEnum.DE.equal(responseLang)) {
+            return dto.getDe();
+        }
+
+        return "";
+    }
+
     @RequestMapping(value = "/product/publish", produces = "text/plain;charset=UTF-8")
     @ResponseBody
     public String publish(ProductAmzUpload product, String type) {
         ResponseDto dto = new ResponseDto();
         dto.setSuccess(true);
         dto.setMsg("数据提交成功");
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", product.getShopId());
+        List<Map<String, Object>> list = shopManageService.selectShops(params);
+
+        Map<String, Object> shop = list.get(0);
         try {
             if (type.equals("1")) {
                 if (StringUtils.isNotBlank(product.getShopId())) {
-                    Map<String, Object> params = new HashMap<>();
-                    params.put("id", product.getShopId());
                     productAmzUploadDao.updateByPrimaryKeySelective(product);
                     product = productAmzUploadDao.selectByPrimaryKey(product.getId());
-                    productManagerService.uploadProduct(product, shopManageService.selectShops(params).get(0));
+                    //product.setItemName(translate(product.getItemName(),));
+                    productManagerService.uploadProduct(product, shop);
                 }
             } else {//认领列表直接发布
-                Map<String, Object> params = new HashMap<>();
-                params.put("id", product.getShopId());
-                List<Map<String, Object>> list = shopManageService.selectShops(params);
+
                 String id = "";
                 System.out.println("claim publish start.....");
                 try {
-                    id = productManagerService.prePublishProduct(product.getId(), list.get(0).get("COUNTRY_CODE").toString(), getUserId(), product.getShopId());
+                    id = productManagerService.prePublishProduct(product.getId(), shop.get("COUNTRY_CODE").toString(), getUserId(), product.getShopId());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
                 logger.debug("publish from claim list: upload id :" + id);
-                //product = productAmzUploadDao.selectByPrimaryKey(id);
+                ProductAmzUpload product1 = productAmzUploadDao.selectByPrimaryKey(id);
                 System.out.println("publish product:" + id + " to shop:" + product.getShopId());
                 product.setProductAmzId(product.getId());
                 product.setId(id);
+                product.setAmzSku(product1.getAmzSku());
                 productManagerService.uploadProduct(product, list.get(0));
             }
         } catch (Exception e) {
@@ -218,4 +254,5 @@ public class ProductPublishController extends BaseController {
         }
         return JSON.toJSONString(map);
     }
+
 }

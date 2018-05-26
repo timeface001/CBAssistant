@@ -158,7 +158,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">数量</label>
                 <div class="layui-inline">
-                    <input type="text" name="quantity" value="${productVar.quantity}" placeholder="请输入数量"
+                    <input type="text" name="quantity" value="${productVar.quantity==null?30:productVar.quantity}" placeholder="请输入数量"
                            autocomplete="off"
                            class="layui-input">
                 </div>
@@ -951,6 +951,11 @@
                         isItemImags = false;
                     }
                     data.field["imagePath"] = imagePathValue;
+                    console.log(data.field['quantity']);
+                    if (data.field['quantity'] == null || $.trim(data.field['quantity']).length == 0) {
+                        layer.msg("库存数量不能为空！", {icon: 5, time: 1000});
+                        return false;
+                    }
                 } else {//多变中
                     if (selectValue == null || selectValue == "") {
                         layer.msg("请选择变种主题！", {icon: 5, time: 1000});

@@ -9,6 +9,7 @@ import com.amazonaws.mws.MarketplaceWebServiceConfig;
 import com.amazonaws.mws.MarketplaceWebServiceException;
 import com.amazonaws.mws.model.*;
 import com.crossborder.dao.ProductIdGenDao;
+import com.crossborder.dao.ProductUploadLogDao;
 import com.crossborder.entity.ProductAmzUpload;
 import com.crossborder.entity.ProductIdGen;
 import com.crossborder.entity.ProductItemVar;
@@ -31,6 +32,8 @@ public class AmzUpload {
     private CommonSet commonSet;
     @Autowired
     private ProductIdGenDao productIdGenDao;
+    @Autowired
+    private ProductUploadLogDao productUploadLogDao;
 
     private MarketplaceWebService getService(Map<String, Object> shop) {
         final String accessKeyId = shop.get("ACCESSKEY_ID").toString();
@@ -66,25 +69,31 @@ public class AmzUpload {
 
 
         ResponseDto result = new ResponseDto();
-        ProductIdGen gen = productIdGenDao.selectProductIdForUseOne(null, GeneralUtils.getUserId());
-        if (gen == null) {
-            System.out.println("UPC库中没有可用ID...");
-            result.setMsg("UPC库中没有可用ID");
-            result.setCode("001");
-            result.setSuccess(false);
-            result.setData("");
-            return result;
+        ProductIdGen gen = null;
+        if (StringUtils.isBlank(product.getExternalProductId())) {
+            gen = productIdGenDao.selectProductIdForUseOne(null, GeneralUtils.getUserId());
+            if (gen == null) {
+                System.out.println("UPC库中没有可用ID...");
+                result.setMsg("UPC库中没有可用ID");
+                result.setCode("001");
+                result.setSuccess(false);
+                result.setData("");
+                return result;
+            }
+
+            product.setExternalProductId(gen.getProductId());
+            product.setExternalProductIdType(gen.getType());
         }
+
         final ResponseDto<String> dto;
-        product.setExternalProductId(gen.getProductId());
-        product.setExternalProductIdType(gen.getType());
+
         FileInputStream productIs = AmzXmlTemplate.uploadProduct(product, shop, commonSet.getAmzUploadProductPath(), vars.get(0), true);
         dto = getUploadResult(getService(shop), getSubmitFeedRequest(productIs, shop, AmzFeeType.PRODUCT_FEED));
 
         if (!dto.isSuccess()) {
             return dto;
         }
-        productIdGenDao.updateUsed(gen.getType(), product.getId(), gen.getProductId());
+        productIdGenDao.updateUsed(product.getExternalProductIdType(), product.getId(), product.getExternalProductId());
 
         new Thread(new Runnable() {
             @Override
@@ -116,9 +125,15 @@ public class AmzUpload {
                 } while (!dto1.isSuccess() && i < 3);
                 System.out.println(JSON.toJSONString(dto1));
                 System.out.println("上传其他信息");
-                getUploadResult(getService(shop), getSubmitFeedRequest(inventoryIs, shop, AmzFeeType.INVENTORY_FEED));
-                getUploadResult(getService(shop), getSubmitFeedRequest(priceIs, shop, AmzFeeType.PRICING_FEED));
-                getUploadResult(getService(shop), getSubmitFeedRequest(imIs, shop, AmzFeeType.PRODUCT_IMAGES_FEED));
+                String str = "";
+                try {
+                    str += getUploadResult(getService(shop), getSubmitFeedRequest(inventoryIs, shop, AmzFeeType.INVENTORY_FEED)).getData();
+                    str += "," + getUploadResult(getService(shop), getSubmitFeedRequest(priceIs, shop, AmzFeeType.PRICING_FEED)).getData();
+                    str += "," + getUploadResult(getService(shop), getSubmitFeedRequest(imIs, shop, AmzFeeType.PRODUCT_IMAGES_FEED)).getData();
+                    System.out.println("其他信息上传submitID:" + str);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }).start();
 
@@ -136,21 +151,30 @@ public class AmzUpload {
         FileInputStream relations = AmzXmlTemplate.uploadRelationShop(product, shop, commonSet.getAmzUploadProductPath(), vars);
 
         List<ResponseDto> resList = new ArrayList<>();
-        for (ProductItemVar var : vars) {
-            ProductIdGen gen = productIdGenDao.selectProductIdForUseOne(null, GeneralUtils.getUserId());
-            if (gen != null) {
-                product.setExternalProductId(gen.getProductId());
-                product.setExternalProductIdType(gen.getType());
-                FileInputStream productIs = AmzXmlTemplate.uploadProduct(product, shop, commonSet.getAmzUploadProductPath(), var, false);
-                resList.add(getUploadResult(getService(shop), getSubmitFeedRequest(productIs, shop, AmzFeeType.PRODUCT_FEED)));
-                productIdGenDao.updateUsed(gen.getType(), product.getId(), gen.getProductId());
-            } else {
+
+        ProductIdGen gen = null;
+        if (StringUtils.isBlank(product.getExternalProductId())) {
+            gen = productIdGenDao.selectProductIdForUseOne(null, GeneralUtils.getUserId());
+
+            if (gen == null) {
                 result.setMsg("UPC库中没有可用ID");
                 result.setCode("001");
                 result.setSuccess(false);
                 return result;
+
             }
+            product.setExternalProductId(gen.getProductId());
+            product.setExternalProductIdType(gen.getType());
         }
+
+
+        for (ProductItemVar var : vars) {
+
+            FileInputStream productIs = AmzXmlTemplate.uploadProduct(product, shop, commonSet.getAmzUploadProductPath(), var, false);
+            resList.add(getUploadResult(getService(shop), getSubmitFeedRequest(productIs, shop, AmzFeeType.PRODUCT_FEED)));
+        }
+        productIdGenDao.updateUsed(product.getExternalProductIdType(), product.getId(), product.getExternalProductId());
+
 
 
         resList.add(getUploadResult(getService(shop), getSubmitFeedRequest(inventoryIs, shop, AmzFeeType.INVENTORY_FEED)));
@@ -181,23 +205,7 @@ public class AmzUpload {
         return request;
     }
 
-    public ResponseDto uploadProductRelations(ProductAmzUpload product, Map<String, Object> shop, List<ProductItemVar> vars) {
 
-        FileInputStream fis = AmzXmlTemplate.uploadRelationShop(product, shop, commonSet.getAmzUploadProductPath(), vars);
-        SubmitFeedRequest request = getRequest(shop, AmzFeeType.RELATIONSHIPS_FEED);
-        try {
-            request.setFeedContent(fis);
-            request.setContentMD5(MD5.computeContentMD5HeaderValue(fis));
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        ResponseDto result = getUploadResult(getService(shop), request);
-
-
-        return result;
-    }
 
     private SubmitFeedRequest getRequest(Map<String, Object> shop, AmzFeeType feeType) {
         SubmitFeedRequest request = new SubmitFeedRequest();

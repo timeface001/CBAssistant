@@ -279,7 +279,7 @@ public class ProductManagerService {
         ClaimProduct product = claimProductExtMapper.selectByPrimaryKey(id);
         if (product != null) {
             List<ProductItemVar> vars = productSkuTypeService.selectListByProductId(id);
-            if (language.equals("GB") || language.equals("US") || language.equals("AU")) {
+            if (language.equals("GB") || language.equals("US") || language.equals("AU")|| language.equals("CA")) {
                 //GB 英国
                 ProductAmzUpload uploadGB = generateCommonProperties(product, language, product.getBulletPointUk(), product.getItemUk(), product.getProductDescriptionUk(), product.getKeywordsUk());
                 saveAmzUploadBySku(uploadGB, product, vars, userId,shopId);
@@ -435,6 +435,13 @@ public class ProductManagerService {
 
         logger.debug("************  start upload product ****************  id -----> " + product.getId());
         List<ProductItemVar> vars = productSkuTypeService.selectListByProductId(product.getProductAmzId());
+
+        //同一产品共用产品ID
+        ProductAmzUpload sameSkuPro = productAmzUploadDao.selectBySku(product.getItemSku(), product.getAmzSku());
+        if (sameSkuPro != null) {
+            product.setExternalProductId(sameSkuPro.getExternalProductId());
+            product.setExternalProductIdType(sameSkuPro.getExternalProductIdType());
+        }
 
         ResponseDto response = amzUpload.uploadProduct(product, shop, vars);
         logger.debug("call amz result:  " + JSON.toJSONString(response));

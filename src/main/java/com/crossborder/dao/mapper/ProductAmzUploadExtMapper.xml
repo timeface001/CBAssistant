@@ -28,7 +28,7 @@
         <if test="companyId != null and companyId!=''">
             AND a.create_user in (SELECT user_id from t_user_info where user_company = #{companyId})
         </if>
-        ORDER BY a.CREATE_TIME DESC
+        ORDER BY a.PUBLISH_TIME DESC nulls last
     </select>
 
     <update id="deleteByAmzId" parameterType="java.util.Map">
@@ -46,11 +46,22 @@
         LEFT JOIN T_USER_INFO d
         ON a.create_user = d.user_id
         WHERE a.P_STATE=1 AND a.P_STATE=1 AND PRODUCT_AMZ_ID=#{amzId}
-        ON a.LANGUAGE_ID = c.id
-        WHERE a.P_STATE=1 AND a.PRODUCT_AMZ_ID=#{amzId}
         <if test="shopId != null">
             AND a.SHOP_ID=#{shopId}
         </if>
+    </select>
+
+    <select id="selectBySku" parameterType="java.util.Map" resultMap="BaseResultMap">
+        select *  from (select
+        <include refid="Base_Column_List"/>
+        from T_PRODUCT_ITEM_AMZ_UPLOAD a
+        LEFT JOIN T_SHOP b
+        ON a.SHOP_ID = b.SHOP_ID
+        LEFT JOIN T_COUNTRY c
+        ON a.language_id = c.id
+        LEFT JOIN T_USER_INFO d
+        ON a.create_user = d.user_id
+        WHERE ITEM_SKU=#{itemSku} AND AMZ_SKU=#{amzSku} ) WHERE rownum = 1
     </select>
 
 
@@ -499,7 +510,7 @@
                 #{productimagePt01,jdbcType=VARCHAR},
             </if>
             <if test="publishTime != null">
-                #{publishTime,jdbcType=DATE},
+                #{publishTime,jdbcType=VARCHAR},
             </if>
             <if test="productimagePt03 != null">
                 #{productimagePt03,jdbcType=VARCHAR},
@@ -693,7 +704,7 @@
                 PRODUCTIMAGE_PT01 = #{productimagePt01,jdbcType=VARCHAR},
             </if>
             <if test="publishTime != null">
-                PUBLISH_TIME = #{publishTime,jdbcType=DATE},
+                PUBLISH_TIME = CURRENT_DATE ,
             </if>
             <if test="productimagePt03 != null">
                 PRODUCTIMAGE_PT03 = #{productimagePt03,jdbcType=VARCHAR},

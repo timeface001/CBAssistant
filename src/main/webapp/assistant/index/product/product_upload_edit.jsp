@@ -49,7 +49,7 @@
             <label class="layui-form-label">店铺</label>
 
             <div class="layui-inline">
-                <select required name="shopId" id="shopId" lay-filter="shop">
+                <select required name="shopId"  id="shopId" lay-filter="shop">
                     <option value="">请选择</option>
                     <c:forEach var="keys" items="${maps}">
                         <optgroup label="${keys.key}">
@@ -71,7 +71,7 @@
         <div class="layui-form-item">
             <label class="layui-form-label">SKU前缀</label>
             <div class="layui-input-block">
-                <input type="text" name="itemSku" lay-verify="required" placeholder="" autocomplete="off"
+                <input type="text" name="itemSku" id="skuPre" lay-verify="required" placeholder="" autocomplete="off"
                        class="layui-input" value="${product.itemSku}">
             </div>
         </div>
@@ -330,6 +330,12 @@
             }
         });
 
+        var type='${type}';
+        if(type=="1"){
+            $("#shopId").attr("disabled","disabled");
+            $("#skuPre").attr("readonly","readonly");
+        }
+
         layui.use('form', function () {
             var form = layui.form;
             form.on('submit', function (data) {
@@ -370,6 +376,40 @@
                     success: function (data) {
                         if (data.code == 0) {
                             countryCode = data.data[0].COUNTRY_CODE;
+                            $.ajax({
+                                url: "<%=request.getContextPath()%>/product/claim/single",
+                                dataType: "json",
+                                data: {id: '${product.id}'},
+                                success: function (data) {
+                                    var translte="";
+                                    if(countryCode=="ES"||countryCode=='MX'){
+                                        translte=data.itemEs;
+                                    }
+                                    if(countryCode=="US"||countryCode=="CA"||countryCode=="AU"||countryCode=="GB"){
+                                        translte=data.itemUk;
+                                    }
+                                    if(countryCode=="JP"){
+                                        translte=data.itemJp;
+                                    }
+                                    if(countryCode=="FR"){
+                                        translte=data.itemFr;
+                                    }
+                                    if(countryCode=="IT"){
+                                        translte=data.itemIt;
+                                    }
+                                    if(countryCode=="DE"){
+                                        translte=data.itemDe;
+                                    }
+                                    if(countryCode=="CN"){
+                                        translte=data.itemCn;
+                                    }
+
+                                    $("#itemName").val(translte);
+                                }
+
+                            });
+
+
                         } else {
                             layer.msg(data.msg, {icon: 5, time: 1000});
                         }
