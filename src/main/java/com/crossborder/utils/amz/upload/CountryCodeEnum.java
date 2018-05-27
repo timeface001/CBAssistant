@@ -3,7 +3,7 @@ package com.crossborder.utils.amz.upload;
 public enum CountryCodeEnum {
 
 
-    US("US"), CA("CA"), MX("MX"), JP("JP"), CN("CN"), GB("GB"), DE("DE"), FR("FR"), IT("IT"), ES("ES");
+    US("US"), CA("CA"), MX("MX"), JP("JP"), CN("CN"), GB("GB"), DE("DE"), FR("FR"), IT("IT"), ES("ES"),AU("AU");
 
     CountryCodeEnum(String val) {
         this.val = val;

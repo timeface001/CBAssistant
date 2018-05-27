@@ -239,11 +239,19 @@ public class AmzXmlTemplate {
         }
 
         if (CountryCodeEnum.FR.equal(code)) {
-            return "<StandardPrice currency='EUR'>" + GeneralUtils.mutiHalfTwo(rate.divide(price, 2, ROUND_HALF_DOWN)) + "</StandardPrice>";
+            return "<StandardPrice currency='EUR'>" + GeneralUtils.mutiHalfTwo(price.divide(rate, 2, ROUND_HALF_DOWN)) + "</StandardPrice>";
         }
 
         if (CountryCodeEnum.MX.equal(code)) {
-            return "<StandardPrice currency='MXN'>" + GeneralUtils.mutiHalfTwo(rate.divide(price, 2, ROUND_HALF_DOWN)) + "</StandardPrice>";
+            return "<StandardPrice currency='MXN'>" + GeneralUtils.mutiHalfTwo(price.divide(rate, 2, ROUND_HALF_DOWN)) + "</StandardPrice>";
+        }
+
+        if (CountryCodeEnum.ES.equal(code)) {
+            return "<StandardPrice currency='EUR'>" + GeneralUtils.mutiHalfTwo(price.divide(rate, 2, ROUND_HALF_DOWN)) + "</StandardPrice>";
+        }
+
+        if (CountryCodeEnum.AU.equal(code)) {
+            return "<StandardPrice currency='AUD'>" + GeneralUtils.mutiHalfTwo(price.divide(rate, 2, ROUND_HALF_DOWN)) + "</StandardPrice>";
         }
 
         if (CountryCodeEnum.CN.equal(code)) {

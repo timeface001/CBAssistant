@@ -734,7 +734,7 @@
             esedit = layedit.build('productDescriptionEs');
             itedit = layedit.build('productDescriptionIt');
             /*layedit.setContent(cnedit, '
-            ${product.productDescriptionCn}');*/
+            //{product.productDescriptionCn}');*/
         });
         function initSkuSaleDate() {
             var laydate = layui.laydate;
@@ -925,7 +925,6 @@
             });
 
             form.on('submit', function (data) {
-                console.log(data.field);
                 var skuTypeA = data.field.skuType;
                 //组合关键词和简要描述
                 data.field["bulletPointCn"] = getContentByLanguage("pointsCn");
@@ -946,12 +945,22 @@
                 data.field["keywordsUk"] = getContentByLanguage("keywordsUk");
                 var isItemImags = true;
                 if (skuTypeA == 1) {//单体
-                    var imagePathValue = $("#imagePathValue").val();
+                    var imagePathValue ="";
+                    var arr = $("#imagePathSrc img");
+                    if (arr.length > 0) {
+                        for(var i=0;i<arr.length;i++){
+                            if($(arr[i]).attr("src").indexOf("product")>-1){
+
+                                imagePathValue+=","+$(arr[i]).attr("src").substring(55);
+                            }
+                        }
+
+                        imagePathValue=imagePathValue.substring(1);
+                    }
                     if (imagePathValue == null || imagePathValue == "") {
                         isItemImags = false;
                     }
                     data.field["imagePath"] = imagePathValue;
-                    console.log(data.field['quantity']);
                     if (data.field['quantity'] == null || $.trim(data.field['quantity']).length == 0) {
                         layer.msg("库存数量不能为空！", {icon: 5, time: 1000});
                         return false;
@@ -1350,6 +1359,7 @@
                                 }
                                 $(val).find(".trOtherPath").val(delVals.join(","));
                             });
+
                             $(this).parent().remove();
                             if (pprent.find("div").length == 0) {
                                 pprent.append("<img class='pathDemo' src='http://bpic.588ku.com/element_origin_min_pic/01/47/02/12574338a640011.jpg!r650' width='100' height='90' />");
@@ -1577,7 +1587,7 @@
             $("#imagePathSrc").append("<div style='width:100px;height:110px;margin-left:2px;float:left;'><img width='100px' height='90px' style='padding-right:5px;' src=<%=session.getAttribute("productPath")%>" + imagePathArr[i] + " /><i class='layui-icon delImage' style='font-size:20px;margin-left:35px;'>&#xe640;</i></div>");
             $(".delImage").on("click", function () {
                 var pprent = $(this).parent().parent();
-                var ppKey = $(this).prev().attr("src").substring(20);
+                var ppKey = $(this).prev().attr("src").substring(56);
                 var exVal = $("#imagePathValue").val();
                 var exArr = exVal.split(",");
                 var delVals = [];

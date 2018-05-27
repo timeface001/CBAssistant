@@ -208,7 +208,10 @@ public class ProductPublishController extends BaseController {
                 System.out.println("publish product:" + id + " to shop:" + product.getShopId());
                 product.setProductAmzId(product.getId());
                 product.setId(id);
-                product.setAmzSku(product1.getAmzSku());
+                //product.setAmzSku(product1.getAmzSku());
+
+                productAmzUploadDao.updateByPrimaryKeySelective(product);
+                product = productAmzUploadDao.selectByPrimaryKey(product.getId());
                 productManagerService.uploadProduct(product, list.get(0));
             }
         } catch (Exception e) {
