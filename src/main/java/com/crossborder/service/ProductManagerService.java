@@ -340,6 +340,13 @@ public class ProductManagerService {
     private int saveAmzUploadBySku(ProductAmzUpload upload, ClaimProduct product, List<ProductItemVar> vars, String userId, String shopId) throws Exception {
         int i = 0;
         if (GeneralUtils.isNotNullOrEmpty(vars)) {
+            String theme = "";
+            for (ProductItemVar var : vars) {
+                if (StringUtils.isNotBlank(var.getVariationType())) {
+                    theme = var.getVariationType();
+                    break;
+                }
+            }
             for (ProductItemVar var : vars) {
                 upload.setpState("1");
                 upload.setPublishStatus("0");
@@ -347,7 +354,7 @@ public class ProductManagerService {
                 if (StringUtils.isBlank(var.getVariationType())) {//主体
                     upload.setQuantity(product.getQuantity());
                     upload.setParentChild("parent");
-                    upload.setVariationTheme(var.getVariationType());
+                    upload.setVariationTheme(theme);
                     upload.setMainPath(var.getMainPath());
 
                 } else {//变体
@@ -367,7 +374,7 @@ public class ProductManagerService {
                 upload.setMaterialType(var.getMaterialType());
                 upload.setItemPackageQuantity(var.getQuantity());
                 upload.setStandardPrice(var.getPrice());
-                upload.setVariationTheme(var.getVariationType());
+                //upload.setVariationTheme(var.getVariationType());
                 upload.setQuantity(var.getQuantity());
                 upload.setProductAmzId(product.getId());
                 upload.setCreateTime(new Date());
