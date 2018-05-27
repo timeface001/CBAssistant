@@ -21,9 +21,11 @@ import org.springframework.stereotype.Component;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 @Component
 public class AmzUpload {
@@ -49,7 +51,6 @@ public class AmzUpload {
         config.setConnectionTimeout(2000000);
         return new MarketplaceWebServiceClient(
                 accessKeyId, secretAccessKey, appName, appVersion, config);
-
     }
 
     public ResponseDto uploadProduct(ProductAmzUpload product, Map<String, Object> shop, List<ProductItemVar> vars) {
@@ -373,9 +374,9 @@ public class AmzUpload {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
-        XMLGregorianCalendar startDate = df
+        /*XMLGregorianCalendar startDate = df
                 .newXMLGregorianCalendar(new GregorianCalendar(2018, 1, 1));
-        request.setStartDate(startDate);
+        request.setStartDate(startDate);*/
 
         System.out.println("***************");
 

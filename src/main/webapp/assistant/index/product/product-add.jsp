@@ -128,10 +128,11 @@
             <div class="modal-content radius">
                 <div class="modal-header">
                     <h3 class="modal-title">选择分类</h3>
+
                     <a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:">×</a>
                 </div>
                 <div class="modal-body" style="height: 330px;overflow-x: auto">
-                    <div id="content-div">
+                    <div id="content-div" class="mt-10">
                         <div id="div1"
                              style="display: block;width: 240px;height: 300px; float: left;border: 1px solid #ddd;border-radius: 4px;padding: 5px 5px 5px 5px;margin-right: 10px;">
                             <select id="level-1" name="level-1" class="select" style="height: 32px;"
@@ -253,7 +254,12 @@
             var form = layui.form;
             form.on("submit", function (data) {
                 var url = '<%=request.getContextPath()%>/product/save';
-                $("#pInfo").val(layedit.getContent(pInfo));
+                var info = layedit.getContent(pInfo);
+                if (info.indexOf("class=") != -1) {
+                    layer.msg("产品描述包含复杂样式，请重新输入", {icon: 5, time: 2000});
+                    return false;
+                }
+                $("#pInfo").val(info);
                 $.ajax({
                     type: 'POST',
                     url: url,

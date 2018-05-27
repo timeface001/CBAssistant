@@ -107,7 +107,6 @@ public class ProductManagerService {
                     claimProduct.setProductDescriptionCn("");
                     claimProduct.setProductDescriptionUk(productDesc);
                 }
-                claimProduct.setProductDescriptionCn(productDesc);
                 claimProduct.setProductDescriptionDe("");
                 claimProduct.setProductDescriptionEs("");
                 claimProduct.setProductDescriptionIt("");

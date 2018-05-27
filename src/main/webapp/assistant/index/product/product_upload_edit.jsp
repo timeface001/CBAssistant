@@ -49,7 +49,7 @@
             <label class="layui-form-label">店铺</label>
 
             <div class="layui-inline">
-                <select required name="shopId"  id="shopId" lay-filter="shop">
+                <select required name="shopId" id="shopId" lay-filter="shop">
                     <option value="">请选择</option>
                     <c:forEach var="keys" items="${maps}">
                         <optgroup label="${keys.key}">
@@ -183,6 +183,25 @@
                     <a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:">×</a>
                 </div>
                 <div class="modal-body" style="height: 330px;overflow-x: auto">
+                    <div class="row cl">
+                        <label class="col-xs-1 col-sm-1">分类ID：</label>
+                        <div class="col-xs-2 col-sm-2">
+                            <input type="text" class="input-text" id="categoryId"
+                                   onkeyup="this.value=this.value.replace(/[^\d]/g,'')"/>
+                        </div>
+                        <label class="col-xs-1 col-sm-1">分类类型：</label>
+                        <div class="col-xs-2 col-sm-2">
+                            <input type="text" class="input-text" id="categoryType"/>
+                        </div>
+                        <label class="col-xs-1 col-sm-1">分类模版：</label>
+                        <div class="col-xs-2 col-sm-2">
+                            <input type="text" class="input-text" id="categoryModel"/>
+                        </div>
+                        <label id="itemLabel" class="col-xs-1 col-sm-1" style="display: none">产品模版：</label>
+                        <div id="itemDiv" class="col-xs-2 col-sm-2" style="display: none">
+                            <input type="text" class="input-text" placeholder="itemType" id="itemType"/>
+                        </div>
+                    </div>
                     <div id="content-div">
                         <div id="div1"
                              style="display: block;width: 240px;height: 300px; float: left;border: 1px solid #ddd;border-radius: 4px;padding: 5px 5px 5px 5px;margin-right: 10px;">
@@ -330,10 +349,10 @@
             }
         });
 
-        var type='${type}';
-        if(type=="1"){
-            $("#shopId").attr("disabled","disabled");
-            $("#skuPre").attr("readonly","readonly");
+        var type = '${type}';
+        if (type == "1") {
+            $("#shopId").attr("disabled", "disabled");
+            $("#skuPre").attr("readonly", "readonly");
         }
 
         layui.use('form', function () {
@@ -381,27 +400,27 @@
                                 dataType: "json",
                                 data: {id: '${product.id}'},
                                 success: function (data) {
-                                    var translte="";
-                                    if(countryCode=="ES"||countryCode=='MX'){
-                                        translte=data.itemEs;
+                                    var translte = "";
+                                    if (countryCode == "ES" || countryCode == 'MX') {
+                                        translte = data.itemEs;
                                     }
-                                    if(countryCode=="US"||countryCode=="CA"||countryCode=="AU"||countryCode=="GB"){
-                                        translte=data.itemUk;
+                                    if (countryCode == "US" || countryCode == "CA" || countryCode == "AU" || countryCode == "GB") {
+                                        translte = data.itemUk;
                                     }
-                                    if(countryCode=="JP"){
-                                        translte=data.itemJp;
+                                    if (countryCode == "JP") {
+                                        translte = data.itemJp;
                                     }
-                                    if(countryCode=="FR"){
-                                        translte=data.itemFr;
+                                    if (countryCode == "FR") {
+                                        translte = data.itemFr;
                                     }
-                                    if(countryCode=="IT"){
-                                        translte=data.itemIt;
+                                    if (countryCode == "IT") {
+                                        translte = data.itemIt;
                                     }
-                                    if(countryCode=="DE"){
-                                        translte=data.itemDe;
+                                    if (countryCode == "DE") {
+                                        translte = data.itemDe;
                                     }
-                                    if(countryCode=="CN"){
-                                        translte=data.itemCn;
+                                    if (countryCode == "CN") {
+                                        translte = data.itemCn;
                                     }
 
                                     $("#itemName").val(translte);
@@ -451,6 +470,13 @@
     });
     $("#productType").click(function () {
         $("#modal-demo").modal("show");
+        if (countryCode == 'US') {
+            document.getElementById("itemLabel").style.display = "";
+            document.getElementById("itemDiv").style.display = "";
+        } else {
+            document.getElementById("itemLabel").style.display = "none";
+            document.getElementById("itemDiv").style.display = "none";
+        }
         initLevel1();
     });
 
