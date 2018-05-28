@@ -22,13 +22,13 @@
         <if test="language!=null and language!=''">
             AND a.LANGUAGE_ID=#{language}
         </if>
-        <if test="userId != null and userId!=''">
+        <if test="userId != null and userId !=''">
             AND a.create_user=#{userId}
         </if>
-        <if test="companyId != null and companyId!=''">
+        <if test="companyId != null and companyId !=''">
             AND a.create_user in (SELECT user_id from t_user_info where user_company = #{companyId})
         </if>
-        ORDER BY a.PUBLISH_TIME DESC nulls last
+        ORDER BY a.PUBLISH_TIME DESC
     </select>
 
     <update id="deleteByAmzId" parameterType="java.util.Map">
@@ -52,7 +52,7 @@
     </select>
 
     <select id="selectBySku" parameterType="java.util.Map" resultMap="BaseResultMap">
-        select *  from (select
+        select * from (select
         <include refid="Base_Column_List"/>
         from T_PRODUCT_ITEM_AMZ_UPLOAD a
         LEFT JOIN T_SHOP b

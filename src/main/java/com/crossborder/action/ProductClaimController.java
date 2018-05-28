@@ -140,7 +140,6 @@ public class ProductClaimController extends BaseController {
     public ModelAndView detail(String id, HttpServletRequest request) {
         ModelAndView view = new ModelAndView("forward:/assistant/index/product/product_claim_edit.jsp");
         ClaimProduct claimProduct = productManagerService.selectClaimProduct(id);
-        //view.addObject("product", claimProduct);
         request.setAttribute("typeList", productSkuTypeService.selectTypeList());
         claimProduct.setSku(StringUtils.isNoneBlank(claimProduct.getSku()) ? claimProduct.getSku() : GeneralUtils.getRandomString(8));
         request.setAttribute("product", claimProduct);
@@ -284,6 +283,7 @@ public class ProductClaimController extends BaseController {
             String fr = "";
             String es = "";
             String it = "";
+            s = s.replaceAll("\\n", "<p>");
             if (lang.equals("zh-CN")) {
                 zh = s;
                 translation =
@@ -552,13 +552,13 @@ public class ProductClaimController extends BaseController {
                 it = s;
             }
             TranslateDto dto = new TranslateDto();
-            dto.setCn(zh);
-            dto.setJp(jp);
-            dto.setDe(de);
-            dto.setEs(es);
-            dto.setFr(fr);
-            dto.setIt(it);
-            dto.setUk(uk);
+            dto.setCn(zh.replaceAll("<p>", "\n"));
+            dto.setJp(jp.replaceAll("<p>", "\n"));
+            dto.setDe(de.replaceAll("<p>", "\n"));
+            dto.setEs(es.replaceAll("<p>", "\n"));
+            dto.setFr(fr.replaceAll("<p>", "\n"));
+            dto.setIt(it.replaceAll("<p>", "\n"));
+            dto.setUk(uk.replaceAll("<p>", "\n"));
             list.add(dto);
         }
         return list;
