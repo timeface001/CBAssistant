@@ -57,9 +57,9 @@ public class ProductPublishController extends BaseController {
     public String productList(HttpSession session, String data, Integer start, Integer length, Integer draw) {
         Map<String, Object> params = JSON.parseObject(data, Map.class);
         Map<String, Object> user = (Map<String, Object>) session.getAttribute("user");
-        if (user.get("ROLE_ID").toString().equals("500")) {
+        if (user.get("ROLE_ID").toString().equals("600")) {
             params.put("userId", user.get("USER_ID"));
-        } else if (user.get("ROLE_ID").toString().equals("600")) {
+        } else if (user.get("ROLE_ID").toString().equals("500")) {
             params.put("companyId", user.get("USER_COMPANY"));
         }
         Map<String, Object> result = new HashMap<>();

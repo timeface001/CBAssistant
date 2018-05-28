@@ -482,6 +482,11 @@
                     return $.extend({}, d, {
                         "data": JSON.stringify(getFormJson("#orderForm"))
                     });
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    if (jqXHR.getResponseHeader("sessionstatus") == "timeOut") {
+                        top.window.location.replace("<%=request.getContextPath()%>/assistant/index/login.jsp");
+                    }
                 }
             },
             "columns": [

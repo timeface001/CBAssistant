@@ -277,15 +277,30 @@
     var preStatus = "1";
     var trackNum = "";
     $(function () {
-        $.post("<%=request.getContextPath()%>/order/selectOrderInfo",
-                {
-                    "amazonOrderId": amazonOrderId
-                },
-                function (data) {
-                    var map = JSON.parse(data);
-                    initBusiness(map.localOrder);
-                    initAddressInfo(map.address);
-                });
+        $.ajax({
+            type: 'POST',
+            url: '<%=request.getContextPath()%>/order/selectOrderInfo',
+            dataType: 'json',
+            data: {
+                "amazonOrderId": amazonOrderId
+            },
+            success: function (data) {
+                layer.closeAll("loading");
+                if (data.code == 0) {
+                    initBusiness(data.localOrder);
+                    initAddressInfo(data.address);
+                } else {
+                    layer.msg(data.msg, {icon: 2, time: 1000});
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                if (jqXHR.getResponseHeader("sessionstatus") == "timeOut") {
+                    top.window.location.replace("<%=request.getContextPath()%>/assistant/index/login.jsp");
+                } else {
+                    layer.msg(errorThrown, {icon: 2, time: 1000});
+                }
+            }
+        });
         initOrderItem();
         initOperationLog();
         initCustomsTable();
@@ -396,6 +411,11 @@
                 "type": "POST",
                 "data": {
                     "amazonOrderId": amazonOrderId
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    if (jqXHR.getResponseHeader("sessionstatus") == "timeOut") {
+                        top.window.location.replace("<%=request.getContextPath()%>/assistant/index/login.jsp");
+                    }
                 }
             },
             "columns": [
