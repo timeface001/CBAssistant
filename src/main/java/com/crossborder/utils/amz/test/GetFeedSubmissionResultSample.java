@@ -48,8 +48,8 @@ public class GetFeedSubmissionResultSample {
          * Access Key ID and Secret Access Key ID, obtained from:
          * http://aws.amazon.com
          ***********************************************************************/
-        final String accessKeyId = "AKIAIWNVZFF7XJ7LV32A";
-        final String secretAccessKey = "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";
+        final String accessKeyId = "AKIAICXSN2BYG5WP34VQ";
+        final String secretAccessKey = "0exK/9heGCgK/cZRF9Y7XfxwjC5KK1ke4M8vlB7r";
 
         final String appName = "<Your Application or Company Name>";
         final String appVersion = "<Your Application Version or Build Number or Release Date>";
@@ -60,7 +60,7 @@ public class GetFeedSubmissionResultSample {
          * Uncomment to set the appropriate MWS endpoint.
          ************************************************************************/
         // US
-         config.setServiceURL("https://mws.amazonservices.com/");
+         config.setServiceURL("https://mws.amazonservices.com.au");
         // UK
         // config.setServiceURL("https://mws.amazonservices.co.uk/");
         // Germany
@@ -103,14 +103,14 @@ public class GetFeedSubmissionResultSample {
          * Marketplace and Merchant IDs are required parameters for all 
          * Marketplace Web Service calls.
          ***********************************************************************/
-        final String merchantId = "AX2JQLLAWG3JN";
+        final String merchantId = "A11GOIAHZXZ0H1";
         final String sellerDevAuthToken = "<Merchant Developer MWS Auth Token>";
 
         GetFeedSubmissionResultRequest request = new GetFeedSubmissionResultRequest();
         request.setMerchant( merchantId );
         //request.setMWSAuthToken(sellerDevAuthToken);
         
-        request.setFeedSubmissionId( "50483017666" );
+        request.setFeedSubmissionId( "50110017678" );
 
         // Note that depending on the size of the feed sent in, and the number of errors and warnings,
         // the result can reach sizes greater than 1GB. For this reason we recommend that you _always_ 

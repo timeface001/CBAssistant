@@ -122,6 +122,8 @@ public class ProductClaimController extends BaseController {
         }
         list.add(var);
         try {
+            //剔除描述标签中属性
+            GeneralUtils.removeProductDescriptionAttr(product);
             productManagerService.save(product);
             productSkuTypeService.save(list, product.getId());
             return JSON.toJSONString(ResponseGen.genSuccess());
