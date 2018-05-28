@@ -2,6 +2,7 @@ package com.crossborder.utils;
 
 import com.alibaba.fastjson.JSON;
 import com.crossborder.entity.ClaimProduct;
+import com.crossborder.entity.ProductItemVar;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -177,5 +178,56 @@ public class GeneralUtils {
     public static void main(String[] args) {
         String s="<span></span><span style='123'></span>";
         removeAttr(s);
+    }
+
+    public static String setProductTitle(ProductItemVar var) {
+        if (VarTypeEnum.Color.is(var.getVariationType())) {
+            return "," + var.getColorMap();
+        } else if (VarTypeEnum.Size.is(var.getVariationType())) {
+            return "," + var.getSizeMap();
+        } else if (VarTypeEnum.colorsize.is(var.getVariationType())) {
+            return "," + var.getColorMap() + "," + var.getSizeMap();
+        } else if (VarTypeEnum.size_material.is(var.getVariationType())) {
+            return "," + var.getSizeMap() + "," + var.getMaterialType();
+        } else if (VarTypeEnum.material.is(var.getVariationType())) {
+            return "," + var.getMaterialType();
+        } else if (VarTypeEnum.color_itempackagequantity.is(var.getVariationType())) {
+            return "," + var.getColorMap() + "," + var.getItemPackageQuantity();
+        } else if (VarTypeEnum.itempackagequantity.is(var.getVariationType())) {
+            return "," + var.getItemPackageQuantity();
+        } else if (VarTypeEnum.itempackagequantity_material.is(var.getVariationType())) {
+            return "," + var.getItemPackageQuantity() + "," + var.getMaterialType();
+        } else if (VarTypeEnum.itempackagequantity_size.is(var.getVariationType())) {
+            return "," + var.getItemPackageQuantity() + "," + var.getSizeMap();
+        } else if (VarTypeEnum.color_material.is(var.getVariationType())) {
+            return "," + var.getColorMap() + "," + var.getMaterialType();
+        }
+        return "";
+    }
+
+    public static String getVarValue(ProductItemVar var) {
+        if (VarTypeEnum.Color.is(var.getVariationType())) {
+            return var.getColorMap();
+        } else if (VarTypeEnum.Size.is(var.getVariationType())) {
+            return var.getSizeMap();
+        } else if (VarTypeEnum.colorsize.is(var.getVariationType())) {
+            return var.getColorMap() + "-" + var.getSizeMap();
+        } else if (VarTypeEnum.size_material.is(var.getVariationType())) {
+            return var.getSizeMap() + "-" + var.getMaterialType();
+        } else if (VarTypeEnum.material.is(var.getVariationType())) {
+            return var.getMaterialType();
+        } else if (VarTypeEnum.color_itempackagequantity.is(var.getVariationType())) {
+            return var.getColorMap() + "-" + var.getItemPackageQuantity();
+        } else if (VarTypeEnum.itempackagequantity.is(var.getVariationType())) {
+            return "" + var.getItemPackageQuantity();
+        } else if (VarTypeEnum.itempackagequantity_material.is(var.getVariationType())) {
+            return var.getItemPackageQuantity() + "-" + var.getMaterialType();
+        } else if (VarTypeEnum.itempackagequantity_size.is(var.getVariationType())) {
+            return var.getItemPackageQuantity() + "-" + var.getSizeMap();
+        } else if (VarTypeEnum.color_material.is(var.getVariationType())) {
+            return var.getColorMap() + "-" + var.getMaterialType();
+        }
+
+        return "";
     }
 }

@@ -64,6 +64,11 @@
         WHERE ITEM_SKU=#{itemSku} AND AMZ_SKU=#{amzSku} ) WHERE rownum = 1
     </select>
 
+    <update id="updateBySku" parameterType="java.util.Map">
+        UPDATE T_PRODUCT_ITEM_AMZ_UPLOAD SET EXTERNAL_PRODUCT_ID=#{productId},EXTERNAL_PRODUCT_ID_TYPE=#{type}
+        WHERE PRODUCT_AMZ_ID=#{amzId} AND AMZ_SKU=#{amzSku} AND P_STATE=1
+    </update>
+
 
     <resultMap id="BaseResultMap" type="com.crossborder.entity.ProductAmzUpload">
         <id column="a_ID" jdbcType="VARCHAR" property="id"/>
