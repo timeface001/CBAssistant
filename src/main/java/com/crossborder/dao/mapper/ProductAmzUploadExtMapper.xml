@@ -132,6 +132,11 @@
         <result column="a_AMZ_SKU" jdbcType="VARCHAR" property="amzSku"/>
         <result column="a_UPLOAD_DESC" jdbcType="VARCHAR" property="uploadDesc"/>
         <result column="d_USER_NAME" jdbcType="VARCHAR" property="userName"/>
+
+        <result column="a_PRODUCT_TYPE_ID" jdbcType="VARCHAR" property="productTypeId"/>
+        <result column="a_PRODUCT_TYPE" jdbcType="VARCHAR" property="productType"/>
+        <result column="a_ITEM_TYPE" jdbcType="VARCHAR" property="itemType"/>
+        <result column="a_PRODUCT_TYPE_NAME" jdbcType="VARCHAR" property="productTypeName"/>
     </resultMap>
     <sql id="Base_Column_List">
         a.ID as a_ID, a.LANGUAGE_ID as a_LANGUAGE_ID, a.TEMPLATETYPE as a_TEMPLATETYPE, a.ITEM_SKU as a_ITEM_SKU,
@@ -156,7 +161,8 @@
         a.SALE_FROM_DATE as a_SALE_FROM_DATE, a.SALE_END_DATE as a_SALE_END_DATE, a.PUBLISH_STATUS as a_PUBLISH_STATUS,
         a.CREATE_TIME as a_CREATE_TIME, a.PRODUCT_AMZ_ID as a_PRODUCT_AMZ_ID, a.MAIN_PATH as a_MAIN_PATH,
         a.ATTACH_PATH as a_ATTACH_PATH, a.WEBSITE_TYPE as a_WEBSITE_TYPE, a.EXTERNAL_PRODUCT_ID_TYPE as a_EXTERNAL_PRODUCT_ID_TYPE,
-        a.AMZ_SKU as a_AMZ_SKU, a.UPLOAD_DESC as a_UPLOAD_DESC,b.SHOP_NAME as b_SHOP_NAME,c.NAME as c_NAME,d.USER_NAME as d_USER_NAME
+        a.AMZ_SKU as a_AMZ_SKU, a.UPLOAD_DESC as a_UPLOAD_DESC,b.SHOP_NAME as b_SHOP_NAME,c.NAME as c_NAME,d.USER_NAME as d_USER_NAME,
+        a.PRODUCT_TYPE_ID as a_PRODUCT_TYPE_ID,a.PRODUCT_TYPE as a_PRODUCT_TYPE,a.ITEM_TYPE as a_ITEM_TYPE,a.PRODUCT_TYPE_NAME as a_PRODUCT_TYPE_NAME
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
         select
@@ -413,6 +419,23 @@
             <if test="userId != null">
                 CREATE_USER
             </if>
+
+            <if test="productTypeId != null">
+                PRODUCT_TYPE_ID
+            </if>
+
+            <if test="productType != null">
+                PRODUCT_TYPE
+            </if>
+
+            <if test="itemType != null">
+                ITEM_TYPE
+            </if>
+
+            <if test="productTypeName != null">
+                PRODUCT_TYPE_NAME
+            </if>
+
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             SEQ_PRODUCT_AMZ_UPLOAD_ID.nextval,
@@ -605,6 +628,22 @@
             <if test="userId != null">
                 #{userId,jdbcType=VARCHAR}
             </if>
+
+            <if test="productTypeId != null">
+                #{productTypeId,jdbcType=VARCHAR},
+            </if>
+
+            <if test="productType != null">
+                #{productType,jdbcType=VARCHAR},
+            </if>
+
+            <if test="itemType != null">
+                #{itemType,jdbcType=VARCHAR},
+            </if>
+
+            <if test="productTypeName != null">
+                #{productTypeName,jdbcType=VARCHAR},
+            </if>
         </trim>
     </insert>
     <update id="updateByPrimaryKeySelective" parameterType="com.crossborder.entity.ProductAmzUpload">
@@ -796,6 +835,24 @@
             <if test="uploadDesc != null">
                 UPLOAD_DESC = #{uploadDesc,jdbcType=VARCHAR},
             </if>
+
+            <if test="productTypeId != null">
+                PRODUCT_TYPE_ID=#{productTypeId,jdbcType=VARCHAR},
+            </if>
+
+            <if test="productType != null">
+                PRODUCT_TYPE= #{productType,jdbcType=VARCHAR},
+            </if>
+
+            <if test="itemType != null">
+                ITEM_TYPE= #{itemType,jdbcType=VARCHAR},
+            </if>
+
+            <if test="productTypeName != null">
+                PRODUCT_TYPE_NAME=#{productTypeName,jdbcType=VARCHAR},
+            </if>
+
+
         </set>
         where ID = #{id,jdbcType=VARCHAR}
     </update>

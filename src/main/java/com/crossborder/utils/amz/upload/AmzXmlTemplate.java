@@ -53,21 +53,22 @@ public class AmzXmlTemplate {
                 (StringUtils.isNotBlank(product.getGenericKeywords3()) ? ("<SearchTerms>" + GeneralUtils.replaceHtmlSign(product.getGenericKeywords3()) + "</SearchTerms>") : "") +
                 (StringUtils.isNotBlank(product.getGenericKeywords4()) ? ("<SearchTerms>" + GeneralUtils.replaceHtmlSign(product.getGenericKeywords4()) + "</SearchTerms>") : "") +
                 (StringUtils.isNotBlank(product.getGenericKeywords5()) ? ("<SearchTerms>" + GeneralUtils.replaceHtmlSign(product.getGenericKeywords5()) + "</SearchTerms>") : "") +
-                //"<ItemType>flat-sheets</ItemType>" +
+                (StringUtils.isNotBlank(product.getItemType()) ? ("<ItemType>" + product.getItemType() + "</ItemType>") : "") +
                 "<IsGiftWrapAvailable>false</IsGiftWrapAvailable>" +
                 "<IsGiftMessageAvailable>false</IsGiftMessageAvailable>\n" +
-                "</DescriptionData>\n" +
-                "<ProductData>\n" +
-                "<Sports>\n" + getByProductType(product) +
+                (StringUtils.isNotBlank(product.getProductTypeId()) ? ("<RecommendedBrowseNode>" + product.getProductTypeId() + "</RecommendedBrowseNode>") : "") +
+                "</DescriptionData>" +
+                "<ProductData>" +
+                "<Sports>" + getByProductType(product) +
                 (isSingle ? "" : ("<VariationData>" +
                         "<Parentage>" + (isParent ? "parent" : "child") + "</Parentage>\n" +
                         (isParent ? variationTheme(product.getVariationTheme()) : (variationData(var))) +
                         "</VariationData>")) +
 
-                "</Sports>\n" +
-                "</ProductData>\n" +
-                "</Product>\n" +
-                "</Message>\n" +
+                "</Sports>" +
+                "</ProductData>" +
+                "</Product>" +
+                "</Message>" +
                 "</AmazonEnvelope>";
 
         System.out.println(text);

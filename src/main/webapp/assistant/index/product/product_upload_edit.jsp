@@ -88,9 +88,14 @@
         <div class="layui-form-item">
             <label class="layui-form-label">产品分类</label>
             <div class="layui-inline" style="width: 50%">
-                <input type="text" name="productType" value="" id="productType" lay-filter="productType"
+                <input type="text" name="browseNodes" value="${product.browseNodes}" id="browseNodes"
+                       lay-filter="productType"
                        placeholder="" autocomplete="off" class="layui-input ">
-                <input type="hidden" name="typeId" id="typeId">
+                <input type="hidden" name="productTypeId" id="typeId" value="${product.productTypeId}">
+
+                <input type="hidden" name="productType" id="productType" value="${product.productTypeId}" />
+                <input type="hidden" name="productTypeName" id="productTypeName" value="${product.productTypeId}" />
+                <input type="hidden" name="itemType" id="itemType" value="${product.productTypeId}" />
             </div>
             <div class="layui-inline">
                 <label class="layui-form-label">分类类型</label>
@@ -186,20 +191,20 @@
                     <div class="row cl">
                         <label class="col-xs-1 col-sm-1">分类ID：</label>
                         <div class="col-xs-2 col-sm-2">
-                            <input type="text" class="input-text" id="categoryId"
+                            <input type="text" class="input-text" id="categoryId" value="${product.productTypeId}"
                                    onkeyup="this.value=this.value.replace(/[^\d]/g,'')"/>
                         </div>
                         <label class="col-xs-1 col-sm-1">分类类型：</label>
                         <div class="col-xs-2 col-sm-2">
-                            <input type="text" class="input-text" id="categoryType"/>
+                            <input type="text" class="input-text" id="categoryType" value="${product.productType}"/>
                         </div>
                         <label class="col-xs-1 col-sm-1">分类模版：</label>
                         <div class="col-xs-2 col-sm-2">
-                            <input type="text" class="input-text" id="categoryModel"/>
+                            <input type="text" class="input-text" id="categoryModel" value="${product.productTypeName}"/>
                         </div>
                         <label id="itemLabel" class="col-xs-1 col-sm-1" style="display: none">产品模版：</label>
                         <div id="itemDiv" class="col-xs-2 col-sm-2" style="display: none">
-                            <input type="text" class="input-text" placeholder="itemType" id="itemType"/>
+                            <input type="text" class="input-text" placeholder="cateType" id="cateType" value="${product.itemType}" />
                         </div>
                     </div>
                     <div id="content-div">
@@ -468,7 +473,7 @@
             }
         });
     });
-    $("#productType").click(function () {
+    $("#browseNodes").click(function () {
         $("#modal-demo").modal("show");
         if (countryCode == 'US') {
             document.getElementById("itemLabel").style.display = "";
@@ -543,8 +548,11 @@
                 typeId = options.val();
             }
         }
-        $("#productType").val(typeName.substring(0, typeName.length - 3));
+        $("#browseNodes").val(typeName.substring(0, typeName.length - 3));
         $("#typeId").val(typeId);
+        $("#productType").val($("#categoryType").val());
+        $("#productTypeName").val($("#categoryModel").val());
+        $("#itemType").val($("#cateType").val());
     }
 
 </script>

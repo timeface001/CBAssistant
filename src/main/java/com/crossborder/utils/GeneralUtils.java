@@ -1,5 +1,12 @@
 package com.crossborder.utils;
 
+import com.alibaba.fastjson.JSON;
+import com.crossborder.entity.ClaimProduct;
+import org.apache.commons.lang3.StringUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.springframework.util.ClassUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -119,9 +126,6 @@ public class GeneralUtils {
         return GeneralUtils.formatDate(utcDate, "yyyy-MM-dd'T'hh:mm:ss'Z'");
     }
 
-    public static void main(String[] args) {
-        System.out.println(formatDate(new Date(), "yyyy-MM-dd'T'HH:mm:ss Z"));
-    }
 
     public static boolean isNotNullOrEmpty(List<?> list) {
         return list != null && !list.isEmpty();
@@ -148,4 +152,30 @@ public class GeneralUtils {
         return "";
     }
 
+    public static void removeProductDescriptionAttr(ClaimProduct product) {
+        if (product != null) {
+            if (org.apache.commons.lang3.StringUtils.isNotBlank(product.getProductDescriptionCn())) {
+
+            }
+        }
+    }
+
+    private static void removeAttr(String str) {
+        if (StringUtils.isNotBlank(str)) {
+            Document document= Jsoup.parse(str);
+            Elements elements= document.getAllElements();
+
+            for(Element e:elements){
+                System.out.println(JSON.toJSONString(e.html()));
+            }
+
+            System.out.println(document.body().html());
+
+        }
+    }
+
+    public static void main(String[] args) {
+        String s="<span></span><span style='123'></span>";
+        removeAttr(s);
+    }
 }
