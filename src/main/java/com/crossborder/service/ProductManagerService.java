@@ -340,6 +340,8 @@ public class ProductManagerService {
         int i = 0;
         if (GeneralUtils.isNotNullOrEmpty(vars)) {
             String theme = "";
+            //清除之前预发布的数据
+            productAmzUploadDao.deleteByAmzId(product.getId(), shopId);
             for (ProductItemVar var : vars) {
                 if (StringUtils.isNotBlank(var.getVariationType())) {
                     theme = var.getVariationType();
@@ -355,6 +357,7 @@ public class ProductManagerService {
                     upload.setParentChild("parent");
                     upload.setVariationTheme(theme);
                     upload.setMainPath(var.getMainPath());
+                    upload.setAmzSku(product.getSku());
 
                 } else {//变体
                     upload.setQuantity(var.getQuantity());
@@ -362,6 +365,7 @@ public class ProductManagerService {
                     upload.setRelationshipType("Variation");
                     upload.setVariationTheme(var.getVariationType());
                     upload.setParentSku(product.getSku());
+                    upload.setAmzSku(product.getSku() + "-" + GeneralUtils.getVarValue(var));
 
                 }
 
@@ -377,12 +381,11 @@ public class ProductManagerService {
                 upload.setQuantity(var.getQuantity());
                 upload.setProductAmzId(product.getId());
                 upload.setCreateTime(new Date());
-                upload.setAmzSku(product.getSku());
+
                 upload.setUserId(userId);
                 upload.setShopId(shopId);
 
-                //清除之前预发布的数据
-                productAmzUploadDao.deleteByAmzId(product.getId(), shopId);
+
                 i += productAmzUploadDao.insertSelective(upload);
                 upload.setId(selectOneByAmzID(product.getId(), shopId).getId());
 
@@ -443,10 +446,12 @@ public class ProductManagerService {
         List<ProductItemVar> vars = productSkuTypeService.selectListByProductId(product.getProductAmzId());
 
         //同一产品共用产品ID
-        ProductAmzUpload sameSkuPro = productAmzUploadDao.selectBySku(product.getItemSku(), product.getAmzSku());
-        if (sameSkuPro != null) {
-            product.setExternalProductId(sameSkuPro.getExternalProductId());
-            product.setExternalProductIdType(sameSkuPro.getExternalProductIdType());
+        if (vars.size() == 1) {//单体
+            ProductAmzUpload sameSkuPro = productAmzUploadDao.selectBySku(product.getItemSku(), product.getAmzSku());
+            if (sameSkuPro != null) {
+                product.setExternalProductId(sameSkuPro.getExternalProductId());
+                product.setExternalProductIdType(sameSkuPro.getExternalProductIdType());
+            }
         }
 
         ResponseDto response = amzUpload.uploadProduct(product, shop, vars);

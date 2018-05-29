@@ -8,8 +8,8 @@ import com.amazonaws.mws.MarketplaceWebServiceClient;
 import com.amazonaws.mws.MarketplaceWebServiceConfig;
 import com.amazonaws.mws.MarketplaceWebServiceException;
 import com.amazonaws.mws.model.*;
+import com.crossborder.dao.ProductAmzUploadDao;
 import com.crossborder.dao.ProductIdGenDao;
-import com.crossborder.dao.ProductUploadLogDao;
 import com.crossborder.entity.ProductAmzUpload;
 import com.crossborder.entity.ProductIdGen;
 import com.crossborder.entity.ProductItemVar;
@@ -35,7 +35,7 @@ public class AmzUpload {
     @Autowired
     private ProductIdGenDao productIdGenDao;
     @Autowired
-    private ProductUploadLogDao productUploadLogDao;
+    private ProductAmzUploadDao productAmzUploadDao;
 
     private MarketplaceWebService getService(Map<String, Object> shop) {
         final String accessKeyId = shop.get("ACCESSKEY_ID").toString();
@@ -106,9 +106,9 @@ public class AmzUpload {
                 System.out.println("开始请求。。。");
 
 
-                System.out.println("等待20秒");
+                System.out.println("等待40秒");
                 try {
-                    Thread.sleep(60000);
+                    Thread.sleep(40000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -153,41 +153,78 @@ public class AmzUpload {
 
         List<ResponseDto> resList = new ArrayList<>();
 
-        ProductIdGen gen = null;
-        if (StringUtils.isBlank(product.getExternalProductId())) {
-            gen = productIdGenDao.selectProductIdForUseOne(null, GeneralUtils.getUserId());
 
-            if (gen == null) {
-                result.setMsg("UPC库中没有可用ID");
+        System.out.println("start to upload muti product......");
+        String name = product.getItemName();
+        for (ProductItemVar var : vars) {
+            //如果是变体 标题是标题加上变体名称逗号拼接
+            if (StringUtils.isNotBlank(var.getVariationType())) {
+                product.setItemName(name + GeneralUtils.setProductTitle(var));
+
+                ProductIdGen gen = null;
+                //查询之前可用产品ID
+
+                if (StringUtils.isBlank(product.getExternalProductId())) {
+                    ProductAmzUpload sameSkuPro = productAmzUploadDao.selectBySku(product.getItemSku(), product.getAmzSku() + "-" + GeneralUtils.getVarValue(var));
+                    if (sameSkuPro == null) {
+                        gen = productIdGenDao.selectProductIdForUseOne(null, GeneralUtils.getUserId());
+                        if (gen == null) {
+                            result.setMsg("UPC库中没有可用ID");
+                            result.setCode("001");
+                            result.setSuccess(false);
+                            return result;
+
+                        }
+                        product.setExternalProductId(gen.getProductId());
+                        product.setExternalProductIdType(gen.getType());
+                    } else {
+                        product.setExternalProductId(sameSkuPro.getExternalProductId());
+                        product.setExternalProductIdType(sameSkuPro.getExternalProductIdType());
+                    }
+
+
+                }
+
+                productIdGenDao.updateUsed(product.getExternalProductIdType(), product.getId(), product.getExternalProductId());
+
+            } else {
+                product.setItemName(name);
+            }
+
+            FileInputStream productIs = AmzXmlTemplate.uploadProduct(product, shop, commonSet.getAmzUploadProductPath(), var, false);
+            ResponseDto<String> dto = getUploadResult(getService(shop), getSubmitFeedRequest(productIs, shop, AmzFeeType.PRODUCT_FEED));
+            if (StringUtils.isNotBlank(var.getVariationType())) {
+                productAmzUploadDao.updateBySku(product.getProductAmzId(), product.getAmzSku() + "-" + GeneralUtils.getVarValue(var), product.getExternalProductIdType(), product.getExternalProductId());
+                product.setExternalProductIdType(null);
+                product.setExternalProductId(null);
+            }
+            if (!dto.isSuccess()) {
+                result.setMsg(dto.getMsg());
                 result.setCode("001");
                 result.setSuccess(false);
                 return result;
 
             }
-            product.setExternalProductId(gen.getProductId());
-            product.setExternalProductIdType(gen.getType());
+
+            resList.add(dto);
+
         }
 
 
-        for (ProductItemVar var : vars) {
-
-            FileInputStream productIs = AmzXmlTemplate.uploadProduct(product, shop, commonSet.getAmzUploadProductPath(), var, false);
-            resList.add(getUploadResult(getService(shop), getSubmitFeedRequest(productIs, shop, AmzFeeType.PRODUCT_FEED)));
-        }
-        productIdGenDao.updateUsed(product.getExternalProductIdType(), product.getId(), product.getExternalProductId());
-
-
-
-        resList.add(getUploadResult(getService(shop), getSubmitFeedRequest(inventoryIs, shop, AmzFeeType.INVENTORY_FEED)));
-        resList.add(getUploadResult(getService(shop), getSubmitFeedRequest(priceIs, shop, AmzFeeType.PRICING_FEED)));
-        resList.add(getUploadResult(getService(shop), getSubmitFeedRequest(imIs, shop, AmzFeeType.PRODUCT_IMAGES_FEED)));
-        resList.add(getUploadResult(getService(shop), getSubmitFeedRequest(relations, shop, AmzFeeType.RELATIONSHIPS_FEED)));
+        System.out.println("wait five seconds for upload other info......");
 
         String str = "";
+        str += "," + (getUploadResult(getService(shop), getSubmitFeedRequest(inventoryIs, shop, AmzFeeType.INVENTORY_FEED)).getData());
+        str += "," + (getUploadResult(getService(shop), getSubmitFeedRequest(priceIs, shop, AmzFeeType.PRICING_FEED)).getData());
+        str += "," + (getUploadResult(getService(shop), getSubmitFeedRequest(imIs, shop, AmzFeeType.PRODUCT_IMAGES_FEED)).getData());
+        str += "," + (getUploadResult(getService(shop), getSubmitFeedRequest(relations, shop, AmzFeeType.RELATIONSHIPS_FEED)).getData());
+
+        System.out.println("over upload......................other submitID:" + str);
+        String str1 = "";
         for (ResponseDto dto : resList) {
-            str += dto.getData() + ",";
+            str1 += dto.getData() + ",";
         }
-        result.setData(str);
+        result.setData(str1);
         result.setSuccess(true);
         return result;
     }

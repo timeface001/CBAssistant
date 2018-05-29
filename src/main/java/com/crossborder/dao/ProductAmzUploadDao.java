@@ -17,4 +17,6 @@ public interface ProductAmzUploadDao extends ProductAmzUploadMapper{
     List<ProductAmzUpload> selectByAmzId(@Param("amzId") String id, @Param("shopId") String shopId);
 
     ProductAmzUpload selectBySku(@Param("itemSku") String itemSku, @Param("amzSku") String amzSku);
+
+    void updateBySku(@Param("amzId") String productAmzId, @Param("amzSku") String amzSku,@Param("type") String externalProductIdType,@Param("productId") String externalProductId);
 }

@@ -108,12 +108,36 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">变种主题</label>
                 <div class="layui-input-block">
-                    <select name="skuMuti" lay-filter="skuMuti" id="selectMuti">
+                    <%--<select name="skuMuti" lay-filter="skuMuti" id="selectMuti">
                         <option value=""></option>
                         <c:forEach items="${typeList}" var="type">
                             <option value="${type.variationType}">${type.variationName}</option>
                         </c:forEach>
-                    </select>
+                    </select>--%>
+                        <select name="skuMuti" lay-filter="skuMuti" id="selectMuti">
+                            <option value=""></option>
+
+                            <option value="Color">颜色</option>
+
+                            <option value="Size">尺寸</option>
+
+                            <option value="colorsize">颜色-尺寸</option>
+
+                            <option value="material">材质</option>
+
+                            <option value="size-material">尺寸-材质</option>
+
+                            <option value="color-material">颜色-材质</option>
+
+                            <option value="itempackagequantity">包装数量</option>
+
+                            <option value="color-itempackagequantity">颜色-包装数量</option>
+
+                            <option value="itempackagequantity-size">包装数量-尺寸</option>
+
+                            <option value="itempackagequantity-material">包装数量-材质</option>
+
+                        </select>
                 </div>
             </div>
             <div lay-filter="skuRender" id="skuRender">
@@ -620,9 +644,17 @@
                 $("input[name='skuType']").eq(1).attr("checked", 'checked');
                 $("input[name='skuType']").eq(0).removeAttr("checked");
                 var vars = JSON.parse('${productVars}');
-                $("#selectMuti").val("Color");
-                form.render("select", "skuMuti");
-                selectValue = vars[0].variationType;
+                var theme="";
+                for(var j=0;j<vars.length;j++){
+                    var vv1Type = vars[j].variationType;
+                    if (vv1Type != null && vv1Type != 'undefined') {
+                        theme=vv1Type;
+                    }
+                }
+                $("#selectMuti").val(theme);
+
+                form.render("select");
+                selectValue = theme;
                 $("#skuRender").html("");
                 $("#skuRender").append(genSkuTypeDom($("#skuMutiDiv option:selected").text()));
                 $(".skuBtn").on("click", function () {
@@ -653,6 +685,9 @@
                     var vvType = vars[i].variationType;
                     if (vvType != null && vvType != 'undefined') {
                         if (vvType = 'Color') {
+                            $("#skuRender button").parent().prev().find('input').val(vars[i].colorMap);
+                        }
+                        if (vvType = 'material') {
                             $("#skuRender button").parent().prev().find('input').val(vars[i].colorMap);
                         }
                         $(".skuBtn").click();
@@ -716,7 +751,7 @@
 
                 $(".delImage").on("click", function () {
                     var pprent = $(this).parent().parent();
-                    var ppKey = $(this).prev().attr("src").substring(20);
+                    var ppKey = $(this).prev().attr("src").substring(55);
                     $("#skuTable tbody tr").each(function (i, val) {
                         var exVal = $(val).find(".trOtherPath").val();
                         var delVals = [];
@@ -730,7 +765,6 @@
                         }
                         $(val).find(".trOtherPath").val(delVals.join(","));
                     });
-                    $(this).parent().remove();
                     if (pprent.find("div").length == 0) {
                         pprent.append("<img class='pathDemo' src='http://bpic.588ku.com/element_origin_min_pic/01/47/02/12574338a640011.jpg!r650' width='100' height='90' />");
                     }
@@ -854,30 +888,30 @@
                         if (selectValue == "Color") {
                             item["colorName"] = firstValue;
                             item["colorMap"] = firstValue;
-                        } else if (secondValue == "Size") {
+                        } else if (selectValue == "Size") {
                             item["sizeMap"] = firstValue;
                             item["sizeName"] = firstValue;
-                        } else if (secondValue == "material") {
+                        } else if (selectValue == "material") {
                             item["materialType"] = firstValue;
-                        } else if (secondValue == "size-material") {
+                        } else if (selectValue == "size-material") {
                             item["sizeMap"] = firstValue;
                             item["sizeName"] = firstValue;
                             item["materialType"] = secondValue;
-                        } else if (secondValue == "color-material") {
+                        } else if (selectValue == "color-material") {
                             item["colorName"] = firstValue;
                             item["colorMap"] = firstValue;
                             item["materialType"] = secondValue;
-                        } else if (secondValue == "itempackagequantity") {
+                        } else if (selectValue == "itempackagequantity") {
                             item["itemPackageQuantity"] = firstValue;
-                        } else if (secondValue == "color-itempackagequantity") {
+                        } else if (selectValue == "color-itempackagequantity") {
                             item["colorName"] = firstValue;
                             item["colorMap"] = firstValue;
                             item["itemPackageQuantity"] = secondValue;
-                        } else if (secondValue == "itempackagequantity-size") {
+                        } else if (selectValue == "itempackagequantity-size") {
                             item["itemPackageQuantity"] = firstValue;
                             item["sizeMap"] = secondValue;
                             item["sizeName"] = secondValue;
-                        } else if (secondValue == "itempackagequantity-material") {
+                        } else if (selectValue == "itempackagequantity-material") {
                             item["itempackagequantity"] = firstValue;
                             item["materialType"] = secondValue;
                         }
@@ -1196,7 +1230,7 @@
                         }
                         $(".delImage").on("click", function () {
                             var pprent = $(this).parent().parent();
-                            var ppKey = $(this).prev().attr("src").substring(20);
+                            var ppKey = $(this).prev().attr("src").substring(55);
                             $("#skuTable tbody tr").each(function (i, val) {
                                 var exVal = $(val).find(".trOtherPath").val();
                                 var delVals = [];
@@ -1429,7 +1463,7 @@
                     }
                     $(".delImage").on("click", function () {
                         var pprent = $(this).parent().parent();
-                        var ppKey = $(this).prev().attr("src").substring(20);
+                        var ppKey = $(this).prev().attr("src").substring(55);
                         var exVal = $("#imagePathValue").val();
                         var exArr = exVal.split(",");
                         var delVals = [];
@@ -1469,7 +1503,7 @@
             $("#imagePathSrc").append("<div style='width:100px;height:110px;margin-left:2px;float:left;'><img width='100px' height='90px' style='padding-right:5px;' src=<%=session.getAttribute("productPath")%>" + imagePathArr[i] + " /><i class='layui-icon delImage' style='font-size:20px;margin-left:35px;'>&#xe640;</i></div>");
             $(".delImage").on("click", function () {
                 var pprent = $(this).parent().parent();
-                var ppKey = $(this).prev().attr("src").substring(56);
+                var ppKey = $(this).prev().attr("src").substring(55);
                 var exVal = $("#imagePathValue").val();
                 var exArr = exVal.split(",");
                 var delVals = [];
