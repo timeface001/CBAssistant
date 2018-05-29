@@ -34,7 +34,7 @@ public class AmzXmlTemplate {
                 "<OperationType>Update</OperationType>" +
                 "<Product>" +
                 "<SKU>" + product.getItemSku() + "-" + var.getSku() + "</SKU>" +
-                (isParent?"": ("<StandardProductID><Type>" + product.getExternalProductIdType() + "</Type><Value>" + product.getExternalProductId() + "</Value></StandardProductID>")) +
+                (isParent&&!isSingle?"": ("<StandardProductID><Type>" + product.getExternalProductIdType() + "</Type><Value>" + product.getExternalProductId() + "</Value></StandardProductID>")) +
                 "<ItemPackageQuantity>" + (var.getQuantity()==null?"0":var.getQuantity()) + "</ItemPackageQuantity>" +
                 /*"<LaunchDate>" + GeneralUtils.formatDate(new Date(), "yyyy-MM-dd'T'hh:mm:ss") + "</LaunchDate>" +*/
                 "<DescriptionData>" +

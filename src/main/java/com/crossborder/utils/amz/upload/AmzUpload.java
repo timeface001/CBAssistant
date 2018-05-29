@@ -206,10 +206,12 @@ public class AmzUpload {
 
             }
 
+            product.setItemName("");
             resList.add(dto);
 
         }
 
+        product.setItemName(name);
 
         System.out.println("wait five seconds for upload other info......");
 

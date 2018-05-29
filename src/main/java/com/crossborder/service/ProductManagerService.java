@@ -387,6 +387,18 @@ public class ProductManagerService {
 
 
                 i += productAmzUploadDao.insertSelective(upload);
+
+
+               /* if (vars.size() > 1) {//主体
+                    if (StringUtils.isBlank(var.getVariationType())) {
+
+                        upload.setId(selectOneByAmzID(product.getId(), shopId).getId());
+                    }
+                } else {
+
+                }*/
+
+                System.out.println(selectOneByAmzID(product.getId(), shopId).getId());
                 upload.setId(selectOneByAmzID(product.getId(), shopId).getId());
 
             }
@@ -399,7 +411,18 @@ public class ProductManagerService {
 
     public ProductAmzUpload selectOneByAmzID(String id, String shopId) {
         List<ProductAmzUpload> list = productAmzUploadDao.selectByAmzId(id, shopId);
-        return GeneralUtils.isNotNullOrEmpty(list) ? list.get(0) : new ProductAmzUpload();
+        if (list.size() == 1) {
+            return GeneralUtils.isNotNullOrEmpty(list) ? list.get(0) : new ProductAmzUpload();
+
+        } else {
+            for (ProductAmzUpload amzUpload : list) {
+                if (amzUpload.getParentChild().equals("parent")) {
+                    return amzUpload;
+                }
+            }
+
+            return new ProductAmzUpload();
+        }
     }
 
     private ProductAmzUpload generateCommonProperties(ClaimProduct product, String languageId, String points, String productName, String productDesc, String keywords) {
