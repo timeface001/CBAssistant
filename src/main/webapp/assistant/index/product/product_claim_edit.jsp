@@ -1274,6 +1274,7 @@
         $(".translate2").click(function () {//产品描述
             var currentLanguage = $(this).parent().prev().find(".layui-this").text();
             var content = $(this).parent().prev().find(".layui-tab-content");
+            var vArr = [];
             if (currentLanguage === "中文") {
                 vArr.push(layedit.getContent(cnedit));
                 valueDisplay("cn", content, vArr, 2);
