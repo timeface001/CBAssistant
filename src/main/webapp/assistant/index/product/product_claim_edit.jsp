@@ -1,6 +1,10 @@
+<%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%
+    List pointsCn = (List) request.getAttribute("pointsCn");
+%>
 <!DOCTYPE HTML>
 <html>
 <head>
@@ -34,6 +38,17 @@
     <style>
         .width300 {
             width: 300px;
+        }
+
+        .sorthelper {
+            background-color: #f00;
+            float: left;
+        }
+
+        .sortableactive {
+        }
+
+        .sortablehover {
         }
     </style>
 </head>
@@ -114,30 +129,30 @@
                             <option value="${type.variationType}">${type.variationName}</option>
                         </c:forEach>
                     </select>--%>
-                        <select name="skuMuti" lay-filter="skuMuti" id="selectMuti">
-                            <option value=""></option>
+                    <select name="skuMuti" lay-filter="skuMuti" id="selectMuti">
+                        <option value=""></option>
 
-                            <option value="Color">颜色</option>
+                        <option value="Color">颜色</option>
 
-                            <option value="Size">尺寸</option>
+                        <option value="Size">尺寸</option>
 
-                            <option value="colorsize">颜色-尺寸</option>
+                        <option value="colorsize">颜色-尺寸</option>
 
-                            <option value="material">材质</option>
+                        <option value="material">材质</option>
 
-                            <option value="size-material">尺寸-材质</option>
+                        <option value="size-material">尺寸-材质</option>
 
-                            <option value="color-material">颜色-材质</option>
+                        <option value="color-material">颜色-材质</option>
 
-                            <option value="itempackagequantity">包装数量</option>
+                        <option value="itempackagequantity">包装数量</option>
 
-                            <option value="color-itempackagequantity">颜色-包装数量</option>
+                        <option value="color-itempackagequantity">颜色-包装数量</option>
 
-                            <option value="itempackagequantity-size">包装数量-尺寸</option>
+                        <option value="itempackagequantity-size">包装数量-尺寸</option>
 
-                            <option value="itempackagequantity-material">包装数量-材质</option>
+                        <option value="itempackagequantity-material">包装数量-材质</option>
 
-                        </select>
+                    </select>
                 </div>
             </div>
             <div lay-filter="skuRender" id="skuRender">
@@ -281,7 +296,7 @@
                         <div class="layui-tab-item layui-show" id="pointsCn">
                                 <textarea id="pointCn" style="width: 100%;height: 200px;"
                                           placeholder="" autocomplete="off" class="layui-textarea"
-                                          maxlength="800"></textarea>
+                                          maxlength="800">${pointsCn[0]}\n${pointsCn[1]}\n${pointsCn[2]}\n${pointsCn[3]}\n${pointsCn[4]}</textarea>
                             <%-- <div class="layui-inline">
                                  <input type="text" name="bulletPoint2" style="width: 600px" value="${pointsCn[1]}"
                                         placeholder="" autocomplete="off" class="layui-input"
@@ -307,7 +322,7 @@
                         <div class="layui-tab-item" id="pointsUk">
                                 <textarea id="pointUk" style="width: 100%;height: 200px;"
                                           placeholder="" autocomplete="off" class="layui-textarea"
-                                          maxlength="2500"></textarea>
+                                          maxlength="2500">${pointsUk[0]}\n${pointsUk[1]}\n${pointsUk[2]}\n${pointsUk[3]}\n${pointsUk[4]}</textarea>
                             <%--<div class="layui-inline">
                                 <input type="text" name="bulletPoint2" style="width: 600px" value="${pointsUk[1]}"
                                        placeholder="" autocomplete="off" class="layui-input"
@@ -333,7 +348,7 @@
                         <div class="layui-tab-item " id="pointsJp">
                                 <textarea id="pointJp" style="width: 100%;height: 200px;"
                                           placeholder="" autocomplete="off" class="layui-textarea"
-                                          maxlength="800"></textarea>
+                                          maxlength="800">${pointsJp[0]}\n${pointsJp[1]}\n${pointsJp[2]}\n${pointsJp[3]}\n${pointsJp[4]}</textarea>
                             <%--<div class="layui-inline">
                                 <input type="text" name="bulletPoint2" style="width: 600px" value="${pointsJp[1]}"
                                        placeholder="" autocomplete="off" class="layui-input"
@@ -360,7 +375,7 @@
                         <div class="layui-tab-item " id="pointsDe">
                                 <textarea id="pointDe" style="width: 100%;height: 200px;"
                                           placeholder="" autocomplete="off" class="layui-textarea"
-                                          maxlength="2500"></textarea>
+                                          maxlength="2500">${pointsDe[0]}\n${pointsDe[1]}\n${pointsDe[2]}\n${pointsDe[3]}\n${pointsDe[4]}</textarea>
                             <%--<div class="layui-inline">
                                 <input type="text" name="bulletPoint2" style="width: 600px" value="${pointsDe[1]}"
                                        placeholder="" autocomplete="off" class="layui-input"
@@ -385,7 +400,7 @@
                         <div class="layui-tab-item" id="pointsFr">
                                 <textarea id="pointFr" style="width: 100%;height: 200px;"
                                           placeholder="" autocomplete="off" class="layui-textarea"
-                                          maxlength="2500"></textarea>
+                                          maxlength="2500">${pointsFr[0]}\n${pointsFr[1]}\n${pointsFr[2]}\n${pointsFr[3]}\n${pointsFr[4]}</textarea>
                             <%--<div class="layui-inline">
                                 <input type="text" name="bulletPoint2" style="width: 600px" value="${pointsFr[1]}"
                                        placeholder="" autocomplete="off" class="layui-input"
@@ -412,7 +427,7 @@
                         <div class="layui-tab-item" id="pointsEs">
                                 <textarea id="pointEs" style="width: 100%;height: 200px;"
                                           placeholder="" autocomplete="off" class="layui-textarea"
-                                          maxlength="2500"></textarea>
+                                          maxlength="2500">${pointsEs[0]}\n${pointsEs[1]}\n${pointsEs[2]}\n${pointsEs[3]}\n${pointsEs[4]}</textarea>
                             <%--<div class="layui-inline">
                                 <input type="text" name="bulletPoint2" style="width: 600px" value="${pointsEs[1]}"
                                        placeholder="" autocomplete="off" class="layui-input"
@@ -439,7 +454,7 @@
                         <div class="layui-tab-item" id="pointsIt">
                                 <textarea id="pointIt" style="width: 100%;height: 200px;"
                                           placeholder="" autocomplete="off" class="layui-textarea"
-                                          maxlength="2500"></textarea>
+                                          maxlength="2500">${pointsIt[0]}\n${pointsIt[1]}\n${pointsIt[2]}\n${pointsIt[3]}\n${pointsIt[4]}</textarea>
                             <%--<div class="layui-inline">
                                 <input type="text" name="pointsIt1" style="width: 600px" value="${pointsIt[1]}"
                                        placeholder="" autocomplete="off" class="layui-input"
@@ -489,37 +504,37 @@
                         <div class="layui-tab-item layui-show" id="keywordsCn">
                             <textarea id="keywordCn" style="width: 100%;height: 200px;"
                                       placeholder="" autocomplete="off" class="layui-textarea"
-                                      maxlength="80"></textarea>
+                                      maxlength="80">${keywordsCn[0]}\n${keywordsCn[1]}\n${keywordsCn[2]}\n${keywordsCn[3]}\n${keywordsCn[4]}</textarea>
                         </div>
                         <div class="layui-tab-item" id="keywordsUk">
                             <textarea id="keywordUk" style="width: 100%;height: 200px;"
                                       placeholder="" autocomplete="off" class="layui-textarea"
-                                      maxlength="250"></textarea>
+                                      maxlength="250">${keywordsUk[0]}\n${keywordsUk[1]}\n${keywordsUk[2]}\n${keywordsUk[3]}\n${keywordsUk[4]}</textarea>
                         </div>
                         <div class="layui-tab-item" id="keywordsJp">
                             <textarea id="keywordJp" style="width: 100%;height: 200px;"
                                       placeholder="" autocomplete="off" class="layui-textarea"
-                                      maxlength="80"></textarea>
+                                      maxlength="80">${keywordsJp[0]}\n${keywordsJp[1]}\n${keywordsJp[2]}\n${keywordsJp[3]}\n${keywordsJp[4]}</textarea>
                         </div>
                         <div class="layui-tab-item" id="keywordsDe">
                             <textarea id="keywordDe" style="width: 100%;height: 200px;"
                                       placeholder="" autocomplete="off" class="layui-textarea"
-                                      maxlength="250"></textarea>
+                                      maxlength="250">${keywordsDe[0]}\n${keywordsDe[1]}\n${keywordsDe[2]}\n${keywordsDe[3]}\n${keywordsDe[4]}</textarea>
                         </div>
                         <div class="layui-tab-item" id="keywordsFr">
                             <textarea id="keywordFr" style="width: 100%;height: 200px;"
                                       placeholder="" autocomplete="off" class="layui-textarea"
-                                      maxlength="250"></textarea>
+                                      maxlength="250">${keywordsFr[0]}\n${keywordsFr[1]}\n${keywordsFr[2]}\n${keywordsFr[3]}\n${keywordsFr[4]}</textarea>
                         </div>
                         <div class="layui-tab-item" id="keywordsEs">
                             <textarea id="keywordEs" style="width: 100%;height: 200px;"
                                       placeholder="" autocomplete="off" class="layui-textarea"
-                                      maxlength="250"></textarea>
+                                      maxlength="250">${keywordsEs[0]}\n${keywordsEs[1]}\n${keywordsEs[2]}\n${keywordsEs[3]}\n${keywordsEs[4]}</textarea>
                         </div>
                         <div class="layui-tab-item" id="keywordsIt">
                             <textarea id="keywordIt" style="width: 100%;height: 200px;"
                                       placeholder="" autocomplete="off" class="layui-textarea"
-                                      maxlength="250"></textarea>
+                                      maxlength="250">${keywordsIt[0]}\n${keywordsIt[1]}\n${keywordsIt[2]}\n${keywordsIt[3]}\n${keywordsIt[4]}</textarea>
                         </div>
                     </div>
                 </div>
@@ -543,6 +558,10 @@
 </article>
 
 <!--_footer 作为公共模版分离出去-->
+<%--<script type="text/javascript"
+        src="<%=request.getContextPath()%>/assistant/lib/interface/jquery.js"></script>
+<script type="text/javascript"
+        src="<%=request.getContextPath()%>/assistant/lib/interface/interface.js"></script>--%>
 <script type="text/javascript" src="<%=request.getContextPath()%>/assistant/lib/jquery/1.9.1/jquery.min.js"></script>
 <script type="text/javascript" src="<%=request.getContextPath()%>/assistant/lib/layer/2.4/layer.js"></script>
 <script type="text/javascript" src="<%=request.getContextPath()%>/assistant/static/h-ui/js/H-ui.min.js"></script>
@@ -572,35 +591,62 @@
     var esedit;
     var itedit;
     $(function () {
+        /*$('#imagePathSrc').Sortable(
+         {
+         accept: 'sortableitem',
+         helperclass: 'sorthelper',
+         activeclass: 'sortableactive',
+         hoverclass: 'sortablehover',
+         opacity: 0.8,
+         /!*fx:				200,*!/
+         revert: true,
+         floats: true,
+         tolerance: 'pointer'
+         }
+         )*/
         var pointCn = document.getElementById("pointCn");
-        pointCn.innerHTML = "${pointsCn[0]}" + "\n" + "${pointsCn[1]}" + "\n" + "${pointsCn[2]}" + "\n" + "${pointsCn[3]}" + "\n" + "${pointsCn[4]}";
+        pointCn.innerHTML = pointCn.innerHTML.replace(/\\n/g,"\n");
+        /*pointCn.innerHTML = "${pointsCn[0]}" + "\n" + "${pointsCn[1]}" + "\n" + "${pointsCn[2]}" + "\n" + "${pointsCn[3]}" + "\n" + "${pointsCn[4]}";*/
         var pointUk = document.getElementById("pointUk");
-        pointUk.innerHTML = "${pointsUk[0]}" + "\n" + "${pointsUk[1]}" + "\n" + "${pointsUk[2]}" + "\n" + "${pointsUk[3]}" + "\n" + "${pointsUk[4]}";
+        pointUk.innerHTML = pointUk.innerHTML.replace(/\\n/g,"\n");
+        <%--pointUk.innerHTML = "${pointsUk[0]}" + "\n" + "${pointsUk[1]}" + "\n" + "${pointsUk[2]}" + "\n" + "${pointsUk[3]}" + "\n" + "${pointsUk[4]}";--%>
         var pointJp = document.getElementById("pointJp");
-        pointJp.innerHTML = "${pointsJp[0]}" + "\n" + "${pointsJp[1]}" + "\n" + "${pointsJp[2]}" + "\n" + "${pointsJp[3]}" + "\n" + "${pointsJp[4]}";
+        pointJp.innerHTML = pointJp.innerHTML.replace(/\\n/g,"\n");
+        <%--pointJp.innerHTML = "${pointsJp[0]}" + "\n" + "${pointsJp[1]}" + "\n" + "${pointsJp[2]}" + "\n" + "${pointsJp[3]}" + "\n" + "${pointsJp[4]}";--%>
         var pointDe = document.getElementById("pointDe");
-        pointDe.innerHTML = "${pointsDe[0]}" + "\n" + "${pointsDe[1]}" + "\n" + "${pointsDe[2]}" + "\n" + "${pointsDe[3]}" + "\n" + "${pointsDe[4]}";
+        pointDe.innerHTML = pointDe.innerHTML.replace(/\\n/g,"\n");
+        <%--pointDe.innerHTML = "${pointsDe[0]}" + "\n" + "${pointsDe[1]}" + "\n" + "${pointsDe[2]}" + "\n" + "${pointsDe[3]}" + "\n" + "${pointsDe[4]}";--%>
         var pointFr = document.getElementById("pointFr");
-        pointFr.innerHTML = "${pointsFr[0]}" + "\n" + "${pointsFr[1]}" + "\n" + "${pointsFr[2]}" + "\n" + "${pointsFr[3]}" + "\n" + "${pointsFr[4]}";
+        pointFr.innerHTML = pointFr.innerHTML.replace(/\\n/g,"\n");
+        <%--pointFr.innerHTML = "${pointsFr[0]}" + "\n" + "${pointsFr[1]}" + "\n" + "${pointsFr[2]}" + "\n" + "${pointsFr[3]}" + "\n" + "${pointsFr[4]}";--%>
         var pointEs = document.getElementById("pointEs");
-        pointEs.innerHTML = "${pointsEs[0]}" + "\n" + "${pointsEs[1]}" + "\n" + "${pointsEs[2]}" + "\n" + "${pointsEs[3]}" + "\n" + "${pointsEs[4]}";
+        pointEs.innerHTML = pointEs.innerHTML.replace(/\\n/g,"\n");
+        <%--pointEs.innerHTML = "${pointsEs[0]}" + "\n" + "${pointsEs[1]}" + "\n" + "${pointsEs[2]}" + "\n" + "${pointsEs[3]}" + "\n" + "${pointsEs[4]}";--%>
         var pointIt = document.getElementById("pointIt");
-        pointIt.innerHTML = "${pointsIt[0]}" + "\n" + "${pointsIt[1]}" + "\n" + "${pointsIt[2]}" + "\n" + "${pointsIt[3]}" + "\n" + "${pointsIt[4]}";
+        pointIt.innerHTML = pointIt.innerHTML.replace(/\\n/g,"\n");
+        <%--pointIt.innerHTML = "${pointsIt[0]}" + "\n" + "${pointsIt[1]}" + "\n" + "${pointsIt[2]}" + "\n" + "${pointsIt[3]}" + "\n" + "${pointsIt[4]}";--%>
 
         var keywordCn = document.getElementById("keywordCn");
-        keywordCn.innerHTML = "${keywordsCn[0]}" + "\n" + "${keywordsCn[1]}" + "\n" + "${keywordsCn[2]}" + "\n" + "${keywordsCn[3]}" + "\n" + "${keywordsCn[4]}";
+        keywordCn.innerHTML = keywordCn.innerHTML.replace(/\\n/g,"\n");
+        <%--keywordCn.innerHTML = "${keywordsCn[0]}" + "\n" + "${keywordsCn[1]}" + "\n" + "${keywordsCn[2]}" + "\n" + "${keywordsCn[3]}" + "\n" + "${keywordsCn[4]}";--%>
         var keywordUk = document.getElementById("keywordUk");
-        keywordUk.innerHTML = "${keywordsUk[0]}" + "\n" + "${keywordsUk[1]}" + "\n" + "${keywordsUk[2]}" + "\n" + "${keywordsUk[3]}" + "\n" + "${keywordsUk[4]}";
+        keywordUk.innerHTML = keywordUk.innerHTML.replace(/\\n/g,"\n");
+        <%--keywordUk.innerHTML = "${keywordsUk[0]}" + "\n" + "${keywordsUk[1]}" + "\n" + "${keywordsUk[2]}" + "\n" + "${keywordsUk[3]}" + "\n" + "${keywordsUk[4]}";--%>
         var keywordJp = document.getElementById("keywordJp");
-        keywordJp.innerHTML = "${keywordsJp[0]}" + "\n" + "${keywordsJp[1]}" + "\n" + "${keywordsJp[2]}" + "\n" + "${keywordsJp[3]}" + "\n" + "${keywordsJp[4]}";
+        keywordJp.innerHTML = keywordJp.innerHTML.replace(/\\n/g,"\n");
+        <%--keywordJp.innerHTML = "${keywordsJp[0]}" + "\n" + "${keywordsJp[1]}" + "\n" + "${keywordsJp[2]}" + "\n" + "${keywordsJp[3]}" + "\n" + "${keywordsJp[4]}";--%>
         var keywordDe = document.getElementById("keywordDe");
-        keywordDe.innerHTML = "${keywordsDe[0]}" + "\n" + "${keywordsDe[1]}" + "\n" + "${keywordsDe[2]}" + "\n" + "${keywordsDe[3]}" + "\n" + "${keywordsDe[4]}";
+        keywordDe.innerHTML = keywordDe.innerHTML.replace(/\\n/g,"\n");
+        <%--keywordDe.innerHTML = "${keywordsDe[0]}" + "\n" + "${keywordsDe[1]}" + "\n" + "${keywordsDe[2]}" + "\n" + "${keywordsDe[3]}" + "\n" + "${keywordsDe[4]}";--%>
         var keywordFr = document.getElementById("keywordFr");
-        keywordFr.innerHTML = "${keywordsFr[0]}" + "\n" + "${keywordsFr[1]}" + "\n" + "${keywordsFr[2]}" + "\n" + "${keywordsFr[3]}" + "\n" + "${keywordsFr[4]}";
+        keywordFr.innerHTML = keywordFr.innerHTML.replace(/\\n/g,"\n");
+        <%--keywordFr.innerHTML = "${keywordsFr[0]}" + "\n" + "${keywordsFr[1]}" + "\n" + "${keywordsFr[2]}" + "\n" + "${keywordsFr[3]}" + "\n" + "${keywordsFr[4]}";--%>
         var keywordEs = document.getElementById("keywordEs");
-        keywordEs.innerHTML = "${keywordsEs[0]}" + "\n" + "${keywordsEs[1]}" + "\n" + "${keywordsEs[2]}" + "\n" + "${keywordsEs[3]}" + "\n" + "${keywordsEs[4]}";
+        keywordEs.innerHTML = keywordEs.innerHTML.replace(/\\n/g,"\n");
+        <%--keywordEs.innerHTML = "${keywordsEs[0]}" + "\n" + "${keywordsEs[1]}" + "\n" + "${keywordsEs[2]}" + "\n" + "${keywordsEs[3]}" + "\n" + "${keywordsEs[4]}";--%>
         var keywordIt = document.getElementById("keywordIt");
-        keywordIt.innerHTML = "${keywordsIt[0]}" + "\n" + "${keywordsIt[1]}" + "\n" + "${keywordsIt[2]}" + "\n" + "${keywordsIt[3]}" + "\n" + "${keywordsIt[4]}";
+        keywordIt.innerHTML = keywordIt.innerHTML.replace(/\\n/g,"\n");
+        <%--keywordIt.innerHTML = "${keywordsIt[0]}" + "\n" + "${keywordsIt[1]}" + "\n" + "${keywordsIt[2]}" + "\n" + "${keywordsIt[3]}" + "\n" + "${keywordsIt[4]}";--%>
 
         layui.use('element', function () {
             var element = layui.element;
@@ -644,11 +690,11 @@
                 $("input[name='skuType']").eq(1).attr("checked", 'checked');
                 $("input[name='skuType']").eq(0).removeAttr("checked");
                 var vars = JSON.parse('${productVars}');
-                var theme="";
-                for(var j=0;j<vars.length;j++){
+                var theme = "";
+                for (var j = 0; j < vars.length; j++) {
                     var vv1Type = vars[j].variationType;
                     if (vv1Type != null && vv1Type != 'undefined') {
-                        theme=vv1Type;
+                        theme = vv1Type;
                     }
                 }
                 $("#selectMuti").val(theme);
@@ -1170,7 +1216,7 @@
                     , done: function (res) {
                         var $this = $($(this)[0].item[0]);
                         var key = $this.parent().prev().attr("val");
-                        $this.parent().next().html("<div style='width:100px;height:110px;'><img width='100px' height='90px' src=<%=session.getAttribute("productPath")%>" + res.data + " /><i class='layui-icon delImageMain' style='font-size:20px;margin-left:35px;'>&#xe640;</i>  </div>");
+                        $this.parent().next().html("<div class='sortableitem' style='width:100px;height:110px;'><img width='100px' height='90px' src=<%=session.getAttribute("productPath")%>" + res.data + " /><i class='layui-icon delImageMain' style='font-size:20px;margin-left:35px;'>&#xe640;</i>  </div>");
                         $("#skuTable tbody tr").each(function (i, val) {
                             if ($(val).attr("val") == key) {
                                 $(val).find(".trMainPath").val(res.data);
@@ -1205,7 +1251,7 @@
                         var $this = $($(this)[0].item[0]);
                         var key = $this.parent().prev().attr("val");
                         $this.parent().next().find(".pathDemo").remove();
-                        $this.parent().next().append("<div style='width:100px;height:110px;margin-left:2px;float:left;'><img width='100px' height='90px' style='padding-right:5px;' src=<%=session.getAttribute("productPath")%>" + res.data + " /><i class='layui-icon delImage' style='font-size:20px;margin-left:35px;'>&#xe640;</i></div>");
+                        $this.parent().next().append("<div class='sortableitem' style='width:100px;height:110px;margin-left:2px;float:left;'><img width='100px' height='90px' style='padding-right:5px;' src=<%=session.getAttribute("productPath")%>" + res.data + " /><i class='layui-icon delImage' style='font-size:20px;margin-left:35px;'>&#xe640;</i></div>");
                         $("#skuTable tbody tr").each(function (i, val) {
                             if ($(val).attr("val") == key) {
                                 var exVal = $(val).find(".trOtherPath").val();
@@ -1446,7 +1492,7 @@
                     var $this = $($(this)[0].item[0]);
                     var key = $this.parent().prev().attr("val");
                     $this.parent().next().find(".pathDemo").remove();
-                    $this.parent().next().append("<div style='width:100px;height:110px;margin-left:2px;float:left;'><img width='100px' height='90px' style='padding-right:5px;' src=<%=session.getAttribute("productPath")%>" + res.data + " /><i class='layui-icon delImage' style='font-size:20px;margin-left:35px;'>&#xe640;</i></div>");
+                    $this.parent().next().append("<div class='sortableitem' style='width:100px;height:110px;margin-left:2px;float:left;'><img width='100px' height='90px' style='padding-right:5px;' src=<%=session.getAttribute("productPath")%>" + res.data + " /><i class='layui-icon delImage' style='font-size:20px;margin-left:35px;'>&#xe640;</i></div>");
                     var exVal = $("#imagePathValue").val();
                     if (exVal == null || exVal == "") {
                         exVal = res.data;
@@ -1500,7 +1546,7 @@
         $("#priceInfo").css("display", "");
         initSingleImage();
         for (var i = 0; i < imagePathArr.length; i++) {
-            $("#imagePathSrc").append("<div style='width:100px;height:110px;margin-left:2px;float:left;'><img width='100px' height='90px' style='padding-right:5px;' src=<%=session.getAttribute("productPath")%>" + imagePathArr[i] + " /><i class='layui-icon delImage' style='font-size:20px;margin-left:35px;'>&#xe640;</i></div>");
+            $("#imagePathSrc").append("<div class='sortableitem' style='width:100px;height:110px;margin-left:2px;float:left;'><img width='100px' height='90px' style='padding-right:5px;' src=<%=session.getAttribute("productPath")%>" + imagePathArr[i] + " /><i class='layui-icon delImage' style='font-size:20px;margin-left:35px;'>&#xe640;</i></div>");
             $(".delImage").on("click", function () {
                 var pprent = $(this).parent().parent();
                 var ppKey = $(this).prev().attr("src").substring(55);
