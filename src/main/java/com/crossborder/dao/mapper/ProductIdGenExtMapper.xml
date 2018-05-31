@@ -34,7 +34,7 @@
         LEFT JOIN t_user_info b
         ON a.create_user = b.user_id
         where
-        a.USE_STATUS=0
+        a.USE_STATUS=0 AND AMZ_SKU is NULL
         <if test="type != null and type != ''">
             AND a.TYPE=#{type}
         </if>
@@ -52,11 +52,18 @@
     <select id="selectProductIdForUseOne" resultMap="BaseResultMapSB" parameterType="java.util.Map">
         SELECT  <include refid="Base_Column_ListSB" />  FROM (SELECT * FROM ( select
         t.* from T_PRODUCT_ID t left join T_USER_INFO r on t.CREATE_USER=r.USER_ID
-        where t.USE_STATUS=0 AND (t.CREATE_USER=#{userId} OR r.ROLE_ID=500)
+        where t.USE_STATUS=0 AND AMZ_SKU is NULL AND (t.CREATE_USER=#{userId} OR r.ROLE_ID=500)
 
         <if test="type!=null and type!=''">
             AND t.TYPE=#{type}
         </if>
+        ORDER BY t.CREATE_TIME DESC ) where rownum=1 ) a
+    </select>
+
+    <select id="selectProductIdByAmzSku" resultMap="BaseResultMapSB" parameterType="java.util.Map">
+        SELECT  <include refid="Base_Column_ListSB" />  FROM (SELECT * FROM ( select
+        t.* from T_PRODUCT_ID t left join T_USER_INFO r on t.CREATE_USER=r.USER_ID
+        where  AMZ_SKU=#{amzSku}
         ORDER BY t.CREATE_TIME DESC ) where rownum=1 ) a
     </select>
 
@@ -70,7 +77,7 @@
     </select>
 
     <select id="updateUsed" resultType="java.lang.Long" parameterType="java.util.Map">
-        UPDATE T_PRODUCT_ID SET USE_STATUS=1,AMZ_UPLOAD_ID=#{uploadId} WHERE
+        UPDATE T_PRODUCT_ID SET USE_STATUS=1,AMZ_UPLOAD_ID=#{uploadId},AMZ_SKU=#{amzSku} WHERE
         TYPE=#{type}
         AND PRODUCT_ID=#{productId}
 
@@ -84,6 +91,7 @@
         <result column="a_CREATE_TIME" jdbcType="DATE" property="createTime"/>
         <result column="a_AMZ_UPLOAD_ID" jdbcType="VARCHAR" property="amzUploadId"/>
         <result column="a_CREATE_USER" jdbcType="VARCHAR" property="createUser"/>
+        <result column="a_AMZ_SKU" jdbcType="VARCHAR" property="amzSku"/>
     </resultMap>
     <resultMap id="BaseResultMap" type="com.crossborder.entity.ProductIdGen">
         <id column="a_ID" jdbcType="DECIMAL" property="id"/>
@@ -101,7 +109,7 @@
     </sql>
     <sql id="Base_Column_ListSB">
         a.ID as a_ID, a.PRODUCT_ID as a_PRODUCT_ID, a.TYPE as a_TYPE, a.USE_STATUS as a_USE_STATUS,
-        a.CREATE_TIME as a_CREATE_TIME, a.CREATE_USER as a_CREATE_USER,a.AMZ_UPLOAD_ID as a_AMZ_UPLOAD_ID
+        a.CREATE_TIME as a_CREATE_TIME, a.CREATE_USER as a_CREATE_USER,a.AMZ_UPLOAD_ID as a_AMZ_UPLOAD_ID,a.AMZ_SKU as a_AMZ_SKU
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select

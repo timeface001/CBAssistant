@@ -70,7 +70,11 @@ public class AmzUpload {
 
 
         ResponseDto result = new ResponseDto();
-        ProductIdGen gen = null;
+        ProductIdGen gen = productIdGenDao.selectProductIdByAmzSku(product.getItemSku()+"-"+product.getAmzSku());
+        if (gen != null) {
+            product.setExternalProductId(gen.getProductId());
+            product.setExternalProductIdType(gen.getType());
+        }
         if (StringUtils.isBlank(product.getExternalProductId())) {
             gen = productIdGenDao.selectProductIdForUseOne(null, GeneralUtils.getUserId());
             if (gen == null) {
@@ -94,7 +98,7 @@ public class AmzUpload {
         if (!dto.isSuccess()) {
             return dto;
         }
-        productIdGenDao.updateUsed(product.getExternalProductIdType(), product.getId(), product.getExternalProductId());
+        productIdGenDao.updateUsed(product.getExternalProductIdType(), product.getId(), product.getExternalProductId(),product.getItemSku()+"-"+ product.getAmzSku());
 
         new Thread(new Runnable() {
             @Override
@@ -165,8 +169,13 @@ public class AmzUpload {
                 //查询之前可用产品ID
 
                 if (StringUtils.isBlank(product.getExternalProductId())) {
-                    ProductAmzUpload sameSkuPro = productAmzUploadDao.selectBySku(product.getItemSku(), product.getAmzSku() + "-" + GeneralUtils.getVarValue(var));
-                    if (sameSkuPro == null) {
+                    gen = productIdGenDao.selectProductIdByAmzSku(product.getItemSku() + "-" + var.getSku());
+                    if (gen != null) {
+                        product.setExternalProductId(gen.getProductId());
+                        product.setExternalProductIdType(gen.getType());
+                    }
+
+                    if (product.getExternalProductId() == null) {
                         gen = productIdGenDao.selectProductIdForUseOne(null, GeneralUtils.getUserId());
                         if (gen == null) {
                             result.setMsg("UPC库中没有可用ID");
@@ -177,15 +186,11 @@ public class AmzUpload {
                         }
                         product.setExternalProductId(gen.getProductId());
                         product.setExternalProductIdType(gen.getType());
-                    } else {
-                        product.setExternalProductId(sameSkuPro.getExternalProductId());
-                        product.setExternalProductIdType(sameSkuPro.getExternalProductIdType());
                     }
 
-
+                    productIdGenDao.updateUsed(product.getExternalProductIdType(), product.getId(), product.getExternalProductId(), product.getItemSku() + "-" + var.getSku());
                 }
 
-                productIdGenDao.updateUsed(product.getExternalProductIdType(), product.getId(), product.getExternalProductId());
 
             } else {
                 product.setItemName(name);

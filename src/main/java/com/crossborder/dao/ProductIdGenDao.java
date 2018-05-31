@@ -20,8 +20,10 @@ public interface ProductIdGenDao extends ProductIdGenMapper {
 
     List<ProductIdGen> selectProductIdForUse(Map<String, Object> params);
 
-    ProductIdGen selectProductIdForUseOne(@Param("type") String type,@Param("userId")String user);
+    ProductIdGen selectProductIdForUseOne(@Param("type") String type, @Param("userId") String user);
 
-    Long updateUsed(@Param("type") String type, @Param("uploadId") String uploadId, @Param("productId") String id);
+    ProductIdGen selectProductIdByAmzSku(@Param("amzSku") String amzSku);
+
+    Long updateUsed(@Param("type") String type, @Param("uploadId") String uploadId, @Param("productId") String id, @Param("amzSku") String amzSku);
 
 }

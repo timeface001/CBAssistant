@@ -19,6 +19,16 @@ public class ProductIdGen {
 
     private String createUser;
 
+    private String amzSku;
+
+    public String getAmzSku() {
+        return amzSku;
+    }
+
+    public void setAmzSku(String amzSku) {
+        this.amzSku = amzSku;
+    }
+
     public Integer getId() {
         return id;
     }

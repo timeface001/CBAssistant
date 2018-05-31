@@ -661,10 +661,11 @@
             esedit = layedit.build('productDescriptionEs');
             itedit = layedit.build('productDescriptionIt');
         });
-        function initSkuSaleDate() {
-            var laydate = layui.laydate;
-            layui.use('laydate', function () {
 
+        function initSkuSaleDate() {
+
+            layui.use('laydate', function () {
+                var laydate = layui.laydate;
                 laydate.render({
                     elem: '.saleStart' //促销开始时间
                 });
@@ -725,22 +726,63 @@
                             form.render(null, "skuTable");
                             $this.parent().parent().find("input").val('');
                         }
+
+
                     }
                 });
                 for (var i = 0; i < vars.length; i++) {
                     var vvType = vars[i].variationType;
+                    console.log(vars[i]);
                     if (vvType != null && vvType != 'undefined') {
-                        if (vvType = 'Color') {
+                        if (vvType == 'Color') {
                             $("#skuRender button").parent().prev().find('input').val(vars[i].colorMap);
-                        }
-                        if (vvType = 'material') {
+                            $(".skuBtn").click();
+                            form.render(null, 'skuRender');
+                        }else
+                        if (vvType =='Size') {
+                            $("#skuRender button").parent().prev().find('input').val(vars[i].sizeMap);
+                            $(".skuBtn").click();
+                            form.render(null, 'skuRender');
+                        } else if (vvType == "material") {
+                            $("#skuRender button").parent().prev().find('input').val(vars[i].materialType);
+                        } else if (vvType == "size-material") {
+                            $("#skuRender button").parent().prev().find('input').val(vars[i].sizeMap);
+                            $(".skuBtn").click();
+                            form.render(null, 'skuRender');
+                            $("#skuRender button").parent().prev().find('input').val(vars[i].materialType);
+                            $(".skuBtn").click();
+                            form.render(null, 'skuRender');
+                        } else if (vvType == "color-material") {
+                            item["colorName"] = firstValue;
+                            item["colorMap"] = firstValue;
+                            item["materialType"] = secondValue;
+                        } else if (vvType == "itempackagequantity") {
+                            item["itemPackageQuantity"] = firstValue;
+                        } else if (vvType == "color-itempackagequantity") {
+                            item["colorName"] = firstValue;
+                            item["colorMap"] = firstValue;
+                            item["itemPackageQuantity"] = secondValue;
+                        } else if (vvType == "itempackagequantity-size") {
+                            item["itemPackageQuantity"] = firstValue;
+                            item["sizeMap"] = secondValue;
+                            item["sizeName"] = secondValue;
+                        } else if (vvType == "itempackagequantity-material") {
+                            item["itempackagequantity"] = firstValue;
+                            item["materialType"] = secondValue;
+                        }else if(vvType=='colorsize'){
                             $("#skuRender button").parent().prev().find('input').val(vars[i].colorMap);
+                            $(".skuBtn").click();
+                            form.render(null, 'skuRender');
+                            $("#skuRender button").parent().prev().find('input').val(vars[i].sizeMap);
+                            $(".skuBtn").click();
+                            form.render(null, 'skuRender');
                         }
-                        $(".skuBtn").click();
-                        form.render(null, 'skuRender');
-                        form.render('checkbox');
+
+                        //form.render('checkbox');
+                        //initSKuPath(null,null);
                     }
                 }
+
                 var index = 0;
                 for (var i = 0; i < vars.length; i++) {
                     var vvType = vars[i].variationType;
@@ -796,6 +838,7 @@
                 }
 
                 $(".delImage").on("click", function () {
+                    console.log("点击");
                     var pprent = $(this).parent().parent();
                     var ppKey = $(this).prev().attr("src").substring(55);
                     $("#skuTable tbody tr").each(function (i, val) {
@@ -811,6 +854,7 @@
                         }
                         $(val).find(".trOtherPath").val(delVals.join(","));
                     });
+                    $(this).parent().remove();
                     if (pprent.find("div").length == 0) {
                         pprent.append("<img class='pathDemo' src='http://bpic.588ku.com/element_origin_min_pic/01/47/02/12574338a640011.jpg!r650' width='100' height='90' />");
                     }
@@ -960,6 +1004,12 @@
                         } else if (selectValue == "itempackagequantity-material") {
                             item["itempackagequantity"] = firstValue;
                             item["materialType"] = secondValue;
+                        }
+                        else if (selectValue == "colorsize") {
+                            item["colorName"] = firstValue;
+                            item["colorMap"] = firstValue;
+                            item["sizeMap"] = secondValue;
+                            item["sizeName"] = secondValue;
                         }
                         skuVar.push(item);
                     });
@@ -1205,6 +1255,7 @@
 
 
         function initSKuPath(id, sid) {
+            console.log("初始化");
             layui.use('upload', function () {
                 var upload = layui.upload;
                 //执行实例
@@ -1248,6 +1299,7 @@
                     , number: 9
                     , url: '<%=request.getContextPath()%>/upload/image' //上传接口
                     , done: function (res, index, upload) {
+                        console.log("上传");
                         var $this = $($(this)[0].item[0]);
                         var key = $this.parent().prev().attr("val");
                         $this.parent().next().find(".pathDemo").remove();
