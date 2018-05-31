@@ -1283,7 +1283,6 @@
 
 
         function initSKuPath(id, sid) {
-            console.log("初始化");
             layui.use('upload', function () {
                 var upload = layui.upload;
                 //执行实例
@@ -1327,7 +1326,6 @@
                     , number: 9
                     , url: '<%=request.getContextPath()%>/upload/image' //上传接口
                     , done: function (res, index, upload) {
-                        console.log("上传");
                         var $this = $($(this)[0].item[0]);
                         var key = $this.parent().prev().attr("val");
                         $this.parent().next().find(".pathDemo").remove();
