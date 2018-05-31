@@ -721,7 +721,7 @@
                         if (!isExist) {
                             $skuCheclk.append("<input type=\"checkbox\" lay-filter='skuMutiCheck' name=\"\" title=" + text + " lay-skin=\"primary\" checked>");
                             form.render('checkbox');
-                            refrehSKuPath();
+                            refrehSKuPath(true);
                             form.render(null, "skuMutiPath");
                             form.render(null, "skuTable");
                             $this.parent().parent().find("input").val('');
@@ -732,7 +732,6 @@
                 });
                 for (var i = 0; i < vars.length; i++) {
                     var vvType = vars[i].variationType;
-                    console.log(vars[i]);
                     if (vvType != null && vvType != 'undefined') {
                         if (vvType == 'Color') {
                             $("#skuRender button").parent().prev().find('input').val(vars[i].colorMap);
@@ -744,36 +743,53 @@
                             $(".skuBtn").click();
                             form.render(null, 'skuRender');
                         } else if (vvType == "material") {
-                            $("#skuRender button").parent().prev().find('input').val(vars[i].materialType);
-                        } else if (vvType == "size-material") {
-                            $("#skuRender button").parent().prev().find('input').val(vars[i].sizeMap);
-                            $(".skuBtn").click();
-                            form.render(null, 'skuRender');
-                            $("#skuRender button").parent().prev().find('input').val(vars[i].materialType);
-                            $(".skuBtn").click();
-                            form.render(null, 'skuRender');
-                        } else if (vvType == "color-material") {
-                            item["colorName"] = firstValue;
-                            item["colorMap"] = firstValue;
-                            item["materialType"] = secondValue;
-                        } else if (vvType == "itempackagequantity") {
-                            item["itemPackageQuantity"] = firstValue;
-                        } else if (vvType == "color-itempackagequantity") {
-                            item["colorName"] = firstValue;
-                            item["colorMap"] = firstValue;
-                            item["itemPackageQuantity"] = secondValue;
-                        } else if (vvType == "itempackagequantity-size") {
-                            item["itemPackageQuantity"] = firstValue;
-                            item["sizeMap"] = secondValue;
-                            item["sizeName"] = secondValue;
-                        } else if (vvType == "itempackagequantity-material") {
-                            item["itempackagequantity"] = firstValue;
-                            item["materialType"] = secondValue;
-                        }else if(vvType=='colorsize'){
                             $("#skuRender button").parent().prev().find('input').val(vars[i].colorMap);
                             $(".skuBtn").click();
                             form.render(null, 'skuRender');
-                            $("#skuRender button").parent().prev().find('input').val(vars[i].sizeMap);
+                        } else if (vvType == "size-material") {
+                            $("#skuRender button").parent().eq(0).prev().find('input').val(vars[i].sizeMap);
+                            $(".skuBtn").click();
+                            form.render(null, 'skuRender');
+                            $("#skuRender button").parent().eq(1).prev().find('input').val(vars[i].materialType);
+                            $(".skuBtn").click();
+                            form.render(null, 'skuRender');
+                        } else if (vvType == "color-material") {
+                            $("#skuRender button").eq(0).parent().prev().find('input').val(vars[i].colorMap);
+                            $(".skuBtn").click();
+                            form.render(null, 'skuRender');
+                            $("#skuRender button").eq(1).parent().prev().find('input').val(vars[i].materialType);
+                            $(".skuBtn").click();
+                            form.render(null, 'skuRender');
+                        } else if (vvType == "itempackagequantity") {
+                            $("#skuRender button").parent().prev().find('input').val(vars[i].materialType);
+                            $(".skuBtn").click();
+                            form.render(null, 'skuRender');
+                        } else if (vvType == "color-itempackagequantity") {
+                            $("#skuRender button").eq(0).parent().prev().find('input').val(vars[i].colorMap);
+                            $(".skuBtn").click();
+                            form.render(null, 'skuRender');
+                            $("#skuRender button").eq(1).parent().prev().find('input').val(vars[i].materialType);
+                            $(".skuBtn").click();
+                            form.render(null, 'skuRender');
+                        } else if (vvType == "itempackagequantity-size") {
+                            $("#skuRender button").eq(0).parent().prev().find('input').val(vars[i].materialType);
+                            $(".skuBtn").click();
+                            form.render(null, 'skuRender');
+                            $("#skuRender button").eq(1).parent().prev().find('input').val(vars[i].sizeMap);
+                            $(".skuBtn").click();
+                            form.render(null, 'skuRender');
+                        } else if (vvType == "itempackagequantity-material") {
+                            $("#skuRender button").eq(0).parent().prev().find('input').val(vars[i].materialType);
+                            $(".skuBtn").click();
+                            form.render(null, 'skuRender');
+                            $("#skuRender button").eq(1).parent().prev().find('input').val(vars[i].materialType);
+                            $(".skuBtn").click();
+                            form.render(null, 'skuRender');
+                        }else if(vvType=='colorsize'){
+                            $("#skuRender button").eq(0).parent().prev().find('input').val(vars[i].colorMap);
+                            $(".skuBtn").click();
+                            form.render(null, 'skuRender');
+                            $("#skuRender button").eq(1).parent().prev().find('input').val(vars[i].sizeMap);
                             $(".skuBtn").click();
                             form.render(null, 'skuRender');
                         }
@@ -782,7 +798,7 @@
                         //initSKuPath(null,null);
                     }
                 }
-
+                initSKuPath(null,null);
                 var index = 0;
                 for (var i = 0; i < vars.length; i++) {
                     var vvType = vars[i].variationType;
@@ -838,7 +854,6 @@
                 }
 
                 $(".delImage").on("click", function () {
-                    console.log("点击");
                     var pprent = $(this).parent().parent();
                     var ppKey = $(this).prev().attr("src").substring(55);
                     $("#skuTable tbody tr").each(function (i, val) {
@@ -866,7 +881,7 @@
             }
             form.render("radio");
             form.on('checkbox(skuMutiCheck)', function (data) {//切换变体类型
-                refrehSKuPath();
+                refrehSKuPath(false);
                 form.render(null, "skuMutiPath");
             });
 
@@ -892,7 +907,7 @@
                         if (!isExist) {
                             $skuCheclk.append("<input type=\"checkbox\" lay-filter='skuMutiCheck' name=\"\" title=" + text + " lay-skin=\"primary\" checked>");
                             form.render('checkbox');
-                            refrehSKuPath();
+                            refrehSKuPath(false);
                             form.render(null, "skuMutiPath");
                             form.render(null, "skuTable");
                             $this.parent().parent().find("input").val('');
@@ -975,6 +990,7 @@
                                 secondValue = $(v).html();
                             }
                         });
+
                         if (selectValue == "Color") {
                             item["colorName"] = firstValue;
                             item["colorMap"] = firstValue;
@@ -1047,7 +1063,7 @@
             });
         });
 
-        function refrehSKuPath() {
+        function refrehSKuPath(isDisplay) {
             $("#skuMutiPath").html("");
             var arr = [];
             var skuCheckRow = $(".skuCheckbox");
@@ -1094,7 +1110,10 @@
                 }
             }
             $("#skuMutiPath").append(getSKuPathDom(arr));
-            initSKuPath(null, null);
+            if(!isDisplay){
+
+                initSKuPath(null, null);
+            }
         }
 
         function skuTable(fisrtDesc, fisrtArr, secondDesc, secondArr) {
@@ -1125,7 +1144,7 @@
             var sku = $("input[name='sku']").val() + "-" + (isSingle ? first : (first + "-" + second));
             return "<tr val=" + (isSingle ? first : (first + ":" + second)) + ">" +
                     "<td><input type='hidden' class='trMainPath' /> <input type='hidden' class='trOtherPath' /> <input type='text' value='" + sku + "'  lay-verify='required'  autocomplete='off' class='layui-input'></td>" +
-                    (isSingle ? ("<td class='skuVarType'>" + first + "</td>") : ("<td class='skuVarType'>" + first + "</td><td>" + second + "</td>"))
+                    (isSingle ? ("<td class='skuVarType'>" + first + "</td>") : ("<td class='skuVarType'>" + first + "</td><td class='skuVarType'>" + second + "</td>"))
                     +
                     "<td><input type='text' lay-verify='required'  autocomplete='off' class='layui-input price'></td>" +
                     "<td><input type='text'  autocomplete='off' class='layui-input salePrice'></td>" +
@@ -1145,7 +1164,8 @@
         $("input[name='sku']").bind("input propertychange change", function (event) {
             $("#skuTable tbody tr").each(function (i, val) {
                 var text = $(val).find("td").eq(0).find("input[type='text']").val();
-                $(val).find("td").eq(0).find("input[type='text']").val($("input[name='sku']").val() + text.substring(text.indexOf("-")))
+                var kk= $(val).attr("val")+"";
+                $(val).find("td").eq(0).find("input[type='text']").val($("input[name='sku']").val() +"-"+$.trim(kk).split(",").join("-"))
             });
         });
 
@@ -1204,7 +1224,15 @@
             for (var i = 0; i < arr.length; i++) {
                 var id = "skuMainPath" + i;
                 var sid = "skuOtherPath" + i;
-                dom += "<div class=\"layui-input-block\" val=" + (arr[i].substring(arr[i].indexOf(":") + 1)) + ">" +
+
+                var key="";
+                var arrKeys=$.trim(arr[i]).split(/\s+/);
+                for(var ind=0;ind<arrKeys.length;ind++){
+                    if(arrKeys[ind]!=null&&arrKeys[ind].indexOf(":")==0){
+                        key+=":"+arrKeys[ind].substring(1);
+                    }
+                }
+                dom += "<div class=\"layui-input-block\" val=" + key.substring(1) + ">" +
                         "    <div class='layui-inline layui-bg-gray' style='margin-top: 10px;'>变种属性    " + arr[i] + "</div>" +
                         "            </div>" +
                             /*"            <div class=\"layui-input-block\">\n" +
