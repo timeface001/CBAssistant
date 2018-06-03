@@ -154,7 +154,7 @@ public class OrderManageController {
                 addressInfo.setAddressLine1(order.getShippingAddress().getAddressLine1());
                 addressInfo.setAddressLine2(order.getShippingAddress().getAddressLine2());
                 addressInfo.setAddressLine3(order.getShippingAddress().getAddressLine3());
-                addressInfo.setCompany(order.getShippingAddress().getName());
+                addressInfo.setCompany("");//order.getShippingAddress().getName()
                 addressInfo.setPhone(order.getShippingAddress().getPhone());
                 addressInfo.setCreateUser(user.get("USER_ID").toString());
                 addressInfo.setCountryCode(order.getShippingAddress().getCountryCode());

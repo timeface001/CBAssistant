@@ -146,7 +146,6 @@
         } else {
             $("#pStatus").val(id);
         }
-
         productTable.ajax.reload();
         var btnDiv = document.getElementById("btn-div");
         var btns = btnDiv.getElementsByTagName("a");

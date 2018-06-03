@@ -223,7 +223,7 @@
             </table>
         </form>
         <div class="row cl">
-            <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+            <div class="col-xs-4 col-sm-4 col-xs-offset-5 col-sm-offset-5 mt-10">
                 <button type="button" class="btn btn-success radius" id="delivery" name="delivery" onclick="delivery()">
                     <i class="icon-ok"></i>发货
                 </button>
@@ -878,19 +878,22 @@
         wayBill.trackNum = trackNum;
         ShippingInfo.CountryCode = $("#countryCode").val();
         ShippingInfo.ShippingFirstName = $("#name").val();
-        ShippingInfo.ShippingLastName = $("#name").val();
-        ShippingInfo.ShippingCompany = $("#company").val();
+        ShippingInfo.ShippingLastName = "";
+        ShippingInfo.ShippingCompany = "";//$("#company").val()
         ShippingInfo.ShippingAddress = $("#addressLine1").val();
         ShippingInfo.ShippingAddress1 = $("#addressLine2").val();
         ShippingInfo.ShippingAddress2 = $("#addressLine3").val();
         ShippingInfo.ShippingCity = $("#city").val();
-        ShippingInfo.ShippingState = $("#stateOrRegion").val();
+        if ($("#stateOrRegion").val() == "" || $("#stateOrRegion").val() == null) {
+            ShippingInfo.ShippingState = $("#city").val();
+        } else {
+            ShippingInfo.ShippingState = $("#stateOrRegion").val();
+        }
         ShippingInfo.ShippingZip = $("#postalCode").val();
         ShippingInfo.ShippingPhone = $("#phone").val();
         wayBill.ShippingInfo = ShippingInfo;
         var tableData = getFormJson("#tableForm");
         if (count > 1) {
-            alert(tableData.count);
             for (var i = 0; i < tableData.enName.length; i++) {
                 if (tableData.chnName[i] == null || tableData.chnName[i] == '' || tableData.chnName[i] == undefined) {
                     layer.msg('中文品名不能为空', {icon: 2, time: 2000});
@@ -951,6 +954,7 @@
         }
         wayBill.ApplicationInfos = ApplicationInfos;
         wayBills.push(wayBill);
+        layer.load();
         $.ajax({
             type: 'POST',
             url: '<%=request.getContextPath()%>/common/confirmOrder',
@@ -960,14 +964,16 @@
                 "amazonOrderId": amazonOrderId
             },
             success: function (data) {
+                layer.closeAll("loading");
                 if (data.code == 0) {
                     layer.msg('发货成功!', {icon: 1, time: 1000});
                 } else {
-                    layer.msg(data.msg, {icon: 1, time: 1000});
+                    layer.msg(data.msg, {icon: 1, time: 2000});
                 }
             },
             error: function (data) {
-                layer.msg(data.msg, {icon: 2, time: 1000});
+                layer.closeAll("loading");
+                layer.msg(data.msg, {icon: 2, time: 2000});
             }
         });
     }

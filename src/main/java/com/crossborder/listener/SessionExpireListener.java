@@ -23,7 +23,8 @@ public class SessionExpireListener implements HttpSessionListener {
     * @see javax.servlet.http.HttpSessionListener#sessionCreated(javax.servlet.http.HttpSessionEvent)
      */
     public void sessionCreated(HttpSessionEvent sessionEnv) {
-
+        HttpSession session = sessionEnv.getSession();
+        session.setMaxInactiveInterval(120 * 60);
     }
 
     /*

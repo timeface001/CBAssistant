@@ -93,9 +93,9 @@
                        placeholder="" autocomplete="off" class="layui-input ">
                 <input type="hidden" name="productTypeId" id="typeId" value="${product.productTypeId}">
 
-                <input type="hidden" name="productType" id="productType" value="${product.productTypeId}" />
-                <input type="hidden" name="productTypeName" id="productTypeName" value="${product.productTypeId}" />
-                <input type="hidden" name="itemType" id="itemType" value="${product.productTypeId}" />
+                <input type="hidden" name="productType" id="productType" value="${product.productTypeId}"/>
+                <input type="hidden" name="productTypeName" id="productTypeName" value="${product.productTypeId}"/>
+                <input type="hidden" name="itemType" id="itemType" value="${product.productTypeId}"/>
             </div>
             <div class="layui-inline">
                 <label class="layui-form-label">分类类型</label>
@@ -200,11 +200,13 @@
                         </div>
                         <label class="col-xs-1 col-sm-1">分类模版：</label>
                         <div class="col-xs-2 col-sm-2">
-                            <input type="text" class="input-text" id="categoryModel" value="${product.productTypeName}"/>
+                            <input type="text" class="input-text" id="categoryModel"
+                                   value="${product.productTypeName}"/>
                         </div>
                         <label id="itemLabel" class="col-xs-1 col-sm-1" style="display: none">产品模版：</label>
                         <div id="itemDiv" class="col-xs-2 col-sm-2" style="display: none">
-                            <input type="text" class="input-text" placeholder="cateType" id="cateType" value="${product.itemType}" />
+                            <input type="text" class="input-text" placeholder="cateType" id="cateType"
+                                   value="${product.itemType}"/>
                         </div>
                     </div>
                     <div id="content-div">
@@ -364,26 +366,25 @@
             var form = layui.form;
             form.on('submit', function (data) {
                 data.field['type'] = '${type}';
+                layer.load();
                 $.ajax({
                     type: 'POST',
                     url: '<%=request.getContextPath()%>/product/publish',
                     dataType: 'json',
-                    data: data.field
-                    ,
+                    data: data.field,
                     success: function (data, index) {
+                        layer.closeAll('loading');
                         if (data.success) {
                             layer.msg(data.msg, {icon: 6, time: 2000});
                             setTimeout(function () {
                                 layer_close(index);
                             }, 1000);
-
-
                         } else {
                             layer.msg(data.msg, {icon: 5, time: 1000});
-                            //layer_close(index);
                         }
                     },
                     error: function (data) {
+                        layer.closeAll('loading');
                         layer.msg(data.msg, {icon: 5, time: 1000});
                     }
                 });

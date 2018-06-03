@@ -10,6 +10,8 @@ import com.crossborder.service.OrderManageService;
 import com.crossborder.utils.CommonSet;
 import com.crossborder.utils.HttpClientUtil;
 import com.crossborder.utils.Tools;
+import org.apache.axis.client.Call;
+import org.apache.axis.client.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,6 +35,7 @@ public class CommonController {
     private OrderManageService orderManageService;
     @Autowired
     private CommonSet commonSet;
+
     /**
      * 登录
      *
@@ -57,7 +60,7 @@ public class CommonController {
                 paramMap.put("isLogin", 1);
                 commonService.updateLogin(paramMap);
                 session.setAttribute("user", list.get(0));
-                session.setAttribute("productPath",commonSet.getProductImagePath());
+                session.setAttribute("productPath", commonSet.getProductImagePath());
                 map.put("data", list.get(0));
                 map.put("code", "0");
                 map.put("msg", "登录成功");
@@ -248,9 +251,15 @@ public class CommonController {
     @ResponseBody
     @RequestMapping(value = "getShipTypes", produces = "text/plain;charset=UTF-8")
     public String getShipTypes(String countryCode, String companyId) {
-        //http://www.sendfromchina.com/shipfee/ship_type_list
+        if (companyId.equals("SFC")) {
+            return getSFCShipTypes(countryCode);
+        } else {
+            return getYTShipTypes(countryCode);
+        }
+    }
+
+    public String getYTShipTypes(String countryCode) {
         Map<String, Object> map = new HashMap<>();
-        Map<String, String> paramMap = new HashMap<>();
         try {
             String result = HttpClientUtil.doGetRequest("http://api.yunexpress.com/LMS.API/api/lms/Get?countryCode=" + countryCode);
             /*JSONObject jsonObject = XmlUtil.xml2JSON(result.getBytes());
@@ -279,15 +288,30 @@ public class CommonController {
         }
         return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
-    /*@ResponseBody
-    @RequestMapping(value = "getShipTypes", produces = "text/plain;charset=UTF-8")
-    public String getShipTypes(String companyId) {
+
+    @ResponseBody
+    @RequestMapping(value = "getSFCShipTypes", produces = "text/plain;charset=UTF-8")
+    public String getSFCShipTypes(String countryCode) {
+        String appKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCvFLVKZrw4+mFJ+gpCQDcWT9JMiEtBSvP2R8Q1b7D5LXNod0VVAtXcYgayb+uPlu9m1yu3WAyBR9sQpysJzsBBc8e3l7iVxxkLLGIX15ZDkh7hHVVUgl+k51mlLkEQobyULkfx1Ur61gtttW74yQNspdN2CRHS+zdXcFIhvT2q3QIDAQAB";
+        String token = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCk0t7KGseCOy771g1PHYbIlzEYrckFVRZUn+SCEVm1q2nmcF0Rp3ukJSEWUIm4sQPMoT2V6YMvbT8O5uDgJxVLwp02ahrXBTHCV13KoLPqS/Y3usI/rpmxlMnp4hMNUJq/ezaTi7Wwzku1sZoAZLlqUmkwBGcFnUNFaRT6PVPSRQIDAQAB";
+        String userId = "V8226";
+        String endpoint = "http://www.sendfromchina.com/ishipsvc/web-service?wsdl";
         Map<String, Object> map = new HashMap<>();
-        Map<String, String> paramMap = new HashMap<>();
-        paramMap.put("companyId", companyId);
         try {
-            List<Map<String, String>> ships = commonService.getShipTypes(paramMap);
-            map.put("data", ships);
+            Service service = new Service();
+            Call call = (Call) service.createCall();
+            call.setTargetEndpointAddress(new java.net.URL(endpoint));
+            call.setOperationName("getShipTypes");// WSDL里面描述的接口名称
+            call.addParameter("HeaderRequest",
+                    org.apache.axis.encoding.XMLType.XSD_DATE,
+                    javax.xml.rpc.ParameterMode.IN);// 接口的参数
+            Map<String,String> param = new HashMap<>();
+            param.put("userId",userId);
+            param.put("appKey",appKey);
+            param.put("token",token);
+            // 给方法传递参数，并且调用方法
+            String result = (String) call.invoke(new Object[]{param});
+            map.put("data", result);
             map.put("code", "0");
             map.put("msg", "查询成功");
         } catch (Exception e) {
@@ -296,7 +320,7 @@ public class CommonController {
             map.put("msg", "查询失败");
         }
         return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
-    }*/
+    }
 
     @ResponseBody
     @RequestMapping(value = "confirmOrder", produces = "text/plain;charset=UTF-8")
@@ -307,6 +331,22 @@ public class CommonController {
         JSONObject shippingObject = jsonObject.getJSONObject("ShippingInfo");
         Map<String, Object> shippingMap = shippingObject;
         shippingMap.put("amazonOrderId", amazonOrderId);
+        JSONObject senderObjecct = new JSONObject();
+        senderObjecct.put("CountryCode", "CN");
+        senderObjecct.put("SenderFirstName", "Yongjun");
+        senderObjecct.put("SenderLastName", " Zhang");
+        senderObjecct.put("SenderCompany", "Yongjun Zhang");
+        senderObjecct.put("SenderAddress", "BaoAnQu");
+        senderObjecct.put("SenderCity", "Shenzhen");
+        senderObjecct.put("SenderState", "Guangdong");
+        senderObjecct.put("SenderZip", "518126");
+        senderObjecct.put("SenderPhone", "19902908635");
+        /*JSONArray senderArray = new JSONArray();
+        senderArray.add(senderObjecct);*/
+        JSONArray paramArray = JSON.parseArray(json);
+        JSONObject paramObject = paramArray.getJSONObject(0);
+        paramObject.put("SenderInfo", senderObjecct);
+        json = JSON.toJSONString(paramArray);
         try {
             String result = HttpClientUtil.doPostRequest("http://api.yunexpress.com/LMS.API/api/WayBill/BatchAdd", json);
             JSONObject resultObject = JSONObject.parseObject(result);
