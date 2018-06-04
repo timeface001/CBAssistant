@@ -967,8 +967,9 @@
                     $("#skuTable tbody tr").each(function (i, val) {
                         var item = {};
                         var itemImgs = $(val).eq(0).find(".trOtherPath").val().split(",");
-                        if (itemImgs.length < 1) {
-                            isItemImags = false;
+                        if ((itemImgs.length < 1 ||itemImgs[0].length==0)&&i==0) {
+                            layer.msg("请上传变体图片", {icon: 5, time: 1000});
+                            return false;
                         }
                         item["productId"] = $("input[name='id']").val();
                         item["mainPath"] = itemImgs[0];
@@ -1030,10 +1031,10 @@
                         skuVar.push(item);
                     });
                 }
-                if (!isItemImags) {
+               /* if (!isItemImags) {
                     layer.msg("请上传变体图片", {icon: 5, time: 1000});
                     return false;
-                }
+                }*/
                 data.field["vars"] = JSON.stringify(skuVar);
 
                 var url = '<%=request.getContextPath()%>/product/claim/save';
@@ -1156,7 +1157,7 @@
                     "<input type='text' autocomplete='off' class='layui-input saleEnd'>" +
                     "</div>" +
                     "</td>" +
-                    "<td><input type='text' lay-verify='required'  autocomplete='off' class='layui-input quantity'></td>" +
+                    "<td><input type='text' lay-verify='required' value='30'  autocomplete='off' class='layui-input quantity'></td>" +
                     "</tr>";
         }
 

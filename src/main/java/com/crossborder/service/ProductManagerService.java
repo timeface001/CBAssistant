@@ -264,7 +264,15 @@ public class ProductManagerService {
 
     public List<ProductAmzUpload> selectAmzUploadList(Map<String, Object> params) {
         params.put("name", params.get("name") != null && StringUtils.isNotBlank(params.get("name").toString()) ? ("%" + params.get("name") + "%") : "");
-        return productAmzUploadDao.selectList(params);
+        List<ProductAmzUpload> result= productAmzUploadDao.selectList(params);
+        if(GeneralUtils.isNotNullOrEmpty(result)){
+            for(ProductAmzUpload upload:result){
+               if(StringUtils.isNotBlank(upload.getUploadDesc())){
+                   upload.setUploadDesc(upload.getUploadDesc().length()>200?(upload.getUploadDesc().substring(0,200)+"..."):upload.getUploadDesc());
+               }
+            }
+        }
+        return result;
     }
 
     /**

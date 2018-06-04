@@ -1,13 +1,8 @@
 package com.crossborder.utils;
 
-import com.alibaba.fastjson.JSON;
 import com.crossborder.entity.ClaimProduct;
 import com.crossborder.entity.ProductItemVar;
 import org.apache.commons.lang3.StringUtils;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.springframework.util.ClassUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -17,6 +12,8 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by fengsong on 2018/4/15.
@@ -155,29 +152,35 @@ public class GeneralUtils {
 
     public static void removeProductDescriptionAttr(ClaimProduct product) {
         if (product != null) {
-            if (org.apache.commons.lang3.StringUtils.isNotBlank(product.getProductDescriptionCn())) {
-
-            }
+            product.setProductDescriptionCn(removeAttr(product.getProductDescriptionCn()));
+            product.setProductDescriptionDe(removeAttr(product.getProductDescriptionDe()));
+            product.setProductDescriptionUk(removeAttr(product.getProductDescriptionUk()));
+            product.setProductDescriptionEs(removeAttr(product.getProductDescriptionEs()));
+            product.setProductDescriptionJp(removeAttr(product.getProductDescriptionJp()));
+            product.setProductDescriptionFr(removeAttr(product.getProductDescriptionFr()));
+            product.setProductDescriptionIt(removeAttr(product.getProductDescriptionIt()));
         }
     }
 
-    private static void removeAttr(String str) {
-        if (StringUtils.isNotBlank(str)) {
-            Document document= Jsoup.parse(str);
-            Elements elements= document.getAllElements();
-
-            for(Element e:elements){
-                System.out.println(JSON.toJSONString(e.html()));
-            }
-
-            System.out.println(document.body().html());
-
+    /*删除指定的属性*/
+    public static String deleteAttr(String attr, String html) {
+        if (StringUtils.isBlank(html)) {
+            return html;
         }
+        Pattern p = Pattern.compile(attr + "=\"([^\"]+)\"");
+        Matcher m = p.matcher(html);
+        return m.replaceAll("");
     }
 
-    public static void main(String[] args) {
-        String s="<span></span><span style='123'></span>";
-        removeAttr(s);
+    private static String removeAttr(String str) {
+        if (StringUtils.isBlank(str)) {
+            return str;
+        }
+        str = deleteAttr("lang", str);
+        str = deleteAttr("class", str);
+        str = deleteAttr("style", str);
+
+        return str;
     }
 
     public static String setProductTitle(ProductItemVar var) {

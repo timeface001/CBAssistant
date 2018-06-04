@@ -313,7 +313,6 @@
             return str.substring(0, 200) + "...";
         }
 
-        console.log(str == 'undefined');
         return str;
     }
 
@@ -434,7 +433,7 @@
         }
         return oTime;
     }
-    ;
+
 
     //补0操作,当时间数据小于10的时候，给该数据前面加一个0
     function getzf(num) {
