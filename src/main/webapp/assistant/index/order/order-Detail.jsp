@@ -961,7 +961,8 @@
             dataType: 'json',
             "data": {
                 "json": JSON.stringify(wayBills),
-                "amazonOrderId": amazonOrderId
+                "amazonOrderId": amazonOrderId,
+                "companyId": document.getElementById("transportCompany").value
             },
             success: function (data) {
                 layer.closeAll("loading");

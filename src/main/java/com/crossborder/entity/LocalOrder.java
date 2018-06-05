@@ -28,6 +28,7 @@ public class LocalOrder {
     private String currencyCode;
     private String orderType;
     private double shippingPrice;
+    private double commission;
 
     public int getId() {
         return id;
@@ -219,5 +220,13 @@ public class LocalOrder {
 
     public void setShippingPrice(double shippingPrice) {
         this.shippingPrice = shippingPrice;
+    }
+
+    public double getCommission() {
+        return commission;
+    }
+
+    public void setCommission(double commission) {
+        this.commission = commission;
     }
 }

@@ -4,14 +4,13 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.crossborder.entity.Menu;
+import com.crossborder.entity.*;
 import com.crossborder.service.CommonService;
 import com.crossborder.service.OrderManageService;
+import com.crossborder.service.ShipRate;
 import com.crossborder.utils.CommonSet;
 import com.crossborder.utils.HttpClientUtil;
 import com.crossborder.utils.Tools;
-import org.apache.axis.client.Call;
-import org.apache.axis.client.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,6 +19,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
+import javax.xml.namespace.QName;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -262,17 +263,10 @@ public class CommonController {
         Map<String, Object> map = new HashMap<>();
         try {
             String result = HttpClientUtil.doGetRequest("http://api.yunexpress.com/LMS.API/api/lms/Get?countryCode=" + countryCode);
-            /*JSONObject jsonObject = XmlUtil.xml2JSON(result.getBytes());
-            JSONArray res = jsonObject.getJSONObject("GetShipTypesListResponse").getJSONArray("shiptypes").getJSONObject(0).getJSONArray("shiptype");*/
             JSONObject jsonObject = JSONObject.parseObject(result);
             JSONArray jsonArray = jsonObject.getJSONArray("Item");
             List<Map<String, String>> ships = new ArrayList<>();
             for (int i = 0; i < jsonArray.size(); i++) {
-                /*Map<String, Object> jsonMap = (Map<String, Object>) jsonArray.get(i);
-                jsonMap.put("state", "1");
-                jsonMap.put("countryId", countryCode);
-                jsonMap.put("companyId", companyId);
-                commonService.insertShips(jsonMap);*/
                 Map<String, String> shipMap = new HashMap<>();
                 shipMap.put("code", jsonArray.getJSONObject(i).getString("Code"));
                 shipMap.put("name", jsonArray.getJSONObject(i).getString("FullName"));
@@ -289,29 +283,40 @@ public class CommonController {
         return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
+    private HeaderRequest createRequest() {
+        HeaderRequest _headerRequest = new HeaderRequest();
+        _headerRequest.setAppKey("MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCk0t7KGseCOy771g1PHYbIlzEYrckFVRZUn+SCEVm1q2nmcF0Rp3ukJSEWUIm4sQPMoT2V6YMvbT8O5uDgJxVLwp02ahrXBTHCV13KoLPqS/Y3usI/rpmxlMnp4hMNUJq/ezaTi7Wwzku1sZoAZLlqUmkwBGcFnUNFaRT6PVPSRQIDAQAB");
+        _headerRequest.setToken("MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCvFLVKZrw4+mFJ+gpCQDcWT9JMiEtBSvP2R8Q1b7D5LXNod0VVAtXcYgayb+uPlu9m1yu3WAyBR9sQpysJzsBBc8e3l7iVxxkLLGIX15ZDkh7hHVVUgl+k51mlLkEQobyULkfx1Ur61gtttW74yQNspdN2CRHS+zdXcFIhvT2q3QIDAQAB");
+        _headerRequest.setUserId("V8226");
+        return _headerRequest;
+    }
+
+    private ShipRate createShipRate() {
+        QName SERVICE_NAME = new QName("http://www.example.org/ShipRate/", "ShipRate");
+        URL wsdlURL = ShipRate_Service.WSDL_LOCATION;
+        ShipRate_Service ss = new ShipRate_Service(wsdlURL, SERVICE_NAME);
+        ShipRate port = ss.getShipRateSOAP();
+        return port;
+    }
+
     @ResponseBody
     @RequestMapping(value = "getSFCShipTypes", produces = "text/plain;charset=UTF-8")
     public String getSFCShipTypes(String countryCode) {
-        String appKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCvFLVKZrw4+mFJ+gpCQDcWT9JMiEtBSvP2R8Q1b7D5LXNod0VVAtXcYgayb+uPlu9m1yu3WAyBR9sQpysJzsBBc8e3l7iVxxkLLGIX15ZDkh7hHVVUgl+k51mlLkEQobyULkfx1Ur61gtttW74yQNspdN2CRHS+zdXcFIhvT2q3QIDAQAB";
-        String token = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCk0t7KGseCOy771g1PHYbIlzEYrckFVRZUn+SCEVm1q2nmcF0Rp3ukJSEWUIm4sQPMoT2V6YMvbT8O5uDgJxVLwp02ahrXBTHCV13KoLPqS/Y3usI/rpmxlMnp4hMNUJq/ezaTi7Wwzku1sZoAZLlqUmkwBGcFnUNFaRT6PVPSRQIDAQAB";
-        String userId = "V8226";
-        String endpoint = "http://www.sendfromchina.com/ishipsvc/web-service?wsdl";
         Map<String, Object> map = new HashMap<>();
         try {
-            Service service = new Service();
-            Call call = (Call) service.createCall();
-            call.setTargetEndpointAddress(new java.net.URL(endpoint));
-            call.setOperationName("getShipTypes");// WSDL里面描述的接口名称
-            call.addParameter("HeaderRequest",
-                    org.apache.axis.encoding.XMLType.XSD_DATE,
-                    javax.xml.rpc.ParameterMode.IN);// 接口的参数
-            Map<String,String> param = new HashMap<>();
-            param.put("userId",userId);
-            param.put("appKey",appKey);
-            param.put("token",token);
-            // 给方法传递参数，并且调用方法
-            String result = (String) call.invoke(new Object[]{param});
-            map.put("data", result);
+            ShipRate port = createShipRate();
+            HeaderRequest _headerRequest = createRequest();
+            GetShipTypesRequest getShipTypesRequest = new GetShipTypesRequest();
+            getShipTypesRequest.setHeaderRequest(_headerRequest);
+            Shiptypes shiptypes = port.getShipTypes(getShipTypesRequest);
+            List<Map<String, String>> ships = new ArrayList<>();
+            for (int i = 0; i < shiptypes.getShiptypes().size(); i++) {
+                Map<String, String> shipMap = new HashMap<>();
+                shipMap.put("code", shiptypes.getShiptypes().get(i).getMethodCode());
+                shipMap.put("name", shiptypes.getShiptypes().get(i).getCnName());
+                ships.add(shipMap);
+            }
+            map.put("data", ships);
             map.put("code", "0");
             map.put("msg", "查询成功");
         } catch (Exception e) {
@@ -324,7 +329,113 @@ public class CommonController {
 
     @ResponseBody
     @RequestMapping(value = "confirmOrder", produces = "text/plain;charset=UTF-8")
-    public String confirmOrder(String amazonOrderId, String json, HttpSession session) {
+    public String confirmOrder(String amazonOrderId, String json, String companyId, HttpSession session) {
+        if (companyId.equals("SFC")) {
+            return addSFCOrder(session, json, amazonOrderId);
+        } else {
+            return addYTOrder(session, json, amazonOrderId);
+        }
+    }
+
+    private String addSFCOrder(HttpSession session, String json, String amazonOrderId) {
+        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> user = (Map<String, Object>) session.getAttribute("user");
+        try {
+            ShipRate port = createShipRate();
+            HeaderRequest _headerRequest = createRequest();
+            AddOrderRequestInfoArray _addOrdersRequestInfo = new AddOrderRequestInfoArray();
+            AddOrderRequest _addOrdersRequest = new AddOrderRequest();
+            java.util.List<GoodsDetailsArray> _goodsDetailsArray = _addOrdersRequestInfo.getGoodsDetails();
+            GoodsDetailsArray _goodsDetails = new GoodsDetailsArray();
+            _addOrdersRequest.setHeaderRequest(_headerRequest);
+
+            JSONObject jsonObject = JSONObject.parseArray(json).getJSONObject(0);
+            JSONObject shippingObject = jsonObject.getJSONObject("ShippingInfo");
+            JSONArray applicationInfos = jsonObject.getJSONArray("ApplicationInfos");
+            _addOrdersRequestInfo.setCustomerOrderNo(jsonObject.getString("OrderNumber"));
+            _addOrdersRequestInfo.setShipperAddressType(2);
+            _addOrdersRequestInfo.setShipperName("Zhang YongJun");
+            _addOrdersRequestInfo.setShipperAddress("Shenzhen BaoAnQu ZhouShiLu HengFengGongYeCheng");
+            _addOrdersRequestInfo.setShipperPhone("19902908635");
+            _addOrdersRequestInfo.setShipperZipCode("518126");
+            _addOrdersRequestInfo.setShipperCompanyName("Zhang YongJun");
+            _addOrdersRequestInfo.setShipperEmail("458572850@qq.com");
+            _addOrdersRequestInfo.setShippingMethod(jsonObject.getString("ShippingMethodCode"));
+            _addOrdersRequestInfo.setRecipientName(shippingObject.getString("ShippingFirstName"));
+            _addOrdersRequestInfo.setRecipientCountry(shippingObject.getString("CountryCode"));
+            _addOrdersRequestInfo.setRecipientCity(shippingObject.getString("ShippingCity"));
+            _addOrdersRequestInfo.setRecipientState(shippingObject.getString("ShippingState"));
+            _addOrdersRequestInfo.setRecipientEmail("");
+            _addOrdersRequestInfo.setRecipientPhone(shippingObject.getString("ShippingFirstName"));
+            _addOrdersRequestInfo.setRecipientZipCode(shippingObject.getString("ShippingZip"));
+            _addOrdersRequestInfo.setRecipientAddress(shippingObject.getString("ShippingAddress"));
+            _addOrdersRequestInfo.setGoodsQuantity(jsonObject.getString("PackageNumber"));
+            _addOrdersRequestInfo.setGoodsDeclareWorth("5");
+            _addOrdersRequestInfo.setGoodsHeight(Float.valueOf(jsonObject.getString("Height")));
+            _addOrdersRequestInfo.setGoodsLength(Float.valueOf(jsonObject.getString("Length")));
+            _addOrdersRequestInfo.setGoodsWeight(Float.valueOf(jsonObject.getString("Weight")));
+            _addOrdersRequestInfo.setGoodsWidth(Float.valueOf(jsonObject.getString("Width")));
+            _addOrdersRequestInfo.setGoodsDescription("");
+            _addOrdersRequestInfo.setIsRemoteConfirm("0");
+            _addOrdersRequestInfo.setEvaluate("5");
+            _addOrdersRequestInfo.setShippingWorth((float) 2.0);
+            //拼商品信息
+            for (int i = 0; i < applicationInfos.size(); i++) {
+                JSONObject good = applicationInfos.getJSONObject(i);
+                _goodsDetails.setDetailDescription(good.getString("ApplicationName"));
+                _goodsDetails.setDetailDescriptionCN(good.getString("PickingName"));
+                _goodsDetails.setDetailQuantity(good.getString("Qty"));
+                _goodsDetails.setDetailWorth(good.getString("UnitPrice"));
+                _goodsDetails.setDetailWeight(Float.valueOf(good.getString("UnitWeight")));
+                _goodsDetailsArray.add(_goodsDetails);
+            }
+            _addOrdersRequest.setAddOrderRequestInfo(_addOrdersRequestInfo);
+            AddOrderResponse _addOrder__return = port.addOrder(_addOrdersRequest);
+            if (_addOrder__return.getOrderActionStatus().equals("Y")) {
+                Map<String, Object> shippingMap = shippingObject;
+                shippingMap.put("amazonOrderId", amazonOrderId);
+                commonService.updateAddress(shippingMap);
+                Map<String, Object> paramMap = new HashMap<>();
+                paramMap.put("amazonOrderId", amazonOrderId);
+                paramMap.put("status", "4");
+                paramMap.put("transportCompany", jsonObject.getString("transportCompany"));
+                orderManageService.updateOrder(paramMap);
+                orderManageService.updateOrderItem(paramMap);
+                insertOperationLog(amazonOrderId, "2", "4", user.get("USER_ID").toString(), "");
+                Map<String, Object> shipMap = new HashMap<>();
+                shipMap.put("amazonOrderId", amazonOrderId);
+                shipMap.put("companyId", jsonObject.getString("transportCompany"));
+                shipMap.put("typeId", jsonObject.getString("ShippingMethodCode"));
+                shipMap.put("custId", jsonObject.getString("OrderNumber"));
+                shipMap.put("length", jsonObject.getString("Length"));
+                shipMap.put("width", jsonObject.getString("Width"));
+                shipMap.put("height", jsonObject.getString("Height"));
+                shipMap.put("packages", jsonObject.getString("PackageNumber"));
+                shipMap.put("weight", jsonObject.getString("Weight"));
+                shipMap.put("trackNum", jsonObject.getString("trackNum"));
+                commonService.insertShipMent(shipMap);
+                JSONArray jsonArray = jsonObject.getJSONArray("ApplicationInfos");
+                for (int i = 0; i < jsonArray.size(); i++) {
+                    Map<String, Object> customsInfo = jsonArray.getJSONObject(i);
+                    customsInfo.put("custId", jsonObject.getString("OrderNumber"));
+                    commonService.insertCustomsInfo(customsInfo);
+                }
+                map.put("data", _addOrder__return);
+                map.put("code", "0");
+                map.put("msg", "发货成功");
+            } else {
+                map.put("code", "-10");
+                map.put("msg", _addOrder__return.getNote());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("code", "-10");
+            map.put("msg", e.getMessage());
+        }
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
+    }
+
+    private String addYTOrder(HttpSession session, String json, String amazonOrderId) {
         Map<String, Object> user = (Map<String, Object>) session.getAttribute("user");
         Map<String, Object> map = new HashMap<>();
         JSONObject jsonObject = JSONObject.parseArray(json).getJSONObject(0);
@@ -341,8 +452,6 @@ public class CommonController {
         senderObjecct.put("SenderState", "Guangdong");
         senderObjecct.put("SenderZip", "518126");
         senderObjecct.put("SenderPhone", "19902908635");
-        /*JSONArray senderArray = new JSONArray();
-        senderArray.add(senderObjecct);*/
         JSONArray paramArray = JSON.parseArray(json);
         JSONObject paramObject = paramArray.getJSONObject(0);
         paramObject.put("SenderInfo", senderObjecct);

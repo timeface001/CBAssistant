@@ -161,7 +161,7 @@
         SHOP_ID = #{shopId,jdbcType=VARCHAR},
       </if>
       <if test="itemType != null">
-        ITEM_TYPE = #{itemType,jdbcType=VARCHAR},
+        ITEM_TYPE = #{itemType,jdbcType=VARCHAR}
       </if>
     </set>
     where ID = #{id,jdbcType=VARCHAR}

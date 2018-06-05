@@ -2,16 +2,25 @@ package com.crossborder.action;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.amazon.mws.finances._2015_05_01.MWSFinancesServiceClient;
+import com.amazon.mws.finances._2015_05_01.MWSFinancesServiceConfig;
+import com.amazon.mws.finances._2015_05_01.model.FeeComponent;
+import com.amazon.mws.finances._2015_05_01.model.FinancialEvents;
+import com.amazon.mws.finances._2015_05_01.model.ListFinancialEventsRequest;
 import com.amazonaws.mws.MarketplaceWebServiceClient;
 import com.amazonaws.mws.MarketplaceWebServiceConfig;
-import com.amazonaws.mws.model.*;
+import com.amazonaws.mws.model.IdList;
+import com.amazonaws.mws.model.SubmitFeedRequest;
 import com.amazonservices.mws.orders._2013_09_01.MarketplaceWebServiceOrders;
 import com.amazonservices.mws.orders._2013_09_01.MarketplaceWebServiceOrdersClient;
 import com.amazonservices.mws.orders._2013_09_01.MarketplaceWebServiceOrdersConfig;
 import com.amazonservices.mws.orders._2013_09_01.model.*;
 import com.amazonservices.mws.products.MarketplaceWebServiceProductsClient;
 import com.amazonservices.mws.products.MarketplaceWebServiceProductsConfig;
-import com.amazonservices.mws.products.model.*;
+import com.amazonservices.mws.products.model.GetMatchingProductForIdRequest;
+import com.amazonservices.mws.products.model.GetMatchingProductForIdResponse;
+import com.amazonservices.mws.products.model.IdListType;
+import com.amazonservices.mws.products.model.Product;
 import com.crossborder.entity.AddressInfo;
 import com.crossborder.entity.LocalOrder;
 import com.crossborder.entity.LocalOrderItem;
@@ -62,7 +71,6 @@ public class OrderManageController {
         if (shops != null && shops.size() > 0) {
             for (int i = 0; i < shops.size(); i++) {
                 Map<String, Object> shop = shops.get(i);
-                getOrderItemFees(shop);
                 Map<String, Object> paramMap = JSON.parseObject(data, Map.class);
                 MarketplaceWebServiceOrdersConfig config = new MarketplaceWebServiceOrdersConfig();
                 config.setServiceURL(shop.get("ENDPOINT").toString());
@@ -118,14 +126,17 @@ public class OrderManageController {
             int count = 0;
             for (int i = 0; i < orderList.size(); i++) {
                 Order order = orderList.get(i);
-                if (order.getOrderStatus().equals("Unshipped")) {
-
+                List<FeeComponent> feeComponents = getOrderItemFees(shop, order.getAmazonOrderId());
+                double fees = 0;
+                for (int m = 0; m < feeComponents.size(); m++) {
+                    fees = fees + feeComponents.get(m).getFeeAmount().getCurrencyAmount().doubleValue();
                 }
                 //插入订单信息
                 LocalOrder localOrder = new LocalOrder();
                 localOrder.setAmazonOrderId(order.getAmazonOrderId());
                 localOrder.setOrderStatus(order.getOrderStatus());
                 localOrder.setLocalStatus("1");
+                localOrder.setCommission(fees);
                 Date createDate = order.getPurchaseDate().toGregorianCalendar().getTime();
                 localOrder.setPurchaseDate(simpleDateFormat.format(createDate));
                 Date updateDate = order.getLastUpdateDate().toGregorianCalendar().getTime();
@@ -165,7 +176,6 @@ public class OrderManageController {
                 List<OrderItem> orderItemList = getOrderItem(order.getAmazonOrderId(), shop);
                 for (int j = 0; j < orderItemList.size(); j++) {
                     OrderItem orderItem = orderItemList.get(j);
-                    //FeesEstimateResult feesEstimateResult = getProduct(orderItem, shop);
                     //Product product = getProduct(orderItem, shop);
                     LocalOrderItem localOrderItem = new LocalOrderItem();
                     /*for (Object obj : product.getAttributeSets().getAny()) {
@@ -186,7 +196,7 @@ public class OrderManageController {
                     localOrderItem.setAsin(orderItem.getASIN());
                     localOrderItem.setCurrencyCode(orderItem.getItemPrice().getCurrencyCode());
                     localOrderItem.setItemPrice(Double.parseDouble(orderItem.getItemPrice().getAmount()));
-                    localOrderItem.setQuantityShipped(orderItem.getQuantityShipped());
+                    localOrderItem.setQuantityShipped(orderItem.getQuantityOrdered());
                     localOrderItem.setSellerSKU(orderItem.getSellerSKU());
                     localOrderItem.setShippingPrice(Double.parseDouble(orderItem.getShippingPrice().getAmount()));
                     localOrderItem.setItemPriceRMB(Double.parseDouble(orderItem.getItemPrice().getAmount()) * Double.parseDouble(shop.get("EXRATE").toString()));
@@ -230,22 +240,18 @@ public class OrderManageController {
         request.setContentMD5("");
     }
 
-    public void getOrderItemFees(Map<String, Object> shop) {
-        try {
-            MarketplaceWebServiceConfig config = new MarketplaceWebServiceConfig();
-            config.setServiceURL(shop.get("ENDPOINT").toString());
-            MarketplaceWebServiceClient client = new MarketplaceWebServiceClient(shop.get("ACCESSKEY_ID").toString(), shop.get("SECRET_KEY").toString(), "", "", config);
-            GetReportListRequest request = new GetReportListRequest();
-            request.setMerchant(shop.get("MERCHANT_ID").toString());
-            TypeList typeList = new TypeList();
-            List<String> types = new ArrayList<>();
-            types.add("_GET_FLAT_FILE_ACTIONABLE_ORDER_DATA_");
-            typeList.setType(types);
-            request.setReportTypeList(typeList);
-            GetReportListResponse response = client.getReportList(request);
-            List<ReportInfo> reportInfos = response.getGetReportListResult().getReportInfoList();
-        } catch (Exception e) {
-            e.printStackTrace();
+    public List<FeeComponent> getOrderItemFees(Map<String, Object> shop, String amazonOrderId) {
+        MWSFinancesServiceConfig config = new MWSFinancesServiceConfig();
+        config.setServiceURL(shop.get("ENDPOINT").toString());
+        MWSFinancesServiceClient client = new MWSFinancesServiceClient(shop.get("ACCESSKEY_ID").toString(), shop.get("SECRET_KEY").toString(), "", "", config);
+        ListFinancialEventsRequest request = new ListFinancialEventsRequest();
+        request.setSellerId(shop.get("MERCHANT_ID").toString());
+        request.setAmazonOrderId(amazonOrderId);
+        FinancialEvents financialEvents = client.listFinancialEvents(request).getListFinancialEventsResult().getFinancialEvents();
+        if (financialEvents.getShipmentEventList() != null && financialEvents.getShipmentEventList().size() > 0) {
+            return financialEvents.getShipmentEventList().get(0).getShipmentItemList().get(0).getItemFeeList();
+        } else {
+            return new ArrayList<FeeComponent>();
         }
     }
 
@@ -301,6 +307,20 @@ public class OrderManageController {
         request.setIdList(idList);
         GetMatchingProductForIdResponse response = client.getMatchingProductForId(request);
         return response.getGetMatchingProductForIdResult().get(0).getProducts().getProduct().get(0);
+    }
+
+    /**
+     * 获取佣金
+     *
+     * @param session
+     * @param amazonOrderId
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "getCommission", produces = "text/plain;charset=UTF-8")
+    public String getCommission(HttpSession session, String amazonOrderId) {
+        Map<String, Object> map = new HashMap<>();
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
     /**
