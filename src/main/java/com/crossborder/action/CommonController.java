@@ -251,9 +251,9 @@ public class CommonController {
 
     @ResponseBody
     @RequestMapping(value = "getShipTypes", produces = "text/plain;charset=UTF-8")
-    public String getShipTypes(String countryCode, String companyId) {
+    public String getShipTypes(String countryCode, String companyId, String weight) {
         if (companyId.equals("SFC")) {
-            return getSFCShipTypes(countryCode);
+            return getSFCShipTypes(countryCode, weight);
         } else {
             return getYTShipTypes(countryCode);
         }
@@ -299,21 +299,20 @@ public class CommonController {
         return port;
     }
 
-    @ResponseBody
-    @RequestMapping(value = "getSFCShipTypes", produces = "text/plain;charset=UTF-8")
-    public String getSFCShipTypes(String countryCode) {
+    public String getSFCShipTypes(String countryCode, String weight) {
         Map<String, Object> map = new HashMap<>();
         try {
             ShipRate port = createShipRate();
             HeaderRequest _headerRequest = createRequest();
-            GetShipTypesRequest getShipTypesRequest = new GetShipTypesRequest();
-            getShipTypesRequest.setHeaderRequest(_headerRequest);
-            Shiptypes shiptypes = port.getShipTypes(getShipTypesRequest);
+            GetRatesRequestInfo getRatesRequestInfo = new GetRatesRequestInfo();
+            getRatesRequestInfo.setCountry(countryCode);
+            getRatesRequestInfo.setWeight(Float.valueOf(weight));
+            List<Rate> rates = port.getRates(_headerRequest, getRatesRequestInfo);
             List<Map<String, String>> ships = new ArrayList<>();
-            for (int i = 0; i < shiptypes.getShiptypes().size(); i++) {
+            for (int i = 0; i < rates.size(); i++) {
                 Map<String, String> shipMap = new HashMap<>();
-                shipMap.put("code", shiptypes.getShiptypes().get(i).getMethodCode());
-                shipMap.put("name", shiptypes.getShiptypes().get(i).getCnName());
+                shipMap.put("code", rates.get(i).getShiptypecode());
+                shipMap.put("name", rates.get(i).getShiptypecnname());
                 ships.add(shipMap);
             }
             map.put("data", ships);
@@ -366,20 +365,18 @@ public class CommonController {
             _addOrdersRequestInfo.setRecipientCity(shippingObject.getString("ShippingCity"));
             _addOrdersRequestInfo.setRecipientState(shippingObject.getString("ShippingState"));
             _addOrdersRequestInfo.setRecipientEmail("");
-            _addOrdersRequestInfo.setRecipientPhone(shippingObject.getString("ShippingFirstName"));
+            _addOrdersRequestInfo.setRecipientPhone(shippingObject.getString("ShippingPhone"));
             _addOrdersRequestInfo.setRecipientZipCode(shippingObject.getString("ShippingZip"));
             _addOrdersRequestInfo.setRecipientAddress(shippingObject.getString("ShippingAddress"));
             _addOrdersRequestInfo.setGoodsQuantity(jsonObject.getString("PackageNumber"));
-            _addOrdersRequestInfo.setGoodsDeclareWorth("5");
             _addOrdersRequestInfo.setGoodsHeight(Float.valueOf(jsonObject.getString("Height")));
             _addOrdersRequestInfo.setGoodsLength(Float.valueOf(jsonObject.getString("Length")));
             _addOrdersRequestInfo.setGoodsWeight(Float.valueOf(jsonObject.getString("Weight")));
             _addOrdersRequestInfo.setGoodsWidth(Float.valueOf(jsonObject.getString("Width")));
-            _addOrdersRequestInfo.setGoodsDescription("");
+            _addOrdersRequestInfo.setGoodsDescription("kdlkdaklsla");
             _addOrdersRequestInfo.setIsRemoteConfirm("0");
-            _addOrdersRequestInfo.setEvaluate("5");
-            _addOrdersRequestInfo.setShippingWorth((float) 2.0);
             //拼商品信息
+            double declareWorth = 0;
             for (int i = 0; i < applicationInfos.size(); i++) {
                 JSONObject good = applicationInfos.getJSONObject(i);
                 _goodsDetails.setDetailDescription(good.getString("ApplicationName"));
@@ -387,8 +384,11 @@ public class CommonController {
                 _goodsDetails.setDetailQuantity(good.getString("Qty"));
                 _goodsDetails.setDetailWorth(good.getString("UnitPrice"));
                 _goodsDetails.setDetailWeight(Float.valueOf(good.getString("UnitWeight")));
+                declareWorth = declareWorth + Double.valueOf(good.getString("Qty")) * Double.valueOf(good.getString("UnitPrice"));
                 _goodsDetailsArray.add(_goodsDetails);
             }
+            _addOrdersRequestInfo.setGoodsDeclareWorth(declareWorth + "");
+            /*_addOrdersRequestInfo.setEvaluate(declareWorth + "");*/
             _addOrdersRequest.setAddOrderRequestInfo(_addOrdersRequestInfo);
             AddOrderResponse _addOrder__return = port.addOrder(_addOrdersRequest);
             if (_addOrder__return.getOrderActionStatus().equals("Y")) {
@@ -503,19 +503,27 @@ public class CommonController {
 
     @ResponseBody
     @RequestMapping(value = "print", produces = "text/plain;charset=UTF-8")
-    public String print(String orderNumbers) {
+    public String print(String orderNumbers, String companyId, String orderCode) {
         Map<String, Object> map = new HashMap<>();
         try {
-            String result = HttpClientUtil.doPostRequest("http://api.yunexpress.com/LMS.API.Lable/Api/PrintUrl", orderNumbers);
-            JSONObject jsonObject = JSONObject.parseObject(result);
-            if (jsonObject.getString("ResultCode").equals("0000")) {
-                JSONObject item = jsonObject.getJSONArray("Item").getJSONObject(0);
-                map.put("data", item.getString("Url"));
+            if (companyId.equals("SFC")) {
+                String url = "http://www.sendfromchina.com/api/label?orderCodeList=" + orderCode + "&printType=1&print_type=pdf&printSize=3&printSort=1";
+                map.put("data", url);
                 map.put("code", "0");
                 map.put("msg", "打印成功");
             } else {
-                map.put("code", "-10");
-                map.put("msg", "打印失败");
+                String result = HttpClientUtil.doPostRequest("http://api.yunexpress.com/LMS.API.Lable/Api/PrintUrl", orderNumbers);
+                JSONObject jsonObject = JSONObject.parseObject(result);
+                if (jsonObject.getString("ResultCode").equals("0000")) {
+                    JSONObject item = jsonObject.getJSONArray("Item").getJSONObject(0);
+                    map.put("data", item.getString("Url"));
+                    map.put("code", "0");
+                    map.put("msg", "打印成功");
+                } else {
+                    map.put("code", "-10");
+                    map.put("msg", "打印失败");
+                }
+
             }
         } catch (Exception e) {
             e.printStackTrace();

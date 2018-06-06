@@ -167,16 +167,17 @@
             <div class=" col-xs-2 col-sm-2">
                 <input type="text" id="amazonId" placeholder=" "
                        class="input-text"></div>
+            <input type="hidden" id="orderCode">
         </div>
         <div class="row cl">
             <label class=" col-xs-1 col-sm-1 text-r"><span class="c-red">*</span>货物重量(kg)：</label>
             <div class=" col-xs-2 col-sm-2">
                 <input type="text" id="weight" placeholder=" "
-                       class="input-text"></div>
+                       class="input-text" value="1"></div>
             <label class=" col-xs-2 col-sm-2 text-r"><span class="c-red">*</span>包装件数：</label>
             <div class=" col-xs-2 col-sm-2">
                 <input type="text" id="count" placeholder=" "
-                       class="input-text"></div>
+                       class="input-text" value="1"></div>
 
         </div>
         <div class="row cl">
@@ -761,7 +762,8 @@
             dataType: 'json',
             data: {
                 "countryCode": $("#countryCode").val(),
-                "companyId": value
+                "companyId": value,
+                "weight": $("#weight").val()
             },
             success: function (data) {
                 if (data.code == 0) {
@@ -967,6 +969,7 @@
             success: function (data) {
                 layer.closeAll("loading");
                 if (data.code == 0) {
+                    $("#orderCode").val(data.data.orderCode);
                     layer.msg('发货成功!', {icon: 1, time: 1000});
                 } else {
                     layer.msg(data.msg, {icon: 1, time: 2000});
@@ -986,17 +989,19 @@
             url: '<%=request.getContextPath()%>/common/print',
             dataType: 'json',
             "data": {
-                "orderNumbers": JSON.stringify(orderNumbers)
+                "orderNumbers": JSON.stringify(orderNumbers),
+                "companyId": document.getElementById("transportCompany").value,
+                "orderCode": $("#orderCode").val()
             },
             success: function (data) {
                 if (data.code == 0) {
                     layer_show("打印标签", data.data);
                 } else {
-                    layer.msg(data.msg, {icon: 1, time: 1000});
+                    layer.msg(data.msg, {icon: 1, time: 2000});
                 }
             },
             error: function (data) {
-                layer.msg(data.msg, {icon: 2, time: 1000});
+                layer.msg(data.msg, {icon: 2, time: 2000});
             }
         });
     }
