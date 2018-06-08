@@ -135,6 +135,7 @@ public class OrderManageController {
                 LocalOrder localOrder = new LocalOrder();
                 localOrder.setAmazonOrderId(order.getAmazonOrderId());
                 localOrder.setOrderStatus(order.getOrderStatus());
+                localOrder.setSellerOrderId(order.getSellerOrderId());
                 localOrder.setLocalStatus("1");
                 localOrder.setCommission(fees);
                 Date createDate = order.getPurchaseDate().toGregorianCalendar().getTime();

@@ -8,7 +8,7 @@
         WHEN matched THEN
         UPDATE set t1.ORDERSTATUS = #{orderStatus,jdbcType=VARCHAR},
         t1.LASTUPDATEDATE = #{lastUpdateDate,jdbcType=VARCHAR},
-        t1.COMMISSION = #{commission,jdbcType=DOUBLE})
+        t1.COMMISSION = #{commission,jdbcType=DOUBLE}
         WHEN not matched THEN
         INSERT
         (ID,
@@ -170,10 +170,10 @@
         t1.paymentmethod,
         wm_concat(t2.SELLERSKU) sku,
         wm_concat(t2.ASIN) asin,
-        trunc(sum(t2.itempricermb + t2.shippingPricermb - t1.commission),2) itemprice,
+        trunc(sum(t2.itempricermb + t2.shippingPricermb + t1.commission),2) itemprice,
         trunc(sum(t2.cost),2) cost,
         trunc(sum(t2.refundment),2) refundment,
-        trunc(sum(t2.itempricermb - t2.cost - t2.refundment - t1.shippingPrice + t2.shippingPricermb - t1.commission),2)
+        trunc(sum(t2.itempricermb - t2.cost - t2.refundment - t1.shippingPrice + t2.shippingPricermb + t1.commission),2)
         profit
         from T_ORDER t1
         left join t_order_item t2
