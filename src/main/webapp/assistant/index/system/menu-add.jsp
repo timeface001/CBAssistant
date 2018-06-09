@@ -39,7 +39,7 @@
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>菜单名称：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="" placeholder="" id="menuName" name="menuName">
+                <input type="text" class="input-text" value=""  id="menuName" name="menuName">
             </div>
         </div>
         <div class="row cl">
@@ -57,13 +57,19 @@
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>菜单路径：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="" placeholder="" id="path" name="path">
+                <input type="text" class="input-text" value=""  id="path" name="path">
             </div>
         </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>菜单图标：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="" placeholder="" id="iconPath" name="iconPath">
+                <input type="text" class="input-text" value=""  id="iconPath" name="iconPath">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>菜单顺序：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="number" class="input-text" value="1" id="order" name="order">
             </div>
         </div>
         <div class="row cl">
@@ -109,6 +115,35 @@
 <script type="text/javascript">
     var id = '<%=id%>';
     $(function () {
+            $("#addMenuForm").validate({
+                rules: {
+                    menuName: {
+                        required: true,
+                    },
+                    menuPid: {
+                        required: true,
+                    },
+                    path: {
+                        required: true,
+                    },
+                    iconPath: {
+                        required: true,
+                    },
+                    order: {
+                        required: true,
+                    },
+                    state: {
+                        required: true,
+                    }
+                },
+                onkeyup: false,
+                focusCleanup: true,
+                success: "valid",
+                submitHandler: function (form) {
+                    var index = parent.layer.getFrameIndex(window.name);
+                    parent.layer.close(index);
+                }
+            });
         $.ajax({
             type: 'POST',
             url: '<%=request.getContextPath()%>/common/getList',
@@ -162,6 +197,7 @@
                         $("#menuPid").val(data.MENU_PID);
                         $("#path").val(data.PATH);
                         $("#iconPath").val(data.ICONPATH);
+                        $("#order").val(data.MENU_ORDER);
                         $("#state").val(data.MENU_STATE);
                         $("#menuDesc").val(data.T_DESC);
                     } else {

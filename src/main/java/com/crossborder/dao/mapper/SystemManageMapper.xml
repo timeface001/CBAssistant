@@ -63,7 +63,8 @@
         MENU_STATE,
         T_DESC,
         PATH,
-        ICONPATH
+        ICONPATH,
+        MENU_ORDER
         )
         VALUES (
         #{menuId,jdbcType=VARCHAR},
@@ -74,8 +75,8 @@
         #{state,jdbcType=VARCHAR},
         #{menuDesc,jdbcType=VARCHAR},
         #{path,jdbcType=VARCHAR},
-        #{iconPath,jdbcType=VARCHAR}
-        )
+        #{iconPath,jdbcType=VARCHAR},
+        #{order,jdbcType=INTEGER})
     </insert>
     <select id="selectMenus" parameterType="java.util.Map" resultType="java.util.Map">
         select t1.*,t2.MENU_NAME MENU_PNAME
@@ -84,7 +85,7 @@
         <if test="id !=null and id !=''">
             AND t1.MENU_ID = #{id,jdbcType=VARCHAR}
         </if>
-        ORDER BY t1.MENU_ID
+        ORDER BY t1.MENU_ORDER
     </select>
     <update id="updateMenuState" parameterType="java.util.Map">
         UPDATE T_MENU
@@ -106,7 +107,8 @@
         MENU_PID = #{menuPid,jdbcType=VARCHAR},
         PATH = #{path,jdbcType=VARCHAR},
         ICONPATH = #{iconPath,jdbcType=VARCHAR},
-        T_DESC = #{menuDesc,jdbcType=VARCHAR}
+        T_DESC = #{menuDesc,jdbcType=VARCHAR},
+        MENU_ORDER = #{order,jdbcType=VARCHAR}
         WHERE
         MENU_ID = #{id,jdbcType=VARCHAR}
     </update>

@@ -137,7 +137,7 @@ public class OrderManageController {
                 localOrder.setOrderStatus(order.getOrderStatus());
                 localOrder.setSellerOrderId(order.getSellerOrderId());
                 localOrder.setLocalStatus("1");
-                localOrder.setCommission(fees);
+                localOrder.setCommission(fees * Double.parseDouble(shop.get("EXRATE").toString()));
                 Date createDate = order.getPurchaseDate().toGregorianCalendar().getTime();
                 localOrder.setPurchaseDate(simpleDateFormat.format(createDate));
                 Date updateDate = order.getLastUpdateDate().toGregorianCalendar().getTime();

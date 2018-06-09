@@ -87,6 +87,7 @@
         var fileObj = document.getElementById("file").files[0];
         var form = new FormData();
         form.append("file", fileObj);
+        layer.load();
         $.ajax({
             type: 'POST',
             url: '<%=request.getContextPath()%>/order/updateByExcel',
@@ -95,11 +96,12 @@
             processData: false,//用于对data参数进行序列化处理 这里必须false
             contentType: false, //必须
             success: function (data) {
-                layer.msg(data.msg, {icon: 6, time: 1000});
-                layer_close();
+                layer.closeAll("loading");
+                layer.msg(data.msg, {icon: 6, time: 2000});
             },
             error: function (data) {
-                layer.msg(data.msg, {icon: 5, time: 1000});
+                layer.closeAll("loading");
+                layer.msg("提交失败！", {icon: 5, time: 2000});
             },
         });
     });

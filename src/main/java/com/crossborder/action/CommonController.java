@@ -120,25 +120,29 @@ public class CommonController {
             List<Menu> menus = new ArrayList<>();
             for (int i = 0; i < list.size(); i++) {
                 Menu menu = new Menu();
-                if (list.get(i).get("MENU_PID").toString().equals("0")) {
-                    menu.setMenuId(list.get(i).get("MENU_ID").toString());
-                    menu.setMenuPid(list.get(i).get("MENU_PID").toString());
-                    menu.setPath(list.get(i).get("PATH").toString());
-                    menu.setMenuName(list.get(i).get("MENU_NAME").toString());
-                    menu.setIconPath(list.get(i).get("ICONPATH").toString());
-                    List<Menu> childMenus = new ArrayList<>();
-                    for (int j = 0; j < list.size(); j++) {
-                        Menu childMenu = new Menu();
-                        if (list.get(i).get("MENU_ID").toString().equals(list.get(j).get("MENU_PID").toString())) {
-                            childMenu.setMenuId(list.get(j).get("MENU_ID").toString());
-                            childMenu.setMenuPid(list.get(j).get("MENU_PID").toString());
-                            childMenu.setPath(list.get(j).get("PATH").toString());
-                            childMenu.setMenuName(list.get(j).get("MENU_NAME").toString());
-                            childMenus.add(childMenu);
+                if (list.get(i).get("MENU_PID") != null) {
+                    if (list.get(i).get("MENU_PID").toString().equals("0")) {
+                        menu.setMenuId(list.get(i).get("MENU_ID").toString());
+                        menu.setMenuPid(list.get(i).get("MENU_PID").toString());
+                        menu.setPath(list.get(i).get("PATH").toString());
+                        menu.setMenuName(list.get(i).get("MENU_NAME").toString());
+                        menu.setIconPath(list.get(i).get("ICONPATH").toString());
+                        List<Menu> childMenus = new ArrayList<>();
+                        for (int j = 0; j < list.size(); j++) {
+                            Menu childMenu = new Menu();
+                            if (list.get(j).get("MENU_PID") != null) {
+                                if (list.get(i).get("MENU_ID").toString().equals(list.get(j).get("MENU_PID").toString())) {
+                                    childMenu.setMenuId(list.get(j).get("MENU_ID").toString());
+                                    childMenu.setMenuPid(list.get(j).get("MENU_PID").toString());
+                                    childMenu.setPath(list.get(j).get("PATH").toString());
+                                    childMenu.setMenuName(list.get(j).get("MENU_NAME").toString());
+                                    childMenus.add(childMenu);
+                                }
+                            }
+                            menu.setMenuList(childMenus);
                         }
-                        menu.setMenuList(childMenus);
+                        menus.add(menu);
                     }
-                    menus.add(menu);
                 }
             }
             model.addAttribute("menus", menus);
@@ -217,25 +221,29 @@ public class CommonController {
             List<Menu> menus = new ArrayList<>();
             for (int i = 0; i < list.size(); i++) {
                 Menu menu = new Menu();
-                if (list.get(i).get("MENU_PID").toString().equals("0")) {
-                    menu.setMenuId(list.get(i).get("MENU_ID").toString());
-                    menu.setMenuPid(list.get(i).get("MENU_PID").toString());
-                    menu.setPath(list.get(i).get("PATH").toString());
-                    menu.setMenuName(list.get(i).get("MENU_NAME").toString());
-                    menu.setIconPath(list.get(i).get("ICONPATH").toString());
-                    List<Menu> childMenus = new ArrayList<>();
-                    for (int j = 0; j < list.size(); j++) {
-                        Menu childMenu = new Menu();
-                        if (list.get(i).get("MENU_ID").toString().equals(list.get(j).get("MENU_PID").toString())) {
-                            childMenu.setMenuId(list.get(j).get("MENU_ID").toString());
-                            childMenu.setMenuPid(list.get(j).get("MENU_PID").toString());
-                            childMenu.setPath(list.get(j).get("PATH").toString());
-                            childMenu.setMenuName(list.get(j).get("MENU_NAME").toString());
-                            childMenus.add(childMenu);
+                if (list.get(i).get("MENU_PID") != null) {
+                    if (list.get(i).get("MENU_PID").toString().equals("0")) {
+                        menu.setMenuId(list.get(i).get("MENU_ID").toString());
+                        menu.setMenuPid(list.get(i).get("MENU_PID").toString());
+                        menu.setPath(list.get(i).get("PATH").toString());
+                        menu.setMenuName(list.get(i).get("MENU_NAME").toString());
+                        menu.setIconPath(list.get(i).get("ICONPATH").toString());
+                        List<Menu> childMenus = new ArrayList<>();
+                        for (int j = 0; j < list.size(); j++) {
+                            Menu childMenu = new Menu();
+                            if (list.get(j).get("MENU_PID") != null) {
+                                if (list.get(i).get("MENU_ID").toString().equals(list.get(j).get("MENU_PID").toString())) {
+                                    childMenu.setMenuId(list.get(j).get("MENU_ID").toString());
+                                    childMenu.setMenuPid(list.get(j).get("MENU_PID").toString());
+                                    childMenu.setPath(list.get(j).get("PATH").toString());
+                                    childMenu.setMenuName(list.get(j).get("MENU_NAME").toString());
+                                    childMenus.add(childMenu);
+                                }
+                            }
+                            menu.setMenuList(childMenus);
                         }
-                        menu.setMenuList(childMenus);
+                        menus.add(menu);
                     }
-                    menus.add(menu);
                 }
             }
             map.put("data", menus);

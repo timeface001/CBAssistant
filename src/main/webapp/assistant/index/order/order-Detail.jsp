@@ -977,7 +977,7 @@
             },
             error: function (data) {
                 layer.closeAll("loading");
-                layer.msg(data.msg, {icon: 2, time: 2000});
+                layer.msg("请求错误！", {icon: 2, time: 2000});
             }
         });
     }
@@ -1001,7 +1001,7 @@
                 }
             },
             error: function (data) {
-                layer.msg(data.msg, {icon: 2, time: 2000});
+                layer.msg("请求错误！", {icon: 2, time: 2000});
             }
         });
     }

@@ -27,10 +27,12 @@
         t1.menu_name,
         t1.path,
         t1.menu_pid,
-        t1.iconpath
+        t1.iconpath,
+        t1.menu_order
         FROM T_MENU t1, T_MENU_ROLE t2
         where t1.menu_id = t2.menu_id
         and t2.role_id = #{roleId,jdbcType=VARCHAR}
+        ORDER BY MENU_ORDER
     </select>
     <select id="selectCountryByCode" parameterType="java.lang.String" resultType="java.util.Map">
         SELECT t1.* FROM T_COUNTRY t1
