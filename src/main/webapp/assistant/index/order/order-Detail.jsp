@@ -33,11 +33,15 @@
             <label class=" col-xs-1 col-sm-1 text-r">公司：</label>
             <div class=" col-xs-2 col-sm-2">
                 <input type="text" id="salesCompany" placeholder=" "
-                       class="input-text" readonly></div>
+                       class="input-text" readonly>
+                <input type="hidden" id="salesCompanyId">
+            </div>
             <label class=" col-xs-2 col-sm-2 text-r">业务员：</label>
             <div class=" col-xs-2 col-sm-2">
                 <input type="text" id="salesMan" placeholder=" "
-                       class="input-text" readonly></div>
+                       class="input-text" readonly>
+                <input type="text" id="salesManId">
+            </div>
             <label class=" col-xs-2 col-sm-2 text-r">销售来源：</label>
             <div class=" col-xs-2 col-sm-2">
                 <input type="text" id="salesSource" placeholder=" "
@@ -311,7 +315,9 @@
         preStatus = localOrder.LOCALSTATUS;
         trackNum = localOrder.INTLTRACKNUM;
         $("#salesCompany").val(localOrder.COMPANY_NAME);
+        $("#salesCompanyId").val(localOrder.SALESCOMPANY)
         $("#salesMan").val(localOrder.USER_NAME);
+        $("#salesManId").val(localOrder.SALESMAN);
         $("#salesSource").val(localOrder.SHOP_NAME);
         $("#amazonOrderId").val(localOrder.AMAZONORDERID);
         $("#amazonId").val(localOrder.AMAZONORDERID);
@@ -923,6 +929,7 @@
                 applicationInfo.Qty = tableData.count[i];
                 applicationInfo.UnitPrice = tableData.price[i];
                 applicationInfo.UnitWeight = tableData.weight[i];
+                applicationInfo.SKU = tableData.sku[i];
                 ApplicationInfos.push(applicationInfo);
             }
         } else {
@@ -952,6 +959,7 @@
             applicationInfo.Qty = tableData.count;
             applicationInfo.UnitPrice = tableData.price;
             applicationInfo.UnitWeight = tableData.weight;
+            applicationInfo.SKU = tableData.sku;
             ApplicationInfos.push(applicationInfo);
         }
         wayBill.ApplicationInfos = ApplicationInfos;
@@ -964,6 +972,8 @@
             "data": {
                 "json": JSON.stringify(wayBills),
                 "amazonOrderId": amazonOrderId,
+                "salesMan": $("#salesManId").val(),
+                "salesCompany": $("#salesCompanyId").val(),
                 "companyId": document.getElementById("transportCompany").value
             },
             success: function (data) {

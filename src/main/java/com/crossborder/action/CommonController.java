@@ -336,15 +336,15 @@ public class CommonController {
 
     @ResponseBody
     @RequestMapping(value = "confirmOrder", produces = "text/plain;charset=UTF-8")
-    public String confirmOrder(String amazonOrderId, String json, String companyId, HttpSession session) {
+    public String confirmOrder(String amazonOrderId, String json, String companyId, String salesMan, String salesCompany, HttpSession session) {
         if (companyId.equals("SFC")) {
-            return addSFCOrder(session, json, amazonOrderId);
+            return addSFCOrder(session, json, amazonOrderId, salesMan, salesCompany);
         } else {
-            return addYTOrder(session, json, amazonOrderId);
+            return addYTOrder(session, json, amazonOrderId, salesMan, salesCompany);
         }
     }
 
-    private String addSFCOrder(HttpSession session, String json, String amazonOrderId) {
+    private String addSFCOrder(HttpSession session, String json, String amazonOrderId, String salesMan, String salesCompany) {
         Map<String, Object> map = new HashMap<>();
         Map<String, Object> user = (Map<String, Object>) session.getAttribute("user");
         try {
@@ -381,7 +381,7 @@ public class CommonController {
             _addOrdersRequestInfo.setGoodsLength(Float.valueOf(jsonObject.getString("Length")));
             _addOrdersRequestInfo.setGoodsWeight(Float.valueOf(jsonObject.getString("Weight")));
             _addOrdersRequestInfo.setGoodsWidth(Float.valueOf(jsonObject.getString("Width")));
-            _addOrdersRequestInfo.setGoodsDescription("kdlkdaklsla");
+            _addOrdersRequestInfo.setGoodsDescription(applicationInfos.getJSONObject(0).getString("ApplicationName"));
             _addOrdersRequestInfo.setIsRemoteConfirm("0");
             //拼商品信息
             double declareWorth = 0;
@@ -392,6 +392,7 @@ public class CommonController {
                 _goodsDetails.setDetailQuantity(good.getString("Qty"));
                 _goodsDetails.setDetailWorth(good.getString("UnitPrice"));
                 _goodsDetails.setDetailWeight(Float.valueOf(good.getString("UnitWeight")));
+                _goodsDetails.setHsCode(good.getString("SKU"));
                 declareWorth = declareWorth + Double.valueOf(good.getString("Qty")) * Double.valueOf(good.getString("UnitPrice"));
                 _goodsDetailsArray.add(_goodsDetails);
             }
@@ -406,9 +407,9 @@ public class CommonController {
                 Map<String, Object> paramMap = new HashMap<>();
                 paramMap.put("amazonOrderId", amazonOrderId);
                 paramMap.put("status", "4");
+                paramMap.put("intlTrackNum", _addOrder__return.getTrackingNumber());
                 paramMap.put("transportCompany", jsonObject.getString("transportCompany"));
                 orderManageService.updateOrder(paramMap);
-                orderManageService.updateOrderItem(paramMap);
                 insertOperationLog(amazonOrderId, "2", "4", user.get("USER_ID").toString(), "");
                 Map<String, Object> shipMap = new HashMap<>();
                 shipMap.put("amazonOrderId", amazonOrderId);
@@ -420,7 +421,11 @@ public class CommonController {
                 shipMap.put("height", jsonObject.getString("Height"));
                 shipMap.put("packages", jsonObject.getString("PackageNumber"));
                 shipMap.put("weight", jsonObject.getString("Weight"));
-                shipMap.put("trackNum", jsonObject.getString("trackNum"));
+                shipMap.put("trackNum", _addOrder__return.getTrackingNumber());
+                shipMap.put("orderCode", _addOrder__return.getOrderCode());
+                shipMap.put("salesMan", salesMan);
+                shipMap.put("salesCompany", salesCompany);
+                shipMap.put("status", "0");
                 commonService.insertShipMent(shipMap);
                 JSONArray jsonArray = jsonObject.getJSONArray("ApplicationInfos");
                 for (int i = 0; i < jsonArray.size(); i++) {
@@ -443,7 +448,7 @@ public class CommonController {
         return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
-    private String addYTOrder(HttpSession session, String json, String amazonOrderId) {
+    private String addYTOrder(HttpSession session, String json, String amazonOrderId, String salesMan, String salesCompany) {
         Map<String, Object> user = (Map<String, Object>) session.getAttribute("user");
         Map<String, Object> map = new HashMap<>();
         JSONObject jsonObject = JSONObject.parseArray(json).getJSONObject(0);
@@ -472,9 +477,9 @@ public class CommonController {
                 Map<String, Object> paramMap = new HashMap<>();
                 paramMap.put("amazonOrderId", amazonOrderId);
                 paramMap.put("status", "4");
+                paramMap.put("intlTrackNum", resultObject.getJSONArray("Item").getJSONObject(0).getString("TrackingNumber"));
                 paramMap.put("transportCompany", jsonObject.getString("transportCompany"));
                 orderManageService.updateOrder(paramMap);
-                orderManageService.updateOrderItem(paramMap);
                 insertOperationLog(amazonOrderId, "2", "4", user.get("USER_ID").toString(), "");
                 Map<String, Object> shipMap = new HashMap<>();
                 shipMap.put("amazonOrderId", amazonOrderId);
@@ -486,7 +491,10 @@ public class CommonController {
                 shipMap.put("height", jsonObject.getString("Height"));
                 shipMap.put("packages", jsonObject.getString("PackageNumber"));
                 shipMap.put("weight", jsonObject.getString("Weight"));
-                shipMap.put("trackNum", jsonObject.getString("trackNum"));
+                shipMap.put("trackNum", resultObject.getJSONArray("Item").getJSONObject(0).getString("TrackingNumber"));
+                shipMap.put("salesMan", salesMan);
+                shipMap.put("salesCompany", salesCompany);
+                shipMap.put("status", "0");
                 commonService.insertShipMent(shipMap);
                 JSONArray jsonArray = jsonObject.getJSONArray("ApplicationInfos");
                 for (int i = 0; i < jsonArray.size(); i++) {
@@ -531,7 +539,6 @@ public class CommonController {
                     map.put("code", "-10");
                     map.put("msg", "打印失败");
                 }
-
             }
         } catch (Exception e) {
             e.printStackTrace();

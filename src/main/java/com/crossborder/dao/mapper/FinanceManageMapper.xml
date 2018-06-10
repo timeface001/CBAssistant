@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.crossborder.dao.FinanceManageDao">
+    <select id="selectShippings" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT t1.*,t2.company_name,t3.user_name salesman_name,t4.user_name operation_name,t5.name trans_company_name
+        FROM T_ORDER_SHIPMENT t1
+        LEFT JOIN T_USER_COMPANY t2
+        ON t1.salescompany = t2.company_id
+        LEFT JOIN T_USER_INFO t3
+        ON t1.salesman = t3.user_id
+        LEFT JOIN T_USER_INFO t4
+        ON t1.operation_user = t3.user_id
+        LEFT JOIN T_TRANSPORT_COMPANY t5
+        ON t1.trans_company_id = t5.id
+        WHERE 1=1
+        <if test="amazonOrderId !=null and amazonOrderId !=''">
+            AND t1.ORDER_ID = #{amazonOrderId,jdbcType=VARCHAR}
+        </if>
+        <if test="status !=null and status !=''">
+            AND t1.STATUS = #{status,jdbcType=VARCHAR}
+        </if>
+        <if test="intlTrackNum !=null and intlTrackNum !=''">
+            AND t1.INTLTRACKNUM = #{intlTrackNum,jdbcType=VARCHAR}
+        </if>
+        <if test="transportCompany !=null and transportCompany !=''">
+            AND t1.TRANS_COMPANY_ID = #{transportCompany,jdbcType=VARCHAR}
+        </if>
+        <if test="salesMan !=null and salesMan !=''">
+            AND t1.SALESMAN = #{salesMan,jdbcType=VARCHAR}
+        </if>
+        <if test="salesCompany !=null and salesCompany !=''">
+            AND t1.SALESCOMPANY = #{salesCompany,jdbcType=VARCHAR}
+        </if>
+    </select>
+    <update id="updateShipping" parameterType="java.util.Map">
+        UPDATE T_ORDER_SHIPMENT
+        SET
+        SHIPPINGPRICE = #{shippingPrice,jdbcType=VARCHAR},
+        FREIGHT = #{freight,jdbcType=VARCHAR}
+        WHERE
+        ORDER_ID = #{orderId,jdbcType=VARCHAR}
+    </update>
+</mapper>

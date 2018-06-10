@@ -53,7 +53,15 @@
 
 
 
+
+
+
+
 			${sqlText}
+
+
+
+
 
 
 
@@ -72,7 +80,15 @@
 
 
 
+
+
+
+
 			${sqlText}
+
+
+
+
 
 
 
@@ -134,7 +150,12 @@
         LENGTH,
         WIDTH,
         HEIGHT,
-        TRACKNUMBER
+        TRACKNUMBER,
+        STATUS,
+        SALESMAN,
+        SALESCOMPANY,
+        ORDER_CODE
+        CREATE_TIME
         )VALUES (
         #{amazonOrderId,jdbcType=VARCHAR},
         #{companyId,jdbcType=VARCHAR},
@@ -145,7 +166,12 @@
         #{length,jdbcType=VARCHAR},
         #{width,jdbcType=VARCHAR},
         #{height,jdbcType=VARCHAR},
-        #{trackNum,jdbcType=VARCHAR}
+        #{trackNum,jdbcType=VARCHAR},
+        #{status,jdbcType=VARCHAR},
+        #{salesMan,jdbcType=VARCHAR},
+        #{salesCompany,jdbcType=VARCHAR},
+        #{orderCode,jdbcType=VARCHAR},
+        CURRENT_DATE
         )
     </insert>
     <insert id="insertCustomsInfo" parameterType="java.util.Map">
