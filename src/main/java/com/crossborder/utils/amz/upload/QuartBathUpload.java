@@ -31,7 +31,7 @@ public class QuartBathUpload {
     @Autowired
     private ProductUploadLogDao productUploadLogDao;
 
-    @Scheduled(cron = "0/30 * * * * ?")
+    @Scheduled(cron = "0 0/10 * * * * ?")
     public void upload() {
         System.out.println("定时批量发布开始...." + DateUtils.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
         //获取预发布的产品
