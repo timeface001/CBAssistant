@@ -68,7 +68,7 @@ public class GeneralUtils {
 
         StringBuffer sb=new StringBuffer();
 
-        for(int i=0;i<length;i++){
+        for (int i = 0; i < length; i++) {
 
             int number =random.nextInt(46);
 
@@ -172,16 +172,42 @@ public class GeneralUtils {
         return m.replaceAll("");
     }
 
-    private static String removeAttr(String str) {
+    public static String removeAttr(String str) {
         if (StringUtils.isBlank(str)) {
             return str;
         }
         str = deleteAttr("lang", str);
         str = deleteAttr("class", str);
         str = deleteAttr("style", str);
+        str = deleteAttr("tabindex", str);
+        str = deleteAttr("title", str);
+        str = deleteAttr("id", str);
+        str = str.replace("<span>", "").replace("</span>", "");
 
         return str;
     }
+
+
+    /**
+     * 基本功能：过滤所有以"<"开头以">"结尾的标签
+     * <p>
+     *
+     * @param str
+     * @return String
+     */
+    public static String filterHtml(String str, String regex) {
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(str);
+        StringBuffer sb = new StringBuffer();
+        boolean result1 = matcher.find();
+        while (result1) {
+            matcher.appendReplacement(sb, "");
+            result1 = matcher.find();
+        }
+        matcher.appendTail(sb);
+        return sb.toString();
+    }
+
 
     public static String setProductTitle(ProductItemVar var) {
         if (VarTypeEnum.Color.is(var.getVariationType())) {
@@ -232,5 +258,9 @@ public class GeneralUtils {
         }
 
         return "";
+    }
+
+    public static String cuurentDateStr() {
+        return new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
     }
 }

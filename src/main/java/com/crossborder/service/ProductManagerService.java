@@ -3,7 +3,10 @@ package com.crossborder.service;
 import com.alibaba.fastjson.JSON;
 import com.crossborder.dao.*;
 import com.crossborder.entity.*;
-import com.crossborder.utils.*;
+import com.crossborder.utils.CommonSet;
+import com.crossborder.utils.GeneralUtils;
+import com.crossborder.utils.ProductStateEnum;
+import com.crossborder.utils.PublishStatusEnum;
 import com.crossborder.utils.amz.upload.AmzUpload;
 import com.crossborder.utils.util.ChineseAndEnglish;
 import com.google.cloud.translate.Translate;
@@ -439,7 +442,7 @@ public class ProductManagerService {
 
         upload.setLanguageId(languageId);
         upload.setItemName(productName);
-        upload.setProductDescription(productDesc);
+        upload.setProductDescription(GeneralUtils.removeAttr(productDesc));
 
         generateUploadKeywords(upload, keywords);
 
@@ -474,19 +477,11 @@ public class ProductManagerService {
     public void uploadProduct(ProductAmzUpload product, Map<String, Object> shop) {
 
         logger.debug("************  start upload product ****************  id -----> " + product.getId());
-        List<ProductItemVar> vars = productSkuTypeService.selectListByProductId(product.getProductAmzId());
+        //List<ProductItemVar> vars = productSkuTypeService.selectListByProductId(product.getProductAmzId());
 
-        //同一产品共用产品ID
-        if (vars.size() == 1) {//单体
-            ProductAmzUpload sameSkuPro = productAmzUploadDao.selectBySku(product.getItemSku(), product.getAmzSku());
-            if (sameSkuPro != null) {
-                product.setExternalProductId(sameSkuPro.getExternalProductId());
-                product.setExternalProductIdType(sameSkuPro.getExternalProductIdType());
-            }
-        }
 
-        ResponseDto response = amzUpload.uploadProduct(product, shop, vars);
-        logger.debug("call amz result:  " + JSON.toJSONString(response));
+        //ResponseDto response = amzUpload.uploadProduct(product, shop, vars);
+       /* logger.debug("call amz result:  " + JSON.toJSONString(response));
         if (response.isSuccess()) {
             ProductUploadLog log = new ProductUploadLog();
             log.setProductId(product.getId());
@@ -501,15 +496,15 @@ public class ProductManagerService {
             productUploadLogDao.insert(log);
         } else {
             product.setUploadDesc(response.getMsg());
-        }
+        }*/
 
-        //1发布失败 2发布成功 3发布中
-        product.setPublishStatus(response.isSuccess() ? PublishStatusEnum.PROCESS.getVal() : PublishStatusEnum.FAILED.getVal());
+        //1发布失败 2发布成功 3发布中 0预发布
+        product.setPublishStatus(PublishStatusEnum.NOT.getVal());
         product.setUpdateDelete("update");
         product.setPublishTime(new Date());
 
 
-        updateClaimProduct(PublishStatusEnum.PROCESS, product.getProductAmzId());
+        updateClaimProduct(PublishStatusEnum.NOT, product.getProductAmzId());
         productAmzUploadDao.updateByPrimaryKeySelective(product);
         logger.debug("************  end upload product ****************  id -----> " + product.getId());
     }

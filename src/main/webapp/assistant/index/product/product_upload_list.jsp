@@ -206,7 +206,7 @@
                 {
                     "data": function (val) {
                         if (val.publishStatus == "0") {
-                            return "未发布";
+                            return "预发布";
                         }
                         if (val.publishStatus == "1") {
                             return "<p style='text-align: left'>发布失败：</p><p title='" + val.uploadDesc + "' style='color: #ff515b'>" + (typeof(val.uploadDesc) == 'undefined' ? '' : getUploadDesc(val.uploadDesc)) + "</p>";

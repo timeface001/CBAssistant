@@ -46,8 +46,8 @@ public class GetFeedSubmissionListSample {
          * Access Key ID and Secret Access Key ID, obtained from:
          * http://aws.amazon.com
          ***********************************************************************/
-        final String accessKeyId = "AKIAIWNVZFF7XJ7LV32A";
-        final String secretAccessKey = "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";
+        final String accessKeyId = "AKIAIIPFMNZKSXY6SUWQ";
+        final String secretAccessKey = "HXcxMABNKovf6YIOwvcPZw6F3cSyq0G4WIXQ2h0l";
 
         final String appName = "<Your Application or Company Name>";
         final String appVersion = "<Your Application Version or Build Number or Release Date>";
@@ -126,7 +126,7 @@ public class GetFeedSubmissionListSample {
         // @TODO: set request parameters here
 
 
-         request.setFeedSubmissionIdList(new IdList(Arrays.asList("50483017666")));
+         request.setFeedSubmissionIdList(new IdList(Arrays.asList("51100017688")));
          invokeGetFeedSubmissionList(service, request);
 
     }

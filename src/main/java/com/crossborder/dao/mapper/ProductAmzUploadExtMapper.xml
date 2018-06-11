@@ -2,6 +2,23 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.crossborder.dao.ProductAmzUploadDao">
 
+    <select id="selectListGroupByShop" parameterType="java.util.Map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from T_PRODUCT_ITEM_AMZ_UPLOAD a
+        LEFT JOIN T_SHOP b
+        ON a.shop_id = b.shop_id
+        LEFT JOIN T_COUNTRY c
+        ON a.language_id = c.id
+        LEFT JOIN T_USER_INFO d
+        ON a.create_user = d.user_id
+        WHERE a.P_STATE=1 AND a.PARENT_CHILD='parent'
+        <if test="pStatus!=null and pStatus!=''">
+            AND a.PUBLISH_STATUS=#{pStatus}
+        </if>
+
+        ORDER BY a.PUBLISH_TIME DESC
+    </select>
     <select id="selectList" parameterType="java.util.Map" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
@@ -138,6 +155,7 @@
         <result column="a_AMZ_SKU" jdbcType="VARCHAR" property="amzSku"/>
         <result column="a_UPLOAD_DESC" jdbcType="VARCHAR" property="uploadDesc"/>
         <result column="d_USER_NAME" jdbcType="VARCHAR" property="userName"/>
+        <result column="a_CREATE_USER" jdbcType="VARCHAR" property="userId"/>
 
         <result column="a_PRODUCT_TYPE_ID" jdbcType="VARCHAR" property="productTypeId"/>
         <result column="a_PRODUCT_TYPE" jdbcType="VARCHAR" property="productType"/>
@@ -165,7 +183,7 @@
         a.SIZE_MAP as a_SIZE_MAP, a.P_STATE as a_P_STATE, a.MATERIAL_TYPE as a_MATERIAL_TYPE,
         a.ITEM_PACKAGE_QUANTITY as a_ITEM_PACKAGE_QUANTITY, a.SHOP_ID as a_SHOP_ID, a.SALE_PRICE as a_SALE_PRICE,
         a.SALE_FROM_DATE as a_SALE_FROM_DATE, a.SALE_END_DATE as a_SALE_END_DATE, a.PUBLISH_STATUS as a_PUBLISH_STATUS,
-        a.CREATE_TIME as a_CREATE_TIME, a.PRODUCT_AMZ_ID as a_PRODUCT_AMZ_ID, a.MAIN_PATH as a_MAIN_PATH,
+        a.CREATE_TIME as a_CREATE_TIME, a.PRODUCT_AMZ_ID as a_PRODUCT_AMZ_ID, a.MAIN_PATH as a_MAIN_PATH,a.CREATE_USER as a_CREATE_USER,
         a.ATTACH_PATH as a_ATTACH_PATH, a.WEBSITE_TYPE as a_WEBSITE_TYPE, a.EXTERNAL_PRODUCT_ID_TYPE as a_EXTERNAL_PRODUCT_ID_TYPE,
         a.AMZ_SKU as a_AMZ_SKU, a.UPLOAD_DESC as a_UPLOAD_DESC,b.SHOP_NAME as b_SHOP_NAME,c.NAME as c_NAME,d.USER_NAME as d_USER_NAME,
         a.PRODUCT_TYPE_ID as a_PRODUCT_TYPE_ID,a.PRODUCT_TYPE as a_PRODUCT_TYPE,a.ITEM_TYPE as a_ITEM_TYPE,a.PRODUCT_TYPE_NAME as a_PRODUCT_TYPE_NAME

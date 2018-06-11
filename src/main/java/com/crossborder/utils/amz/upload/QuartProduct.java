@@ -16,10 +16,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component("taskJob")
 public class QuartProduct {
@@ -52,7 +49,7 @@ public class QuartProduct {
     /**
      * 每天5点触发（清空验证码表t_captcha中的数据）
      */
-    @Scheduled(cron = "0 0/3 * * * ?")
+    //@Scheduled(cron = "0 0/3 * * * ?")
     public void testTask() {
         System.out.println("execte quart......");
         List<ProductUploadLog> logs = productManagerService.selectLogList("3");
@@ -70,7 +67,7 @@ public class QuartProduct {
                     continue;
                 }
 
-                ResponseDto dto = amzUpload.getFeedSubResult(shop, submitID);
+                ResponseDto dto = amzUpload.getFeedSubResult(shop, Arrays.asList(submitID));
                 System.out.println("dto:" + JSON.toJSONString(dto));
                 if (dto.isSuccess()) {
                     ProductAmzUpload upload = new ProductAmzUpload();
@@ -87,7 +84,7 @@ public class QuartProduct {
 
                     ProductAmzUpload dd = productAmzUploadDao.selectByPrimaryKey(log.getProductId());
                     productManagerService.updateClaimProduct(PublishStatusEnum.SUCCESS, dd.getProductAmzId());
-                } else if (StringUtils.isNotBlank(dto.getMsg())) {
+                } else if (StringUtils.isNotBlank(dto.getMsg()) && !dto.getMsg().equals("Request is throttled")) {
                     ProductAmzUpload upload = new ProductAmzUpload();
                     upload.setId(log.getProductId());
                     upload.setPublishStatus(String.valueOf(PublishStatusEnum.FAILED.toString()));
