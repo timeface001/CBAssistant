@@ -299,11 +299,18 @@
                     }
                 },
                 {
+                    "targets": [12],
+                    "data": "CREATE_TIME",
+                    "render": function (data, type, full) {
+                        return "<div>" + getMyDate(data) + "</div>"
+                    }
+                },
+                {
                     "targets": [13],
                     "data": "STATUS",
                     "render": function (data, type, full) {
                         if (data == 0) {
-                            return "<a style='text-decoration:none' title='获取运费' onClick=\"getShippingPrice('" + full.ORDER_ID + "','" + full.CUST_ORDER_ID + "','" + full.TRANS_COMPANY_ID + "')\">获取运费</a>" +
+                            return "<a style='text-decoration:none' title='获取运费' onClick=\"getShippingPrice('" + full.ORDER_ID + "','" + full.TRACKNUMBER + "','" + full.TRANS_COMPANY_ID + "')\">获取运费</a>" +
                                     "&nbsp;&nbsp;" +
                                     "<a style='text-decoration:none' title='修改'  onClick=\"updateShipping('" + full.ORDER_ID + "')\">修改</a>";
                         } else if (data == 1) {

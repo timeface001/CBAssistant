@@ -155,6 +155,8 @@
     <select id="selectLocalOrder" resultType="java.util.Map" parameterType="java.util.Map">
         select t1.id,
         t1.amazonorderid,
+        t1.salesman,
+        t1.salescompany,
         t6.user_name,
         t5.shop_name,
         t1.runningtime,
@@ -173,8 +175,7 @@
         trunc(sum(t2.itempricermb + t2.shippingPricermb + t1.commission),2) itemprice,
         trunc(sum(t2.cost),2) cost,
         trunc(sum(t2.refundment),2) refundment,
-        trunc(sum(t2.itempricermb - t2.cost - t2.refundment - t1.shippingPrice + t2.shippingPricermb + t1.commission),2)
-        profit
+        trunc(sum(t2.itempricermb - t2.cost - t2.refundment - t1.shippingPrice + t2.shippingPricermb + t1.commission),2) profit
         from T_ORDER t1
         left join t_order_item t2
         on t2.amazonorderid = t1.amazonorderid
@@ -227,6 +228,8 @@
         </if>
         group by t1.id,
         t1.amazonorderid,
+        t1.salesman,
+        t1.salescompany,
         t6.user_name,
         t5.shop_name,
         t1.runningtime,
@@ -258,7 +261,7 @@
             LOCALSTATUS = #{status,jdbcType=VARCHAR}
         </if>
         <if test="intlTrackNum !=null and intlTrackNum !=''">
-            INTLTRACKNUM = #{intlTrackNum,jdbcType=VARCHAR}
+            ,INTLTRACKNUM = #{intlTrackNum,jdbcType=VARCHAR}
         </if>
         <if test="shippingPrice !=null and shippingPrice !=''">
             ,SHIPPINGPRICE = #{shippingPrice,jdbcType=VARCHAR}

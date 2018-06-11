@@ -154,7 +154,7 @@
         STATUS,
         SALESMAN,
         SALESCOMPANY,
-        ORDER_CODE
+        ORDER_CODE,
         CREATE_TIME
         )VALUES (
         #{amazonOrderId,jdbcType=VARCHAR},

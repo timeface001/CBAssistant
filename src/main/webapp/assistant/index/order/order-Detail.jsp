@@ -40,7 +40,7 @@
             <div class=" col-xs-2 col-sm-2">
                 <input type="text" id="salesMan" placeholder=" "
                        class="input-text" readonly>
-                <input type="text" id="salesManId">
+                <input type="hidden" id="salesManId">
             </div>
             <label class=" col-xs-2 col-sm-2 text-r">销售来源：</label>
             <div class=" col-xs-2 col-sm-2">
@@ -392,7 +392,7 @@
         $("#addressLine1").val(address.ADDRESSLINE1);
         $("#addressLine2").val(address.ADDRESSLINE2);
         $("#addressLine3").val(address.ADDRESSLINE3);
-        if (roleId == 400) {
+        if (roleId == 400 || roleId == 100) {
             $("#name").attr("readOnly", false);
             $("#company").attr("readOnly", false);
             $("#phone").attr("readOnly", false);

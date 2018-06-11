@@ -407,7 +407,7 @@ public class CommonController {
                 Map<String, Object> paramMap = new HashMap<>();
                 paramMap.put("amazonOrderId", amazonOrderId);
                 paramMap.put("status", "4");
-                paramMap.put("intlTrackNum", _addOrder__return.getTrackingNumber());
+                paramMap.put("intlTrackNum", _addOrder__return.getOrderCode());
                 paramMap.put("transportCompany", jsonObject.getString("transportCompany"));
                 orderManageService.updateOrder(paramMap);
                 insertOperationLog(amazonOrderId, "2", "4", user.get("USER_ID").toString(), "");
@@ -421,7 +421,7 @@ public class CommonController {
                 shipMap.put("height", jsonObject.getString("Height"));
                 shipMap.put("packages", jsonObject.getString("PackageNumber"));
                 shipMap.put("weight", jsonObject.getString("Weight"));
-                shipMap.put("trackNum", _addOrder__return.getTrackingNumber());
+                shipMap.put("trackNum", _addOrder__return.getOrderCode());
                 shipMap.put("orderCode", _addOrder__return.getOrderCode());
                 shipMap.put("salesMan", salesMan);
                 shipMap.put("salesCompany", salesCompany);
@@ -477,7 +477,7 @@ public class CommonController {
                 Map<String, Object> paramMap = new HashMap<>();
                 paramMap.put("amazonOrderId", amazonOrderId);
                 paramMap.put("status", "4");
-                paramMap.put("intlTrackNum", resultObject.getJSONArray("Item").getJSONObject(0).getString("TrackingNumber"));
+                paramMap.put("intlTrackNum", resultObject.getJSONArray("Item").getJSONObject(0).getString("WayBillNumber"));
                 paramMap.put("transportCompany", jsonObject.getString("transportCompany"));
                 orderManageService.updateOrder(paramMap);
                 insertOperationLog(amazonOrderId, "2", "4", user.get("USER_ID").toString(), "");
@@ -491,7 +491,7 @@ public class CommonController {
                 shipMap.put("height", jsonObject.getString("Height"));
                 shipMap.put("packages", jsonObject.getString("PackageNumber"));
                 shipMap.put("weight", jsonObject.getString("Weight"));
-                shipMap.put("trackNum", resultObject.getJSONArray("Item").getJSONObject(0).getString("TrackingNumber"));
+                shipMap.put("trackNum", resultObject.getJSONArray("Item").getJSONObject(0).getString("WayBillNumber"));
                 shipMap.put("salesMan", salesMan);
                 shipMap.put("salesCompany", salesCompany);
                 shipMap.put("status", "0");

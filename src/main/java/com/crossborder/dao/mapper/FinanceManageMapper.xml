@@ -31,6 +31,7 @@
         <if test="salesCompany !=null and salesCompany !=''">
             AND t1.SALESCOMPANY = #{salesCompany,jdbcType=VARCHAR}
         </if>
+        ORDER BY CREATE_TIME DESC
     </select>
     <update id="updateShipping" parameterType="java.util.Map">
         UPDATE T_ORDER_SHIPMENT
