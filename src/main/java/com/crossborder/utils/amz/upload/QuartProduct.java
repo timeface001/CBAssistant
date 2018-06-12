@@ -67,7 +67,7 @@ public class QuartProduct {
                     continue;
                 }
 
-                ResponseDto dto = amzUpload.getFeedSubResult(shop, Arrays.asList(submitID));
+                ResponseDto dto = null;//amzUpload.getFeedSubResult(shop, Arrays.asList(submitID));
                 System.out.println("dto:" + JSON.toJSONString(dto));
                 if (dto.isSuccess()) {
                     ProductAmzUpload upload = new ProductAmzUpload();

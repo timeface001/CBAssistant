@@ -554,6 +554,12 @@
         $("#productType").val($("#categoryType").val());
         $("#productTypeName").val($("#categoryModel").val());
         $("#itemType").val($("#cateType").val());
+
+        var selfDefine = $("#categoryId").val();
+        if (selfDefine != null && $.trim(selfDefine).length > 0) {
+            $("#typeId").val(selfDefine);
+            $("#browseNodes").val($("#categoryType").val());
+        }
     }
 
 </script>

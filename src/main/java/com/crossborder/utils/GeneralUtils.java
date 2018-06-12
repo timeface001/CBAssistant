@@ -1,7 +1,9 @@
 package com.crossborder.utils;
 
+import com.crossborder.action.ProductClaimController;
 import com.crossborder.entity.ClaimProduct;
 import com.crossborder.entity.ProductItemVar;
+import com.crossborder.utils.amz.upload.CountryCodeEnum;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.ClassUtils;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -262,5 +264,35 @@ public class GeneralUtils {
 
     public static String cuurentDateStr() {
         return new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+    }
+
+    public static boolean isAllChinese(String str) {
+        if (StringUtils.isBlank(str)) {
+            return false;
+        }
+        return str.matches("[\\u4e00-\\u9fa5]+");
+    }
+
+    public static String translate(String str, String lang, String responseLang) {
+        List<String> list = new ArrayList<>();
+        list.add(str);
+        TranslateDto dto = ProductClaimController.getTanslateList(list, lang).get(0);
+        if (CountryCodeEnum.FR.equal(responseLang)) {
+            return dto.getFr();
+        } else if (CountryCodeEnum.ES.equal(responseLang)) {
+            return dto.getEs();
+        } else if (CountryCodeEnum.JP.equal(responseLang)) {
+            return dto.getJp();
+        } else if (CountryCodeEnum.CN.equal(responseLang)) {
+            return dto.getCn();
+        } else if (CountryCodeEnum.GB.equal(responseLang)) {
+            return dto.getUk();
+        } else if (CountryCodeEnum.IT.equal(responseLang)) {
+            return dto.getIt();
+        } else if (CountryCodeEnum.DE.equal(responseLang)) {
+            return dto.getDe();
+        }
+
+        return "";
     }
 }

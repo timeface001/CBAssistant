@@ -589,7 +589,7 @@ public class ProductManagerService {
 
         amzUpload.write(path, shop);
 
-        InputStreamReader isr = null;
+        /*InputStreamReader isr = null;
         try {
             isr = new InputStreamReader(new FileInputStream(path));
 
@@ -667,7 +667,7 @@ public class ProductManagerService {
                     e.printStackTrace();
                 }
             }
-        }
+        }*/
     }
 
 

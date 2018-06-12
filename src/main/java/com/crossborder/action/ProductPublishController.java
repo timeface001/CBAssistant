@@ -151,28 +151,6 @@ public class ProductPublishController extends BaseController {
     @Resource
     private ProductAmzUploadDao productAmzUploadDao;
 
-    private String translate(String str, String lang, String responseLang) {
-        List<String> list = new ArrayList<>();
-        list.add(str);
-        TranslateDto dto = ProductClaimController.getTanslateList(list, lang).get(0);
-        if (CountryCodeEnum.FR.equal(responseLang)) {
-            return dto.getFr();
-        } else if (CountryCodeEnum.ES.equal(responseLang)) {
-            return dto.getEs();
-        } else if (CountryCodeEnum.JP.equal(responseLang)) {
-            return dto.getJp();
-        } else if (CountryCodeEnum.CN.equal(responseLang)) {
-            return dto.getCn();
-        } else if (CountryCodeEnum.GB.equal(responseLang)) {
-            return dto.getUk();
-        } else if (CountryCodeEnum.IT.equal(responseLang)) {
-            return dto.getIt();
-        } else if (CountryCodeEnum.DE.equal(responseLang)) {
-            return dto.getDe();
-        }
-
-        return "";
-    }
 
     @RequestMapping(value = "/product/publish", produces = "text/plain;charset=UTF-8")
     @ResponseBody

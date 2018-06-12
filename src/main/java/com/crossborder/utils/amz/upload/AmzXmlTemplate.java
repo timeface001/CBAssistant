@@ -16,28 +16,16 @@ import static java.math.BigDecimal.ROUND_HALF_DOWN;
 
 public class AmzXmlTemplate {
 
-
-
-    public static FileInputStream uploadProduct(ProductAmzUpload product, Map<String, Object> shop, String path, ProductItemVar var,boolean isSingle) {
-
-        try {
-            return new FileInputStream(FileUtils.byte2File(getUploadProductStr(product, shop, var, isSingle).getBytes(), path, product.getId() + "product_fee.txt"));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-
-    }
-
-
     private static String getByProductType(ProductAmzUpload product) {
         String str = "<ProductType>SportingGoods</ProductType>";
-
+        if (StringUtils.isNotBlank(product.getProductTypeName())) {
+            str = "<ProductType>" + product.getProductType() + "</ProductType>";
+        }
         return str;
     }
 
     private static String variationData(ProductItemVar var) {
+
         if (var.getVariationType().equals("colorsize")) {
             return "<VariationTheme>ColorSize</VariationTheme>" +
                     "<Color>" + var.getColorName() + "</Color><Size>" + var.getSizeName() + "</Size>";
@@ -95,18 +83,6 @@ public class AmzXmlTemplate {
 
     }
 
-    public static FileInputStream uploadPrice(ProductAmzUpload product, Map<String, Object> shop, String path, List<ProductItemVar> vars) {
-
-
-        try {
-            return new FileInputStream(FileUtils.byte2File(getUploadPriceStr(product, shop, vars).getBytes(), path, product.getId() + "product_price.txt"));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-
-    }
 
     private static String getPriceStr(BigDecimal rate, BigDecimal price, String code) {
 
@@ -152,31 +128,6 @@ public class AmzXmlTemplate {
         return "";
     }
 
-    public static FileInputStream uploadRelationShop(ProductAmzUpload product, Map<String, Object> shop, String path, List<ProductItemVar> vars) {
-
-
-        try {
-            return new FileInputStream(FileUtils.byte2File(getUploadRelationsStr(product, vars).getBytes(), path, product.getId() + "product_relationship.txt"));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-
-    }
-
-    public static FileInputStream uploadImage(ProductAmzUpload product, Map<String, Object> shop, String path, List<ProductItemVar> vars, String prePath) {
-
-
-        try {
-            return new FileInputStream(FileUtils.byte2File(getUploadImageStr(product, shop, prePath, vars).getBytes(), path, product.getId() + "product_imgs.txt"));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-
-    }
 
     public static String addUploadInventoryStrHead(String str, Map<String, Object> shop) {
         return "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n" +
@@ -223,6 +174,7 @@ public class AmzXmlTemplate {
 
     public static String getUploadProductStr(ProductAmzUpload product, Map<String, Object> shop, ProductItemVar var, boolean isSingle) {
         boolean isParent = StringUtils.isBlank(var.getVariationType());
+        String productTypeName = StringUtils.isNotBlank(product.getProductTypeName()) ? product.getProductTypeName() : "Sports";
         String text =
                 "<Message>" +
                 "<MessageID>1</MessageID>" +
@@ -249,17 +201,17 @@ public class AmzXmlTemplate {
                 (StringUtils.isNotBlank(product.getGenericKeywords5()) ? ("<SearchTerms>" + GeneralUtils.replaceHtmlSign(product.getGenericKeywords5()) + "</SearchTerms>") : "") +
                 (StringUtils.isNotBlank(product.getItemType()) ? ("<ItemType>" + product.getItemType() + "</ItemType>") : "") +
                 "<IsGiftWrapAvailable>false</IsGiftWrapAvailable>" +
-                "<IsGiftMessageAvailable>false</IsGiftMessageAvailable>\n" +
+                        "<IsGiftMessageAvailable>false</IsGiftMessageAvailable>" +
                 (StringUtils.isNotBlank(product.getProductTypeId()) ? ("<RecommendedBrowseNode>" + product.getProductTypeId() + "</RecommendedBrowseNode>") : "") +
                 "</DescriptionData>" +
                 "<ProductData>" +
-                "<Sports>" + getByProductType(product) +
+                        "<" + productTypeName + ">" + getByProductType(product) +
                 (isSingle ? "" : ("<VariationData>" +
                         "<Parentage>" + (isParent ? "parent" : "child") + "</Parentage>\n" +
                         (isParent ? variationTheme(product.getVariationTheme()) : (variationData(var))) +
                         "</VariationData>")) +
 
-                "</Sports>" +
+                        "</" + productTypeName + ">" +
                 "</ProductData>" +
                 "</Product>" +
                 "</Message>";
