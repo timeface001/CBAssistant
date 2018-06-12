@@ -195,11 +195,11 @@ public class AmzUpload {
 
     public void getFeedSubResult(UploadRequest req) {
 
-        System.out.println("等待100秒获取上传结果。。。。。。");
+        System.out.println("等待130秒获取上传结果。。。。。。");
 
 
         try {
-            Thread.sleep(100030);
+            Thread.sleep(130000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -342,14 +342,14 @@ public class AmzUpload {
     }
 
     private boolean getFeedResult(GetFeedSubmissionListResponse response) {
-        boolean isDone = false;
+        boolean isDone = true;
         if (response.isSetGetFeedSubmissionListResult()) {
             GetFeedSubmissionListResult getFeedSubmissionListResult = response.getGetFeedSubmissionListResult();
             List<FeedSubmissionInfo> feedSubmissionInfoList = getFeedSubmissionListResult.getFeedSubmissionInfoList();
             System.out.println(JSON.toJSONString(feedSubmissionInfoList));
             for (FeedSubmissionInfo feedSubmissionInfo : feedSubmissionInfoList) {
 
-                isDone = feedSubmissionInfo.getFeedProcessingStatus().equals("_DONE_");
+                isDone = feedSubmissionInfo.getFeedProcessingStatus().equals("_DONE_") && isDone;
             }
         }
 
@@ -503,10 +503,10 @@ public class AmzUpload {
 
         final ResponseDto<String> dto;
 
-        String productStr = AmzXmlTemplate.getUploadProductStr(product, shop, vars.get(0), true);
+        String productStr = AmzXmlTemplate.getUploadProductStr(product, vars.get(0), true);
         String inventoryStr = AmzXmlTemplate.getUploadInventoryStr(product, vars);
         String priceStr = AmzXmlTemplate.getUploadPriceStr(product, shop, vars);
-        String imageStr = AmzXmlTemplate.getUploadImageStr(product, shop, commonSet.getProductImagePath(), vars);
+        String imageStr = AmzXmlTemplate.getUploadImageStr(product, commonSet.getProductImagePath(), vars);
         //dto = getUploadResult(getService(shop), getSubmitFeedRequest(productIs, shop, AmzFeeType.PRODUCT_FEED));
 
         item.setImageStr(imageStr);
@@ -523,7 +523,7 @@ public class AmzUpload {
 
         String inventoryIs = AmzXmlTemplate.getUploadInventoryStr(product, vars);
         String priceIs = AmzXmlTemplate.getUploadPriceStr(product, shop, vars);
-        String imIs = AmzXmlTemplate.getUploadImageStr(product, shop, commonSet.getProductImagePath(), vars);
+        String imIs = AmzXmlTemplate.getUploadImageStr(product, commonSet.getProductImagePath(), vars);
         String relations = AmzXmlTemplate.getUploadRelationsStr(product, vars);
 
         uploadItem.setInventoryStr(inventoryIs);
@@ -569,7 +569,7 @@ public class AmzUpload {
                 product.setItemName(name);
             }
 
-            String productIs = AmzXmlTemplate.getUploadProductStr(product, shop, var, false);
+            String productIs = AmzXmlTemplate.getUploadProductStr(product, var, false);
             //ResponseDto<String> dto = getUploadResult(getService(shop), getSubmitFeedRequest(productIs, shop, AmzFeeType.PRODUCT_FEED));
             uploadItem.setProductStr(productIs);
             if (StringUtils.isNotBlank(var.getVariationType())) {

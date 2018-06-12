@@ -172,7 +172,7 @@ public class AmzXmlTemplate {
                 "<PurgeAndReplace>false</PurgeAndReplace>" + str + "</AmazonEnvelope>";
     }
 
-    public static String getUploadProductStr(ProductAmzUpload product, Map<String, Object> shop, ProductItemVar var, boolean isSingle) {
+    public static String getUploadProductStr(ProductAmzUpload product, ProductItemVar var, boolean isSingle) {
         boolean isParent = StringUtils.isBlank(var.getVariationType());
         String productTypeName = StringUtils.isNotBlank(product.getProductTypeName()) ? product.getProductTypeName() : "Sports";
         String text =
@@ -221,7 +221,7 @@ public class AmzXmlTemplate {
         return text;
     }
 
-    public static String getUploadImageStr(ProductAmzUpload product, Map<String, Object> shop, String prePath, List<ProductItemVar> vars) {
+    public static String getUploadImageStr(ProductAmzUpload product, String prePath, List<ProductItemVar> vars) {
         String varStr = "";
         int i = 0;
         for (ProductItemVar var : vars) {
