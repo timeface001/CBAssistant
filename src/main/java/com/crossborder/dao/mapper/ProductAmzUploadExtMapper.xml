@@ -122,7 +122,7 @@
         <result column="a_GENERIC_KEYWORDS5" jdbcType="VARCHAR" property="genericKeywords5"/>
         <result column="a_PRODUCTIMAGE_MAIN" jdbcType="VARCHAR" property="productimageMain"/>
         <result column="a_PRODUCTIMAGE_PT01" jdbcType="VARCHAR" property="productimagePt01"/>
-        <result column="a_PUBLISH_TIME" jdbcType="DATE" property="publishTime"/>
+        <result column="a_PUBLISH_TIME" jdbcType="TIMESTAMP" property="publishTime"/>
         <result column="a_PRODUCTIMAGE_PT03" jdbcType="VARCHAR" property="productimagePt03"/>
         <result column="a_PRODUCTIMAGE_PT04" jdbcType="VARCHAR" property="productimagePt04"/>
         <result column="a_PRODUCTIMAGE_PT05" jdbcType="VARCHAR" property="productimagePt05"/>
