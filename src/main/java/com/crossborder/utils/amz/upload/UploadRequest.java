@@ -10,7 +10,7 @@ public class UploadRequest {
 
     private Map<String, ProductAmzUpload> skuMap;
 
-    private Map<String, Object> shop;
+    private UploadServiceRequest.ShopReq shop;
 
     private List<String> submitIds;
 
@@ -48,11 +48,11 @@ public class UploadRequest {
         this.skuMap = skuMap;
     }
 
-    public Map<String, Object> getShop() {
+    public UploadServiceRequest.ShopReq getShop() {
         return shop;
     }
 
-    public void setShop(Map<String, Object> shop) {
+    public void setShop(UploadServiceRequest.ShopReq shop) {
         this.shop = shop;
     }
 

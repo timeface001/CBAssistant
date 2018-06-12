@@ -21,8 +21,6 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
 import java.io.*;
 import java.util.*;
 
@@ -40,38 +38,39 @@ public class AmzUpload {
     @Autowired
     private ProductSkuTypeService productSkuTypeService;
 
-    private MarketplaceWebService getService(Map<String, Object> shop) {
-        final String accessKeyId = shop.get("ACCESSKEY_ID").toString();
-        final String secretAccessKey = shop.get("SECRET_KEY").toString();
+    private MarketplaceWebService getService(UploadServiceRequest.ShopReq shop) {
+        final String accessKeyId = shop.getAccessKey();
+        final String secretAccessKey = shop.getSecretKey();
 
         final String appName = "";
         final String appVersion = "";
 
         MarketplaceWebServiceConfig config = new MarketplaceWebServiceConfig();
 
-        config.setServiceURL(shop.get("ENDPOINT").toString());
+        config.setServiceURL(shop.getServiceUrl());
         return new MarketplaceWebServiceClient(
                 accessKeyId, secretAccessKey, appName, appVersion, config);
     }
 
 
-    public void bathUploadProduct(final List<ProductAmzUpload> products, final Map<String, Object> shop) {
+    public void bathUploadProduct(final UploadServiceRequest sr) {
 
         new Thread(new Runnable() {
             @Override
             public void run() {
+                Map<String, List<ProductItemVar>> pVars = new HashMap<>();
                 UploadRequest request = new UploadRequest();
                 UploadItem item = new UploadItem();
                 System.out.println("publish product start.....");
                 Map<String, ProductAmzUpload> skuMap = new HashMap<>();
-                for (ProductAmzUpload product : products) {
+                for (ProductAmzUpload product : sr.getProducts()) {
                     List<ProductItemVar> vars = productSkuTypeService.selectListByProductId(product.getProductAmzId());
-
+                    pVars.put(product.getId(), vars);
                     if (vars.size() == 1) {
-                        uploadSingleProductStr(product, shop, vars, item);
+                        uploadSingleProductStr(product, sr.getShop(), vars, item);
                         skuMap.put(product.getItemSku() + "-" + vars.get(0).getSku(), product);
                     } else {
-                        uploadMutiProductStr(product, shop, vars, item);
+                        uploadMutiProductStr(product, sr.getShop(), vars, item);
                         for (ProductItemVar va : vars) {
                             skuMap.put(product.getItemSku() + "-" + va.getSku(), product);
                         }
@@ -86,9 +85,9 @@ public class AmzUpload {
                     productManagerService.updateClaimProduct(PublishStatusEnum.PROCESS, product.getProductAmzId());
                 }
 
-                request.setProducts(products);
+                request.setProducts(sr.getProducts());
 
-                item.setShop(shop);
+                item.setShop(sr.getShop());
                 try {
 
                     System.out.println("上传文本如下");
@@ -105,16 +104,27 @@ public class AmzUpload {
                     FileInputStream productIs = new FileInputStream(FileUtils.byte2File(item.getProductStr().getBytes(), commonSet.getAmzUploadProductPath(), GeneralUtils.cuurentDateStr() + "product_fee.txt"));
                     FileInputStream imageIs = new FileInputStream(FileUtils.byte2File(item.getImageStr().getBytes(), commonSet.getAmzUploadProductPath(), GeneralUtils.cuurentDateStr() + "image_fee.txt"));
                     FileInputStream inventoryIs = new FileInputStream(FileUtils.byte2File(item.getInventoryStr().getBytes(), commonSet.getAmzUploadProductPath(), GeneralUtils.cuurentDateStr() + "inventory_fee.txt"));
-                    FileInputStream priceIs = new FileInputStream(FileUtils.byte2File(item.getPriceStr().getBytes(), commonSet.getAmzUploadProductPath(), GeneralUtils.cuurentDateStr() + "price_fee.txt"));
 
 
-                    request.setShop(shop);
+                    request.setShop(sr.getShop());
                     FileInputStream relationIs = null;
                     if (!item.isRelationEmpty()) {
                         relationIs = new FileInputStream(FileUtils.byte2File(item.getRelationsStr().getBytes(), commonSet.getAmzUploadProductPath(), GeneralUtils.cuurentDateStr() + "relations_fee.txt"));
                     }
 
-                    ResponseDto<String> feeDto = getUploadResult(getService(shop), getSubmitFeedRequest(productIs, shop, AmzFeeType.PRODUCT_FEED));
+                    ResponseDto<String> feeDto = getUploadResult(getService(sr.getShop()), getSubmitFeedRequest(productIs, sr, AmzFeeType.PRODUCT_FEED));
+
+                    if (!feeDto.isSuccess()) {
+                        for (ProductAmzUpload upload : sr.getProducts()) {
+                            ProductAmzUpload update = new ProductAmzUpload();
+                            update.setPublishStatus(PublishStatusEnum.FAILED.getVal());
+                            update.setUploadDesc(feeDto.getMsg());
+                            update.setId(upload.getId());
+                            productAmzUploadDao.updateByPrimaryKeySelective(update);
+                            productManagerService.updateClaimProduct(PublishStatusEnum.FAILED, upload.getProductAmzId());
+                        }
+                        return;
+                    }
 
                     List<String> submitIds = new ArrayList<>();
 
@@ -134,22 +144,32 @@ public class AmzUpload {
                     System.out.println("商品主题上传成功。。。");
 
 
-                    System.out.println("上传图片信息");
-                    ResponseDto<String> imageDto = getUploadResult(getService(shop), getSubmitFeedRequest(imageIs, shop, AmzFeeType.PRODUCT_IMAGES_FEED));
+                    ResponseDto<String> imageDto = getUploadResult(getService(sr.getShop()), getSubmitFeedRequest(imageIs, sr, AmzFeeType.PRODUCT_IMAGES_FEED));
                     submitIds.add(imageDto.getData());
-                    System.out.println("上传库存信息");
-                    ResponseDto<String> inventoryDto = getUploadResult(getService(shop), getSubmitFeedRequest(inventoryIs, shop, AmzFeeType.INVENTORY_FEED));
-                    submitIds.add(inventoryDto.getData());
+                    System.out.println("上传图片信息:" + imageDto.getData());
 
-                    System.out.println("上传价格信息");
-                    ResponseDto<String> priceDto = getUploadResult(getService(shop), getSubmitFeedRequest(priceIs, shop, AmzFeeType.PRICING_FEED));
-                    submitIds.add(priceDto.getData());
+                    ResponseDto<String> inventoryDto = getUploadResult(getService(sr.getShop()), getSubmitFeedRequest(inventoryIs, sr, AmzFeeType.INVENTORY_FEED));
+                    submitIds.add(inventoryDto.getData());
+                    System.out.println("上传库存信息:" + inventoryDto.getData());
+
+                    for (Map.Entry<String, List<ProductAmzUpload>> entry : sr.getExrateList().entrySet()) {
+                        String priceStr = "";
+                        for (ProductAmzUpload pp : entry.getValue()) {
+                            priceStr = priceStr + AmzXmlTemplate.getUploadPriceStr(pp, sr.getExrateMap().get(entry.getKey()), pVars.get(pp.getId()));
+                        }
+                        priceStr = AmzXmlTemplate.addUploadPriceStrHead(priceStr, sr.getShop());
+                        System.out.println("价格xml:" + priceStr);
+                        FileInputStream priceIs = new FileInputStream(FileUtils.byte2File(priceStr.getBytes(), commonSet.getAmzUploadProductPath(), GeneralUtils.cuurentDateStr() + "price_fee.txt"));
+                        ResponseDto<String> priceDto = getUploadResult(getService(sr.getShop()), getSubmitFeedRequest(priceIs, sr, AmzFeeType.PRICING_FEED));
+                        submitIds.add(priceDto.getData());
+                        System.out.println("上传价格信息:" + priceDto.getData());
+                    }
 
                     ResponseDto<String> relationDto;
                     if (relationIs != null) {
-                        System.out.println("上传关系信息");
-                        relationDto = getUploadResult(getService(shop), getSubmitFeedRequest(relationIs, shop, AmzFeeType.RELATIONSHIPS_FEED));
+                        relationDto = getUploadResult(getService(sr.getShop()), getSubmitFeedRequest(relationIs, sr, AmzFeeType.RELATIONSHIPS_FEED));
                         submitIds.add(relationDto.getData());
+                        System.out.println("上传关系信息:" + relationDto.getData());
                     }
 
                     request.setSubmitIds(submitIds);
@@ -168,13 +188,27 @@ public class AmzUpload {
     }
 
 
-    private SubmitFeedRequest getSubmitFeedRequest(FileInputStream fis, Map<String, Object> shop, AmzFeeType type) {
+    private SubmitFeedRequest getSubmitFeedRequest(FileInputStream fis, UploadServiceRequest sr, AmzFeeType type) {
 
-        SubmitFeedRequest request = getRequest(shop, type);
+        SubmitFeedRequest request = getRequest(sr.getShop(), type);
         try {
             request.setFeedContent(fis);
             request.setContentMD5(MD5.computeContentMD5HeaderValue(fis));
-            request.setMarketplaceIdList(new IdList(Arrays.asList(shop.get("MARKETPLACEID").toString())));
+            request.setMarketplaceIdList(new IdList(sr.getMarketIds()));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return request;
+    }
+
+    private SubmitFeedRequest getSubmitFeedRequest(FileInputStream fis, UploadServiceRequest sr, List<String> marketIds, AmzFeeType type) {
+
+        SubmitFeedRequest request = getRequest(sr.getShop(), type);
+        try {
+            request.setFeedContent(fis);
+            request.setContentMD5(MD5.computeContentMD5HeaderValue(fis));
+            request.setMarketplaceIdList(new IdList(marketIds));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -183,11 +217,9 @@ public class AmzUpload {
     }
 
 
-    private SubmitFeedRequest getRequest(Map<String, Object> shop, AmzFeeType feeType) {
+    private SubmitFeedRequest getRequest(UploadServiceRequest.ShopReq shop, AmzFeeType feeType) {
         SubmitFeedRequest request = new SubmitFeedRequest();
-        request.setMerchant(shop.get("MERCHANT_ID").toString());
-        request.setMarketplaceIdList(new IdList(Arrays.asList(
-                shop.get("MARKETPLACEID").toString())));
+        request.setMerchant(shop.getMerchantId());
 
         request.setFeedType(feeType.getVal());
         return request;
@@ -208,7 +240,7 @@ public class AmzUpload {
         try {
             List<String> submitIds = req.getSubmitIds();
             GetFeedSubmissionListRequest request = new GetFeedSubmissionListRequest();
-            request.setMerchant(req.getShop().get("MERCHANT_ID").toString());
+            request.setMerchant(req.getShop().getMerchantId());
             request.setFeedSubmissionIdList(new IdList(submitIds));
             int i = 0;
             boolean isDone;
@@ -233,7 +265,7 @@ public class AmzUpload {
                 List<String> errorList = new ArrayList<>();
                 for (String submitId : submitIds) {
                     GetFeedSubmissionResultRequest resultRequest = new GetFeedSubmissionResultRequest();
-                    resultRequest.setMerchant(req.getShop().get("MERCHANT_ID").toString());
+                    resultRequest.setMerchant(req.getShop().getMerchantId());
 
                     resultRequest.setFeedSubmissionId(submitId);
 
@@ -398,7 +430,7 @@ public class AmzUpload {
     }
 
     public void write(String path, Map<String, Object> shop) {
-        MarketplaceWebService service = getService(shop);
+       /* MarketplaceWebService service = getService(shop);
 
         String merchantId = shop.get("MERCHANT_ID").toString();
 
@@ -416,9 +448,9 @@ public class AmzUpload {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
-        /*XMLGregorianCalendar startDate = df
+        *//*XMLGregorianCalendar startDate = df
                 .newXMLGregorianCalendar(new GregorianCalendar(2018, 1, 1));
-        request.setStartDate(startDate);*/
+        request.setStartDate(startDate);*//*
 
         System.out.println("***************");
 
@@ -477,11 +509,11 @@ public class AmzUpload {
 
         } catch (MarketplaceWebServiceException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
 
-    public void uploadSingleProductStr(final ProductAmzUpload product, final Map<String, Object> shop, final List<ProductItemVar> vars, UploadItem item) {
+    public void uploadSingleProductStr(final ProductAmzUpload product, final UploadServiceRequest.ShopReq shop, final List<ProductItemVar> vars, UploadItem item) {
 
 
         ProductIdGen gen = productIdGenDao.selectProductIdByAmzSku(product.getItemSku() + "-" + product.getAmzSku());
@@ -505,12 +537,12 @@ public class AmzUpload {
 
         String productStr = AmzXmlTemplate.getUploadProductStr(product, vars.get(0), true);
         String inventoryStr = AmzXmlTemplate.getUploadInventoryStr(product, vars);
-        String priceStr = AmzXmlTemplate.getUploadPriceStr(product, shop, vars);
+        //String priceStr = AmzXmlTemplate.getUploadPriceStr(product, shop, vars);
         String imageStr = AmzXmlTemplate.getUploadImageStr(product, commonSet.getProductImagePath(), vars);
         //dto = getUploadResult(getService(shop), getSubmitFeedRequest(productIs, shop, AmzFeeType.PRODUCT_FEED));
 
         item.setImageStr(imageStr);
-        item.setPriceStr(priceStr);
+        //item.setPriceStr(priceStr);
         item.setInventoryStr(inventoryStr);
         item.setProductStr(productStr);
 
@@ -519,15 +551,15 @@ public class AmzUpload {
 
     }
 
-    public void uploadMutiProductStr(ProductAmzUpload product, Map<String, Object> shop, List<ProductItemVar> vars, UploadItem uploadItem) {
+    public void uploadMutiProductStr(ProductAmzUpload product, UploadServiceRequest.ShopReq shop, List<ProductItemVar> vars, UploadItem uploadItem) {
 
         String inventoryIs = AmzXmlTemplate.getUploadInventoryStr(product, vars);
-        String priceIs = AmzXmlTemplate.getUploadPriceStr(product, shop, vars);
+        //String priceIs = AmzXmlTemplate.getUploadPriceStr(product, shop, vars);
         String imIs = AmzXmlTemplate.getUploadImageStr(product, commonSet.getProductImagePath(), vars);
         String relations = AmzXmlTemplate.getUploadRelationsStr(product, vars);
 
         uploadItem.setInventoryStr(inventoryIs);
-        uploadItem.setPriceStr(priceIs);
+        //uploadItem.setPriceStr(priceIs);
         uploadItem.setImageStr(imIs);
         uploadItem.setRelationsStr(relations);
 
@@ -591,7 +623,7 @@ public class AmzUpload {
 
     private String getCategoryReportId(Map<String, Object> shop, String merchantId, String reportRequestId) throws MarketplaceWebServiceException {
 
-        GetReportListRequest requestqq = new GetReportListRequest();
+        /*GetReportListRequest requestqq = new GetReportListRequest();
         requestqq.setMerchant(merchantId);
         TypeList typeList = new TypeList();
         typeList.setType(Arrays.asList("_GET_XML_BROWSE_TREE_DATA_"));
@@ -612,7 +644,7 @@ public class AmzUpload {
                     return reportInfoList.getReportId();
                 }
             }
-        }
+        }*/
         return null;
     }
 

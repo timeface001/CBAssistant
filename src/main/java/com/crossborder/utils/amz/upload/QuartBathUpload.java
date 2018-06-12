@@ -14,7 +14,10 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @Component("quart")
 public class QuartBathUpload {
@@ -30,32 +33,39 @@ public class QuartBathUpload {
     @Autowired
     private ProductUploadLogDao productUploadLogDao;
 
-    @Scheduled(cron = "0/30 * * * * ?")
+    @Scheduled(cron = "0 0/15 * * * ?")
     public void upload() {
         System.out.println("定时批量发布开始...." + DateUtils.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
         //获取预发布的产品
         List<ProductAmzUpload> list = productAmzUploadDao.selectList(GeneralUtils.genMap("pStatus", PublishStatusEnum.NOT.getVal()));
         //分组
-        Map<String, List<ProductAmzUpload>> resultMap = new HashMap<>();
-        Map<String, Map<String, Object>> shops = new HashMap<>();
+        List<UploadServiceRequest> resultMap = new ArrayList<>();
         for (ProductAmzUpload product : list) {
-            if (resultMap.containsKey(product.getShopId())) {
-                List<ProductAmzUpload> ps = resultMap.get(product.getShopId());
-                ps.add(product);
-                resultMap.put(product.getShopId(), ps);
-            } else {
-                List<ProductAmzUpload> ps = new ArrayList<ProductAmzUpload>();
-                ps.add(product);
-                resultMap.put(product.getShopId(), ps);
-                shops.put(product.getShopId(), shopManageService.selectShopById(product.getShopId()));
+
+            Map<String, Object> shop = shopManageService.selectShopById(product.getShopId());
+            boolean isContains = false;
+            for (UploadServiceRequest request : resultMap) {
+                if (request.add(shop, product)) {
+                    isContains = true;
+                    break;
+                } else {
+                    isContains = false;
+                }
             }
+
+            if (!isContains) {
+                UploadServiceRequest mid = new UploadServiceRequest(shop);
+                mid.add(shop, product);
+                resultMap.add(mid);
+            }
+
         }
 
         if (GeneralUtils.isNotNullOrEmpty(list)) {
             System.out.println("发布开始。。。。。。");
             System.out.println("所有可发布数据。。。。。。:" + JSON.toJSONString(resultMap, true));
-            for (Map.Entry<String, List<ProductAmzUpload>> entry : resultMap.entrySet()) {
-                amzUpload.bathUploadProduct(entry.getValue(), shops.get(entry.getKey()));
+            for (UploadServiceRequest re : resultMap) {
+                amzUpload.bathUploadProduct(re);
             }
 
             System.out.println("发布结束。。。。。。");

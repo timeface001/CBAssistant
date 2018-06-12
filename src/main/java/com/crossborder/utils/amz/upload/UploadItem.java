@@ -10,13 +10,13 @@ public class UploadItem {
     private String priceStr;
     private String inventoryStr;
     private String relationsStr;
-    private Map<String, Object> shop;
+    private UploadServiceRequest.ShopReq shop;
 
-    public Map<String, Object> getShop() {
+    public UploadServiceRequest.ShopReq getShop() {
         return shop;
     }
 
-    public void setShop(Map<String, Object> shop) {
+    public void setShop(UploadServiceRequest.ShopReq shop) {
         this.shop = shop;
     }
 

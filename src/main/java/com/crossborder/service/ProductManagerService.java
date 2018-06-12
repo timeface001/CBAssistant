@@ -14,16 +14,11 @@ import com.google.cloud.translate.TranslateOptions;
 import com.google.cloud.translate.Translation;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.jdom.Element;
-import org.jdom.input.SAXBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -503,6 +498,8 @@ public class ProductManagerService {
         product.setUpdateDelete("update");
         product.setPublishTime(new Date());
 
+        //产品魔板暂时都为空
+        product.setProductTypeName("  ");
 
         updateClaimProduct(PublishStatusEnum.NOT, product.getProductAmzId());
         productAmzUploadDao.updateByPrimaryKeySelective(product);

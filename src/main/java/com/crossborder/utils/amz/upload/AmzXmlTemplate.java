@@ -2,15 +2,11 @@ package com.crossborder.utils.amz.upload;
 
 import com.crossborder.entity.ProductAmzUpload;
 import com.crossborder.entity.ProductItemVar;
-import com.crossborder.utils.FileUtils;
 import com.crossborder.utils.GeneralUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 
 import static java.math.BigDecimal.ROUND_HALF_DOWN;
 
@@ -70,19 +66,6 @@ public class AmzXmlTemplate {
     }
 
 
-    public static FileInputStream uploadInventory(ProductAmzUpload product, Map<String, Object> shop, String path, List<ProductItemVar> vars) {
-
-
-        try {
-            return new FileInputStream(FileUtils.byte2File(getUploadInventoryStr(product, vars).getBytes(), path, product.getId() + "product_inventory.txt"));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-
-    }
-
 
     private static String getPriceStr(BigDecimal rate, BigDecimal price, String code) {
 
@@ -129,12 +112,12 @@ public class AmzXmlTemplate {
     }
 
 
-    public static String addUploadInventoryStrHead(String str, Map<String, Object> shop) {
+    public static String addUploadInventoryStrHead(String str, UploadServiceRequest.ShopReq shop) {
         return "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n" +
                 "<AmazonEnvelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"amznenvelope.xsd\">\n" +
                 "<Header>\n" +
                 "<DocumentVersion>1.01</DocumentVersion>\n" +
-                "<MerchantIdentifier>" + shop.get("MERCHANT_ID") + "</MerchantIdentifier>\n" +
+                "<MerchantIdentifier>" + shop.getMerchantId() + "</MerchantIdentifier>\n" +
                 "</Header>\n" +
                 "<MessageType>Inventory</MessageType>\n" +
                 str +
@@ -160,13 +143,13 @@ public class AmzXmlTemplate {
         return text;
     }
 
-    public static String addUploadProductStrHead(String str, Map<String, Object> shop) {
+    public static String addUploadProductStrHead(String str, UploadServiceRequest.ShopReq shop) {
 
         return "<?xml version=\"1.0\" ?>" +
                 "<AmazonEnvelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"amznenvelope.xsd\">\n" +
                 "<Header>" +
                 "<DocumentVersion>1.01</DocumentVersion>" +
-                "<MerchantIdentifier>" + shop.get("MERCHANT_ID") + "</MerchantIdentifier>\n" +
+                "<MerchantIdentifier>" + shop.getMerchantId() + "</MerchantIdentifier>\n" +
                 "</Header>" +
                 "<MessageType>Product</MessageType>\n" +
                 "<PurgeAndReplace>false</PurgeAndReplace>" + str + "</AmazonEnvelope>";
@@ -264,24 +247,24 @@ public class AmzXmlTemplate {
     }
 
 
-    public static String addUploadImageStrHead(String str, Map<String, Object> shop) {
+    public static String addUploadImageStrHead(String str, UploadServiceRequest.ShopReq shop) {
         return "<?xml version=\"1.0\" encoding=\"utf-8\" ?>" +
                 "<AmazonEnvelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"amznenvelope.xsd\">\n" +
                 "<Header>\n" +
                 "<DocumentVersion>1.01</DocumentVersion>" +
-                "<MerchantIdentifier>" + shop.get("MERCHANT_ID") + "</MerchantIdentifier>\n" +
+                "<MerchantIdentifier>" + shop.getMerchantId() + "</MerchantIdentifier>\n" +
                 "</Header>\n" +
                 "<MessageType>ProductImage</MessageType>" +
                 str +
                 "</AmazonEnvelope>";
     }
 
-    public static String addUploadRelationsStrHead(String str, Map<String, Object> shop) {
+    public static String addUploadRelationsStrHead(String str, UploadServiceRequest.ShopReq shop) {
         return "<?xml version=\"1.0\" encoding=\"utf-8\" ?>" +
                 "<AmazonEnvelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"amznenvelope.xsd\">\n" +
                 "<Header>" +
                 "<DocumentVersion>1.01</DocumentVersion>" +
-                "<MerchantIdentifier>" + shop.get("MERCHANT_ID") + "</MerchantIdentifier>\n" +
+                "<MerchantIdentifier>" + shop.getMerchantId() + "</MerchantIdentifier>\n" +
                 "</Header>" +
                 "<MessageType>Relationship</MessageType>" + str + "</AmazonEnvelope>";
     }
@@ -311,19 +294,19 @@ public class AmzXmlTemplate {
         return text;
     }
 
-    public static String addUploadPriceStrHead(String str, Map<String, Object> shop) {
+    public static String addUploadPriceStrHead(String str, UploadServiceRequest.ShopReq shop) {
         return "<?xml version=\"1.0\" encoding=\"utf-8\" ?>" +
                 "<AmazonEnvelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"amznenvelope.xsd\">\n" +
                 "<Header>" +
                 "<DocumentVersion>1.01</DocumentVersion>" +
-                "<MerchantIdentifier>" + shop.get("MERCHANT_ID") + "</MerchantIdentifier>\n" +
+                "<MerchantIdentifier>" + shop.getMerchantId() + "</MerchantIdentifier>\n" +
                 "</Header>" +
                 "<MessageType>Price</MessageType>" +
                 str +
                 "</AmazonEnvelope>";
     }
 
-    public static String getUploadPriceStr(ProductAmzUpload product, Map<String, Object> shop, List<ProductItemVar> vars) {
+    public static String getUploadPriceStr(ProductAmzUpload product, UploadServiceRequest.ShopReq shop, List<ProductItemVar> vars) {
         String varStr = "";
         int i = 1;
         for (ProductItemVar var : vars) {
@@ -333,14 +316,14 @@ public class AmzXmlTemplate {
                 saleStr = " <Sale>" +
                         " <StartDate>" + GeneralUtils.localToUTC(var.getSaleStartTime()) + "</StartDate>" +
                         " <EndDate>" + GeneralUtils.localToUTC(var.getSaleEndTime()) + "</EndDate>" +
-                        " <SalePrice currency='USD'>" + GeneralUtils.formatTwo(var.getSalePrice().divide(new BigDecimal(shop.get("EXRATE").toString()), 2, ROUND_HALF_DOWN)) + "</SalePrice>" +
+                        " <SalePrice currency='USD'>" + GeneralUtils.formatTwo(var.getSalePrice().divide(shop.getExrate(), 2, ROUND_HALF_DOWN)) + "</SalePrice>" +
                         " </Sale>";
             }
             varStr += "<Message>" +
                     "<MessageID>" + product.getId() + numFor1000(i) + "</MessageID>" +
                     "<Price>" +
                     "<SKU>" + product.getItemSku() + "-" + var.getSku() + "</SKU>" +
-                    getPriceStr(new BigDecimal(shop.get("EXRATE").toString()), var.getPrice(), shop.get("COUNTRY_CODE").toString()) +
+                    "<StandardPrice currency='" + shop.getCurrency() + "'>" + GeneralUtils.mutiHalfTwo(var.getPrice().divide(shop.getExrate(), 2, ROUND_HALF_DOWN)) + "</StandardPrice>" +
                     saleStr +
                     "</Price>" +
                     "</Message>";
