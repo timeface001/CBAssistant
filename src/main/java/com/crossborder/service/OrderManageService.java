@@ -69,4 +69,8 @@ public class OrderManageService {
     public int delOrder(String amazonOrderId) {
         return orderManageDao.delOrder(amazonOrderId);
     }
+
+    public int updateOrderShipping(Map<String, Object> map) {
+        return orderManageDao.updateOrderShipping(map);
+    }
 }

@@ -312,7 +312,7 @@
                         } else if (data == 1) {
                             return "<a style='text-decoration:none' title='修改'  onClick=\"updateShipping('" + full.ORDER_ID + "','" + full.FREIGHT + "','" + full.TRACKNUMBER + "')\">修改</a>" +
                                     "&nbsp;&nbsp;" +
-                                    "<a style='text-decoration:none' title='审核' onClick=\"auditShipping('" + full.ORDER_ID + "')\">审核</a>";
+                                    "<a style='text-decoration:none' title='审核' onClick=\"auditShipping('" + full.ORDER_ID + "','" + full.FREIGHT + "')\">审核</a>";
                         } else {
                             return "<a style='text-decoration:none'  id='edit' data-id='" + data + "'  )>已审核</a>";
                         }
@@ -350,8 +350,32 @@
     function updateShipping(orderId, freight, trackNum) {
         layer_show("修改运费", "<%=request.getContextPath()%>/assistant/index/finance/shipping-update.jsp?orderId=" + orderId + "&freight=" + freight + "&trackNum=" + trackNum, 400, 300);
     }
-    function auditShipping(orderId) {
-
+    function auditShipping(orderId, freight) {
+        layer.confirm('您确定要审核运费吗？', function (i) {
+            layer.load();
+            $.ajax({
+                type: 'POST',
+                url: '<%=request.getContextPath()%>/finance/auditShipping',
+                dataType: 'json',
+                data: {
+                    "orderId": orderId,
+                    "freight": freight
+                },
+                success: function (data) {
+                    layer.closeAll("loading");
+                    if (data.code == 0) {
+                        layer.closeAll('dialog');
+                        reloadTable(index)
+                    } else {
+                        layer.msg(data.msg, {icon: 2, time: 2000});
+                    }
+                },
+                error: function (data) {
+                    layer.closeAll("loading");
+                    layer.msg("请求错误！", {icon: 2, time: 2000});
+                }
+            });
+        });
     }
     function getShippingPrice(orderId, custId, companyId) {
         layer.load();

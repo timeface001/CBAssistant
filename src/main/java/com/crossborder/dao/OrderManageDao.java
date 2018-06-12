@@ -38,4 +38,7 @@ public interface OrderManageDao {
     public List<Map<String, Object>> selectFees(Map<String, Object> map);
 
     public int delOrder(String amazonOrderId);
+
+    public int updateOrderShipping(Map<String, Object> map);
+
 }

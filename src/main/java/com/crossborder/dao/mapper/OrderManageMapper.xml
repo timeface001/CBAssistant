@@ -175,7 +175,8 @@
         trunc(sum(t2.itempricermb + t2.shippingPricermb + t1.commission),2) itemprice,
         trunc(sum(t2.cost),2) cost,
         trunc(sum(t2.refundment),2) refundment,
-        trunc(sum(t2.itempricermb - t2.cost - t2.refundment - t1.shippingPrice + t2.shippingPricermb + t1.commission),2) profit
+        trunc(sum(t2.itempricermb - t2.cost - t2.refundment - t1.shippingPrice + t2.shippingPricermb + t1.commission),2)
+        profit
         from T_ORDER t1
         left join t_order_item t2
         on t2.amazonorderid = t1.amazonorderid
@@ -269,6 +270,12 @@
         <if test="transportCompany !=null and transportCompany !=''">
             ,TRANSPORTCOMPANY = #{transportCompany,jdbcType=VARCHAR}
         </if>
+        WHERE AMAZONORDERID = #{amazonOrderId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateOrderShipping" parameterType="java.util.Map">
+        UPDATE T_ORDER
+        set
+        SHIPPINGPRICE = #{shippingPrice,jdbcType=VARCHAR}
         WHERE AMAZONORDERID = #{amazonOrderId,jdbcType=VARCHAR}
     </update>
     <update id="updateOrderItem">

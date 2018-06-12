@@ -7,6 +7,7 @@ import com.crossborder.entity.HeaderRequest;
 import com.crossborder.entity.ShipRate_Service;
 import com.crossborder.service.CommonService;
 import com.crossborder.service.FinanceManageService;
+import com.crossborder.service.OrderManageService;
 import com.crossborder.service.ShipRate;
 import com.crossborder.utils.ExcelRead;
 import com.crossborder.utils.HttpClientUtil;
@@ -38,6 +39,8 @@ public class FinanceManageController {
     private FinanceManageService financeManageService;
     @Resource
     private CommonService commonService;
+    @Resource
+    private OrderManageService orderManageService;
 
     /**
      * 查询店铺
@@ -101,8 +104,34 @@ public class FinanceManageController {
         return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
+    @ResponseBody
+    @RequestMapping(value = "auditShipping", produces = "text/plain;charset=UTF-8")
+    public String auditShipping(HttpSession session, String freight, String orderId) {
+        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> paramMap = new HashMap<>();
+        Map<String, Object> orderMap = new HashMap<>();
+        Map<String, Object> user = (Map<String, Object>) session.getAttribute("user");
+        paramMap.put("status", "2");
+        paramMap.put("orderId", orderId);
+        paramMap.put("freight", freight);
+        paramMap.put("operationUser", user.get("USER_ID"));
+        try {
+            financeManageService.updateShipping(paramMap);
+            orderMap.put("amazonOrderId", orderId);
+            orderMap.put("shippingPrice", freight);
+            orderManageService.updateOrderShipping(orderMap);
+            map.put("code", "0");
+            map.put("msg", "审核成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("code", "-10");
+            map.put("msg", "审核失败");
+        }
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
+    }
+
     /**
-     * 根据上传文件批量更新订单
+     * 根据上传文件批量更新订单运费
      *
      * @return
      */
@@ -123,7 +152,7 @@ public class FinanceManageController {
                         item.put("orderId", arr.get(0));
                         item.put("shippingPrice", arr.get(1));
                         Map<String, Object> rateMap = getShippingRate("shippingRate");
-                        double freight = Double.parseDouble(arr.get(1)) * (Double) rateMap.get("RATE") + (Double) rateMap.get("DIFFERENCE");
+                        double freight = Double.parseDouble(arr.get(1)) * Double.parseDouble(rateMap.get("RATE").toString()) + Double.parseDouble(rateMap.get("DIFFERENCE").toString());
                         item.put("freight", freight);
                         item.put("status", "1");
                         item.put("operationUser", user.get("USER_ID"));

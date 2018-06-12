@@ -808,6 +808,7 @@
         }
     }
     function confirm(status, orderItemId) {
+        layer.load();
         $.ajax({
             type: 'POST',
             url: '<%=request.getContextPath()%>/order/updateOrderInfo',
@@ -823,10 +824,12 @@
                 "orderItemId": orderItemId
             },
             success: function (data) {
+                layer.closeAll("loading");
                 itemTable.ajax.reload();
                 layer.msg('更新订单成功!', {icon: 1, time: 1000});
             },
             error: function (data) {
+                layer.closeAll("loading");
                 layer.msg('更新订单失败!', {icon: 2, time: 1000});
             }
         });
