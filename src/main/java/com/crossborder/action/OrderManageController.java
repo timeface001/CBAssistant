@@ -26,15 +26,12 @@ import com.crossborder.entity.LocalOrder;
 import com.crossborder.entity.LocalOrderItem;
 import com.crossborder.service.OrderManageService;
 import com.crossborder.service.ShopManageService;
-import com.crossborder.utils.ExcelRead;
 import com.crossborder.utils.Tools;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
@@ -269,30 +266,6 @@ public class OrderManageController {
     }
 
     public Product getProduct(OrderItem orderItem, Map<String, Object> shop) {
-       /* List<FeesEstimateRequest> feesEstimateRequests = new ArrayList<>();
-        FeesEstimateRequest feesEstimateRequest = new FeesEstimateRequest();
-        feesEstimateRequest.setMarketplaceId(shop.get("MARKETPLACEID").toString());
-        feesEstimateRequest.setIdType("ASIN");
-        feesEstimateRequest.setIdValue(orderItem.getASIN());
-        PriceToEstimateFees priceToEstimateFees = new PriceToEstimateFees();
-        MoneyType listingPrice = new MoneyType();
-        listingPrice.setAmount(new BigDecimal(orderItem.getItemPrice().getAmount()));
-        listingPrice.setCurrencyCode(orderItem.getItemPrice().getCurrencyCode());
-        priceToEstimateFees.setListingPrice(listingPrice);
-        feesEstimateRequest.setPriceToEstimateFees(priceToEstimateFees);
-        feesEstimateRequest.setIdentifier("00001");
-        feesEstimateRequest.setIsAmazonFulfilled(true);
-        feesEstimateRequests.add(feesEstimateRequest);
-        MarketplaceWebServiceProductsConfig config = new MarketplaceWebServiceProductsConfig();
-        config.setServiceURL(shop.get("ENDPOINT").toString());
-        MarketplaceWebServiceProductsClient client = new MarketplaceWebServiceProductsClient(shop.get("ACCESSKEY_ID").toString(), shop.get("SECRET_KEY").toString(), config);
-        GetMyFeesEstimateRequest request = new GetMyFeesEstimateRequest();
-        request.setSellerId(shop.get("MERCHANT_ID").toString());
-        request.setMWSAuthToken("");
-        FeesEstimateRequestList feesEstimateRequestList = new FeesEstimateRequestList();
-        feesEstimateRequestList.setFeesEstimateRequest(feesEstimateRequests);
-        request.setFeesEstimateRequestList(feesEstimateRequestList);
-        GetMyFeesEstimateResponse response = client.getMyFeesEstimate(request);*/
         MarketplaceWebServiceProductsConfig config = new MarketplaceWebServiceProductsConfig();
         config.setServiceURL(shop.get("ENDPOINT").toString());
         MarketplaceWebServiceProductsClient client = new MarketplaceWebServiceProductsClient(shop.get("ACCESSKEY_ID").toString(), shop.get("SECRET_KEY").toString(), config);
@@ -442,40 +415,6 @@ public class OrderManageController {
         return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
-    /**
-     * 根据上传文件批量更新订单
-     *
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping(value = "updateByExcel", produces = "text/plain;charset=UTF-8")
-    public String updateByExcel(MultipartFile file) {
-        Map<String, Object> map = new HashMap<>();
-        if (file == null || file.getSize() == 0) {
-            map.put("code", "-10");
-            map.put("msg", "上传失败");
-        } else {
-            try {
-                List<ArrayList<String>> list = new ExcelRead().readExcel(file);
-                for (ArrayList<String> arr : list) {
-                    Map<String, Object> item = new HashMap<>();
-                    if (!StringUtils.isEmpty(arr.get(0))) {
-                        item.put("amazonOrderId", arr.get(0));
-                        item.put("intlTrackNum", arr.get(1));
-                        item.put("shippingPrice", arr.get(2));
-                        orderManageService.updateOrder(item);
-                    }
-                }
-                map.put("code", "0");
-                map.put("msg", "更新成功");
-            } catch (Exception e) {
-                e.printStackTrace();
-                map.put("code", "-10");
-                map.put("msg", "更新失败");
-            }
-        }
-        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
-    }
 
     /**
      * 更新订单信息

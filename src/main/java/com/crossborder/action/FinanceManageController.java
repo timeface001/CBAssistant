@@ -5,8 +5,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.crossborder.entity.HeaderRequest;
 import com.crossborder.entity.ShipRate_Service;
+import com.crossborder.service.CommonService;
 import com.crossborder.service.FinanceManageService;
 import com.crossborder.service.ShipRate;
+import com.crossborder.utils.ExcelRead;
 import com.crossborder.utils.HttpClientUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -14,12 +16,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 import javax.xml.namespace.QName;
 import javax.xml.ws.Holder;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +36,8 @@ import java.util.Map;
 public class FinanceManageController {
     @Resource
     private FinanceManageService financeManageService;
+    @Resource
+    private CommonService commonService;
 
     /**
      * 查询店铺
@@ -44,12 +50,8 @@ public class FinanceManageController {
         Map<String, Object> map = new HashMap<>();
         Map<String, Object> paramMap = JSON.parseObject(data, Map.class);
         Map<String, Object> user = (Map<String, Object>) session.getAttribute("user");
-        if (user.get("ROLE_ID").equals("600")) {
-            paramMap.put("createUser", user.get("USER_ID").toString());
-        }
-        if (user.get("ROLE_ID").equals("500")) {
-            paramMap.put("companyId", user.get("USER_COMPANY").toString());
-        }
+        paramMap.put("logmin", paramMap.get("logmin").toString() + " 00:00:00");
+        paramMap.put("logmax", paramMap.get("logmax").toString() + " 23:59:59");
         try {
             PageHelper.startPage(start == null ? 1 : (start / length + 1), length);
             List<Map<String, Object>> list = financeManageService.selectShippings(paramMap);
@@ -70,15 +72,76 @@ public class FinanceManageController {
 
     @ResponseBody
     @RequestMapping(value = "getShippingPrice", produces = "text/plain;charset=UTF-8")
-    public String getShippingPrice(String companyId, String orderId, String custId) {
+    public String getShippingPrice(HttpSession session, String companyId, String orderId, String custId) {
+        Map<String, Object> user = (Map<String, Object>) session.getAttribute("user");
         if (companyId.equals("YT")) {
-            return getYTShippingPrice(orderId, custId);
+            return getYTShippingPrice(orderId, custId, user);
         } else {
-            return getSFCShippingPrice(orderId, custId);
+            return getSFCShippingPrice(orderId, custId, user);
         }
     }
 
-    private String getSFCShippingPrice(String orderId, String orderCode) {
+    @ResponseBody
+    @RequestMapping(value = "updateShipping", produces = "text/plain;charset=UTF-8")
+    public String updateShipping(HttpSession session, String data) {
+        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> paramMap = JSON.parseObject(data, Map.class);
+        Map<String, Object> user = (Map<String, Object>) session.getAttribute("user");
+        paramMap.put("status", "1");
+        paramMap.put("operationUser", user.get("USER_ID"));
+        try {
+            financeManageService.updateShipping(paramMap);
+            map.put("code", "0");
+            map.put("msg", "修改成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("code", "-10");
+            map.put("msg", "修改失败");
+        }
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
+    }
+
+    /**
+     * 根据上传文件批量更新订单
+     *
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "updateByExcel", produces = "text/plain;charset=UTF-8")
+    public String updateByExcel(HttpSession session, MultipartFile file) {
+        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> user = (Map<String, Object>) session.getAttribute("user");
+        if (file == null || file.getSize() == 0) {
+            map.put("code", "-10");
+            map.put("msg", "上传失败");
+        } else {
+            try {
+                List<ArrayList<String>> list = new ExcelRead().readExcel(file);
+                for (ArrayList<String> arr : list) {
+                    Map<String, Object> item = new HashMap<>();
+                    if (!StringUtils.isEmpty(arr.get(0))) {
+                        item.put("orderId", arr.get(0));
+                        item.put("shippingPrice", arr.get(1));
+                        Map<String, Object> rateMap = getShippingRate("shippingRate");
+                        double freight = Double.parseDouble(arr.get(1)) * (Double) rateMap.get("RATE") + (Double) rateMap.get("DIFFERENCE");
+                        item.put("freight", freight);
+                        item.put("status", "1");
+                        item.put("operationUser", user.get("USER_ID"));
+                        financeManageService.updateShipping(item);
+                    }
+                }
+                map.put("code", "0");
+                map.put("msg", "修改成功");
+            } catch (Exception e) {
+                e.printStackTrace();
+                map.put("code", "-10");
+                map.put("msg", "修改失败");
+            }
+        }
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
+    }
+
+    private String getSFCShippingPrice(String orderId, String orderCode, Map<String, Object> user) {
         Map<String, Object> map = new HashMap<>();
         ShipRate port = createShipRate();
         HeaderRequest _headerRequest = createRequest();
@@ -109,7 +172,11 @@ public class FinanceManageController {
             Map<String, Object> paramMap = new HashMap<>();
             paramMap.put("orderId", orderId);
             paramMap.put("shippingPrice", _getFeeByOrderCode_totalFee.value);
-            paramMap.put("freight", "");
+            Map<String, Object> rateMap = getShippingRate("shippingRate");
+            double freight = Double.parseDouble(_getFeeByOrderCode_totalFee.value) * (Double) rateMap.get("RATE") + (Double) rateMap.get("DIFFERENCE");
+            paramMap.put("freight", freight);
+            paramMap.put("status", "1");
+            paramMap.put("operationUser", user.get("USER_ID"));
             financeManageService.updateShipping(paramMap);
             map.put("code", "0");
             map.put("msg", "获取成功");
@@ -120,7 +187,7 @@ public class FinanceManageController {
         return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
-    private String getYTShippingPrice(String orderId, String wayBillNumber) {
+    private String getYTShippingPrice(String orderId, String wayBillNumber, Map<String, Object> user) {
         Map<String, Object> map = new HashMap<>();
         try {
             String result = HttpClientUtil.doGetRequest("http://api.yunexpress.com/LMS.API/api/WayBill/GetShippingFeeDetail?wayBillNumber=" + wayBillNumber);
@@ -128,8 +195,12 @@ public class FinanceManageController {
             if (resultObject.getString("ResultCode").equals("0000")) {
                 Map<String, Object> paramMap = new HashMap<>();
                 paramMap.put("orderId", orderId);
-                paramMap.put("shippingPrice", "");
-                paramMap.put("freight", "");
+                paramMap.put("shippingPrice", resultObject.getJSONObject("Item").getString("TotalFee"));
+                Map<String, Object> rateMap = getShippingRate("shippingRate");
+                double freight = Double.parseDouble(resultObject.getJSONObject("Item").getString("TotalFee")) * (Double) rateMap.get("RATE") + (Double) rateMap.get("DIFFERENCE");
+                paramMap.put("freight", freight);
+                paramMap.put("status", "1");
+                paramMap.put("operationUser", user.get("USER_ID"));
                 financeManageService.updateShipping(paramMap);
                 map.put("code", "0");
                 map.put("msg", "获取成功");
@@ -143,6 +214,12 @@ public class FinanceManageController {
             map.put("msg", e.getMessage());
         }
         return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
+    }
+
+    private Map<String, Object> getShippingRate(String code) {
+        Map<String, Object> sqlMap = commonService.getSql(code);
+        List<Map<String, Object>> list = commonService.getList(sqlMap.get("SQL_TEXT").toString());
+        return list.get(0);
     }
 
     private HeaderRequest createRequest() {

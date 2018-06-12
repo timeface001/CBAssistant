@@ -91,7 +91,8 @@
                                                                       lay-verify="required" placeholder=""
                                                                       autocomplete="off" class="layui-input"
                                                                       maxlength="600"></div>
-                        <div class="layui-tab-item"><input type="text" name="itemUk" value="${product.itemUk}"
+                        <div class="layui-tab-item"><input type="text" id="itemUk" name="itemUk"
+                                                           value="${product.itemUk}"
                                                            lay-verify="required" placeholder="" autocomplete="off"
                                                            class="layui-input" maxlength="1800"></div>
                         <div class="layui-tab-item"><input type="text" name="itemJp" value="${product.itemJp}"
@@ -578,6 +579,7 @@
         src="<%=request.getContextPath()%>/assistant/lib/jquery.validation/1.14.0/messages_zh.js"></script>
 <script type="text/javascript" src="<%=request.getContextPath()%>/assistant/lib/layui/layui.js"></script>
 <script type="text/javascript">
+    var ukName = '${product.itemUk}';
     var imagePathSrc = '${product.imagePath}';
     var imagePathArr = imagePathSrc.split(',');
     var skuType = '${skuType}';
@@ -591,6 +593,7 @@
     var esedit;
     var itedit;
     $(function () {
+        $("#itemUk").val(ukName);
         /*$('#imagePathSrc').Sortable(
          {
          accept: 'sortableitem',
@@ -605,47 +608,52 @@
          }
          )*/
         var pointCn = document.getElementById("pointCn");
-        pointCn.innerHTML = pointCn.innerHTML.replace(/\\n/g,"\n");
-        /*pointCn.innerHTML = "${pointsCn[0]}" + "\n" + "${pointsCn[1]}" + "\n" + "${pointsCn[2]}" + "\n" + "${pointsCn[3]}" + "\n" + "${pointsCn[4]}";*/
+        pointCn.innerHTML = pointCn.innerHTML.replace(/\\n/g, "\n");
+        /*pointCn.innerHTML = "
+        ${pointsCn[0]}" + "\n" + "
+        ${pointsCn[1]}" + "\n" + "
+        ${pointsCn[2]}" + "\n" + "
+        ${pointsCn[3]}" + "\n" + "
+        ${pointsCn[4]}";*/
         var pointUk = document.getElementById("pointUk");
-        pointUk.innerHTML = pointUk.innerHTML.replace(/\\n/g,"\n");
+        pointUk.innerHTML = pointUk.innerHTML.replace(/\\n/g, "\n");
         <%--pointUk.innerHTML = "${pointsUk[0]}" + "\n" + "${pointsUk[1]}" + "\n" + "${pointsUk[2]}" + "\n" + "${pointsUk[3]}" + "\n" + "${pointsUk[4]}";--%>
         var pointJp = document.getElementById("pointJp");
-        pointJp.innerHTML = pointJp.innerHTML.replace(/\\n/g,"\n");
+        pointJp.innerHTML = pointJp.innerHTML.replace(/\\n/g, "\n");
         <%--pointJp.innerHTML = "${pointsJp[0]}" + "\n" + "${pointsJp[1]}" + "\n" + "${pointsJp[2]}" + "\n" + "${pointsJp[3]}" + "\n" + "${pointsJp[4]}";--%>
         var pointDe = document.getElementById("pointDe");
-        pointDe.innerHTML = pointDe.innerHTML.replace(/\\n/g,"\n");
+        pointDe.innerHTML = pointDe.innerHTML.replace(/\\n/g, "\n");
         <%--pointDe.innerHTML = "${pointsDe[0]}" + "\n" + "${pointsDe[1]}" + "\n" + "${pointsDe[2]}" + "\n" + "${pointsDe[3]}" + "\n" + "${pointsDe[4]}";--%>
         var pointFr = document.getElementById("pointFr");
-        pointFr.innerHTML = pointFr.innerHTML.replace(/\\n/g,"\n");
+        pointFr.innerHTML = pointFr.innerHTML.replace(/\\n/g, "\n");
         <%--pointFr.innerHTML = "${pointsFr[0]}" + "\n" + "${pointsFr[1]}" + "\n" + "${pointsFr[2]}" + "\n" + "${pointsFr[3]}" + "\n" + "${pointsFr[4]}";--%>
         var pointEs = document.getElementById("pointEs");
-        pointEs.innerHTML = pointEs.innerHTML.replace(/\\n/g,"\n");
+        pointEs.innerHTML = pointEs.innerHTML.replace(/\\n/g, "\n");
         <%--pointEs.innerHTML = "${pointsEs[0]}" + "\n" + "${pointsEs[1]}" + "\n" + "${pointsEs[2]}" + "\n" + "${pointsEs[3]}" + "\n" + "${pointsEs[4]}";--%>
         var pointIt = document.getElementById("pointIt");
-        pointIt.innerHTML = pointIt.innerHTML.replace(/\\n/g,"\n");
+        pointIt.innerHTML = pointIt.innerHTML.replace(/\\n/g, "\n");
         <%--pointIt.innerHTML = "${pointsIt[0]}" + "\n" + "${pointsIt[1]}" + "\n" + "${pointsIt[2]}" + "\n" + "${pointsIt[3]}" + "\n" + "${pointsIt[4]}";--%>
 
         var keywordCn = document.getElementById("keywordCn");
-        keywordCn.innerHTML = keywordCn.innerHTML.replace(/\\n/g,"\n");
+        keywordCn.innerHTML = keywordCn.innerHTML.replace(/\\n/g, "\n");
         <%--keywordCn.innerHTML = "${keywordsCn[0]}" + "\n" + "${keywordsCn[1]}" + "\n" + "${keywordsCn[2]}" + "\n" + "${keywordsCn[3]}" + "\n" + "${keywordsCn[4]}";--%>
         var keywordUk = document.getElementById("keywordUk");
-        keywordUk.innerHTML = keywordUk.innerHTML.replace(/\\n/g,"\n");
+        keywordUk.innerHTML = keywordUk.innerHTML.replace(/\\n/g, "\n");
         <%--keywordUk.innerHTML = "${keywordsUk[0]}" + "\n" + "${keywordsUk[1]}" + "\n" + "${keywordsUk[2]}" + "\n" + "${keywordsUk[3]}" + "\n" + "${keywordsUk[4]}";--%>
         var keywordJp = document.getElementById("keywordJp");
-        keywordJp.innerHTML = keywordJp.innerHTML.replace(/\\n/g,"\n");
+        keywordJp.innerHTML = keywordJp.innerHTML.replace(/\\n/g, "\n");
         <%--keywordJp.innerHTML = "${keywordsJp[0]}" + "\n" + "${keywordsJp[1]}" + "\n" + "${keywordsJp[2]}" + "\n" + "${keywordsJp[3]}" + "\n" + "${keywordsJp[4]}";--%>
         var keywordDe = document.getElementById("keywordDe");
-        keywordDe.innerHTML = keywordDe.innerHTML.replace(/\\n/g,"\n");
+        keywordDe.innerHTML = keywordDe.innerHTML.replace(/\\n/g, "\n");
         <%--keywordDe.innerHTML = "${keywordsDe[0]}" + "\n" + "${keywordsDe[1]}" + "\n" + "${keywordsDe[2]}" + "\n" + "${keywordsDe[3]}" + "\n" + "${keywordsDe[4]}";--%>
         var keywordFr = document.getElementById("keywordFr");
-        keywordFr.innerHTML = keywordFr.innerHTML.replace(/\\n/g,"\n");
+        keywordFr.innerHTML = keywordFr.innerHTML.replace(/\\n/g, "\n");
         <%--keywordFr.innerHTML = "${keywordsFr[0]}" + "\n" + "${keywordsFr[1]}" + "\n" + "${keywordsFr[2]}" + "\n" + "${keywordsFr[3]}" + "\n" + "${keywordsFr[4]}";--%>
         var keywordEs = document.getElementById("keywordEs");
-        keywordEs.innerHTML = keywordEs.innerHTML.replace(/\\n/g,"\n");
+        keywordEs.innerHTML = keywordEs.innerHTML.replace(/\\n/g, "\n");
         <%--keywordEs.innerHTML = "${keywordsEs[0]}" + "\n" + "${keywordsEs[1]}" + "\n" + "${keywordsEs[2]}" + "\n" + "${keywordsEs[3]}" + "\n" + "${keywordsEs[4]}";--%>
         var keywordIt = document.getElementById("keywordIt");
-        keywordIt.innerHTML = keywordIt.innerHTML.replace(/\\n/g,"\n");
+        keywordIt.innerHTML = keywordIt.innerHTML.replace(/\\n/g, "\n");
         <%--keywordIt.innerHTML = "${keywordsIt[0]}" + "\n" + "${keywordsIt[1]}" + "\n" + "${keywordsIt[2]}" + "\n" + "${keywordsIt[3]}" + "\n" + "${keywordsIt[4]}";--%>
 
         layui.use('element', function () {
@@ -737,8 +745,7 @@
                             $("#skuRender button").parent().prev().find('input').val(vars[i].colorMap);
                             $(".skuBtn").click();
                             form.render(null, 'skuRender');
-                        }else
-                        if (vvType =='Size') {
+                        } else if (vvType == 'Size') {
                             $("#skuRender button").parent().prev().find('input').val(vars[i].sizeMap);
                             $(".skuBtn").click();
                             form.render(null, 'skuRender');
@@ -785,7 +792,7 @@
                             $("#skuRender button").eq(1).parent().prev().find('input').val(vars[i].materialType);
                             $(".skuBtn").click();
                             form.render(null, 'skuRender');
-                        }else if(vvType=='colorsize'){
+                        } else if (vvType == 'colorsize') {
                             $("#skuRender button").eq(0).parent().prev().find('input').val(vars[i].colorMap);
                             $(".skuBtn").click();
                             form.render(null, 'skuRender');
@@ -798,7 +805,7 @@
                         //initSKuPath(null,null);
                     }
                 }
-                initSKuPath(null,null);
+                initSKuPath(null, null);
                 var index = 0;
                 for (var i = 0; i < vars.length; i++) {
                     var vvType = vars[i].variationType;
@@ -967,7 +974,7 @@
                     $("#skuTable tbody tr").each(function (i, val) {
                         var item = {};
                         var itemImgs = $(val).eq(0).find(".trOtherPath").val().split(",");
-                        if ((itemImgs.length < 1 ||itemImgs[0].length==0)&&i==0) {
+                        if ((itemImgs.length < 1 || itemImgs[0].length == 0) && i == 0) {
                             layer.msg("请上传变体图片", {icon: 5, time: 1000});
                             return false;
                         }
@@ -1031,10 +1038,10 @@
                         skuVar.push(item);
                     });
                 }
-               /* if (!isItemImags) {
-                    layer.msg("请上传变体图片", {icon: 5, time: 1000});
-                    return false;
-                }*/
+                /* if (!isItemImags) {
+                 layer.msg("请上传变体图片", {icon: 5, time: 1000});
+                 return false;
+                 }*/
                 data.field["vars"] = JSON.stringify(skuVar);
 
                 var url = '<%=request.getContextPath()%>/product/claim/save';
@@ -1111,7 +1118,7 @@
                 }
             }
             $("#skuMutiPath").append(getSKuPathDom(arr));
-            if(!isDisplay){
+            if (!isDisplay) {
 
                 initSKuPath(null, null);
             }
@@ -1165,8 +1172,8 @@
         $("input[name='sku']").bind("input propertychange change", function (event) {
             $("#skuTable tbody tr").each(function (i, val) {
                 var text = $(val).find("td").eq(0).find("input[type='text']").val();
-                var kk= $(val).attr("val")+"";
-                $(val).find("td").eq(0).find("input[type='text']").val($("input[name='sku']").val() +"-"+$.trim(kk).split(",").join("-"))
+                var kk = $(val).attr("val") + "";
+                $(val).find("td").eq(0).find("input[type='text']").val($("input[name='sku']").val() + "-" + $.trim(kk).split(",").join("-"))
             });
         });
 
@@ -1226,11 +1233,11 @@
                 var id = "skuMainPath" + i;
                 var sid = "skuOtherPath" + i;
 
-                var key="";
-                var arrKeys=$.trim(arr[i]).split(/\s+/);
-                for(var ind=0;ind<arrKeys.length;ind++){
-                    if(arrKeys[ind]!=null&&arrKeys[ind].indexOf(":")==0){
-                        key+=":"+arrKeys[ind].substring(1);
+                var key = "";
+                var arrKeys = $.trim(arr[i]).split(/\s+/);
+                for (var ind = 0; ind < arrKeys.length; ind++) {
+                    if (arrKeys[ind] != null && arrKeys[ind].indexOf(":") == 0) {
+                        key += ":" + arrKeys[ind].substring(1);
                     }
                 }
                 dom += "<div class=\"layui-input-block\" val=" + key.substring(1) + ">" +

@@ -9,7 +9,7 @@
         LEFT JOIN T_USER_INFO t3
         ON t1.salesman = t3.user_id
         LEFT JOIN T_USER_INFO t4
-        ON t1.operation_user = t3.user_id
+        ON t1.operation_user = t4.user_id
         LEFT JOIN T_TRANSPORT_COMPANY t5
         ON t1.trans_company_id = t5.id
         WHERE 1=1
@@ -31,13 +31,30 @@
         <if test="salesCompany !=null and salesCompany !=''">
             AND t1.SALESCOMPANY = #{salesCompany,jdbcType=VARCHAR}
         </if>
+        <if test="logmin !=null and logmin != ''">
+            AND t1.CREATE_TIME <![CDATA[>=]]> to_date(#{logmin,jdbcType=VARCHAR},'yyyy-MM-dd HH24:mi:ss')
+        </if>
+        <if test="logmax !=null and logmax != ''">
+            AND t1.CREATE_TIME  <![CDATA[<=]]> to_date(#{logmax,jdbcType=VARCHAR},'yyyy-MM-dd HH24:mi:ss')
+        </if>
         ORDER BY CREATE_TIME DESC
     </select>
     <update id="updateShipping" parameterType="java.util.Map">
         UPDATE T_ORDER_SHIPMENT
         SET
-        SHIPPINGPRICE = #{shippingPrice,jdbcType=VARCHAR},
         FREIGHT = #{freight,jdbcType=VARCHAR}
+        <if test="shippingPrice != null and shippingPrice != ''">
+            ,SHIPPINGPRICE = #{shippingPrice,jdbcType=VARCHAR}
+        </if>
+        <if test="status != null and status != ''">
+            ,STATUS = #{status,jdbcType=VARCHAR}
+        </if>
+        <if test="trackNum != null and trackNum != ''">
+            ,TRACKNUMBER = #{trackNum,jdbcType=VARCHAR}
+        </if>
+        <if test="operationUser != null and operationUser != ''">
+            ,OPERATION_USER = #{operationUser,jdbcType=VARCHAR}
+        </if>
         WHERE
         ORDER_ID = #{orderId,jdbcType=VARCHAR}
     </update>

@@ -167,11 +167,7 @@
             <a class="btn btn-primary radius" href="javascript:;"
                onclick="addOrder('添加订单','<%=request.getContextPath()%>/assistant/index/order/order-add.jsp','800')"><i
                     class="Hui-iconfont">
-                &#xe600;</i> 添加订单</a>
-             <a class="btn btn-primary radius" href="javascript:;"
-                onclick="addOrder('批量修改','<%=request.getContextPath()%>/assistant/index/order/order-update.jsp','800')"><i
-                     class="Hui-iconfont">
-                 &#xe600;</i> 批量修改</a> </span></div>
+                &#xe600;</i> 添加订单</a></span></div>
         </c:if>
         <c:if test="${sessionScope.user.ROLE_ID eq '200'}">
             <div class="cl pd-5 bg-1 bk-gray mt-10" id="count-div"><span class="l">
@@ -179,13 +175,6 @@
                onclick="addOrder('添加订单','<%=request.getContextPath()%>/assistant/index/order/order-add.jsp','800')"><i
                     class="Hui-iconfont">
                 &#xe600;</i> 添加订单</a> </span></div>
-        </c:if>
-        <c:if test="${sessionScope.user.ROLE_ID eq '300'}">
-            <div class="cl pd-5 bg-1 bk-gray mt-10" id="count-div"><span class="l">
-            <a class="btn btn-primary radius" href="javascript:;"
-               onclick="addOrder('批量修改','<%=request.getContextPath()%>/assistant/index/order/order-update.jsp','800')"><i
-                    class="Hui-iconfont">
-                &#xe600;</i> 批量修改</a> </span></div>
         </c:if>
         <table id="orderTable" class="table table-border table-bordered table-bg table-hover">
             <thead>

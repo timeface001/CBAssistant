@@ -280,15 +280,6 @@
         });
         return table;
     }
-    /*打开订单详情页*/
-    function toDetail(amazonOrderId) {
-        var index = layer.open({
-            type: 2,
-            title: '订单详情',
-            content: 'order-Detail.jsp?amazonOrderId=' + amazonOrderId
-        });
-        layer.full(index);
-    }
 
     function editProduct(id) {
         location.href = '<%=request.getContextPath()%>/product/claim/detail?id=' + id;

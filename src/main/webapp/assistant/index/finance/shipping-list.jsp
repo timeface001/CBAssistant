@@ -98,13 +98,9 @@
         </div>
         <div class="cl pd-5 bg-1 bk-gray mt-10" id="count-div"><span class="l">
             <a class="btn btn-primary radius" href="javascript:;"
-               onclick="updateAllShipping('批量修改','<%=request.getContextPath()%>/assistant/index/order/order-update.jsp','800')"><i
+               onclick="updateAllShipping('批量修改','<%=request.getContextPath()%>/assistant/index/finance/shipping-allupdate.jsp','800')"><i
                     class="Hui-iconfont">
-                &#xe600;</i> 批量修改</a>
-        <a class="btn btn-primary radius" href="javascript:;"
-           onclick="updateAllShipping('批量获取','<%=request.getContextPath()%>/assistant/index/order/order-update.jsp','800')"><i
-                class="Hui-iconfont">
-            &#xe600;</i> 批量获取</a></span></div>
+                &#xe600;</i> 批量修改</a></span></div>
         <table id="shippingTable" class="table table-border table-bordered table-bg table-hover">
             <thead>
             <tr class="text-c">
@@ -312,11 +308,11 @@
                         if (data == 0) {
                             return "<a style='text-decoration:none' title='获取运费' onClick=\"getShippingPrice('" + full.ORDER_ID + "','" + full.TRACKNUMBER + "','" + full.TRANS_COMPANY_ID + "')\">获取运费</a>" +
                                     "&nbsp;&nbsp;" +
-                                    "<a style='text-decoration:none' title='修改'  onClick=\"updateShipping('" + full.ORDER_ID + "')\">修改</a>";
+                                    "<a style='text-decoration:none' title='修改'  onClick=\"updateShipping('" + full.ORDER_ID + "','" + full.FREIGHT + "','" + full.TRACKNUMBER + "')\">修改</a>";
                         } else if (data == 1) {
-                            return "<a style='text-decoration:none' title='修改'  onClick=\"updateShipping('" + full.ORDER_ID + "')\">修改</a>" +
+                            return "<a style='text-decoration:none' title='修改'  onClick=\"updateShipping('" + full.ORDER_ID + "','" + full.FREIGHT + "','" + full.TRACKNUMBER + "')\">修改</a>" +
                                     "&nbsp;&nbsp;" +
-                                    "<a style='text-decoration:none' title='审核'  id='edit' data-id='" + data + "'  )>审核</a>";
+                                    "<a style='text-decoration:none' title='审核' onClick=\"auditShipping('" + full.ORDER_ID + "')\">审核</a>";
                         } else {
                             return "<a style='text-decoration:none'  id='edit' data-id='" + data + "'  )>已审核</a>";
                         }
@@ -351,7 +347,10 @@
     function updateAllShipping(title, url, w) {
         layer_show(title, url, w);
     }
-    function updateShipping(amazonOrderId) {
+    function updateShipping(orderId, freight, trackNum) {
+        layer_show("修改运费", "<%=request.getContextPath()%>/assistant/index/finance/shipping-update.jsp?orderId=" + orderId + "&freight=" + freight + "&trackNum=" + trackNum, 400, 300);
+    }
+    function auditShipping(orderId) {
 
     }
     function getShippingPrice(orderId, custId, companyId) {
