@@ -9,7 +9,7 @@ public class UploadServiceRequest {
 
     private List<ProductAmzUpload> products;
 
-    private List<String> marketIds;
+    private Set<String> marketIds;
 
     private ShopReq shop;
 
@@ -19,7 +19,7 @@ public class UploadServiceRequest {
 
     public UploadServiceRequest(Map<String, Object> shop) {
         this.shop = new ShopReq();
-        this.marketIds = new ArrayList<>();
+        this.marketIds = new HashSet<>();
         this.exrateMap = new HashMap<>();
         this.exrateList = new HashMap<>();
         this.products=new ArrayList<>();
@@ -29,16 +29,16 @@ public class UploadServiceRequest {
     public boolean add(Map<String, Object> shop, ProductAmzUpload product) {
         if (isContains(shop)) {
 
-            products.add(product);
 
 
             String key = shop.get("CURRENCYCODE").toString();
             String marketId = shop.get("MARKETPLACEID").toString();
             this.marketIds.add(marketId);
 
+
             if (!exrateMap.containsKey(key)) {
                 ShopReq mid = new ShopReq();
-                mid.setMarketIds(Arrays.asList(marketId));
+                mid.setMarketIds(new HashSet<String>(Arrays.asList(marketId)));
                 mid.setExrate(new BigDecimal(shop.get("EXRATE").toString()));
                 mid.setCurrency(key);
                 exrateMap.put(key, mid);
@@ -48,10 +48,25 @@ public class UploadServiceRequest {
             }
 
             if (exrateList.containsKey(key)) {
-                exrateList.get(key).add(product);
+                List<ProductAmzUpload> list = exrateList.get(key);
+                boolean isContains = false;
+                for (ProductAmzUpload s : list) {
+                    if (s.getProductAmzId().equals(product.getProductAmzId())) {
+                        isContains = true;
+                    }
+                }
+                if (!isContains) {
+                    list.add(product);
+
+                }
             } else {
-                exrateList.put(key, Arrays.asList(product));
+                exrateList.put(key, new ArrayList<ProductAmzUpload>(Arrays.asList(product)));
             }
+
+            if (isCanAddProduct(product)) {
+                products.add(product);
+            }
+
 
             return true;
         }
@@ -60,17 +75,33 @@ public class UploadServiceRequest {
 
     }
 
+    private boolean isCanAddProduct(ProductAmzUpload product) {
+        if (this.products.size() == 0) {
+            return true;
+        }
+
+        for (ProductAmzUpload pp : this.products) {
+            if (pp.getProductAmzId().equals(product.getProductAmzId())) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     private void initShop(Map<String, Object> shop) {
         String accessKeyId = shop.get("ACCESSKEY_ID").toString();
         String secretAccessKey = shop.get("SECRET_KEY").toString();
         String serviceUrl = shop.get("ENDPOINT").toString();
         String merchantId = shop.get("MERCHANT_ID").toString();
+        String language = shop.get("LANGUAGE").toString();
 
 
         this.shop.setAccessKey(accessKeyId);
         this.shop.setSecretKey(secretAccessKey);
         this.shop.setServiceUrl(serviceUrl);
         this.shop.setMerchantId(merchantId);
+        this.shop.setLanguage(language);
 
     }
 
@@ -83,9 +114,10 @@ public class UploadServiceRequest {
         String secretAccessKey = shop.get("SECRET_KEY").toString();
         String serviceUrl = shop.get("ENDPOINT").toString();
         String merchantId = shop.get("MERCHANT_ID").toString();
+        String language = shop.get("LANGUAGE").toString();
 
 
-        return merchantId.equals(this.shop.getMerchantId()) && accessKeyId.equals(this.shop.getAccessKey()) && secretAccessKey.equals(this.shop.getSecretKey()) && serviceUrl.equals(this.shop.getServiceUrl());
+        return language.equals(this.shop.getLanguage()) && merchantId.equals(this.shop.getMerchantId()) && accessKeyId.equals(this.shop.getAccessKey()) && secretAccessKey.equals(this.shop.getSecretKey()) && serviceUrl.equals(this.shop.getServiceUrl());
     }
 
 
@@ -122,13 +154,12 @@ public class UploadServiceRequest {
     }
 
     public List<String> getMarketIds() {
-        return marketIds;
+        return new ArrayList<>(marketIds);
     }
 
-    public void setMarketIds(List<String> marketIds) {
+    public void setMarketIds(Set<String> marketIds) {
         this.marketIds = marketIds;
     }
-
 
     public class ShopReq {
         private String accessKey;
@@ -140,13 +171,22 @@ public class UploadServiceRequest {
         private String countryId;
         private BigDecimal exrate;
         private String currency;
-        private List<String> marketIds;
+        private Set<String> marketIds;
+        private String language;
 
-        public List<String> getMarketIds() {
+        public String getLanguage() {
+            return language;
+        }
+
+        public void setLanguage(String language) {
+            this.language = language;
+        }
+
+        public Set<String> getMarketIds() {
             return marketIds;
         }
 
-        public void setMarketIds(List<String> marketIds) {
+        public void setMarketIds(Set<String> marketIds) {
             this.marketIds = marketIds;
         }
 

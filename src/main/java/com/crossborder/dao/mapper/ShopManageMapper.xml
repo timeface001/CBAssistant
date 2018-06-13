@@ -60,7 +60,7 @@
     </select>
 
     <select id="selectShopById" parameterType="java.util.Map" resultType="java.util.Map">
-        select t1.*, t2.name country_Name,t2.MARKETPLACEID,t2.ENDPOINT,t2.EXRATE,t2.CURRENCYCODE from T_SHOP t1
+        select t1.*, t2.name country_Name,t2.MARKETPLACEID,t2.ENDPOINT,t2.EXRATE,t2.CURRENCYCODE,t2.LANGUAGE from T_SHOP t1
         left join T_COUNTRY t2 on t2.id = t1.country_code
         WHERE t1.SHOP_ID =#{id}
 

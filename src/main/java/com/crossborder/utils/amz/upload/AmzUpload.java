@@ -91,25 +91,26 @@ public class AmzUpload {
                 try {
 
                     System.out.println("上传文本如下");
+                    System.out.println();
                     System.out.println(item.getProductStr());
                     System.out.println();
                     System.out.println(item.getImageStr());
                     System.out.println();
-                    System.out.println(item.getPriceStr());
+                    //System.out.println(item.getPriceStr());
                     System.out.println();
                     System.out.println(item.getInventoryStr());
                     System.out.println();
                     System.out.println(item.getRelationsStr());
 
-                    FileInputStream productIs = new FileInputStream(FileUtils.byte2File(item.getProductStr().getBytes(), commonSet.getAmzUploadProductPath(), GeneralUtils.cuurentDateStr() + "product_fee.txt"));
-                    FileInputStream imageIs = new FileInputStream(FileUtils.byte2File(item.getImageStr().getBytes(), commonSet.getAmzUploadProductPath(), GeneralUtils.cuurentDateStr() + "image_fee.txt"));
-                    FileInputStream inventoryIs = new FileInputStream(FileUtils.byte2File(item.getInventoryStr().getBytes(), commonSet.getAmzUploadProductPath(), GeneralUtils.cuurentDateStr() + "inventory_fee.txt"));
+                    FileInputStream productIs = new FileInputStream(FileUtils.byte2File(item.getProductStr().getBytes(), commonSet.getAmzUploadProductPath(), UUID.randomUUID() + "product_fee.txt"));
+                    FileInputStream imageIs = new FileInputStream(FileUtils.byte2File(item.getImageStr().getBytes(), commonSet.getAmzUploadProductPath(), UUID.randomUUID() + "image_fee.txt"));
+                    FileInputStream inventoryIs = new FileInputStream(FileUtils.byte2File(item.getInventoryStr().getBytes(), commonSet.getAmzUploadProductPath(), UUID.randomUUID() + "inventory_fee.txt"));
 
 
                     request.setShop(sr.getShop());
                     FileInputStream relationIs = null;
                     if (!item.isRelationEmpty()) {
-                        relationIs = new FileInputStream(FileUtils.byte2File(item.getRelationsStr().getBytes(), commonSet.getAmzUploadProductPath(), GeneralUtils.cuurentDateStr() + "relations_fee.txt"));
+                        relationIs = new FileInputStream(FileUtils.byte2File(item.getRelationsStr().getBytes(), commonSet.getAmzUploadProductPath(), UUID.randomUUID() + "relations_fee.txt"));
                     }
 
                     ResponseDto<String> feeDto = getUploadResult(getService(sr.getShop()), getSubmitFeedRequest(productIs, sr, AmzFeeType.PRODUCT_FEED));
@@ -227,11 +228,11 @@ public class AmzUpload {
 
     public void getFeedSubResult(UploadRequest req) {
 
-        System.out.println("等待130秒获取上传结果。。。。。。");
+        System.out.println("等待160秒获取上传结果。。。。。。");
 
 
         try {
-            Thread.sleep(130000);
+            Thread.sleep(160000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
