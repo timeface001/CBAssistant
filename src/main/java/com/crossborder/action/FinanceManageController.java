@@ -202,7 +202,7 @@ public class FinanceManageController {
             paramMap.put("orderId", orderId);
             paramMap.put("shippingPrice", _getFeeByOrderCode_totalFee.value);
             Map<String, Object> rateMap = getShippingRate("shippingRate");
-            double freight = Double.parseDouble(_getFeeByOrderCode_totalFee.value) * (Double) rateMap.get("RATE") + (Double) rateMap.get("DIFFERENCE");
+            double freight = Double.parseDouble(_getFeeByOrderCode_totalFee.value) * Double.parseDouble(rateMap.get("RATE").toString()) + Double.parseDouble(rateMap.get("DIFFERENCE").toString());
             paramMap.put("freight", freight);
             paramMap.put("status", "1");
             paramMap.put("operationUser", user.get("USER_ID"));
@@ -226,7 +226,7 @@ public class FinanceManageController {
                 paramMap.put("orderId", orderId);
                 paramMap.put("shippingPrice", resultObject.getJSONObject("Item").getString("TotalFee"));
                 Map<String, Object> rateMap = getShippingRate("shippingRate");
-                double freight = Double.parseDouble(resultObject.getJSONObject("Item").getString("TotalFee")) * (Double) rateMap.get("RATE") + (Double) rateMap.get("DIFFERENCE");
+                double freight = Double.parseDouble(resultObject.getJSONObject("Item").getString("TotalFee")) * Double.parseDouble(rateMap.get("RATE").toString()) + Double.parseDouble(rateMap.get("DIFFERENCE").toString());
                 paramMap.put("freight", freight);
                 paramMap.put("status", "1");
                 paramMap.put("operationUser", user.get("USER_ID"));
