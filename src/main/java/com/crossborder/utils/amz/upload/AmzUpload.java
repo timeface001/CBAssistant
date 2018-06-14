@@ -146,7 +146,9 @@ public class AmzUpload {
 
 
                     ResponseDto<String> imageDto = getUploadResult(getService(sr.getShop()), getSubmitFeedRequest(imageIs, sr, AmzFeeType.PRODUCT_IMAGES_FEED));
-                    submitIds.add(imageDto.getData());
+                    if(imageDto.getData()!=null){
+                        submitIds.add(imageDto.getData());
+                    }
                     System.out.println("上传图片信息:" + imageDto.getData());
 
                     ResponseDto<String> inventoryDto = getUploadResult(getService(sr.getShop()), getSubmitFeedRequest(inventoryIs, sr, AmzFeeType.INVENTORY_FEED));

@@ -71,17 +71,12 @@
             <a href="javascript:;" onclick="reloadTable(1)" class="btn btn-default radius">未认领</a>
             <a href="javascript:;" onclick="reloadTable(2)" class="btn btn-default radius">已认领</a>
         </div>--%>
-        <%--<div class="cl pd-5 bg-1 bk-gray" id="count-div"><span class="l"> <a href="javascript:;"
-                                                                             onclick="deleteProduct(null)"
-                                                                             class="btn btn-danger radius"><i
-                class="Hui-iconfont">
-            &#xe6e2;</i> 批量删除</a>
+        <div class="cl pd-5 bg-1 bk-gray" id="count-div"><span class="l">
             <a href="javascript:;"
                onclick="claimProduct(null)"
-               class="btn btn-danger radius"><i
-                    class="Hui-iconfont">
-                &#xe6e2;</i> 批量认领</a>
-            </span></div>--%>
+               class="btn  btn-primary radius"><i class="Hui-iconfont">
+                &#xe619;</i>批量发布</a>
+            </span></div>
         <table id="productTable" class="table table-border table-bordered table-bg table-hover mt-10">
             <thead>
             <tr class="text-c">
@@ -331,35 +326,37 @@
 
     }
 
+
     /**
-     * 认领操作
+     * 发布操作
      * @param ids
      */
     function claimProduct(ids) {
-        if (ids == null) {
-            ids = getIDs();
+        var ids = getIDs();
+
+        if (ids == null || ids.length == 0) {
+            layer.msg("请选择发布产品！", {icon: 5, time: 1000});
+            return;
         }
 
-        layer.confirm('确定认领商品吗？', function (index) {
-            $.ajax({
-                type: 'POST',
-                url: '<%=request.getContextPath()%>/product/state',
-                dataType: 'json',
-                data: {
-                    "data": ids,
-                    "type": 2
-                },
-                success: function (data) {
-                    if (data.success) {
-                        setTimeout(layer.msg(data.msg, {icon: 6, time: 1000}), 1000);
-                        document.getElementById("refresh").click();
-                    }
-                },
-                error: function (data) {
-                    layer.msg(data.msg, {icon: 2, time: 1000});
+        $.ajax({
+            type: 'POST',
+            url: '<%=request.getContextPath()%>/product/publish/batch',
+            dataType: 'json',
+            data: {
+                "ids": ids
+            },
+            success: function (data) {
+                if (data.success) {
+                    setTimeout(layer.msg("发布成功", {icon: 6, time: 1000}), 1000);
+                    document.getElementById("refresh").click();
                 }
-            });
+            },
+            error: function (data) {
+                layer.msg(data.msg, {icon: 2, time: 1000});
+            }
         });
+
     }
 
     /*产品-删除*/

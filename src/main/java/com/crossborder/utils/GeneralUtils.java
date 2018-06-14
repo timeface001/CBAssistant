@@ -174,6 +174,10 @@ public class GeneralUtils {
         return m.replaceAll("");
     }
 
+    public static void main(String[] args) {
+        System.out.println(removeAttr("<p align=\"left\">"));
+    }
+
     public static String removeAttr(String str) {
         if (StringUtils.isBlank(str)) {
             return str;
@@ -184,7 +188,9 @@ public class GeneralUtils {
         str = deleteAttr("tabindex", str);
         str = deleteAttr("title", str);
         str = deleteAttr("id", str);
-        str = str.replace("<span>", "").replace("</span>", "");
+        str = deleteAttr("align", str);
+        //str = str.replace("<span>", "").replace("</span>", "");
+        str=filterHtml(str,"<\\s*span\\s+([^>]*)\\s*>");
 
         return str;
     }

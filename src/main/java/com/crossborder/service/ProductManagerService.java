@@ -469,7 +469,25 @@ public class ProductManagerService {
         return productAmzUploadDao.selectByPrimaryKey(id);
     }
 
-    public void uploadProduct(ProductAmzUpload product, Map<String, Object> shop) {
+    public void batchPublish(List<String> ids) {
+        for (String id : ids) {
+            if (StringUtils.isBlank(id)) {
+                continue;
+            }
+            ProductAmzUpload product = productAmzUploadDao.selectByPrimaryKey(id);
+            product.setPublishStatus(PublishStatusEnum.NOT.getVal());
+            product.setUpdateDelete("update");
+            product.setPublishTime(new Date());
+
+            //产品魔板暂时都为空
+            product.setProductTypeName("  ");
+
+            updateClaimProduct(PublishStatusEnum.NOT, product.getProductAmzId());
+            productAmzUploadDao.updateByPrimaryKeySelective(product);
+        }
+    }
+
+    public void uploadProduct(ProductAmzUpload product) {
 
         logger.debug("************  start upload product ****************  id -----> " + product.getId());
         //List<ProductItemVar> vars = productSkuTypeService.selectListByProductId(product.getProductAmzId());
