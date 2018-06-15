@@ -13,4 +13,6 @@ public interface FinanceManageDao {
     public List<Map<String, Object>> selectShippings(Map<String, Object> map);
 
     public int updateShipping(Map<String, Object> map);
+
+    public List<Map<String, Object>> selectFees(Map<String, Object> map);
 }

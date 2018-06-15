@@ -535,7 +535,6 @@
                 {
                     "targets": [16],
                     "data": "LOCALSTATUS",
-                    "visible": isShowStatus,
                     "render": function (data, type, full) {
                         if (data == 1) {
                             return "<div>新单</div>"

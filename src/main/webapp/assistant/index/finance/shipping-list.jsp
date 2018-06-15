@@ -96,6 +96,18 @@
             <a href="javascript:;" onclick="reloadTable(1)" class="btn btn-default radius">已获取</a>
             <a href="javascript:;" onclick="reloadTable(2)" class="btn btn-default radius">已审核</a>
         </div>
+        <div class="panel panel-success mt-10">
+            <div class="panel-body row cl">
+                <div class="formControls col-xs-2 col-sm-2">
+                    <label class="form-label f-l">物流运费：</label>
+                    <label class="form-label f-l" id="totalShippingPrice">0.00</label>
+                </div>
+                <div class="formControls col-xs-2 col-sm-2">
+                    <label class="form-label f-l">实需运费：</label>
+                    <label class="form-label f-l" id="totalFreight">0.00</label>
+                </div>
+            </div>
+        </div>
         <div class="cl pd-5 bg-1 bk-gray mt-10" id="count-div"><span class="l">
             <a class="btn btn-primary radius" href="javascript:;"
                onclick="updateAllShipping('批量修改','<%=request.getContextPath()%>/assistant/index/finance/shipping-allupdate.jsp','800')"><i
@@ -228,9 +240,11 @@
                 btns[i].className = 'btn btn-default radius'
             }
         }
+        selectFees();
     }
     /*初始化table*/
     function initializeTable() {
+        selectFees();
         var table = $("#shippingTable").DataTable({
             "processing": true,
             "serverSide": true,
@@ -398,6 +412,32 @@
             error: function (data) {
                 layer.closeAll("loading");
                 layer.msg("请求错误！", {icon: 2, time: 2000});
+            }
+        });
+    }
+
+    /*
+     查询运费总费用明细
+     */
+    function selectFees() {
+        $.ajax({
+            type: 'POST',
+            url: '<%=request.getContextPath()%>/finance/selectFees',
+            dataType: 'json',
+            data: {
+                "data": JSON.stringify(getFormJson("#shippingForm"))
+            },
+            success: function (data) {
+                if (data.code == 0) {
+                    var data = data.data;
+                    $("#totalShippingPrice").html(data.TOTALSHIPPINGPRICE);
+                    $("#totalFreight").html(data.TOTALFREIGHT);
+                } else {
+                    layer.msg(data.msg, {icon: 2, time: 1000});
+                }
+            },
+            error: function (data) {
+                layer.msg(data.msg, {icon: 2, time: 1000});
             }
         });
     }

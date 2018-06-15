@@ -20,7 +20,7 @@
             AND t1.STATUS = #{status,jdbcType=VARCHAR}
         </if>
         <if test="intlTrackNum !=null and intlTrackNum !=''">
-            AND t1.INTLTRACKNUM = #{intlTrackNum,jdbcType=VARCHAR}
+            AND t1.INTLTRACKNUM LIKE '%${intlTrackNum}%'
         </if>
         <if test="transportCompany !=null and transportCompany !=''">
             AND t1.TRANS_COMPANY_ID = #{transportCompany,jdbcType=VARCHAR}
@@ -58,4 +58,35 @@
         WHERE
         ORDER_ID = #{orderId,jdbcType=VARCHAR}
     </update>
+    <select id="selectFees" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT
+        nvl(trunc(sum(t1.shippingPrice),2),0) totalshippingprice,
+        nvl(trunc(sum(t1.freight),2),0) totalfreight
+        FROM T_ORDER_SHIPMENT t1
+        WHERE 1=1
+        <if test="amazonOrderId !=null and amazonOrderId !=''">
+            AND t1.ORDER_ID = #{amazonOrderId,jdbcType=VARCHAR}
+        </if>
+        <if test="status !=null and status !=''">
+            AND t1.STATUS = #{status,jdbcType=VARCHAR}
+        </if>
+        <if test="intlTrackNum !=null and intlTrackNum !=''">
+            AND t1.INTLTRACKNUM LIKE '%${intlTrackNum}%'
+        </if>
+        <if test="transportCompany !=null and transportCompany !=''">
+            AND t1.TRANS_COMPANY_ID = #{transportCompany,jdbcType=VARCHAR}
+        </if>
+        <if test="salesMan !=null and salesMan !=''">
+            AND t1.SALESMAN = #{salesMan,jdbcType=VARCHAR}
+        </if>
+        <if test="salesCompany !=null and salesCompany !=''">
+            AND t1.SALESCOMPANY = #{salesCompany,jdbcType=VARCHAR}
+        </if>
+        <if test="logmin !=null and logmin != ''">
+            AND t1.CREATE_TIME <![CDATA[>=]]> to_date(#{logmin,jdbcType=VARCHAR},'yyyy-MM-dd HH24:mi:ss')
+        </if>
+        <if test="logmax !=null and logmax != ''">
+            AND t1.CREATE_TIME  <![CDATA[<=]]> to_date(#{logmax,jdbcType=VARCHAR},'yyyy-MM-dd HH24:mi:ss')
+        </if>
+    </select>
 </mapper>

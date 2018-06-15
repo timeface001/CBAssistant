@@ -328,11 +328,11 @@
     </select>
     <select id="selectFees" parameterType="java.util.Map" resultType="java.util.Map">
         SELECT
-        nvl(trunc(sum(t2.itempricermb + t2.shippingPricermb),2),0) itemprice,
+        nvl(trunc(sum(t2.itempricermb + t2.shippingPricermb + t1.commission),2),0) itemprice,
         nvl(trunc(sum(t1.shippingPrice),2),0) shippingPrice,
         nvl(trunc(sum(t2.cost),2),0) cost,
         nvl(trunc(sum(t2.refundment),2),0) refundment,
-        nvl(trunc(sum(t2.itempricermb - t2.cost - t2.refundment - t1.shippingPrice + t2.shippingPricermb),2),0) profit
+        nvl(trunc(sum(t2.itempricermb - t2.cost - t2.refundment - t1.shippingPrice + t2.shippingPricermb + t1.commission),2),0) profit
         FROM T_ORDER t1
         left join t_order_item t2
         on t2.amazonorderid = t1.amazonorderid

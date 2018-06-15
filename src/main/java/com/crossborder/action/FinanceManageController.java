@@ -24,6 +24,7 @@ import javax.servlet.http.HttpSession;
 import javax.xml.namespace.QName;
 import javax.xml.ws.Holder;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -153,7 +154,8 @@ public class FinanceManageController {
                         item.put("shippingPrice", arr.get(1));
                         Map<String, Object> rateMap = getShippingRate("shippingRate");
                         double freight = Double.parseDouble(arr.get(1)) * Double.parseDouble(rateMap.get("RATE").toString()) + Double.parseDouble(rateMap.get("DIFFERENCE").toString());
-                        item.put("freight", freight);
+                        DecimalFormat df = new DecimalFormat("#.00");
+                        item.put("freight", df.format(freight));
                         item.put("status", "1");
                         item.put("operationUser", user.get("USER_ID"));
                         financeManageService.updateShipping(item);
@@ -203,6 +205,8 @@ public class FinanceManageController {
             paramMap.put("shippingPrice", _getFeeByOrderCode_totalFee.value);
             Map<String, Object> rateMap = getShippingRate("shippingRate");
             double freight = Double.parseDouble(_getFeeByOrderCode_totalFee.value) * Double.parseDouble(rateMap.get("RATE").toString()) + Double.parseDouble(rateMap.get("DIFFERENCE").toString());
+            DecimalFormat df = new DecimalFormat("#.00");
+            paramMap.put("freight", df.format(freight));
             paramMap.put("freight", freight);
             paramMap.put("status", "1");
             paramMap.put("operationUser", user.get("USER_ID"));
@@ -227,7 +231,8 @@ public class FinanceManageController {
                 paramMap.put("shippingPrice", resultObject.getJSONObject("Item").getString("TotalFee"));
                 Map<String, Object> rateMap = getShippingRate("shippingRate");
                 double freight = Double.parseDouble(resultObject.getJSONObject("Item").getString("TotalFee")) * Double.parseDouble(rateMap.get("RATE").toString()) + Double.parseDouble(rateMap.get("DIFFERENCE").toString());
-                paramMap.put("freight", freight);
+                DecimalFormat df = new DecimalFormat("#.00");
+                paramMap.put("freight", df.format(freight));
                 paramMap.put("status", "1");
                 paramMap.put("operationUser", user.get("USER_ID"));
                 financeManageService.updateShipping(paramMap);
@@ -265,5 +270,33 @@ public class FinanceManageController {
         ShipRate_Service ss = new ShipRate_Service(wsdlURL, SERVICE_NAME);
         ShipRate port = ss.getShipRateSOAP();
         return port;
+    }
+
+    /**
+     * 获取运费总费用
+     *
+     * @param data
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "selectFees", produces = "text/plain;charset=UTF-8")
+    public String selectFees(String data) {
+        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> paramMap = JSON.parseObject(data, Map.class);
+        paramMap.put("logmin", paramMap.get("logmin").toString() + " 00:00:00");
+        paramMap.put("logmax", paramMap.get("logmax").toString() + " 23:59:59");
+        try {
+            map.put("data", financeManageService.selectFees(paramMap).get(0));
+            map.put("code", "0");
+            map.put("msg", "查询成功");
+            map.put("code", "0");
+            map.put("msg", "获取成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            e.printStackTrace();
+            map.put("code", "-10");
+            map.put("msg", e.getMessage());
+        }
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 }

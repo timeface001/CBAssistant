@@ -196,9 +196,14 @@ public class OrderManageController {
                     localOrderItem.setItemPrice(Double.parseDouble(orderItem.getItemPrice().getAmount()));
                     localOrderItem.setQuantityShipped(orderItem.getQuantityOrdered());
                     localOrderItem.setSellerSKU(orderItem.getSellerSKU());
-                    localOrderItem.setShippingPrice(Double.parseDouble(orderItem.getShippingPrice().getAmount()));
+                    if (orderItem.getShippingPrice() != null) {
+                        localOrderItem.setShippingPrice(Double.parseDouble(orderItem.getShippingPrice().getAmount()));
+                        localOrderItem.setShippingPriceRMB(Double.parseDouble(orderItem.getShippingPrice().getAmount()) * Double.parseDouble(shop.get("EXRATE").toString()));
+                    } else {
+                        localOrderItem.setShippingPrice(0);
+                        localOrderItem.setShippingPriceRMB(0);
+                    }
                     localOrderItem.setItemPriceRMB(Double.parseDouble(orderItem.getItemPrice().getAmount()) * Double.parseDouble(shop.get("EXRATE").toString()));
-                    localOrderItem.setShippingPriceRMB(Double.parseDouble(orderItem.getShippingPrice().getAmount()) * Double.parseDouble(shop.get("EXRATE").toString()));
                     localOrderItem.setStatus("1");
                     localOrderItem.setCost(0);
                     localOrderItem.setRefundment(0);
@@ -378,6 +383,8 @@ public class OrderManageController {
     public String selectFees(String data) {
         Map<String, Object> map = new HashMap<>();
         Map<String, Object> paramMap = JSON.parseObject(data, Map.class);
+        paramMap.put("logmin", paramMap.get("logmin").toString() + " 00:00:00");
+        paramMap.put("logmax", paramMap.get("logmax").toString() + " 23:59:59");
         try {
             map.put("data", orderManageService.selectFees(paramMap).get(0));
             map.put("code", "0");
