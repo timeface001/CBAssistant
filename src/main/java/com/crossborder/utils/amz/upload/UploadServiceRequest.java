@@ -13,60 +13,49 @@ public class UploadServiceRequest {
 
     private ShopReq shop;
 
-    private Map<String, ShopReq> exrateMap;
 
-    private Map<String, List<ProductAmzUpload>> exrateList;
+    private Map<String, SplitRequest> exrateList;
+
+    private Map<String, SplitRequest> languageList;
+
 
     public UploadServiceRequest(Map<String, Object> shop) {
-        this.shop = new ShopReq();
+        this.shop = initShop(shop);
         this.marketIds = new HashSet<>();
-        this.exrateMap = new HashMap<>();
         this.exrateList = new HashMap<>();
         this.products=new ArrayList<>();
-        initShop(shop);
+        this.languageList = new HashMap<>();
     }
 
     public boolean add(Map<String, Object> shop, ProductAmzUpload product) {
         if (isContains(shop)) {
 
-
-
             String key = shop.get("CURRENCYCODE").toString();
             String marketId = shop.get("MARKETPLACEID").toString();
             this.marketIds.add(marketId);
 
-
-            if (!exrateMap.containsKey(key)) {
-                ShopReq mid = new ShopReq();
-                mid.setMarketIds(new HashSet<String>(Arrays.asList(marketId)));
-                mid.setExrate(new BigDecimal(shop.get("EXRATE").toString()));
-                mid.setCurrency(key);
-                exrateMap.put(key, mid);
-            } else {
-                ShopReq mid = exrateMap.get(key);
-                mid.getMarketIds().add(marketId);
-            }
+            ShopReq mid = initShop(shop);
+            mid.setMarketIds(new HashSet<String>(Arrays.asList(marketId)));
+            mid.setExrate(new BigDecimal(shop.get("EXRATE").toString()));
+            mid.setCurrency(key);
 
             if (exrateList.containsKey(key)) {
-                List<ProductAmzUpload> list = exrateList.get(key);
-                boolean isContains = false;
-                for (ProductAmzUpload s : list) {
-                    if (s.getProductAmzId().equals(product.getProductAmzId())) {
-                        isContains = true;
-                    }
-                }
-                if (!isContains) {
-                    list.add(product);
-
-                }
+                exrateList.get(key).add(product);
+                exrateList.get(key).getShopReq().getMarketIds().add(marketId);
             } else {
-                exrateList.put(key, new ArrayList<ProductAmzUpload>(Arrays.asList(product)));
+
+                exrateList.put(key, new SplitRequest(new ArrayList<ProductAmzUpload>(Arrays.asList(product)), mid));
             }
 
-            if (isCanAddProduct(product)) {
-                products.add(product);
+            String language = shop.get("LANGUAGE").toString();
+            if (languageList.containsKey(language)) {
+                languageList.get(language).add(product);
+                languageList.get(language).getShopReq().getMarketIds().add(marketId);
+            } else {
+                languageList.put(language, new SplitRequest(new ArrayList<ProductAmzUpload>(Arrays.asList(product)), mid));
             }
 
+            products.add(product);
 
             return true;
         }
@@ -89,7 +78,8 @@ public class UploadServiceRequest {
         return true;
     }
 
-    private void initShop(Map<String, Object> shop) {
+    private ShopReq initShop(Map<String, Object> shop) {
+        ShopReq result = new ShopReq();
         String accessKeyId = shop.get("ACCESSKEY_ID").toString();
         String secretAccessKey = shop.get("SECRET_KEY").toString();
         String serviceUrl = shop.get("ENDPOINT").toString();
@@ -97,11 +87,13 @@ public class UploadServiceRequest {
         String language = shop.get("LANGUAGE").toString();
 
 
-        this.shop.setAccessKey(accessKeyId);
-        this.shop.setSecretKey(secretAccessKey);
-        this.shop.setServiceUrl(serviceUrl);
-        this.shop.setMerchantId(merchantId);
-        this.shop.setLanguage(language);
+        result.setAccessKey(accessKeyId);
+        result.setSecretKey(secretAccessKey);
+        result.setServiceUrl(serviceUrl);
+        result.setMerchantId(merchantId);
+        result.setLanguage(language);
+
+        return result;
 
     }
 
@@ -121,21 +113,6 @@ public class UploadServiceRequest {
     }
 
 
-    public Map<String, ShopReq> getExrateMap() {
-        return exrateMap;
-    }
-
-    public void setExrateMap(Map<String, ShopReq> exrateMap) {
-        this.exrateMap = exrateMap;
-    }
-
-    public Map<String, List<ProductAmzUpload>> getExrateList() {
-        return exrateList;
-    }
-
-    public void setExrateList(Map<String, List<ProductAmzUpload>> exrateList) {
-        this.exrateList = exrateList;
-    }
 
     public ShopReq getShop() {
         return shop;
@@ -159,6 +136,22 @@ public class UploadServiceRequest {
 
     public void setMarketIds(Set<String> marketIds) {
         this.marketIds = marketIds;
+    }
+
+    public Map<String, SplitRequest> getExrateList() {
+        return exrateList;
+    }
+
+    public void setExrateList(Map<String, SplitRequest> exrateList) {
+        this.exrateList = exrateList;
+    }
+
+    public Map<String, SplitRequest> getLanguageList() {
+        return languageList;
+    }
+
+    public void setLanguageList(Map<String, SplitRequest> languageList) {
+        this.languageList = languageList;
     }
 
     public class ShopReq {
@@ -260,6 +253,61 @@ public class UploadServiceRequest {
 
         public void setExrate(BigDecimal exrate) {
             this.exrate = exrate;
+        }
+    }
+
+    public class SplitRequest {
+        private List<ProductAmzUpload> list;
+
+        private ShopReq shopReq;
+
+        public SplitRequest() {
+            this.list = new ArrayList<>();
+
+            shop = new ShopReq();
+        }
+
+        public void add(ProductAmzUpload product) {
+            if (list == null) {
+                list = new ArrayList<>();
+            }
+
+            if (!isContains(product)) {
+
+                list.add(product);
+            }
+        }
+
+        public boolean isContains(ProductAmzUpload product) {
+            boolean isContains = false;
+            for (ProductAmzUpload s : list) {
+                if (s.getProductAmzId().equals(product.getProductAmzId())) {
+                    isContains = true;
+                }
+            }
+
+            return isContains;
+        }
+
+        public SplitRequest(List<ProductAmzUpload> list, ShopReq shopReq) {
+            this.list = list;
+            this.shopReq = shopReq;
+        }
+
+        public List<ProductAmzUpload> getList() {
+            return list;
+        }
+
+        public void setList(List<ProductAmzUpload> list) {
+            this.list = list;
+        }
+
+        public ShopReq getShopReq() {
+            return shopReq;
+        }
+
+        public void setShopReq(ShopReq shopReq) {
+            this.shopReq = shopReq;
         }
     }
 }
