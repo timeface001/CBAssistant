@@ -105,6 +105,14 @@ public class FinanceManageController {
         return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
+    /**
+     * 审核
+     *
+     * @param session
+     * @param freight
+     * @param orderId
+     * @return
+     */
     @ResponseBody
     @RequestMapping(value = "auditShipping", produces = "text/plain;charset=UTF-8")
     public String auditShipping(HttpSession session, String freight, String orderId) {
@@ -121,6 +129,44 @@ public class FinanceManageController {
             orderMap.put("amazonOrderId", orderId);
             orderMap.put("shippingPrice", freight);
             orderManageService.updateOrderShipping(orderMap);
+            map.put("code", "0");
+            map.put("msg", "审核成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("code", "-10");
+            map.put("msg", "审核失败");
+        }
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
+    }
+
+    /**
+     * 批量审核
+     *
+     * @param session
+     * @param freights
+     * @param orderIds
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "auditAllShipping", produces = "text/plain;charset=UTF-8")
+    public String auditAllShipping(HttpSession session, String freights, String orderIds) {
+        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> paramMap = new HashMap<>();
+        Map<String, Object> orderMap = new HashMap<>();
+        Map<String, Object> user = (Map<String, Object>) session.getAttribute("user");
+        freights = freights.substring(0, freights.length() - 1);
+        orderIds = orderIds.substring(0, orderIds.length() - 1);
+        try {
+            for (int i = 0; i < orderIds.split(",").length; i++) {
+                paramMap.put("status", "2");
+                paramMap.put("orderId", orderIds.split(",")[i]);
+                paramMap.put("freight", freights.split(",")[i]);
+                paramMap.put("operationUser", user.get("USER_ID"));
+                financeManageService.updateShipping(paramMap);
+                orderMap.put("amazonOrderId", orderIds.split(",")[i]);
+                orderMap.put("shippingPrice", freights.split(",")[i]);
+                orderManageService.updateOrderShipping(orderMap);
+            }
             map.put("code", "0");
             map.put("msg", "审核成功");
         } catch (Exception e) {

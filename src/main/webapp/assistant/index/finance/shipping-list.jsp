@@ -112,7 +112,11 @@
             <a class="btn btn-primary radius" href="javascript:;"
                onclick="updateAllShipping('批量修改','<%=request.getContextPath()%>/assistant/index/finance/shipping-allupdate.jsp','800')"><i
                     class="Hui-iconfont">
-                &#xe600;</i> 批量修改</a></span></div>
+                &#xe600;</i> 批量修改</a>
+            <a class="btn btn-primary radius" href="javascript:;"
+               onclick="auditAllShipping()" style="display: none" id="auditAll-btn"><i
+                    class="Hui-iconfont">
+                &#xe600;</i> 批量审核</a></span></div>
         <table id="shippingTable" class="table table-border table-bordered table-bg table-hover">
             <thead>
             <tr class="text-c">
@@ -228,6 +232,12 @@
     /*切换状态查询*/
     var index = 0;
     function reloadTable(id) {
+        var auditAllBtn = document.getElementById("auditAll-btn");
+        if (id == 1) {
+            auditAllBtn.style.display = "";
+        } else {
+            auditAllBtn.style.display = "none";
+        }
         index = id;
         $("#status").val(id);
         shippingTable.ajax.reload();
@@ -287,7 +297,7 @@
                     "targets": [0],
                     "data": "ORDER_ID",
                     "render": function (data, type, full) {
-                        return "<input type='checkbox' value=" + full.ID + ">"
+                        return "<input type='checkbox' class='auditCb' data-title=" + full.FREIGHT + " value=" + data + ">"
                     }
                 },
                 {
@@ -364,6 +374,7 @@
     function updateShipping(orderId, freight, trackNum) {
         layer_show("修改运费", "<%=request.getContextPath()%>/assistant/index/finance/shipping-update.jsp?orderId=" + orderId + "&freight=" + freight + "&trackNum=" + trackNum, 400, 300);
     }
+    /*审核*/
     function auditShipping(orderId, freight) {
         layer.confirm('您确定要审核运费吗？', function (i) {
             layer.load();
@@ -379,6 +390,7 @@
                     layer.closeAll("loading");
                     if (data.code == 0) {
                         layer.closeAll('dialog');
+                        layer.msg(data.msg, {icon: 1, time: 2000});
                         reloadTable(index)
                     } else {
                         layer.msg(data.msg, {icon: 2, time: 2000});
@@ -390,6 +402,47 @@
                 }
             });
         });
+    }
+    /*批量审核*/
+    function auditAllShipping(orderId, freight) {
+        var orderIds = "";
+        var freights = "";
+        $('.auditCb').each(function () {
+            if ($(this).is(':checked')) {
+                orderIds += $(this).val() + ",";
+                freights += $(this).data("title") + ",";
+            }
+        });
+        if (orderIds != null && orderIds != "") {
+            layer.confirm('您确定要批量审核运费吗？', function (i) {
+                layer.load();
+                $.ajax({
+                    type: 'POST',
+                    url: '<%=request.getContextPath()%>/finance/auditAllShipping',
+                    dataType: 'json',
+                    data: {
+                        "orderIds": orderIds,
+                        "freights": freights
+                    },
+                    success: function (data) {
+                        layer.closeAll("loading");
+                        if (data.code == 0) {
+                            layer.closeAll('dialog');
+                            layer.msg(data.msg, {icon: 1, time: 2000});
+                            reloadTable(index)
+                        } else {
+                            layer.msg(data.msg, {icon: 2, time: 2000});
+                        }
+                    },
+                    error: function (data) {
+                        layer.closeAll("loading");
+                        layer.msg("请求错误！", {icon: 2, time: 2000});
+                    }
+                });
+            });
+        } else {
+            layer.msg("请选择审核数据！", {icon: 2, time: 2000});
+        }
     }
     function getShippingPrice(orderId, custId, companyId) {
         layer.load();
@@ -404,9 +457,11 @@
             },
             success: function (data) {
                 layer.closeAll("loading");
-                layer.msg(data.msg, {icon: 2, time: 2000});
                 if (data.code == 0) {
+                    layer.msg(data.msg, {icon: 1, time: 2000});
                     reloadTable(index)
+                } else {
+                    layer.msg(data.msg, {icon: 2, time: 2000});
                 }
             },
             error: function (data) {
@@ -437,7 +492,7 @@
                 }
             },
             error: function (data) {
-                layer.msg(data.msg, {icon: 2, time: 1000});
+                layer.msg("获取总费用请求错误！", {icon: 2, time: 1000});
             }
         });
     }

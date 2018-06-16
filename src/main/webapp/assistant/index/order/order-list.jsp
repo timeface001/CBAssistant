@@ -195,6 +195,7 @@
                 <th width="50">利润（元）</th>
                 <th width="100">货运公司</th>
                 <th width="100">国际跟踪号</th>
+                <th width="50">渠道</th>
                 <th width="50">状态</th>
                 <th width="100">创建时间</th>
                 <th width="90">操作</th>
@@ -495,6 +496,7 @@
                 {"data": "PROFIT"},
                 {"data": "TRANSPORTCOMPANY"},
                 {"data": "INTLTRACKNUM"},
+                {"data": "FULFILLMENTCHANNEL"},
                 {"data": "LOCALSTATUS"},
                 {"data": "PURCHASEDATE"},
                 {"data": "LOCALSTATUS"},
@@ -533,7 +535,7 @@
                     "visible": vis
                 },
                 {
-                    "targets": [16],
+                    "targets": [17],
                     "data": "LOCALSTATUS",
                     "render": function (data, type, full) {
                         if (data == 1) {
@@ -556,7 +558,7 @@
                     }
                 },
                 {
-                    "targets": [18],
+                    "targets": [19],
                     "data": "LOCALSTATUS",
                     "render": function (data, type, full) {
                         if (roleId == 100) {
