@@ -20,6 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.*;
 import java.util.*;
@@ -53,6 +54,7 @@ public class AmzUpload {
     }
 
 
+    @Transactional
     public void bathUploadProduct(final UploadServiceRequest sr) {
 
         new Thread(new Runnable() {
@@ -61,29 +63,47 @@ public class AmzUpload {
                 Map<String, List<ProductItemVar>> pVars = new HashMap<>();
                 UploadRequest request = new UploadRequest();
                 UploadItem item = new UploadItem();
+
+                List<UploadItem> items = new ArrayList<>();
                 System.out.println("publish product start.....");
                 Map<String, ProductAmzUpload> skuMap = new HashMap<>();
-                for (ProductAmzUpload product : sr.getProducts()) {
-                    List<ProductItemVar> vars = productSkuTypeService.selectListByProductId(product.getProductAmzId());
-                    pVars.put(product.getId(), vars);
-                    if (vars.size() == 1) {
-                        uploadSingleProductStr(product, sr.getShop(), vars, item);
-                        skuMap.put(product.getItemSku() + "-" + vars.get(0).getSku(), product);
-                    } else {
-                        uploadMutiProductStr(product, sr.getShop(), vars, item);
-                        for (ProductItemVar va : vars) {
-                            skuMap.put(product.getItemSku() + "-" + va.getSku(), product);
-                        }
-                    }
 
-                    request.setSkuMap(skuMap);
-                    //变更状态为发布中
-                    ProductAmzUpload update = new ProductAmzUpload();
-                    update.setPublishStatus(PublishStatusEnum.PROCESS.getVal());
-                    update.setId(product.getId());
-                    productAmzUploadDao.updateByPrimaryKeySelective(update);
-                    productManagerService.updateClaimProduct(PublishStatusEnum.PROCESS, product.getProductAmzId());
+                for (Map.Entry<String, UploadServiceRequest.SplitRequest> entry : sr.getLanguageList().entrySet()) {
+
+                    UploadItem languageItem = new UploadItem();
+                    for (ProductAmzUpload product : entry.getValue().getList()) {
+                        List<ProductItemVar> vars = productSkuTypeService.selectListByProductId(product.getProductAmzId());
+                        pVars.put(product.getId(), vars);
+                        UploadItem mid = new UploadItem();
+                        if (vars.size() == 1) {
+                            mid = uploadSingleProductStr(product, vars);
+                            skuMap.put(product.getItemSku() + "-" + vars.get(0).getSku(), product);
+                        } else {
+                            mid = uploadMutiProductStr(product, vars);
+                            for (ProductItemVar va : vars) {
+                                skuMap.put(product.getItemSku() + "-" + va.getSku(), product);
+                            }
+                        }
+
+                        if (mid == null) {
+                            return;
+                        }
+
+                        languageItem.setShop(entry.getValue().getShopReq());
+                        languageItem.setProductStr(mid.getProductStr());
+
+                        items.add(languageItem);
+
+                        request.setSkuMap(skuMap);
+                        //变更状态为发布中
+                        ProductAmzUpload update = new ProductAmzUpload();
+                        update.setPublishStatus(PublishStatusEnum.PROCESS.getVal());
+                        update.setId(product.getId());
+                        productAmzUploadDao.updateByPrimaryKeySelective(update);
+                        productManagerService.updateClaimProduct(PublishStatusEnum.PROCESS, product.getProductAmzId());
+                    }
                 }
+
 
                 request.setProducts(sr.getProducts());
 
@@ -91,87 +111,86 @@ public class AmzUpload {
                 try {
 
                     System.out.println("上传文本如下");
+
                     System.out.println();
-                    System.out.println(item.getProductStr());
-                    System.out.println();
-                    System.out.println(item.getImageStr());
-                    System.out.println();
+                    System.out.println(item.getImageStrHead());
                     //System.out.println(item.getPriceStr());
                     System.out.println();
-                    System.out.println(item.getInventoryStr());
+                    System.out.println(item.getInventoryStrHead());
                     System.out.println();
-                    System.out.println(item.getRelationsStr());
+                    System.out.println(item.getRelationsStrHead());
 
-                    FileInputStream productIs = new FileInputStream(FileUtils.byte2File(item.getProductStr().getBytes(), commonSet.getAmzUploadProductPath(), UUID.randomUUID() + "product_fee.txt"));
-                    FileInputStream imageIs = new FileInputStream(FileUtils.byte2File(item.getImageStr().getBytes(), commonSet.getAmzUploadProductPath(), UUID.randomUUID() + "image_fee.txt"));
-                    FileInputStream inventoryIs = new FileInputStream(FileUtils.byte2File(item.getInventoryStr().getBytes(), commonSet.getAmzUploadProductPath(), UUID.randomUUID() + "inventory_fee.txt"));
+
+                    FileInputStream imageIs = new FileInputStream(FileUtils.byte2File(item.getImageStrHead().getBytes(), commonSet.getAmzUploadProductPath(), UUID.randomUUID() + "image_fee.txt"));
+                    FileInputStream inventoryIs = new FileInputStream(FileUtils.byte2File(item.getInventoryStrHead().getBytes(), commonSet.getAmzUploadProductPath(), UUID.randomUUID() + "inventory_fee.txt"));
 
 
                     request.setShop(sr.getShop());
                     FileInputStream relationIs = null;
                     if (!item.isRelationEmpty()) {
-                        relationIs = new FileInputStream(FileUtils.byte2File(item.getRelationsStr().getBytes(), commonSet.getAmzUploadProductPath(), UUID.randomUUID() + "relations_fee.txt"));
-                    }
-
-                    ResponseDto<String> feeDto = getUploadResult(getService(sr.getShop()), getSubmitFeedRequest(productIs, sr, AmzFeeType.PRODUCT_FEED));
-
-                    if (!feeDto.isSuccess()) {
-                        for (ProductAmzUpload upload : sr.getProducts()) {
-                            ProductAmzUpload update = new ProductAmzUpload();
-                            update.setPublishStatus(PublishStatusEnum.FAILED.getVal());
-                            update.setUploadDesc(feeDto.getMsg());
-                            update.setId(upload.getId());
-                            productAmzUploadDao.updateByPrimaryKeySelective(update);
-                            productManagerService.updateClaimProduct(PublishStatusEnum.FAILED, upload.getProductAmzId());
-                        }
-                        return;
+                        relationIs = new FileInputStream(FileUtils.byte2File(item.getRelationsStrHead().getBytes(), commonSet.getAmzUploadProductPath(), UUID.randomUUID() + "relations_fee.txt"));
                     }
 
                     List<String> submitIds = new ArrayList<>();
+                    System.out.println("请求上传商品主体....");
+                    for (UploadItem item1 : items) {
+                        System.out.println();
+                        System.out.println(item1.getProductStrHead());
 
-                    System.out.println("请求fee....");
-                    System.out.println(JSON.toJSONString(feeDto));
-                    //if (feeDto.isSuccess()) {
+                        FileInputStream productIs = new FileInputStream(FileUtils.byte2File(item1.getProductStrHead().getBytes(), commonSet.getAmzUploadProductPath(), UUID.randomUUID() + "product_fee.txt"));
+                        ResponseDto<String> feeDto = getUploadResult(getService(sr.getShop()), getSubmitFeedRequest(productIs, sr, item1.getShop().getMarketIds(), AmzFeeType.PRODUCT_FEED));
+
+                        if (!feeDto.isSuccess()) {
+                            for (ProductAmzUpload upload : sr.getProducts()) {
+                                ProductAmzUpload update = new ProductAmzUpload();
+                                update.setPublishStatus(PublishStatusEnum.FAILED.getVal());
+                                update.setUploadDesc(feeDto.getMsg());
+                                update.setId(upload.getId());
+                                productAmzUploadDao.updateByPrimaryKeySelective(update);
+                                productManagerService.updateClaimProduct(PublishStatusEnum.FAILED, upload.getProductAmzId());
+                            }
+                            continue;
+                        }
+
+                        submitIds.add(feeDto.getData());
+                    }
+
+
                     try {
                         Thread.sleep(20000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-
-                    //ResponseDto mid = uploadResult(shop, feeDto.getData(), "商品主体");
-                    submitIds.add(feeDto.getData());
-
                     //if (mid.isSuccess()) {
                     System.out.println("商品主题上传成功。。。");
 
 
                     ResponseDto<String> imageDto = getUploadResult(getService(sr.getShop()), getSubmitFeedRequest(imageIs, sr, AmzFeeType.PRODUCT_IMAGES_FEED));
                     if(imageDto.getData()!=null){
-                        submitIds.add(imageDto.getData());
+                        //submitIds.add(imageDto.getData());
                     }
                     System.out.println("上传图片信息:" + imageDto.getData());
 
                     ResponseDto<String> inventoryDto = getUploadResult(getService(sr.getShop()), getSubmitFeedRequest(inventoryIs, sr, AmzFeeType.INVENTORY_FEED));
-                    submitIds.add(inventoryDto.getData());
+                    //submitIds.add(inventoryDto.getData());
                     System.out.println("上传库存信息:" + inventoryDto.getData());
 
-                    for (Map.Entry<String, List<ProductAmzUpload>> entry : sr.getExrateList().entrySet()) {
+                    for (Map.Entry<String, UploadServiceRequest.SplitRequest> entry : sr.getExrateList().entrySet()) {
                         String priceStr = "";
-                        for (ProductAmzUpload pp : entry.getValue()) {
-                            priceStr = priceStr + AmzXmlTemplate.getUploadPriceStr(pp, sr.getExrateMap().get(entry.getKey()), pVars.get(pp.getId()));
+                        for (ProductAmzUpload pp : entry.getValue().getList()) {
+                            priceStr = priceStr + AmzXmlTemplate.getUploadPriceStr(pp, entry.getValue().getShopReq(), pVars.get(pp.getId()));
                         }
                         priceStr = AmzXmlTemplate.addUploadPriceStrHead(priceStr, sr.getShop());
                         System.out.println("价格xml:" + priceStr);
                         FileInputStream priceIs = new FileInputStream(FileUtils.byte2File(priceStr.getBytes(), commonSet.getAmzUploadProductPath(), GeneralUtils.cuurentDateStr() + "price_fee.txt"));
-                        ResponseDto<String> priceDto = getUploadResult(getService(sr.getShop()), getSubmitFeedRequest(priceIs, sr, AmzFeeType.PRICING_FEED));
-                        submitIds.add(priceDto.getData());
+                        ResponseDto<String> priceDto = getUploadResult(getService(sr.getShop()), getSubmitFeedRequest(priceIs, sr, entry.getValue().getShopReq().getMarketIds(), AmzFeeType.PRICING_FEED));
+                        //submitIds.add(priceDto.getData());
                         System.out.println("上传价格信息:" + priceDto.getData());
                     }
 
                     ResponseDto<String> relationDto;
                     if (relationIs != null) {
                         relationDto = getUploadResult(getService(sr.getShop()), getSubmitFeedRequest(relationIs, sr, AmzFeeType.RELATIONSHIPS_FEED));
-                        submitIds.add(relationDto.getData());
                         System.out.println("上传关系信息:" + relationDto.getData());
                     }
 
@@ -205,13 +224,13 @@ public class AmzUpload {
         return request;
     }
 
-    private SubmitFeedRequest getSubmitFeedRequest(FileInputStream fis, UploadServiceRequest sr, List<String> marketIds, AmzFeeType type) {
+    private SubmitFeedRequest getSubmitFeedRequest(FileInputStream fis, UploadServiceRequest sr, Set<String> marketIds, AmzFeeType type) {
 
         SubmitFeedRequest request = getRequest(sr.getShop(), type);
         try {
             request.setFeedContent(fis);
             request.setContentMD5(MD5.computeContentMD5HeaderValue(fis));
-            request.setMarketplaceIdList(new IdList(marketIds));
+            request.setMarketplaceIdList(new IdList(new ArrayList<String>(marketIds)));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -516,7 +535,7 @@ public class AmzUpload {
     }
 
 
-    public void uploadSingleProductStr(final ProductAmzUpload product, final UploadServiceRequest.ShopReq shop, final List<ProductItemVar> vars, UploadItem item) {
+    public UploadItem uploadSingleProductStr(final ProductAmzUpload product, final List<ProductItemVar> vars) {
 
 
         ProductIdGen gen = productIdGenDao.selectProductIdByAmzSku(product.getItemSku() + "-" + product.getAmzSku());
@@ -529,7 +548,7 @@ public class AmzUpload {
             if (gen == null) {
                 System.out.println("UPC库中没有可用ID...");
                 breakWhileUPCReason(product);
-                return;
+                return null;
             }
 
             product.setExternalProductId(gen.getProductId());
@@ -544,18 +563,21 @@ public class AmzUpload {
         String imageStr = AmzXmlTemplate.getUploadImageStr(product, commonSet.getProductImagePath(), vars);
         //dto = getUploadResult(getService(shop), getSubmitFeedRequest(productIs, shop, AmzFeeType.PRODUCT_FEED));
 
+        UploadItem item = new UploadItem();
         item.setImageStr(imageStr);
-        //item.setPriceStr(priceStr);
         item.setInventoryStr(inventoryStr);
         item.setProductStr(productStr);
+        item.setRelationsStr("");
 
         productIdGenDao.updateUsed(product.getExternalProductIdType(), product.getId(), product.getExternalProductId(), product.getItemSku() + "-" + product.getAmzSku());
 
 
+        return item;
     }
 
-    public void uploadMutiProductStr(ProductAmzUpload product, UploadServiceRequest.ShopReq shop, List<ProductItemVar> vars, UploadItem uploadItem) {
+    public UploadItem uploadMutiProductStr(ProductAmzUpload product, List<ProductItemVar> vars) {
 
+        UploadItem uploadItem = new UploadItem();
         String inventoryIs = AmzXmlTemplate.getUploadInventoryStr(product, vars);
         //String priceIs = AmzXmlTemplate.getUploadPriceStr(product, shop, vars);
         String imIs = AmzXmlTemplate.getUploadImageStr(product, commonSet.getProductImagePath(), vars);
@@ -565,9 +587,6 @@ public class AmzUpload {
         //uploadItem.setPriceStr(priceIs);
         uploadItem.setImageStr(imIs);
         uploadItem.setRelationsStr(relations);
-
-        List<ResponseDto> resList = new ArrayList<>();
-
 
         System.out.println("start to upload muti product......");
         String name = product.getItemName();
@@ -590,7 +609,7 @@ public class AmzUpload {
                         gen = productIdGenDao.selectProductIdForUseOne(null, product.getUserId());
                         if (gen == null) {
                             breakWhileUPCReason(product);
-                            return;
+                            return null;
                         }
                         product.setExternalProductId(gen.getProductId());
                         product.setExternalProductIdType(gen.getType());
@@ -619,6 +638,7 @@ public class AmzUpload {
 
         product.setItemName(name);
 
+        return uploadItem;
     }
 
 

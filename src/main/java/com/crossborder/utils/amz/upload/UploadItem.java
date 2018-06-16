@@ -20,7 +20,7 @@ public class UploadItem {
         this.shop = shop;
     }
 
-    public String getProductStr() {
+    public String getProductStrHead() {
         return AmzXmlTemplate.addUploadProductStrHead(productStr, getShop());
         //return productStr;
     }
@@ -29,7 +29,7 @@ public class UploadItem {
         this.productStr = this.productStr + productStr;
     }
 
-    public String getImageStr() {
+    public String getImageStrHead() {
         return AmzXmlTemplate.addUploadImageStrHead(imageStr, getShop());
     }
 
@@ -45,7 +45,7 @@ public class UploadItem {
         this.priceStr = this.priceStr + priceStr;
     }
 
-    public String getInventoryStr() {
+    public String getInventoryStrHead() {
         return AmzXmlTemplate.addUploadInventoryStrHead(inventoryStr, getShop());
     }
 
@@ -57,12 +57,28 @@ public class UploadItem {
         return StringUtils.isEmpty(this.relationsStr);
     }
 
-    public String getRelationsStr() {
+    public String getRelationsStrHead() {
         return AmzXmlTemplate.addUploadRelationsStrHead(relationsStr, getShop());
     }
 
     public void setRelationsStr(String relationsStr) {
         this.relationsStr = this.relationsStr + relationsStr;
+    }
+
+    public String getProductStr() {
+        return productStr;
+    }
+
+    public String getImageStr() {
+        return imageStr;
+    }
+
+    public String getInventoryStr() {
+        return inventoryStr;
+    }
+
+    public String getRelationsStr() {
+        return relationsStr;
     }
 
     public UploadItem() {
