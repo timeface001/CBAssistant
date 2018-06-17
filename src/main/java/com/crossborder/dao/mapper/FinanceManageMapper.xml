@@ -20,7 +20,7 @@
             AND t1.STATUS = #{status,jdbcType=VARCHAR}
         </if>
         <if test="intlTrackNum !=null and intlTrackNum !=''">
-            AND t1.INTLTRACKNUM LIKE '%${intlTrackNum}%'
+            AND t1.TRACKNUMBER LIKE '%${intlTrackNum}%'
         </if>
         <if test="transportCompany !=null and transportCompany !=''">
             AND t1.TRANS_COMPANY_ID = #{transportCompany,jdbcType=VARCHAR}
@@ -64,14 +64,8 @@
         nvl(trunc(sum(t1.freight),2),0) totalfreight
         FROM T_ORDER_SHIPMENT t1
         WHERE 1=1
-        <if test="amazonOrderId !=null and amazonOrderId !=''">
-            AND t1.ORDER_ID = #{amazonOrderId,jdbcType=VARCHAR}
-        </if>
         <if test="status !=null and status !=''">
             AND t1.STATUS = #{status,jdbcType=VARCHAR}
-        </if>
-        <if test="intlTrackNum !=null and intlTrackNum !=''">
-            AND t1.INTLTRACKNUM LIKE '%${intlTrackNum}%'
         </if>
         <if test="transportCompany !=null and transportCompany !=''">
             AND t1.TRANS_COMPANY_ID = #{transportCompany,jdbcType=VARCHAR}

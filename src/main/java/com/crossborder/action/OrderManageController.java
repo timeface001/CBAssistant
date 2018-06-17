@@ -26,6 +26,7 @@ import com.crossborder.entity.LocalOrder;
 import com.crossborder.entity.LocalOrderItem;
 import com.crossborder.service.OrderManageService;
 import com.crossborder.service.ShopManageService;
+import com.crossborder.utils.MD5;
 import com.crossborder.utils.Tools;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -37,8 +38,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -145,7 +145,11 @@ public class OrderManageController {
                 localOrder.setNumberOfItemsUnshipped(order.getNumberOfItemsUnshipped());
                 localOrder.setBuyerCounty(order.getShippingAddress().getCountryCode());
                 localOrder.setBuyerName(order.getBuyerName());
-                localOrder.setFulfillmentChannel(order.getFulfillmentChannel());
+                if (order.getFulfillmentChannel().equals("MFN")) {
+                    localOrder.setFulfillmentChannel("FBM");
+                } else {
+                    localOrder.setFulfillmentChannel("FBA");
+                }
                 localOrder.setMarketplaceId(order.getMarketplaceId());
                 localOrder.setPaymentMethod(order.getPaymentMethod());
                 localOrder.setSalesMan(user.get("USER_ID").toString());
@@ -222,25 +226,26 @@ public class OrderManageController {
         return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
-    public void updateOrderStatus(String amazonOrderId, Map<String, Object> shop) {
-        MarketplaceWebServiceConfig config = new MarketplaceWebServiceConfig();
-        config.setServiceURL(shop.get("ENDPOINT").toString());
-        MarketplaceWebServiceClient client = new MarketplaceWebServiceClient(shop.get("ACCESSKEY_ID").toString(), shop.get("SECRET_KEY").toString(), "", "", config);
-        SubmitFeedRequest request = new SubmitFeedRequest();
-        IdList idList = new IdList();
-        List<String> ids = new ArrayList<>();
-        ids.add(shop.get("MARKETPLACEID").toString());
-        idList.setId(ids);
-        request.setMarketplaceIdList(idList);
-        request.setMerchant(shop.get("MERCHANT_ID").toString());
-        request.setFeedContent(new InputStream() {
-            @Override
-            public int read() throws IOException {
-                return 0;
-            }
-        });
-        request.setFeedType(Order_Fulfillment_Fee);
-        request.setContentMD5("");
+    public void updateOrderStatus(Map<String, Object> shop) {
+        String FULFILLMENT = "";
+        try {
+            FileInputStream fis = new FileInputStream(FULFILLMENT);
+            MarketplaceWebServiceConfig config = new MarketplaceWebServiceConfig();
+            config.setServiceURL(shop.get("ENDPOINT").toString());
+            MarketplaceWebServiceClient client = new MarketplaceWebServiceClient(shop.get("ACCESSKEY_ID").toString(), shop.get("SECRET_KEY").toString(), "", "", config);
+            SubmitFeedRequest request = new SubmitFeedRequest();
+            IdList idList = new IdList();
+            List<String> ids = new ArrayList<>();
+            ids.add(shop.get("MARKETPLACEID").toString());
+            idList.setId(ids);
+            request.setMarketplaceIdList(idList);
+            request.setMerchant(shop.get("MERCHANT_ID").toString());
+            request.setFeedContent(fis);
+            request.setFeedType(Order_Fulfillment_Fee);
+            request.setContentMD5(MD5.computeContentMD5HeaderValue(fis));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public List<FeeComponent> getOrderItemFees(Map<String, Object> shop, String amazonOrderId) {
