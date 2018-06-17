@@ -182,7 +182,7 @@ public class AmzUpload {
                         }
                         priceStr = AmzXmlTemplate.addUploadPriceStrHead(priceStr, sr.getShop());
                         System.out.println("价格xml:" + priceStr);
-                        FileInputStream priceIs = new FileInputStream(FileUtils.byte2File(priceStr.getBytes(), commonSet.getAmzUploadProductPath(), GeneralUtils.cuurentDateStr() + "price_fee.txt"));
+                        FileInputStream priceIs = new FileInputStream(FileUtils.byte2File(priceStr.getBytes(), commonSet.getAmzUploadProductPath(), UUID.randomUUID() + "price_fee.txt"));
                         ResponseDto<String> priceDto = getUploadResult(getService(sr.getShop()), getSubmitFeedRequest(priceIs, sr, entry.getValue().getShopReq().getMarketIds(), AmzFeeType.PRICING_FEED));
                         //submitIds.add(priceDto.getData());
                         System.out.println("上传价格信息:" + priceDto.getData());

@@ -175,7 +175,7 @@ public class GeneralUtils {
     }
 
     public static void main(String[] args) {
-        System.out.println(removeAttr("<p align=\"left\">"));
+        System.out.println(removeAttr(" <b><span>Reverse umbrella is really good</b><p></p> "));
     }
 
     public static String removeAttr(String str) {
@@ -191,6 +191,10 @@ public class GeneralUtils {
         str = deleteAttr("align", str);
         //str = str.replace("<span>", "").replace("</span>", "");
         str=filterHtml(str,"<\\s*span\\s+([^>]*)\\s*>");
+        str=filterHtml(str,"</span>");
+        str=filterHtml(str,"<span>");
+        str=filterHtml(str,"</div>");
+        str=filterHtml(str,"<\\s*div\\s+([^>]*)\\s*>");
 
         return str;
     }

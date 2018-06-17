@@ -34,15 +34,17 @@ public class UploadServiceRequest {
             String marketId = shop.get("MARKETPLACEID").toString();
             this.marketIds.add(marketId);
 
-            ShopReq mid = initShop(shop);
-            mid.setMarketIds(new HashSet<String>(Arrays.asList(marketId)));
-            mid.setExrate(new BigDecimal(shop.get("EXRATE").toString()));
-            mid.setCurrency(key);
+
 
             if (exrateList.containsKey(key)) {
                 exrateList.get(key).add(product);
                 exrateList.get(key).getShopReq().getMarketIds().add(marketId);
             } else {
+
+                ShopReq mid = initShop(shop);
+                mid.setMarketIds(new HashSet<String>(Arrays.asList(marketId)));
+                mid.setExrate(new BigDecimal(shop.get("EXRATE").toString()));
+                mid.setCurrency(key);
 
                 exrateList.put(key, new SplitRequest(new ArrayList<ProductAmzUpload>(Arrays.asList(product)), mid));
             }
@@ -52,6 +54,9 @@ public class UploadServiceRequest {
                 languageList.get(language).add(product);
                 languageList.get(language).getShopReq().getMarketIds().add(marketId);
             } else {
+
+                ShopReq mid = initShop(shop);
+                mid.setMarketIds(new HashSet<String>(Arrays.asList(marketId)));
                 languageList.put(language, new SplitRequest(new ArrayList<ProductAmzUpload>(Arrays.asList(product)), mid));
             }
 
@@ -109,7 +114,7 @@ public class UploadServiceRequest {
         String language = shop.get("LANGUAGE").toString();
 
 
-        return language.equals(this.shop.getLanguage()) && merchantId.equals(this.shop.getMerchantId()) && accessKeyId.equals(this.shop.getAccessKey()) && secretAccessKey.equals(this.shop.getSecretKey()) && serviceUrl.equals(this.shop.getServiceUrl());
+        return merchantId.equals(this.shop.getMerchantId()) && accessKeyId.equals(this.shop.getAccessKey()) && secretAccessKey.equals(this.shop.getSecretKey()) && serviceUrl.equals(this.shop.getServiceUrl());
     }
 
 
@@ -270,6 +275,7 @@ public class UploadServiceRequest {
         public void add(ProductAmzUpload product) {
             if (list == null) {
                 list = new ArrayList<>();
+                list.add(product);
             }
 
             if (!isContains(product)) {
