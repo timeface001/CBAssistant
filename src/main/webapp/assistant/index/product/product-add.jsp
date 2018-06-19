@@ -41,9 +41,15 @@
             </div>
         </div>
         <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-3">来源：</label>
+            <label class="form-label col-xs-4 col-sm-3">产品链接：</label>
             <div class="formControls col-xs-8 col-sm-9">
                 <input type="text" class="input-text" value="" placeholder="" id="pSource" name="source" required>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3">来源：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="" placeholder="" id="sourceType" name="sourceType" required>
             </div>
         </div>
         <div class="row cl">

@@ -25,6 +25,9 @@
             <if test="userId != null and userId !=''">
                 AND a.CREATE_USER=#{userId}
             </if>
+            <if test="salesMan != null and salesMan !=''">
+                AND a.CREATE_USER=#{salesMan}
+            </if>
             <if test="companyId != null and companyId !=''">
                 AND a.CREATE_USER in (SELECT user_id from t_user_info where user_company = #{companyId})
             </if>

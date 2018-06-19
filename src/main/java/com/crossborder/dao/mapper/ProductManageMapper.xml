@@ -19,7 +19,8 @@
         P_STATE,
         PRICE,
         CREATE_USER_ID,
-        MAIN_PATH
+        MAIN_PATH,
+        SOURCE_TYPE
         )
         VALUES
         (seq_product_id.nextval,
@@ -38,7 +39,8 @@
         1,
         #{price,jdbcType=DOUBLE},
         #{createUserID,jdbcType=VARCHAR},
-        #{mainPath,jdbcType=VARCHAR}
+        #{mainPath,jdbcType=VARCHAR},
+        #{sourceType,jdbcType=VARCHAR}
         )
     </insert>
 
@@ -77,6 +79,9 @@
         </if>
         <if test="userId != null and userId !=''">
             AND a.create_user_id=#{userId}
+        </if>
+        <if test="salesMan != null and salesMan !=''">
+            AND a.create_user_id=#{salesMan}
         </if>
         <if test="companyId != null and companyId !=''">
             AND a.create_user_id in (SELECT user_id from t_user_info where user_company = #{companyId})

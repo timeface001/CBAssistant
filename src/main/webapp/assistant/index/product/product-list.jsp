@@ -1,4 +1,6 @@
 ﻿<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page isELIgnored="false" %>
 <!DOCTYPE HTML>
 <html>
 <head>
@@ -59,6 +61,16 @@
             </div>
             <input type="hidden" name="pState" id="pStatus">
         </div>
+        <div class="row cl">
+            <label class="form-label col-xs-1 col-sm-1">创建人：</label>
+            <div class="formControls col-xs-2 col-sm-2">
+                <select id="salesMan" name="salesMan" class="select" style="height: 32px">
+                    <option value="">请选择</option>
+                </select>
+            </div>
+            <input id="roleId" type="hidden" value="${sessionScope.user.ROLE_ID}">
+            <input id="companyId" type="hidden" value="${sessionScope.user.USER_COMPANY}">
+        </div>
     </form>
     <div class="mt-10">
         <div id="btn-div" class="row text-c">
@@ -87,7 +99,8 @@
                 <th width="25"><input type="checkbox" value="" name=""></th>
                 <th width="80">序号</th>
                 <th width="100">产品图</th>
-                <th width="100">来源</th>
+                <th width="100">产品链接</th>
+                <th width="50">来源</th>
                 <th width="150">标题</th>
                 <th width="150">分类</th>
                 <th width="150">描述</th>
@@ -113,13 +126,25 @@
 <script type="text/javascript" src="<%=request.getContextPath()%>/assistant/lib/laypage/1.2/laypage.js"></script>
 <script type="text/javascript">
     var productTable = null;
+    var roleId = $("#roleId").val();
+    var companyId = $("#companyId").val();
     $(function () {
+        if (roleId == 100 || roleId == 200) {
+            initSalesSelect("all");
+        } else if (roleId == 400) {
+            $("#localStatus").val(2);
+            initSalesSelect("all");
+        } else if (roleId == 500) {
+            initSalesSelect("owner");
+        } else if (roleId == 600) {
+            $("#salesMan").empty();
+            $("#salesMan").append($("<option value='${sessionScope.user.USER_ID}'>${sessionScope.user.USER_NAME}</option>"));
+        }
         var sd = new Date();
         sd.setDate(sd.getDate() - 6);
         $("#logmin").val(sd.format("yyyy-MM-dd"));
         $("#logmax").val(new Date().format("yyyy-MM-dd"));
         productTable = initializeTable();
-        initSelect();
     });
     $("#search").click(function () {
         productTable.ajax.reload();
@@ -136,8 +161,48 @@
         });
         layer.full(index);
     }
-    function initSelect() {
-
+    function initSalesSelect(type) {
+        if (type == "all") {
+            $.ajax({
+                type: 'POST',
+                url: '<%=request.getContextPath()%>/common/getList',
+                dataType: 'json',
+                data: {
+                    "code": "users"
+                },
+                success: function (data) {
+                    if (data.code == 0) {
+                        var data = data.data;
+                        for (var i = 0; i < data.length; i++) {
+                            $("#salesMan").append($('<option value=' + data[i].USER_ID + '>' + data[i].USER_NAME + '</option>'));
+                        }
+                    }
+                },
+                error: function (data) {
+                    layer.msg(data.msg, {icon: 2, time: 1000});
+                }
+            });
+        } else {
+            $.ajax({
+                type: 'POST',
+                url: '<%=request.getContextPath()%>/system/selectUsers',
+                dataType: 'json',
+                data: {
+                    "companyId": companyId
+                },
+                success: function (data) {
+                    if (data.code == 0) {
+                        var data = data.data;
+                        for (var i = 0; i < data.length; i++) {
+                            $("#salesMan").append($('<option value=' + data[i].USER_ID + '>' + data[i].USER_NAME + '</option>'));
+                        }
+                    }
+                },
+                error: function (data) {
+                    layer.msg(data.msg, {icon: 2, time: 1000});
+                }
+            });
+        }
     }
     /*查询订单*/
     function reloadTable(id) {
@@ -190,6 +255,11 @@
                 },
                 {
                     "data": function (val) {
+                        return val.SOURCE_TYPE == null ? "" : "<a target='_blank' href='" + val.SOURCE_TYPE + "'>" + val.SOURCE_TYPE + "</a>";
+                    }
+                },
+                {
+                    "data": function (val) {
                         return val.NAME == null ? "" : val.NAME;
                     }
                 },
@@ -233,12 +303,12 @@
                     }
                 },
                 {
-                    "targets": [6],
+                    "targets": [7],
                     "data": "INFO",
                     "visible": false
                 },
                 {
-                    "targets": [11],
+                    "targets": [12],
                     "data": "ID",
                     "render": function (data, type, full) {
                         return ( full.P_STATE == "1" ? "<a style='text-decoration:none' title='认领'  onClick=\"claimProduct('" + full.ID + "')\"')>认领</a>" +
@@ -271,15 +341,6 @@
             }
         });
         return table;
-    }
-    /*打开订单详情页*/
-    function toDetail(amazonOrderId) {
-        var index = layer.open({
-            type: 2,
-            title: '订单详情',
-            content: 'order-Detail.jsp?amazonOrderId=' + amazonOrderId
-        });
-        layer.full(index);
     }
 
     function editProduct(id) {
@@ -319,7 +380,7 @@
                         setTimeout(function () {
                             document.getElementById("refresh").click();
                         }, 1000);
-                    }else{
+                    } else {
                         layer.msg(data.msg, {icon: 5, time: 1000});
                     }
                 },

@@ -1,4 +1,6 @@
 ﻿<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page isELIgnored="false" %>
 <!DOCTYPE HTML>
 <html>
 <head>
@@ -67,8 +69,14 @@
                     <option value="0">未加入</option>
                 </select>
             </div>
-
-
+            <label class="form-label col-xs-1 col-sm-1">创建人：</label>
+            <div class="formControls col-xs-2 col-sm-2">
+                <select id="salesMan" name="salesMan" class="select" style="height: 32px">
+                    <option value="">请选择</option>
+                </select>
+            </div>
+            <input id="roleId" type="hidden" value="${sessionScope.user.ROLE_ID}">
+            <input id="companyId" type="hidden" value="${sessionScope.user.USER_COMPANY}">
         </div>
     </form>
     <div class="mt-20">
@@ -119,13 +127,25 @@
 <script type="text/javascript" src="<%=request.getContextPath()%>/assistant/lib/laypage/1.2/laypage.js"></script>
 <script type="text/javascript">
     var productTable = null;
+    var roleId = $("#roleId").val();
+    var companyId = $("#companyId").val();
     $(function () {
+        if (roleId == 100 || roleId == 200) {
+            initSalesSelect("all");
+        } else if (roleId == 400) {
+            $("#localStatus").val(2);
+            initSalesSelect("all");
+        } else if (roleId == 500) {
+            initSalesSelect("owner");
+        } else if (roleId == 600) {
+            $("#salesMan").empty();
+            $("#salesMan").append($("<option value='${sessionScope.user.USER_ID}'>${sessionScope.user.USER_NAME}</option>"));
+        }
         var sd = new Date();
         sd.setDate(sd.getDate() - 6);
         $("#logmin").val(sd.format("yyyy-MM-dd"));
         $("#logmax").val(new Date().format("yyyy-MM-dd"));
         productTable = initializeTable();
-        initSelect();
     });
     $("#search").click(function () {
         productTable.ajax.reload();
@@ -134,17 +154,56 @@
     function addProduct(title, url, w) {
         layer_show(title, url, w);
     }
-    function initSelect() {
-
+    function initSalesSelect(type) {
+        if (type == "all") {
+            $.ajax({
+                type: 'POST',
+                url: '<%=request.getContextPath()%>/common/getList',
+                dataType: 'json',
+                data: {
+                    "code": "users"
+                },
+                success: function (data) {
+                    if (data.code == 0) {
+                        var data = data.data;
+                        for (var i = 0; i < data.length; i++) {
+                            $("#salesMan").append($('<option value=' + data[i].USER_ID + '>' + data[i].USER_NAME + '</option>'));
+                        }
+                    }
+                },
+                error: function (data) {
+                    layer.msg(data.msg, {icon: 2, time: 1000});
+                }
+            });
+        } else {
+            $.ajax({
+                type: 'POST',
+                url: '<%=request.getContextPath()%>/system/selectUsers',
+                dataType: 'json',
+                data: {
+                    "companyId": companyId
+                },
+                success: function (data) {
+                    if (data.code == 0) {
+                        var data = data.data;
+                        for (var i = 0; i < data.length; i++) {
+                            $("#salesMan").append($('<option value=' + data[i].USER_ID + '>' + data[i].USER_NAME + '</option>'));
+                        }
+                    }
+                },
+                error: function (data) {
+                    layer.msg(data.msg, {icon: 2, time: 1000});
+                }
+            });
+        }
     }
-    /*查询订单*/
+    /*查询产品*/
     function reloadTable(id) {
         if (id == 0) {
             document.getElementById('pStatus').value = "";
         } else {
             $("#pStatus").val(id);
         }
-
         productTable.ajax.reload();
         var btnDiv = document.getElementById("btn-div");
         var btns = btnDiv.getElementsByTagName("a");
