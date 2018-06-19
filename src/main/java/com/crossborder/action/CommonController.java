@@ -410,6 +410,7 @@ public class CommonController {
                 paramMap.put("intlTrackNum", _addOrder__return.getOrderCode());
                 paramMap.put("transportCompany", jsonObject.getString("transportCompany"));
                 orderManageService.updateOrder(paramMap);
+                orderManageService.updateOrderItem(paramMap);
                 insertOperationLog(amazonOrderId, "2", "4", user.get("USER_ID").toString(), "");
                 Map<String, Object> shipMap = new HashMap<>();
                 shipMap.put("amazonOrderId", amazonOrderId);
@@ -480,6 +481,7 @@ public class CommonController {
                 paramMap.put("intlTrackNum", resultObject.getJSONArray("Item").getJSONObject(0).getString("WayBillNumber"));
                 paramMap.put("transportCompany", jsonObject.getString("transportCompany"));
                 orderManageService.updateOrder(paramMap);
+                orderManageService.updateOrderItem(paramMap);
                 insertOperationLog(amazonOrderId, "2", "4", user.get("USER_ID").toString(), "");
                 Map<String, Object> shipMap = new HashMap<>();
                 shipMap.put("amazonOrderId", amazonOrderId);

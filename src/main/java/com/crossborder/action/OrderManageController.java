@@ -7,10 +7,10 @@ import com.amazon.mws.finances._2015_05_01.MWSFinancesServiceConfig;
 import com.amazon.mws.finances._2015_05_01.model.FeeComponent;
 import com.amazon.mws.finances._2015_05_01.model.FinancialEvents;
 import com.amazon.mws.finances._2015_05_01.model.ListFinancialEventsRequest;
+import com.amazonaws.mws.MarketplaceWebService;
 import com.amazonaws.mws.MarketplaceWebServiceClient;
 import com.amazonaws.mws.MarketplaceWebServiceConfig;
-import com.amazonaws.mws.model.IdList;
-import com.amazonaws.mws.model.SubmitFeedRequest;
+import com.amazonaws.mws.model.*;
 import com.amazonservices.mws.orders._2013_09_01.MarketplaceWebServiceOrders;
 import com.amazonservices.mws.orders._2013_09_01.MarketplaceWebServiceOrdersClient;
 import com.amazonservices.mws.orders._2013_09_01.MarketplaceWebServiceOrdersConfig;
@@ -38,7 +38,9 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -104,6 +106,7 @@ public class OrderManageController {
                 request.setOrderStatus(orderStatus);
                 result = getListOrders(client, request, user, shop);
             }
+            updateOrderStatusTest();
             return result;
         } else {
             Map<String, Object> map = new HashMap<>();
@@ -120,6 +123,7 @@ public class OrderManageController {
         try {
             ListOrdersResponse response = client.listOrders(request);
             List<Order> orderList = response.getListOrdersResult().getOrders();
+            List<LocalOrder> localOrderList = new ArrayList<>();
             int count = 0;
             for (int i = 0; i < orderList.size(); i++) {
                 Order order = orderList.get(i);
@@ -176,9 +180,10 @@ public class OrderManageController {
                 orderManageService.insertAddress(addressInfo);
                 //获取订单详情
                 List<OrderItem> orderItemList = getOrderItem(order.getAmazonOrderId(), shop);
+                List<LocalOrderItem> localOrderItemList = new ArrayList<>();
                 for (int j = 0; j < orderItemList.size(); j++) {
                     OrderItem orderItem = orderItemList.get(j);
-                    //Product product = getProduct(orderItem, shop);
+                    /*Product product = getProduct(orderItem, shop);*/
                     LocalOrderItem localOrderItem = new LocalOrderItem();
                     /*for (Object obj : product.getAttributeSets().getAny()) {
                         Node nd = (Node) obj;
@@ -212,9 +217,15 @@ public class OrderManageController {
                     localOrderItem.setCost(0);
                     localOrderItem.setRefundment(0);
                     localOrderItem.setTitle(orderItem.getTitle());
+                    localOrderItemList.add(localOrderItem);
                     orderManageService.insertOrderItem(localOrderItem);
                 }
+                localOrder.setLocalOrderItemList(localOrderItemList);
+                localOrderList.add(localOrder);
             }
+            /*if (localOrderList.size() > 0) {
+                updateOrderStatus(localOrderList,shop);
+            }*/
             map.put("count", orderList.size());
             map.put("code", "0");
             map.put("msg", "下载成功");
@@ -226,13 +237,49 @@ public class OrderManageController {
         return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
-    public void updateOrderStatus(Map<String, Object> shop) {
-        String FULFILLMENT = "";
+    public void updateOrderStatus(List<LocalOrder> localOrderList, Map<String, Object> shop) {
         try {
-            FileInputStream fis = new FileInputStream(FULFILLMENT);
+            GregorianCalendar cal = new GregorianCalendar();
+            cal.setTime(new Date());
+            String header = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+                    "<AmazonEnvelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"amznenvelope.xsd\">" +
+                    "<Header>" +
+                    "<DocumentVersion>1.01</DocumentVersion>" +
+                    "<MerchantIdentifier>" + shop.get("MARKETPLACEID").toString() + "</MerchantIdentifier>" +
+                    "</Header>" +
+                    "<MessageType>OrderFulfillment</MessageType>";
+            String message = "";
+            for (int i = 0; i < localOrderList.size(); i++) {
+                message = message + "<Message>" +
+                        "<MessageID>" + (i + 1) + "</MessageID>" +
+                        "<OrderFulfillment>" +
+                        "<MerchantOrderID>" + localOrderList.get(i).getAmazonOrderId() + "</MerchantOrderID>" +
+                        "<MerchantFulfillmentID>" + new Date().getTime() + "</MerchantFulfillmentID>" +
+                        "<FulfillmentDate>" + DatatypeFactory.newInstance().newXMLGregorianCalendar(cal) + "</FulfillmentDate>" +
+                        "<FulfillmentData>" +
+                        "<CarrierCode>Yun Express</CarrierCode>" +
+                        "<ShippingMethod>SMT-XSA-F</ShippingMethod>" +
+                        "<ShipperTrackingNumber>" + Tools.createIntlTrackNum() + "</ShipperTrackingNumber>" +
+                        "</FulfillmentData>" +
+                        "<Item>" +
+                        "<MerchantOrderItemID>" + localOrderList.get(i).getLocalOrderItemList().get(0).getOrderItemId() + "</MerchantOrderItemID>" +
+                        "<MerchantFulfillmentItemID>" + new Date().getTime() + "</MerchantFulfillmentItemID>" +
+                        "<Quantity>" + localOrderList.get(i).getLocalOrderItemList().get(0).getQuantityShipped() + "</Quantity>" +
+                        "</Item>" +
+                        "</OrderFulfillment>" +
+                        "</Message>";
+            }
+            String end = "</AmazonEnvelope>";
+            StringBuffer stringBuffer = new StringBuffer();
+            String fulfillmentXml = stringBuffer.append(header).append(message).append(end).toString();
+            FileWriter writer = new FileWriter("d:/home/test.txt");
+            writer.write(fulfillmentXml);
+            writer.flush();
+            writer.close();
+            FileInputStream fis = new FileInputStream(new File("d:/home/test.txt"));
             MarketplaceWebServiceConfig config = new MarketplaceWebServiceConfig();
             config.setServiceURL(shop.get("ENDPOINT").toString());
-            MarketplaceWebServiceClient client = new MarketplaceWebServiceClient(shop.get("ACCESSKEY_ID").toString(), shop.get("SECRET_KEY").toString(), "", "", config);
+            MarketplaceWebService service = new MarketplaceWebServiceClient(shop.get("ACCESSKEY_ID").toString(), shop.get("SECRET_KEY").toString(), "", "", config);
             SubmitFeedRequest request = new SubmitFeedRequest();
             IdList idList = new IdList();
             List<String> ids = new ArrayList<>();
@@ -243,6 +290,87 @@ public class OrderManageController {
             request.setFeedContent(fis);
             request.setFeedType(Order_Fulfillment_Fee);
             request.setContentMD5(MD5.computeContentMD5HeaderValue(fis));
+            SubmitFeedResponse response = service.submitFeed(request);
+            if (response.isSetSubmitFeedResult()) {
+                SubmitFeedResult submitFeedResult = response
+                        .getSubmitFeedResult();
+                if (submitFeedResult.isSetFeedSubmissionInfo()) {
+                    FeedSubmissionInfo feedSubmissionInfo = submitFeedResult
+                            .getFeedSubmissionInfo();
+                    if (feedSubmissionInfo.isSetFeedSubmissionId()) {
+
+                    }
+                }
+            } else {
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateOrderStatusTest() {
+        try {
+            GregorianCalendar cal = new GregorianCalendar();
+            cal.setTime(new Date());
+            String header = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+                    "<AmazonEnvelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"amznenvelope.xsd\">" +
+                    "<Header>" +
+                    "<DocumentVersion>1.01</DocumentVersion>" +
+                    "<MerchantIdentifier>A38JYHNQ83XYNO</MerchantIdentifier>" +
+                    "</Header>" +
+                    "<MessageType>OrderFulfillment</MessageType>";
+            String message = "<Message>" +
+                    "<MessageID>1</MessageID>" +
+                    "<OrderFulfillment>" +
+                    "<AmazonOrderID>403-6887564-6894727</AmazonOrderID>" +
+                    "<FulfillmentDate>" + DatatypeFactory.newInstance().newXMLGregorianCalendar(cal) + "</FulfillmentDate>" +
+                    "<FulfillmentData>" +
+                    "<CarrierCode>Yun Express</CarrierCode>" +
+                    "<ShippingMethod>SMT-XSA-F</ShippingMethod>" +
+                    "<ShipperTrackingNumber>" + Tools.createIntlTrackNum() + "</ShipperTrackingNumber>" +
+                    "</FulfillmentData>" +
+                    "<Item>" +
+                    "<AmazonOrderItemCode>06743192371019</AmazonOrderItemCode>" +
+                    "<Quantity>1</Quantity>" +
+                    "</Item>" +
+                    "</OrderFulfillment>" +
+                    "</Message>";
+            String end = "</AmazonEnvelope>";
+            StringBuffer stringBuffer = new StringBuffer();
+            String fulfillmentXml = stringBuffer.append(header).append(message).append(end).toString();
+            FileWriter writer = new FileWriter("d:/home/test.txt");
+            writer.write(fulfillmentXml);
+            writer.flush();
+            writer.close();
+            FileInputStream fis = new FileInputStream(new File("d:/home/test.txt"));
+            MarketplaceWebServiceConfig config = new MarketplaceWebServiceConfig();
+            config.setServiceURL("https://mws-eu.amazonservices.com");
+            MarketplaceWebService service = new MarketplaceWebServiceClient("AKIAID6IAW2WZTGHFZKQ", "6CB0q8aTXwwjTUIee2p6cJNsHsIoHr6DIb0ajxt2", "", "", config);
+            SubmitFeedRequest request = new SubmitFeedRequest();
+            IdList idList = new IdList();
+            List<String> ids = new ArrayList<>();
+            ids.add("A13V1IB3VIYZZH");
+            idList.setId(ids);
+            request.setMarketplaceIdList(idList);
+            request.setMerchant("A38JYHNQ83XYNO");
+            request.setFeedContent(fis);
+            request.setFeedType(Order_Fulfillment_Fee);
+            request.setContentMD5(MD5.computeContentMD5HeaderValue(fis));
+            SubmitFeedResponse response = service.submitFeed(request);
+            if (response.isSetSubmitFeedResult()) {
+                SubmitFeedResult submitFeedResult = response
+                        .getSubmitFeedResult();
+                if (submitFeedResult.isSetFeedSubmissionInfo()) {
+                    FeedSubmissionInfo feedSubmissionInfo = submitFeedResult
+                            .getFeedSubmissionInfo();
+                    if (feedSubmissionInfo.isSetFeedSubmissionId()) {
+
+                    }
+                }
+            } else {
+
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -277,7 +405,7 @@ public class OrderManageController {
 
     public Product getProduct(OrderItem orderItem, Map<String, Object> shop) {
         MarketplaceWebServiceProductsConfig config = new MarketplaceWebServiceProductsConfig();
-        config.setServiceURL(shop.get("ENDPOINT").toString());
+        config.setServiceURL(shop.get("ENDPOINT").toString() + "/Products/2011-10-01");
         MarketplaceWebServiceProductsClient client = new MarketplaceWebServiceProductsClient(shop.get("ACCESSKEY_ID").toString(), shop.get("SECRET_KEY").toString(), config);
         GetMatchingProductForIdRequest request = new GetMatchingProductForIdRequest();
         request.setSellerId(shop.get("MERCHANT_ID").toString());

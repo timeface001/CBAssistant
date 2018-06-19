@@ -92,7 +92,7 @@
                                                                       autocomplete="off" class="layui-input"
                                                                       maxlength="600"></div>
                         <div class="layui-tab-item"><input type="text" id="itemUk" name="itemUk"
-                                                           value="${product.itemUk}"
+                                                           value="<c:out value='${product.itemUk}'/>"
                                                            lay-verify="required" placeholder="" autocomplete="off"
                                                            class="layui-input" maxlength="1800"></div>
                         <div class="layui-tab-item"><input type="text" name="itemJp" value="${product.itemJp}"
@@ -183,13 +183,13 @@
                 <label class="layui-form-label">促销时间</label>
                 <div class="layui-inline">
                     <input type="text" name="saleStartTime" id="saleStartTime"
-                           value="<fmt:formatDate value="${productVar.saleStartTime}" pattern="yyyy-MM-dd" />"
+                           value="<fmt:formatDate value="${productVar.saleStartTime}" pattern="yyyy-MM-dd"/>"
                            placeholder="" autocomplete="off" class="layui-input">
                 </div>
                 -
                 <div class="layui-inline">
                     <input type="text" name="saleEndTime" id="saleEndTime"
-                           value="<fmt:formatDate value="${productVar.saleEndTime}" pattern="yyyy-MM-dd" />"
+                           value="<fmt:formatDate value="${productVar.saleEndTime}" pattern="yyyy-MM-dd"/>"
                            placeholder="" autocomplete="off" class="layui-input">
                 </div>
             </div>
@@ -237,40 +237,40 @@
                     </ul>
                     <div class="layui-tab-content" style="height: 320px;">
                         <div class="layui-tab-item layui-show">
-                            <textarea id="productDescriptionCn"
-                                      name="productDescriptionCn"
-                                      style="width: 100%;height: 150px"
-                                      maxlength="600">${product.productDescriptionCn}</textarea>
+    <textarea id="productDescriptionCn"
+              name="productDescriptionCn"
+              style="width: 100%;height: 150px"
+              maxlength="600">${product.productDescriptionCn}</textarea>
                         </div>
                         <div class="layui-tab-item">
-                            <textarea id="productDescriptionUk" name="productDescriptionUk"
-                                      style="width: 100%;height: 150px"
-                                      maxlength="1800">${product.productDescriptionUk}</textarea>
+    <textarea id="productDescriptionUk" name="productDescriptionUk"
+              style="width: 100%;height: 150px"
+              maxlength="1800">${product.productDescriptionUk}</textarea>
                         </div>
                         <div class="layui-tab-item ">
-                            <textarea id="productDescriptionJp" name="productDescriptionJp"
-                                      style="width: 100%;height: 140px"
-                                      maxlength="600">${product.productDescriptionJp}</textarea>
+    <textarea id="productDescriptionJp" name="productDescriptionJp"
+              style="width: 100%;height: 140px"
+              maxlength="600">${product.productDescriptionJp}</textarea>
                         </div>
                         <div class="layui-tab-item ">
-                            <textarea id="productDescriptionDe" name="productDescriptionDe"
-                                      style="width: 100%;height: 150px"
-                                      maxlength="1800">${product.productDescriptionDe}</textarea>
+    <textarea id="productDescriptionDe" name="productDescriptionDe"
+              style="width: 100%;height: 150px"
+              maxlength="1800">${product.productDescriptionDe}</textarea>
                         </div>
                         <div class="layui-tab-item ">
-                            <textarea id="productDescriptionFr" name="productDescriptionFr"
-                                      style="width: 100%;height: 150px"
-                                      maxlength="1800">${product.productDescriptionFr}</textarea>
+    <textarea id="productDescriptionFr" name="productDescriptionFr"
+              style="width: 100%;height: 150px"
+              maxlength="1800">${product.productDescriptionFr}</textarea>
                         </div>
                         <div class="layui-tab-item ">
-                            <textarea id="productDescriptionEs" name="productDescriptionEs"
-                                      style="width: 100%; height: 150px"
-                                      maxlength="1800">${product.productDescriptionEs}</textarea>
+    <textarea id="productDescriptionEs" name="productDescriptionEs"
+              style="width: 100%; height: 150px"
+              maxlength="1800">${product.productDescriptionEs}</textarea>
                         </div>
                         <div class="layui-tab-item ">
-                            <textarea id="productDescriptionIt" name="productDescriptionIt"
-                                      style="width: 100%;height: 150px"
-                                      maxlength="1800">${product.productDescriptionIt}</textarea>
+    <textarea id="productDescriptionIt" name="productDescriptionIt"
+              style="width: 100%;height: 150px"
+              maxlength="1800">${product.productDescriptionIt}</textarea>
                         </div>
                     </div>
                 </div>
@@ -295,9 +295,9 @@
                     </ul>
                     <div class="layui-tab-content" style="height: 210px;">
                         <div class="layui-tab-item layui-show" id="pointsCn">
-                                <textarea id="pointCn" style="width: 100%;height: 200px;"
-                                          placeholder="" autocomplete="off" class="layui-textarea"
-                                          maxlength="800">${pointsCn[0]}\n${pointsCn[1]}\n${pointsCn[2]}\n${pointsCn[3]}\n${pointsCn[4]}</textarea>
+    <textarea id="pointCn" style="width: 100%;height: 200px;"
+              placeholder="" autocomplete="off" class="layui-textarea"
+              maxlength="800">${pointsCn[0]}\n${pointsCn[1]}\n${pointsCn[2]}\n${pointsCn[3]}\n${pointsCn[4]}</textarea>
                             <%-- <div class="layui-inline">
                                  <input type="text" name="bulletPoint2" style="width: 600px" value="${pointsCn[1]}"
                                         placeholder="" autocomplete="off" class="layui-input"
@@ -321,9 +321,9 @@
                              </div>--%>
                         </div>
                         <div class="layui-tab-item" id="pointsUk">
-                                <textarea id="pointUk" style="width: 100%;height: 200px;"
-                                          placeholder="" autocomplete="off" class="layui-textarea"
-                                          maxlength="2500">${pointsUk[0]}\n${pointsUk[1]}\n${pointsUk[2]}\n${pointsUk[3]}\n${pointsUk[4]}</textarea>
+    <textarea id="pointUk" style="width: 100%;height: 200px;"
+              placeholder="" autocomplete="off" class="layui-textarea"
+              maxlength="2500">${pointsUk[0]}\n${pointsUk[1]}\n${pointsUk[2]}\n${pointsUk[3]}\n${pointsUk[4]}</textarea>
                             <%--<div class="layui-inline">
                                 <input type="text" name="bulletPoint2" style="width: 600px" value="${pointsUk[1]}"
                                        placeholder="" autocomplete="off" class="layui-input"
@@ -347,9 +347,9 @@
                             </div>--%>
                         </div>
                         <div class="layui-tab-item " id="pointsJp">
-                                <textarea id="pointJp" style="width: 100%;height: 200px;"
-                                          placeholder="" autocomplete="off" class="layui-textarea"
-                                          maxlength="800">${pointsJp[0]}\n${pointsJp[1]}\n${pointsJp[2]}\n${pointsJp[3]}\n${pointsJp[4]}</textarea>
+    <textarea id="pointJp" style="width: 100%;height: 200px;"
+              placeholder="" autocomplete="off" class="layui-textarea"
+              maxlength="800">${pointsJp[0]}\n${pointsJp[1]}\n${pointsJp[2]}\n${pointsJp[3]}\n${pointsJp[4]}</textarea>
                             <%--<div class="layui-inline">
                                 <input type="text" name="bulletPoint2" style="width: 600px" value="${pointsJp[1]}"
                                        placeholder="" autocomplete="off" class="layui-input"
@@ -374,9 +374,9 @@
                             </div>--%>
                         </div>
                         <div class="layui-tab-item " id="pointsDe">
-                                <textarea id="pointDe" style="width: 100%;height: 200px;"
-                                          placeholder="" autocomplete="off" class="layui-textarea"
-                                          maxlength="2500">${pointsDe[0]}\n${pointsDe[1]}\n${pointsDe[2]}\n${pointsDe[3]}\n${pointsDe[4]}</textarea>
+    <textarea id="pointDe" style="width: 100%;height: 200px;"
+              placeholder="" autocomplete="off" class="layui-textarea"
+              maxlength="2500">${pointsDe[0]}\n${pointsDe[1]}\n${pointsDe[2]}\n${pointsDe[3]}\n${pointsDe[4]}</textarea>
                             <%--<div class="layui-inline">
                                 <input type="text" name="bulletPoint2" style="width: 600px" value="${pointsDe[1]}"
                                        placeholder="" autocomplete="off" class="layui-input"
@@ -399,9 +399,9 @@
                             </div>--%>
                         </div>
                         <div class="layui-tab-item" id="pointsFr">
-                                <textarea id="pointFr" style="width: 100%;height: 200px;"
-                                          placeholder="" autocomplete="off" class="layui-textarea"
-                                          maxlength="2500">${pointsFr[0]}\n${pointsFr[1]}\n${pointsFr[2]}\n${pointsFr[3]}\n${pointsFr[4]}</textarea>
+    <textarea id="pointFr" style="width: 100%;height: 200px;"
+              placeholder="" autocomplete="off" class="layui-textarea"
+              maxlength="2500">${pointsFr[0]}\n${pointsFr[1]}\n${pointsFr[2]}\n${pointsFr[3]}\n${pointsFr[4]}</textarea>
                             <%--<div class="layui-inline">
                                 <input type="text" name="bulletPoint2" style="width: 600px" value="${pointsFr[1]}"
                                        placeholder="" autocomplete="off" class="layui-input"
@@ -426,9 +426,9 @@
                             </div>--%>
                         </div>
                         <div class="layui-tab-item" id="pointsEs">
-                                <textarea id="pointEs" style="width: 100%;height: 200px;"
-                                          placeholder="" autocomplete="off" class="layui-textarea"
-                                          maxlength="2500">${pointsEs[0]}\n${pointsEs[1]}\n${pointsEs[2]}\n${pointsEs[3]}\n${pointsEs[4]}</textarea>
+    <textarea id="pointEs" style="width: 100%;height: 200px;"
+              placeholder="" autocomplete="off" class="layui-textarea"
+              maxlength="2500">${pointsEs[0]}\n${pointsEs[1]}\n${pointsEs[2]}\n${pointsEs[3]}\n${pointsEs[4]}</textarea>
                             <%--<div class="layui-inline">
                                 <input type="text" name="bulletPoint2" style="width: 600px" value="${pointsEs[1]}"
                                        placeholder="" autocomplete="off" class="layui-input"
@@ -453,9 +453,9 @@
                             </div>--%>
                         </div>
                         <div class="layui-tab-item" id="pointsIt">
-                                <textarea id="pointIt" style="width: 100%;height: 200px;"
-                                          placeholder="" autocomplete="off" class="layui-textarea"
-                                          maxlength="2500">${pointsIt[0]}\n${pointsIt[1]}\n${pointsIt[2]}\n${pointsIt[3]}\n${pointsIt[4]}</textarea>
+    <textarea id="pointIt" style="width: 100%;height: 200px;"
+              placeholder="" autocomplete="off" class="layui-textarea"
+              maxlength="2500">${pointsIt[0]}\n${pointsIt[1]}\n${pointsIt[2]}\n${pointsIt[3]}\n${pointsIt[4]}</textarea>
                             <%--<div class="layui-inline">
                                 <input type="text" name="pointsIt1" style="width: 600px" value="${pointsIt[1]}"
                                        placeholder="" autocomplete="off" class="layui-input"
@@ -503,39 +503,39 @@
                     </ul>
                     <div class="layui-tab-content" style="height: 210px;">
                         <div class="layui-tab-item layui-show" id="keywordsCn">
-                            <textarea id="keywordCn" style="width: 100%;height: 200px;"
-                                      placeholder="" autocomplete="off" class="layui-textarea"
-                                      maxlength="80">${keywordsCn[0]}\n${keywordsCn[1]}\n${keywordsCn[2]}\n${keywordsCn[3]}\n${keywordsCn[4]}</textarea>
+    <textarea id="keywordCn" style="width: 100%;height: 200px;"
+              placeholder="" autocomplete="off" class="layui-textarea"
+              maxlength="80">${keywordsCn[0]}\n${keywordsCn[1]}\n${keywordsCn[2]}\n${keywordsCn[3]}\n${keywordsCn[4]}</textarea>
                         </div>
                         <div class="layui-tab-item" id="keywordsUk">
-                            <textarea id="keywordUk" style="width: 100%;height: 200px;"
-                                      placeholder="" autocomplete="off" class="layui-textarea"
-                                      maxlength="250">${keywordsUk[0]}\n${keywordsUk[1]}\n${keywordsUk[2]}\n${keywordsUk[3]}\n${keywordsUk[4]}</textarea>
+    <textarea id="keywordUk" style="width: 100%;height: 200px;"
+              placeholder="" autocomplete="off" class="layui-textarea"
+              maxlength="250">${keywordsUk[0]}\n${keywordsUk[1]}\n${keywordsUk[2]}\n${keywordsUk[3]}\n${keywordsUk[4]}</textarea>
                         </div>
                         <div class="layui-tab-item" id="keywordsJp">
-                            <textarea id="keywordJp" style="width: 100%;height: 200px;"
-                                      placeholder="" autocomplete="off" class="layui-textarea"
-                                      maxlength="80">${keywordsJp[0]}\n${keywordsJp[1]}\n${keywordsJp[2]}\n${keywordsJp[3]}\n${keywordsJp[4]}</textarea>
+    <textarea id="keywordJp" style="width: 100%;height: 200px;"
+              placeholder="" autocomplete="off" class="layui-textarea"
+              maxlength="80">${keywordsJp[0]}\n${keywordsJp[1]}\n${keywordsJp[2]}\n${keywordsJp[3]}\n${keywordsJp[4]}</textarea>
                         </div>
                         <div class="layui-tab-item" id="keywordsDe">
-                            <textarea id="keywordDe" style="width: 100%;height: 200px;"
-                                      placeholder="" autocomplete="off" class="layui-textarea"
-                                      maxlength="250">${keywordsDe[0]}\n${keywordsDe[1]}\n${keywordsDe[2]}\n${keywordsDe[3]}\n${keywordsDe[4]}</textarea>
+    <textarea id="keywordDe" style="width: 100%;height: 200px;"
+              placeholder="" autocomplete="off" class="layui-textarea"
+              maxlength="250">${keywordsDe[0]}\n${keywordsDe[1]}\n${keywordsDe[2]}\n${keywordsDe[3]}\n${keywordsDe[4]}</textarea>
                         </div>
                         <div class="layui-tab-item" id="keywordsFr">
-                            <textarea id="keywordFr" style="width: 100%;height: 200px;"
-                                      placeholder="" autocomplete="off" class="layui-textarea"
-                                      maxlength="250">${keywordsFr[0]}\n${keywordsFr[1]}\n${keywordsFr[2]}\n${keywordsFr[3]}\n${keywordsFr[4]}</textarea>
+    <textarea id="keywordFr" style="width: 100%;height: 200px;"
+              placeholder="" autocomplete="off" class="layui-textarea"
+              maxlength="250">${keywordsFr[0]}\n${keywordsFr[1]}\n${keywordsFr[2]}\n${keywordsFr[3]}\n${keywordsFr[4]}</textarea>
                         </div>
                         <div class="layui-tab-item" id="keywordsEs">
-                            <textarea id="keywordEs" style="width: 100%;height: 200px;"
-                                      placeholder="" autocomplete="off" class="layui-textarea"
-                                      maxlength="250">${keywordsEs[0]}\n${keywordsEs[1]}\n${keywordsEs[2]}\n${keywordsEs[3]}\n${keywordsEs[4]}</textarea>
+    <textarea id="keywordEs" style="width: 100%;height: 200px;"
+              placeholder="" autocomplete="off" class="layui-textarea"
+              maxlength="250">${keywordsEs[0]}\n${keywordsEs[1]}\n${keywordsEs[2]}\n${keywordsEs[3]}\n${keywordsEs[4]}</textarea>
                         </div>
                         <div class="layui-tab-item" id="keywordsIt">
-                            <textarea id="keywordIt" style="width: 100%;height: 200px;"
-                                      placeholder="" autocomplete="off" class="layui-textarea"
-                                      maxlength="250">${keywordsIt[0]}\n${keywordsIt[1]}\n${keywordsIt[2]}\n${keywordsIt[3]}\n${keywordsIt[4]}</textarea>
+    <textarea id="keywordIt" style="width: 100%;height: 200px;"
+              placeholder="" autocomplete="off" class="layui-textarea"
+              maxlength="250">${keywordsIt[0]}\n${keywordsIt[1]}\n${keywordsIt[2]}\n${keywordsIt[3]}\n${keywordsIt[4]}</textarea>
                         </div>
                     </div>
                 </div>
@@ -579,7 +579,7 @@
         src="<%=request.getContextPath()%>/assistant/lib/jquery.validation/1.14.0/messages_zh.js"></script>
 <script type="text/javascript" src="<%=request.getContextPath()%>/assistant/lib/layui/layui.js"></script>
 <script type="text/javascript">
-    var ukName = '${product.itemUk}';
+    /*var ukName = '${product.itemUk}';*/
     var imagePathSrc = '${product.imagePath}';
     var imagePathArr = imagePathSrc.split(',');
     var skuType = '${skuType}';
@@ -593,7 +593,7 @@
     var esedit;
     var itedit;
     $(function () {
-        $("#itemUk").val(ukName);
+        /*$("#itemUk").val(ukName);*/
         /*$('#imagePathSrc').Sortable(
          {
          accept: 'sortableitem',
@@ -601,7 +601,7 @@
          activeclass: 'sortableactive',
          hoverclass: 'sortablehover',
          opacity: 0.8,
-         /!*fx:				200,*!/
+         /!*fx: 200,*!/
          revert: true,
          floats: true,
          tolerance: 'pointer'
@@ -1151,20 +1151,20 @@
         function getTR(isSingle, first, second) {
             var sku = $("input[name='sku']").val() + "-" + (isSingle ? first : (first + "-" + second));
             return "<tr val=" + (isSingle ? first : (first + ":" + second)) + ">" +
-                    "<td><input type='hidden' class='trMainPath' /> <input type='hidden' class='trOtherPath' /> <input type='text' value='" + sku + "'  lay-verify='required'  autocomplete='off' class='layui-input'></td>" +
+                    "<td><input type='hidden' class='trMainPath' /> <input type='hidden' class='trOtherPath' /> <input type='text' value='" + sku + "' lay-verify='required' autocomplete='off' class='layui-input'></td>" +
                     (isSingle ? ("<td class='skuVarType'>" + first + "</td>") : ("<td class='skuVarType'>" + first + "</td><td class='skuVarType'>" + second + "</td>"))
                     +
-                    "<td><input type='text' lay-verify='required'  autocomplete='off' class='layui-input price'></td>" +
-                    "<td><input type='text'  autocomplete='off' class='layui-input salePrice'></td>" +
+                    "<td><input type='text' lay-verify='required' autocomplete='off' class='layui-input price'></td>" +
+                    "<td><input type='text' autocomplete='off' class='layui-input salePrice'></td>" +
                     "<td> <div class='layui-inline'>" +
-                    "<input type='text'  autocomplete='off' class='layui-input saleStart'>" +
+                    "<input type='text' autocomplete='off' class='layui-input saleStart'>" +
                     "</div>" +
                     "-" +
                     "<div class='layui-inline'>" +
                     "<input type='text' autocomplete='off' class='layui-input saleEnd'>" +
                     "</div>" +
                     "</td>" +
-                    "<td><input type='text' lay-verify='required' value='30'  autocomplete='off' class='layui-input quantity'></td>" +
+                    "<td><input type='text' lay-verify='required' value='30' autocomplete='off' class='layui-input quantity'></td>" +
                     "</tr>";
         }
 
@@ -1181,9 +1181,9 @@
             return "<col width=\"200\">" +
                     (isSingle ? ("<col width=\"100\">") : ("<col width=\"100\"><col width=\"100\">")) +
                     " <col width=\"50\">" +
-                    "  <col width=\"50\">" +
-                    "  <col width=\"300\">" +
-                    "  <col width=\"100\">";
+                    " <col width=\"50\">" +
+                    " <col width=\"300\">" +
+                    " <col width=\"100\">";
         }
 
         function getThead(desc) {
@@ -1207,7 +1207,7 @@
             }
 
             dom += "<div class=\"layui-form-item\" id='skuMutiPath' lay-filter=\"skuMutiPath\" >\n" +
-                    "            <label class=\"layui-form-label\">变种图片</label>\n" +
+                    " <label class=\"layui-form-label\">变种图片</label>\n" +
                     "</div>";
 
             dom += "<div class=\"layui-form-item\">" +
@@ -1215,7 +1215,7 @@
                     "<div class=\"layui-input-block\">" +
                     "<table class=\"layui-table\" id=\"skuTable\" lay-filter='skuTable'>" +
                     " <colgroup>" +
-                    "   </colgroup><thead></thead> <tbody>" +
+                    " </colgroup><thead></thead> <tbody>" +
                     "</tbody>" +
                     "</table>" +
                     "</div>" +
@@ -1241,28 +1241,28 @@
                     }
                 }
                 dom += "<div class=\"layui-input-block\" val=" + key.substring(1) + ">" +
-                        "    <div class='layui-inline layui-bg-gray' style='margin-top: 10px;'>变种属性    " + arr[i] + "</div>" +
-                        "            </div>" +
-                            /*"            <div class=\"layui-input-block\">\n" +
-                             "                <button id=" + id + " type=\"button\" class=\"layui-btn skuMainPath\" >\n" +
-                             "            <i class=\"layui-icon\">&#xe67c;</i>上传主图\n" +
-                             "        </button>" +
-                             "            </div>\n" +*/
+                        " <div class='layui-inline layui-bg-gray' style='margin-top: 10px;'>变种属性 " + arr[i] + "</div>" +
+                        " </div>" +
+                            /*" <div class=\"layui-input-block\">\n" +
+                             " <button id=" + id + " type=\"button\" class=\"layui-btn skuMainPath\" >\n" +
+                             " <i class=\"layui-icon\">&#xe67c;</i>上传主图\n" +
+                             " </button>" +
+                             " </div>\n" +*/
 
 
-                            /*  "            <div class=\"layui-input-block\" style='margin-top: 5px'>" +
+                            /* " <div class=\"layui-input-block\" style='margin-top: 5px'>" +
                              "<img src='http://bpic.588ku.com/element_origin_min_pic/01/47/02/12574338a640011.jpg!r650' width='100' height='90' />" +
-                             "                     </div>" +*/
+                             " </div>" +*/
 
 
-                        "            <div class=\"layui-input-block\" style='margin-top: 10px;'>\n" +
-                        "                <button type=\"button\" id=" + sid + " class=\"layui-btn skuOtherPath\"  >\n" +
-                        "            <i class=\"layui-icon\">&#xe67c;</i>上传图片\n" +
-                        "        </button>" +
-                        "            </div>" +
-                        "            <div class=\"layui-input-block\" style='margin-top: 5px;height: 110px;'>" +
+                        " <div class=\"layui-input-block\" style='margin-top: 10px;'>\n" +
+                        " <button type=\"button\" id=" + sid + " class=\"layui-btn skuOtherPath\" >\n" +
+                        " <i class=\"layui-icon\">&#xe67c;</i>上传图片\n" +
+                        " </button>" +
+                        " </div>" +
+                        " <div class=\"layui-input-block\" style='margin-top: 5px;height: 110px;'>" +
                         "<img class=\"pathDemo\" src='http://bpic.588ku.com/element_origin_min_pic/01/47/02/12574338a640011.jpg!r650' width='100' height='90' />" +
-                        "                     </div>";
+                        " </div>";
 
 
             }
@@ -1272,19 +1272,19 @@
         function getSkuItemDom(desc) {
             return "<div class='layui-form-item' >" +
                     "<div class='layui-input-block'>" +
-                    "    <div class='layui-inline' style='width: 50px;'><span>" + desc +
-                    "  </span>  :</div>" +
-                    "    <div class='layui-inline skuCheckbox'>" +
-                    "    </div>" +
+                    " <div class='layui-inline' style='width: 50px;'><span>" + desc +
+                    " </span> :</div>" +
+                    " <div class='layui-inline skuCheckbox'>" +
+                    " </div>" +
                     "</div>" +
-                    "      <div class='layui-input-block'>" +
-                    "    <div class=\"layui-input-inline\" style=\"width: 150px;\">" +
-                    "      <input type=\"text\" name=\"\" autocomplete=\"off\" class=\"layui-input\">" +
-                    "    </div>" +
-                    "   <div class=\"layui-input-inline\" style=\"width: 100px;\">" +
-                    "      <button type='button' class=\"layui-btn skuBtn\">添加</button>\n" +
-                    "    </div>" +
-                    "      </div>" +
+                    " <div class='layui-input-block'>" +
+                    " <div class=\"layui-input-inline\" style=\"width: 150px;\">" +
+                    " <input type=\"text\" name=\"\" autocomplete=\"off\" class=\"layui-input\">" +
+                    " </div>" +
+                    " <div class=\"layui-input-inline\" style=\"width: 100px;\">" +
+                    " <button type='button' class=\"layui-btn skuBtn\">添加</button>\n" +
+                    " </div>" +
+                    " </div>" +
                     "</div> " +
                     "</div>";
         }
@@ -1302,7 +1302,7 @@
                     , done: function (res) {
                         var $this = $($(this)[0].item[0]);
                         var key = $this.parent().prev().attr("val");
-                        $this.parent().next().html("<div class='sortableitem' style='width:100px;height:110px;'><img width='100px' height='90px' src=<%=session.getAttribute("productPath")%>" + res.data + " /><i class='layui-icon delImageMain' style='font-size:20px;margin-left:35px;'>&#xe640;</i>  </div>");
+                        $this.parent().next().html("<div class='sortableitem' style='width:100px;height:110px;'><img width='100px' height='90px' src=<%=session.getAttribute("productPath")%>" + res.data + " /><i class='layui-icon delImageMain' style='font-size:20px;margin-left:35px;'>&#xe640;</i> </div>");
                         $("#skuTable tbody tr").each(function (i, val) {
                             if ($(val).attr("val") == key) {
                                 $(val).find(".trMainPath").val(res.data);
