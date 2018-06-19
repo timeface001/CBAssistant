@@ -159,8 +159,8 @@ public class AmzUpload {
                         ResponseDto<String> relationDto;
                         if (!item1.isRelationEmpty()) {
                             FileInputStream relationIs = new FileInputStream(FileUtils.byte2File(item1.getRelationsStrHead().getBytes(), commonSet.getAmzUploadProductPath(), UUID.randomUUID() + "product_relationship.txt"));
-                            relationDto = getUploadResult(getService(sr.getShop()), getSubmitFeedRequest(relationIs, sr, item1.getShop().getMarketIds(), AmzFeeType.RELATIONSHIPS_FEED));
-                            System.out.println("上传关系信息:" + relationDto.getData());
+                            new UploadTask(getService(sr.getShop()), getSubmitFeedRequest(relationIs, sr, item1.getShop().getMarketIds(), AmzFeeType.RELATIONSHIPS_FEED), AmzFeeType.RELATIONSHIPS_FEED).run();
+                            //System.out.println("上传关系信息:" + relationDto.getData());
                         }
                     }
 
@@ -174,15 +174,10 @@ public class AmzUpload {
                     System.out.println("商品主题上传成功。。。");
 
 
-                    ResponseDto<String> imageDto = getUploadResult(getService(sr.getShop()), getSubmitFeedRequest(imageIs, sr, AmzFeeType.PRODUCT_IMAGES_FEED));
-                    if(imageDto.getData()!=null){
-                        //submitIds.add(imageDto.getData());
-                    }
-                    System.out.println("上传图片信息:" + imageDto.getData());
+                    new UploadTask(getService(sr.getShop()), getSubmitFeedRequest(imageIs, sr, AmzFeeType.PRODUCT_IMAGES_FEED), AmzFeeType.PRODUCT_IMAGES_FEED).run();
+                    //ResponseDto<String> imageDto = getUploadResult();
 
-                    ResponseDto<String> inventoryDto = getUploadResult(getService(sr.getShop()), getSubmitFeedRequest(inventoryIs, sr, AmzFeeType.INVENTORY_FEED));
-                    //submitIds.add(inventoryDto.getData());
-                    System.out.println("上传库存信息:" + inventoryDto.getData());
+                    //System.out.println("上传图片信息:" + imageDto.getData());
 
                     for (Map.Entry<String, UploadServiceRequest.SplitRequest> entry : sr.getExrateList().entrySet()) {
                         String priceStr = "";
@@ -192,10 +187,14 @@ public class AmzUpload {
                         priceStr = AmzXmlTemplate.addUploadPriceStrHead(priceStr, sr.getShop());
                         System.out.println("价格xml:" + priceStr);
                         FileInputStream priceIs = new FileInputStream(FileUtils.byte2File(priceStr.getBytes(), commonSet.getAmzUploadProductPath(), UUID.randomUUID() + "price_fee.txt"));
-                        ResponseDto<String> priceDto = getUploadResult(getService(sr.getShop()), getSubmitFeedRequest(priceIs, sr, entry.getValue().getShopReq().getMarketIds(), AmzFeeType.PRICING_FEED));
+                        new UploadTask(getService(sr.getShop()), getSubmitFeedRequest(priceIs, sr, entry.getValue().getShopReq().getMarketIds(), AmzFeeType.PRICING_FEED), AmzFeeType.PRICING_FEED).run();
                         //submitIds.add(priceDto.getData());
-                        System.out.println("上传价格信息:" + priceDto.getData());
+                        //System.out.println("上传价格信息:" + priceDto.getData());
                     }
+
+                    new UploadTask(getService(sr.getShop()), getSubmitFeedRequest(inventoryIs, sr, AmzFeeType.INVENTORY_FEED), AmzFeeType.INVENTORY_FEED).run();
+                    //submitIds.add(inventoryDto.getData());
+                    //System.out.println("上传库存信息:" + inventoryDto.getData());
 
 
                     request.setSubmitIds(submitIds);
@@ -688,5 +687,29 @@ public class AmzUpload {
 
         productManagerService.updateClaimProduct(PublishStatusEnum.FAILED, product.getProductAmzId());
         productAmzUploadDao.updateByPrimaryKeySelective(updateUpload);
+    }
+
+    class UploadTask implements Runnable {
+
+        private MarketplaceWebService service;
+
+        private SubmitFeedRequest request;
+
+        private AmzFeeType feeType;
+
+        @Override
+        public void run() {
+            String key = feeType.getDesc();
+            System.out.println(key + "上传接口");
+            ResponseDto dto = getUploadResult(service, request);
+
+            System.out.println(key + "submitId:" + dto.getData());
+        }
+
+        public UploadTask(MarketplaceWebService service, SubmitFeedRequest request, AmzFeeType feeType) {
+            this.service = service;
+            this.request = request;
+            this.feeType = feeType;
+        }
     }
 }

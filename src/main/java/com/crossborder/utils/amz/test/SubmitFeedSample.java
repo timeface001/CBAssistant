@@ -54,8 +54,8 @@ public class SubmitFeedSample {
          * Access Key ID and Secret Access Key ID, obtained from:
          * http://aws.amazon.com
          ***********************************************************************/
-        final String accessKeyId = "AKIAIRTMKJ3L3DNCORYQ";
-        final String secretAccessKey = "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";
+        final String accessKeyId = "AKIAJYOHHDMS3SD5C7MQ";
+        final String secretAccessKey = "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";
 
         final String appName = "";
         final String appVersion = "";
@@ -69,21 +69,21 @@ public class SubmitFeedSample {
         // US
          config.setServiceURL("https://mws-eu.amazonservices.com");
         // UK
-        // config.setServiceURL("https://mws.amazonservices.co.uk/");
+        // config.setServicDEFAULTL("https://mws.amazonservices.co.uk/");
         // Germany
-        // config.setServiceURL("https://mws.amazonservices.de/");
+        // config.setServicDEFAULTL("https://mws.amazonservices.de/");
         // France
-        // config.setServiceURL("https://mws.amazonservices.fr/");
+        // config.setServicDEFAULTL("https://mws.amazonservices.fr/");
         // Italy
-        // config.setServiceURL("https://mws.amazonservices.it/");
+        // config.setServicDEFAULTL("https://mws.amazonservices.it/");
         // Japan
-        // config.setServiceURL("https://mws.amazonservices.jp/");
+        // config.setServicDEFAULTL("https://mws.amazonservices.jp/");
         // China
-        // config.setServiceURL("https://mws.amazonservices.com.cn/");
+        // config.setServicDEFAULTL("https://mws.amazonservices.com.cn/");
         // Canada
-        // config.setServiceURL("https://mws.amazonservices.ca/");
+        // config.setServicDEFAULTL("https://mws.amazonservices.ca/");
         // India
-        // config.setServiceURL("https://mws.amazonservices.in/");
+        // config.setServicDEFAULTL("https://mws.amazonservices.in/");
 
         /************************************************************************
          * You can also try advanced configuration options. Available options are:
@@ -111,14 +111,14 @@ public class SubmitFeedSample {
          * Marketplace and Merchant IDs are required parameters for all
          * Marketplace Web Service calls.
          ***********************************************************************/
-        final String merchantId = "A21WK1ZAUBHF10";
+        final String merchantId = "APC8KTCSFWL6Q";
         final String sellerDevAuthToken = "<Merchant Developer MWS Auth Token>";
         // marketplaces to which this feed will be submitted; look at the
         // API reference document on the MWS website to see which marketplaces are
         // included if you do not specify the list yourself
         List<String> ids=new ArrayList<>();
-        ids.add("A13V1IB3VIYZZH");
-        ids.add("A1RKKUPIHCS9HS");
+        //ids.add("A13V1IB3VIYZZH");
+        ids.add("A1PA6795UKMFR9");
         final IdList marketplaces = new IdList(ids);
 
         SubmitFeedRequest request = new SubmitFeedRequest();
@@ -126,12 +126,11 @@ public class SubmitFeedSample {
         //request.setMWSAuthToken(sellerDevAuthToken);
         request.setMarketplaceIdList(marketplaces);
 
-        request.setFeedType(AmzFeeType.PRODUCT_FEED.getVal());
+        request.setFeedType(AmzFeeType.PRICING_FEED.getVal());
 
-        String text="<?xml version=\"1.0\" ?><AmazonEnvelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"amznenvelope.xsd\">\n" +
-                "<Header><DocumentVersion>1.01</DocumentVersion><MerchantIdentifier>A21WK1ZAUBHF10</MerchantIdentifier>\n" +
-                "</Header><MessageType>Product</MessageType>\n" +
-                "<PurgeAndReplace>false</PurgeAndReplace><Message><MessageID>1</MessageID><OperationType>Update</OperationType><Product><SKU>MIX-WZQQDZ-YIJIA-4</SKU><StandardProductID><Type>EAN</Type><Value>6132962188350</Value></StandardProductID><ItemPackageQuantity>30</ItemPackageQuantity><DescriptionData><Title>Batidora Portátil Blender Mini Eléctrica Para Batidos con Interruptor de un Toque y Cuchillas de Acero Inoxidable</Title><Brand>LifeEasyTool</Brand> <Description>&lt;p&gt;La licuadora está diseñada para aquellos que quieran disfrutar de batidos rápidos, fáciles y batidos, batidos y zumos sin complicaciones simplemente mezclar y listo.&lt;br&gt;El productor de jugo con dos botellas portátiles y cuchillas seguras desmontables.&lt;br&gt;También es fácil de llevar y limpiar&lt;br&gt;&lt;br&gt;Características del producto&lt;br&gt;1 El productor de jugo tiene una botella portátil, por lo que puede quitar la botella de&lt;br&gt;   el mezclador, cubra y apriete la tapa para facilitar su transporte&lt;br&gt;2 La licuadora con cuchillas desmontables, solo para echar agua sobre &lt;br&gt;   ella para limpiarla&lt;br&gt;3 Las dos botellas están hechas de vidrio y plástico de grado alimenticio, &lt;br&gt;   respectivamente&lt;br&gt;&lt;br&gt;&lt;br&gt;Cómo utilizar&lt;br&gt;1 Primero, corte las frutas y verduras en pedazos(Cuchillas convenientes para cortar) &lt;br&gt;   y ponerlos en la botella. Luego añade la cantidad apropiada de agua o leche &lt;br&gt;   (según su gusto).Pero recuerde que el jugo no debe exceder dos tercios de la &lt;br&gt;   botella,y molienda seca no más de la mitad&lt;br&gt;2 Luego, cubra la botella con tapa que con las cuchillas y apriétela&lt;br&gt;3 Por último, coloque la botella en la máquina y gírela en el sentido de las agujas del &lt;br&gt;   reloj para asegurarse la botella y el cuerpo están firmemente atascados, luego &lt;br&gt;   conecte el poder y enciende el interruptor&lt;br&gt;4 No instalado correctamente, el exprimidor no comenzará a funcionar&lt;br&gt;&lt;br&gt;Atención&lt;br&gt;Mantenga presionado el interruptor y presiónelo durante 5 segundos para detenerlo. En general,presione 3-5 veces y termine. Recuerde no presionar más de 10 segundos,de lo contrario, afectará el uso de la licuadora debido a la alta temperatura&lt;br&gt;&lt;/p&gt;</Description><BulletPoint>MEZCLAR Y IR: Blender es bueno para batidos, cubitos de hielo, jugos, batidos de frutas y suplementos alimenticios para niños</BulletPoint><BulletPoint>FUNCIONAMIENTO DE UN SOLO TOQUE: con la operación de un toque, haga que la mezcla sea rápida y simple. Pero no opere el interruptor continuamente por más de 20 segundos a la vez.</BulletPoint><BulletPoint>304 HOJA DE ACERO INOXIDABLE: Las hojas de la mezcladora están hechas de acero inoxidable 304, que es resistente a la corrosión y no es fácil de oxidar</BulletPoint><BulletPoint>FÁCIL DE LIMPIAR: Después del uso, simplemente necesita enjuagar bajo agua del grifo</BulletPoint><BulletPoint>PORTABILIDAD: El exprimidor es pequeño y fácil de transportar, no ocupa espacio. Ideal para el gimnasio, el trabajo, la escuela y el día</BulletPoint><Manufacturer>Shanney</Manufacturer><SearchTerms>mini batidora portatil pequeña</SearchTerms><SearchTerms>picadora  manual multifuncion de mano</SearchTerms><SearchTerms>trituradora electrica hielo sencilla</SearchTerms><SearchTerms>juicer sin cable</SearchTerms><SearchTerms>blender</SearchTerms><ItemType>2165624031</ItemType><IsGiftWrapAvailable>false</IsGiftWrapAvailable><IsGiftMessageAvailable>false</IsGiftMessageAvailable><RecommendedBrowseNode>2165624031</RecommendedBrowseNode></DescriptionData><ProductData><Sports><ProductType>SportingGoods</ProductType></Sports></ProductData></Product></Message></AmazonEnvelope>\n";
+        String text="<?xml version=\"1.0\" encoding=\"utf-8\" ?><AmazonEnvelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"amznenvelope.xsd\">\n" +
+                "<Header><DocumentVersion>1.01</DocumentVersion><MerchantIdentifier>APC8KTCSFWL6Q</MerchantIdentifier>\n" +
+                "</Header><MessageType>Price</MessageType><Message><MessageID>4332002</MessageID><Price><SKU>KK-1SPHBFQ7-C</SKU><StandardPrice currency=\"DEFAULT\">100.91</StandardPrice></Price></Message><Message><MessageID>4332003</MessageID><Price><SKU>KK-1SPHBFQ7-A</SKU><StandardPrice currency=\"DEFAULT\">25.91</StandardPrice></Price></Message><Message><MessageID>4332004</MessageID><Price><SKU>KK-1SPHBFQ7-B</SKU><StandardPrice currency=\"DEFAULT\">25.91</StandardPrice></Price></Message><Message><MessageID>4332005</MessageID><Price><SKU>KK-1SPHBFQ7-D</SKU><StandardPrice currency=\"DEFAULT\">25.91</StandardPrice></Price></Message><Message><MessageID>4332006</MessageID><Price><SKU>KK-1SPHBFQ7</SKU><StandardPrice currency=\"DEFAULT\">25.91</StandardPrice></Price></Message></AmazonEnvelope>";
         FileUtils.byte2File(text.getBytes(),"/Users/fengsong/Downloads/amz/","rule_chain.txt");
 
         String s="/Users/fengsong/Downloads/amz/rule_chain.txt";

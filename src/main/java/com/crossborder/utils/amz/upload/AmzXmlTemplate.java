@@ -316,14 +316,14 @@ public class AmzXmlTemplate {
                 saleStr = " <Sale>" +
                         " <StartDate>" + GeneralUtils.localToUTC(var.getSaleStartTime()) + "</StartDate>" +
                         " <EndDate>" + GeneralUtils.localToUTC(var.getSaleEndTime()) + "</EndDate>" +
-                        " <SalePrice currency='USD'>" + GeneralUtils.formatTwo(var.getSalePrice().divide(shop.getExrate(), 2, ROUND_HALF_DOWN)) + "</SalePrice>" +
+                        " <SalePrice currency='DEFAULT'>" + GeneralUtils.formatTwo(var.getSalePrice().divide(shop.getExrate(), 2, ROUND_HALF_DOWN)) + "</SalePrice>" +
                         " </Sale>";
             }
             varStr += "<Message>" +
                     "<MessageID>" + product.getId() + numFor1000(i) + "</MessageID>" +
                     "<Price>" +
                     "<SKU>" + product.getItemSku() + "-" + var.getSku() + "</SKU>" +
-                    "<StandardPrice currency='" + shop.getCurrency() + "'>" + GeneralUtils.mutiHalfTwo(var.getPrice().divide(shop.getExrate(), 2, ROUND_HALF_DOWN)) + "</StandardPrice>" +
+                    "<StandardPrice currency=\"DEFAULT\">" + GeneralUtils.mutiHalfTwo(var.getPrice().divide(shop.getExrate(), 2, ROUND_HALF_DOWN)) + "</StandardPrice>" +
                     saleStr +
                     "</Price>" +
                     "</Message>";

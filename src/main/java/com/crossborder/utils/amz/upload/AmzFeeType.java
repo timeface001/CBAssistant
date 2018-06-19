@@ -20,5 +20,26 @@ public enum AmzFeeType {
         return val;
     }
 
+    public String getDesc() {
+        if (this.val.equals(PRICING_FEED.val)) {
+            return "上传价格";
+        }
+
+        if (this.val.equals(RELATIONSHIPS_FEED.val)) {
+            return "上传关系";
+        }
+
+        if (this.val.equals(INVENTORY_FEED.val)) {
+            return "上传库存";
+        }
+
+        if (this.val.equals(PRODUCT_IMAGES_FEED.val)) {
+            return "上传图片";
+        }
+
+        return "";
+    }
+
+
 
 }
