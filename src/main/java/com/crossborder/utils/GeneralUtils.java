@@ -146,11 +146,13 @@ public class GeneralUtils {
     public static String replaceHtmlSign(String str) {
         if (org.apache.commons.lang3.StringUtils.isNotBlank(str)) {
             str=str.replace("&","&amp;");
+            str = removeAttr(str);
             return str.replace("<", "&lt;").replace(">", "&gt;");
         }
 
         return "";
     }
+
 
     public static void removeProductDescriptionAttr(ClaimProduct product) {
         if (product != null) {
@@ -175,7 +177,7 @@ public class GeneralUtils {
     }
 
     public static void main(String[] args) {
-        System.out.println(removeAttr(" <b><span>Reverse umbrella is really good</b><p></p> "));
+        System.out.println(replaceHtmlSign(" <b><span>Parapluie inversé est vraiment bon</span></span></b><p></p> "));
     }
 
     public static String removeAttr(String str) {

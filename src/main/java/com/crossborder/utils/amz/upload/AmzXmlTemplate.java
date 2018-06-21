@@ -160,7 +160,7 @@ public class AmzXmlTemplate {
         String productTypeName = StringUtils.isNotBlank(product.getProductTypeName()) ? product.getProductTypeName() : "Sports";
         String text =
                 "<Message>" +
-                "<MessageID>1</MessageID>" +
+                "<MessageID>"+product.getId()+"0"+var.getId()+"</MessageID>" +
                 "<OperationType>Update</OperationType>" +
                 "<Product>" +
                 "<SKU>" + product.getItemSku() + "-" + var.getSku() + "</SKU>" +
