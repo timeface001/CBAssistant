@@ -57,9 +57,11 @@ public class AmzUpload {
     @Transactional
     public void bathUploadProduct(final UploadServiceRequest sr) {
 
+
         new Thread(new Runnable() {
             @Override
             public void run() {
+                int i = 0;
                 Map<String, List<ProductItemVar>> pVars = new HashMap<>();
                 UploadRequest request = new UploadRequest();
                 UploadItem item = new UploadItem();
@@ -96,7 +98,7 @@ public class AmzUpload {
                         languageItem.setProductStr(mid.getProductStr());
                         languageItem.setRelationsStr(mid.getRelationsStr());
 
-                        items.add(languageItem);
+
 
                         request.setSkuMap(skuMap);
                         //变更状态为发布中
@@ -106,6 +108,7 @@ public class AmzUpload {
                         productAmzUploadDao.updateByPrimaryKeySelective(update);
                         productManagerService.updateClaimProduct(PublishStatusEnum.PROCESS, product.getProductAmzId());
                     }
+                    items.add(languageItem);
                 }
 
 
@@ -115,17 +118,6 @@ public class AmzUpload {
                 try {
 
                     System.out.println("上传文本如下");
-
-                    System.out.println();
-                    System.out.println(item.getImageStrHead());
-                    //System.out.println(item.getPriceStr());
-                    System.out.println();
-                    System.out.println(item.getInventoryStrHead());
-
-
-                    FileInputStream imageIs = new FileInputStream(FileUtils.byte2File(item.getImageStrHead().getBytes(), commonSet.getAmzUploadProductPath(), UUID.randomUUID() + "image_fee.txt"));
-                    FileInputStream inventoryIs = new FileInputStream(FileUtils.byte2File(item.getInventoryStrHead().getBytes(), commonSet.getAmzUploadProductPath(), UUID.randomUUID() + "inventory_fee.txt"));
-
 
                     request.setShop(sr.getShop());
 
@@ -138,7 +130,7 @@ public class AmzUpload {
 
                         FileInputStream productIs = new FileInputStream(FileUtils.byte2File(item1.getProductStrHead().getBytes(), commonSet.getAmzUploadProductPath(), UUID.randomUUID() + "product_fee.txt"));
                         ResponseDto<String> feeDto = getUploadResult(getService(sr.getShop()), getSubmitFeedRequest(productIs, sr, item1.getShop().getMarketIds(), AmzFeeType.PRODUCT_FEED));
-
+                        i++;
                         if (!feeDto.isSuccess()) {
                             for (ProductAmzUpload upload : sr.getProducts()) {
                                 ProductAmzUpload update = new ProductAmzUpload();
@@ -155,15 +147,6 @@ public class AmzUpload {
                         submitIds.add(feeDto.getData());
                     }
 
-                    for (UploadItem item1 : items) {
-                        ResponseDto<String> relationDto;
-                        if (!item1.isRelationEmpty()) {
-                            FileInputStream relationIs = new FileInputStream(FileUtils.byte2File(item1.getRelationsStrHead().getBytes(), commonSet.getAmzUploadProductPath(), UUID.randomUUID() + "product_relationship.txt"));
-                            new UploadTask(getService(sr.getShop()), getSubmitFeedRequest(relationIs, sr, item1.getShop().getMarketIds(), AmzFeeType.RELATIONSHIPS_FEED), AmzFeeType.RELATIONSHIPS_FEED).run();
-                            //System.out.println("上传关系信息:" + relationDto.getData());
-                        }
-                    }
-
 
                     try {
                         Thread.sleep(20000);
@@ -171,31 +154,43 @@ public class AmzUpload {
                         e.printStackTrace();
                     }
                     //if (mid.isSuccess()) {
-                    System.out.println("商品主题上传成功。。。");
+                    System.out.println("商品主题上传结束。。。");
 
-
+                    System.out.println("开始上传图片信息:");
+                    System.out.println("图片xml:" + item.getImageStrHead());
+                    FileInputStream imageIs = new FileInputStream(FileUtils.byte2File(item.getImageStrHead().getBytes(), commonSet.getAmzUploadProductPath(), UUID.randomUUID() + "image_fee.txt"));
                     new UploadTask(getService(sr.getShop()), getSubmitFeedRequest(imageIs, sr, AmzFeeType.PRODUCT_IMAGES_FEED), AmzFeeType.PRODUCT_IMAGES_FEED).run();
-                    //ResponseDto<String> imageDto = getUploadResult();
+                    i++;
 
-                    //System.out.println("上传图片信息:" + imageDto.getData());
-
+                    System.out.println("上传价格信息:");
                     for (Map.Entry<String, UploadServiceRequest.SplitRequest> entry : sr.getExrateList().entrySet()) {
                         String priceStr = "";
                         for (ProductAmzUpload pp : entry.getValue().getList()) {
                             priceStr = priceStr + AmzXmlTemplate.getUploadPriceStr(pp, entry.getValue().getShopReq(), pVars.get(pp.getId()));
                         }
                         priceStr = AmzXmlTemplate.addUploadPriceStrHead(priceStr, sr.getShop());
-                        System.out.println("价格xml:" + priceStr);
+                        System.out.println("上传价格xml:" + priceStr);
                         FileInputStream priceIs = new FileInputStream(FileUtils.byte2File(priceStr.getBytes(), commonSet.getAmzUploadProductPath(), UUID.randomUUID() + "price_fee.txt"));
                         new UploadTask(getService(sr.getShop()), getSubmitFeedRequest(priceIs, sr, entry.getValue().getShopReq().getMarketIds(), AmzFeeType.PRICING_FEED), AmzFeeType.PRICING_FEED).run();
-                        //submitIds.add(priceDto.getData());
-                        //System.out.println("上传价格信息:" + priceDto.getData());
+                        i++;
                     }
 
-                    new UploadTask(getService(sr.getShop()), getSubmitFeedRequest(inventoryIs, sr, AmzFeeType.INVENTORY_FEED), AmzFeeType.INVENTORY_FEED).run();
-                    //submitIds.add(inventoryDto.getData());
-                    //System.out.println("上传库存信息:" + inventoryDto.getData());
 
+                    System.out.println("开始上传库存xml:" + item.getInventoryStrHead());
+                    FileInputStream inventoryIs = new FileInputStream(FileUtils.byte2File(item.getInventoryStrHead().getBytes(), commonSet.getAmzUploadProductPath(), UUID.randomUUID() + "inventory_fee.txt"));
+                    new UploadTask(getService(sr.getShop()), getSubmitFeedRequest(inventoryIs, sr, AmzFeeType.INVENTORY_FEED), AmzFeeType.INVENTORY_FEED).run();
+                    i++;
+
+                    System.out.println("开始上传关系信息:");
+                    for (UploadItem item1 : items) {
+                        ResponseDto<String> relationDto;
+                        if (!item1.isRelationEmpty()) {
+                            System.out.println(item1.getRelationsStrHead());
+                            i++;
+                            FileInputStream relationIs = new FileInputStream(FileUtils.byte2File(item1.getRelationsStrHead().getBytes(), commonSet.getAmzUploadProductPath(), UUID.randomUUID() + "product_relationship.txt"));
+                            new UploadTask(getService(sr.getShop()), getSubmitFeedRequest(relationIs, sr, item1.getShop().getMarketIds(), AmzFeeType.RELATIONSHIPS_FEED), AmzFeeType.RELATIONSHIPS_FEED).run();
+                        }
+                    }
 
                     request.setSubmitIds(submitIds);
                     getFeedSubResult(request);
@@ -205,7 +200,7 @@ public class AmzUpload {
                     e.printStackTrace();
                 }
 
-                System.out.println("publish product end.....");
+                System.out.println("publish product end.....times:"+i);
 
             }
         }).start();
