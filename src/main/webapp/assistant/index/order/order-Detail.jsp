@@ -447,6 +447,13 @@
                     "visible": true
                 },
                 {
+                    "targets": [2],
+                    "data": "SMALLIMAGE",
+                    "render": function (data, type, full) {
+                        return "<img  src='" + data + "'/>";
+                    }
+                },
+                {
                     "targets": [6],
                     "data": "ITEMPRICE",
                     "visible": vis

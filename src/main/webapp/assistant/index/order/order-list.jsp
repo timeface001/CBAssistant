@@ -506,7 +506,14 @@
                     "targets": [0],
                     "data": "ID",
                     "render": function (data, type, full) {
-                        return "<a class='maincolor' href='javascript:;' onClick=\"toDetail('" + full.AMAZONORDERID + "')\"'>" + data + "</a>"
+                        return "<a class='maincolor' href='javascript:;' onClick=\"toDetail('" + full.AMAZONORDERID + "')\"'>" + data + "</a>";
+                    }
+                },
+                {
+                    "targets": [1],
+                    "data": "SMALLIMAGE",
+                    "render": function (data, type, full) {
+                        return "<img  src='" + data + "'/>";
                     }
                 },
                 {
@@ -539,21 +546,21 @@
                     "data": "LOCALSTATUS",
                     "render": function (data, type, full) {
                         if (data == 1) {
-                            return "<div>新单</div>"
+                            return "<div>新单</div>";
                         } else if (data == 2) {
-                            return "<div>备货</div>"
+                            return "<div>备货</div>";
                         } else if (data == 3) {
-                            return "<div>缺货</div>"
+                            return "<div>缺货</div>";
                         } else if (data == 4) {
-                            return "<div>发货</div>"
+                            return "<div>发货</div>";
                         } else if (data == 5) {
-                            return "<div>问题</div>"
+                            return "<div>问题</div>";
                         } else if (data == 6) {
-                            return "<div>退款</div>"
+                            return "<div>退款</div>";
                         } else if (data == 7) {
-                            return "<div>妥投</div>"
+                            return "<div>妥投</div>";
                         } else if (data == 8) {
-                            return "<div>代发</div>"
+                            return "<div>代发</div>";
                         }
                     }
                 },

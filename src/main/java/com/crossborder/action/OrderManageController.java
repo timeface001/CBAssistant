@@ -33,6 +33,7 @@ import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.w3c.dom.Node;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
@@ -106,7 +107,7 @@ public class OrderManageController {
                 request.setOrderStatus(orderStatus);
                 result = getListOrders(client, request, user, shop);
             }
-            updateOrderStatusTest();
+            /*updateOrderStatusTest();*/
             return result;
         } else {
             Map<String, Object> map = new HashMap<>();
@@ -183,12 +184,12 @@ public class OrderManageController {
                 List<LocalOrderItem> localOrderItemList = new ArrayList<>();
                 for (int j = 0; j < orderItemList.size(); j++) {
                     OrderItem orderItem = orderItemList.get(j);
-                    /*Product product = getProduct(orderItem, shop);*/
+                    Product product = getProduct(orderItem, shop);
                     LocalOrderItem localOrderItem = new LocalOrderItem();
-                    /*for (Object obj : product.getAttributeSets().getAny()) {
+                    for (Object obj : product.getAttributeSets().getAny()) {
                         Node nd = (Node) obj;
-                        for (int m = 0; m < nd.getChildNodes().getLength(); i++) {
-                            Node child = nd.getChildNodes().item(i);
+                        for (int m = 0; m < nd.getChildNodes().getLength(); m++) {
+                            Node child = nd.getChildNodes().item(m);
                             if ("ns2:SmallImage".equals(child.getNodeName())) {
                                 for (int n = 0; n < child.getChildNodes().getLength(); n++) {
                                     if ("ns2:URL".equals(child.getChildNodes().item(n).getNodeName())) {
@@ -197,7 +198,7 @@ public class OrderManageController {
                                 }
                             }
                         }
-                    }*/
+                    }
                     localOrderItem.setOrderItemId(orderItem.getOrderItemId());
                     localOrderItem.setAmazonOrderId(order.getAmazonOrderId());
                     localOrderItem.setAsin(orderItem.getASIN());

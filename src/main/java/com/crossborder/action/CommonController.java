@@ -5,12 +5,15 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.crossborder.entity.*;
+import com.crossborder.org.tempuri.BookingQuickTypeDataSetResponseBookingQuickTypeDataSetResult;
 import com.crossborder.service.CommonService;
 import com.crossborder.service.OrderManageService;
 import com.crossborder.service.ShipRate;
 import com.crossborder.utils.CommonSet;
+import com.crossborder.utils.EOCWebServicesWS;
 import com.crossborder.utils.HttpClientUtil;
 import com.crossborder.utils.Tools;
+import org.apache.axis.description.TypeDesc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -262,9 +265,20 @@ public class CommonController {
     public String getShipTypes(String countryCode, String companyId, String weight) {
         if (companyId.equals("SFC")) {
             return getSFCShipTypes(countryCode, weight);
+        } else if (companyId.equals("YT")) {
+            return getYTShipTypes(countryCode);
+        } else if (companyId.equals("Equick")) {
+            return getEquickShipTypes(countryCode);
         } else {
             return getYTShipTypes(countryCode);
         }
+    }
+
+    private String getEquickShipTypes(String countryCode) {
+        Map<String, Object> map = new HashMap<>();
+        BookingQuickTypeDataSetResponseBookingQuickTypeDataSetResult result = EOCWebServicesWS.BookingQuickTypeDataSet();
+        TypeDesc typeDesc= result.getTypeDesc();
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
     public String getYTShipTypes(String countryCode) {
@@ -339,9 +353,18 @@ public class CommonController {
     public String confirmOrder(String amazonOrderId, String json, String companyId, String salesMan, String salesCompany, HttpSession session) {
         if (companyId.equals("SFC")) {
             return addSFCOrder(session, json, amazonOrderId, salesMan, salesCompany);
+        } else if (companyId.equals("YT")) {
+            return addYTOrder(session, json, amazonOrderId, salesMan, salesCompany);
+        } else if (companyId.equals("Equick")) {
+            return addEquickOrder(session, json, amazonOrderId, salesMan, salesCompany);
         } else {
             return addYTOrder(session, json, amazonOrderId, salesMan, salesCompany);
         }
+    }
+
+    private String addEquickOrder(HttpSession session, String json, String amazonOrderId, String salesMan, String salesCompany) {
+        Map<String, Object> map = new HashMap<>();
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
     private String addSFCOrder(HttpSession session, String json, String amazonOrderId, String salesMan, String salesCompany) {

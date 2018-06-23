@@ -16,11 +16,8 @@
 package com.crossborder.utils.amz.test;
 
 import com.amazonservices.mws.products.*;
-import com.amazonservices.mws.products.model.GetMatchingProductForIdRequest;
-import com.amazonservices.mws.products.model.GetMatchingProductForIdResponse;
-import com.amazonservices.mws.products.model.IdListType;
-import com.amazonservices.mws.products.model.ResponseHeaderMetadata;
-import com.amazonservices.mws.products.samples.MarketplaceWebServiceProductsSampleConfig;
+import com.amazonservices.mws.products.model.*;
+import org.w3c.dom.Node;
 
 import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
@@ -44,6 +41,21 @@ public class GetMatchingProductForIdSample {
         try {
             // Call the service.
             GetMatchingProductForIdResponse response = client.getMatchingProductForId(request);
+            Product product = response.getGetMatchingProductForIdResult().get(0).getProducts().getProduct().get(0);
+            for (Object obj : product.getAttributeSets().getAny()) {
+                        Node nd = (Node) obj;
+                        for (int m = 0; m < nd.getChildNodes().getLength(); m++) {
+                            Node child = (Node) nd.getChildNodes().item(m);
+                            if ("ns2:SmallImage".equals(child.getNodeName())) {
+                                for (int n = 0; n < child.getChildNodes().getLength(); n++) {
+                                    if ("ns2:URL".equals(child.getChildNodes().item(n).getNodeName())) {
+                                       String name= child.getChildNodes().item(n).getTextContent();
+                                        System.out.print(name);
+                                    }
+                                }
+                            }
+                        }
+                    }
             ResponseHeaderMetadata rhmd = response.getResponseHeaderMetadata();
             // We recommend logging every the request id and timestamp of every call.
             System.out.println("Response:");
