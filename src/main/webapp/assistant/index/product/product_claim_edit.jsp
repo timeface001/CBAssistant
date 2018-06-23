@@ -927,6 +927,14 @@
 
             form.on('submit', function (data) {
                 var skuTypeA = data.field.skuType;
+                //详细描述
+                data.field["productDescriptionUk"] = layedit.getContent(ukedit);
+                data.field["productDescriptionFr"] = layedit.getContent(fredit);
+                data.field["productDescriptionDe"] = layedit.getContent(deedit);
+                data.field["productDescriptionIt"] = layedit.getContent(itedit);
+                data.field["productDescriptionEs"] = layedit.getContent(esedit);
+                data.field["productDescriptionJp"] = layedit.getContent(jpedit);
+                data.field["productDescriptionCn"] = layedit.getContent(cnedit);
                 //组合关键词和简要描述
                 data.field["bulletPointCn"] = getContentByLanguage("pointsCn");
                 data.field["bulletPointJp"] = getContentByLanguage("pointsJp");
@@ -950,11 +958,9 @@
                     if (arr.length > 0) {
                         for (var i = 0; i < arr.length; i++) {
                             if ($(arr[i]).attr("src").indexOf("product") > -1) {
-
                                 imagePathValue += "," + $(arr[i]).attr("src").substring(55);
                             }
                         }
-
                         imagePathValue = imagePathValue.substring(1);
                     }
                     if (imagePathValue == null || imagePathValue == "") {
@@ -1043,7 +1049,6 @@
                  return false;
                  }*/
                 data.field["vars"] = JSON.stringify(skuVar);
-
                 var url = '<%=request.getContextPath()%>/product/claim/save';
                 layer.load();
                 $.ajax({
