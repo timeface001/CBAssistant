@@ -1,6 +1,7 @@
 package com.crossborder.action;
 
 import com.alibaba.fastjson.JSON;
+import com.crossborder.dao.ProductClaimDao;
 import com.crossborder.entity.ClaimProduct;
 import com.crossborder.entity.ProductItemVar;
 import com.crossborder.service.ProductManagerService;
@@ -41,6 +42,8 @@ public class ProductClaimController extends BaseController {
     private ProductManagerService productManagerService;
     @Autowired
     private ProductSkuTypeService productSkuTypeService;
+    @Autowired
+    private ProductClaimDao productClaimDao;
 
     /**
      * 已认领产品列表
@@ -135,6 +138,18 @@ public class ProductClaimController extends BaseController {
                 return JSON.toJSONString(ResponseGen.genFailMsg("保存失败"));
             }
         }
+    }
+
+    @RequestMapping(value = "/product/claim/delete", produces = "text/plain;charset=UTF-8")
+    @ResponseBody
+    public String delte(String id) {
+        try {
+            productClaimDao.deleteByPrimaryKey(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return JSON.toJSONString(ResponseGen.genFailMsg("删除失败"));
+        }
+        return JSON.toJSONString(ResponseGen.genSuccessMsg("删除成功"));
     }
 
 

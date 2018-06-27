@@ -312,7 +312,7 @@
                     "render": function (data, type, full) {
                         return ( full.updateState == "1" ? "<a style='text-decoration:none' title='发布'  onClick=\"prePublish('" + full.id + "')\"')>发布</a>" : "") +
                                 "&nbsp;&nbsp;" +
-                                "<a style='text-decoration:none' title='编辑'  onClick=\"editProduct('" + full.id + "')\"')>编辑</a>";
+                                "<a style='text-decoration:none' title='编辑'  onClick=\"editProduct('" + full.id + "')\"')>编辑</a>&nbsp;&nbsp;"+(full.updateState == "1" ?"":"<a style='text-decoration:none' title='删除'  onClick=\"deleteProduct('" + full.id + "')\"')>删除</a>");
                     }
                 }
             ],
@@ -370,9 +370,9 @@
         layer.confirm('产品删除须谨慎，确认要删除吗？', function (index) {
             $.ajax({
                 type: 'POST',
-                url: '<%=request.getContextPath()%>/product/delete',
+                url: '<%=request.getContextPath()%>/product/claim/delete',
                 dataType: 'json',
-                data: {"data": id},
+                data: {"id": id},
                 success: function (data) {
                     if (data.success) {
                         setTimeout(layer.msg(data.msg, {icon: 6, time: 1000}), 1000);

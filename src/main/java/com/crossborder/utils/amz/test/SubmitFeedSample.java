@@ -118,7 +118,9 @@ public class SubmitFeedSample {
         // included if you do not specify the list yourself
         List<String> ids=new ArrayList<>();
         //ids.add("A13V1IB3VIYZZH");
-        ids.add("A1PA6795UKMFR9");
+        //ids.add("A1PA6795UKMFR9");
+        ids.add("A1RKKUPIHCS9HS");
+        ids.add("APJ6JRA9NG5V4");
         final IdList marketplaces = new IdList(ids);
 
         SubmitFeedRequest request = new SubmitFeedRequest();
@@ -130,7 +132,19 @@ public class SubmitFeedSample {
 
         String text="<?xml version=\"1.0\" encoding=\"utf-8\" ?><AmazonEnvelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"amznenvelope.xsd\">\n" +
                 "<Header><DocumentVersion>1.01</DocumentVersion><MerchantIdentifier>APC8KTCSFWL6Q</MerchantIdentifier>\n" +
-                "</Header><MessageType>Price</MessageType><Message><MessageID>4332002</MessageID><Price><SKU>KK-1SPHBFQ7-C</SKU><StandardPrice currency=\"DEFAULT\">100.91</StandardPrice></Price></Message><Message><MessageID>4332003</MessageID><Price><SKU>KK-1SPHBFQ7-A</SKU><StandardPrice currency=\"DEFAULT\">25.91</StandardPrice></Price></Message><Message><MessageID>4332004</MessageID><Price><SKU>KK-1SPHBFQ7-B</SKU><StandardPrice currency=\"DEFAULT\">25.91</StandardPrice></Price></Message><Message><MessageID>4332005</MessageID><Price><SKU>KK-1SPHBFQ7-D</SKU><StandardPrice currency=\"DEFAULT\">25.91</StandardPrice></Price></Message><Message><MessageID>4332006</MessageID><Price><SKU>KK-1SPHBFQ7</SKU><StandardPrice currency=\"DEFAULT\">25.91</StandardPrice></Price></Message></AmazonEnvelope>";
+                "</Header><MessageType>Price</MessageType><Message>" +
+                "<MessageID>5913002</MessageID><Price>" +
+                "<SKU>O17344-OG17334-US7.5-EU41</SKU><StandardPrice currency=\"DEFAULT\">44.05</StandardPrice></Price></Message>" +
+                "<Message><MessageID>5913003</MessageID><Price>" +
+                "<SKU>O17344-OG17334-US9.0-EU44</SKU><StandardPrice currency=\"DEFAULT\">44.05</StandardPrice></Price></Message><Message><MessageID>5913004</MessageID><Price>" +
+                "<SKU>O17344-OG17334-US6.0-EU38</SKU><StandardPrice currency=\"DEFAULT\">44.05</StandardPrice></Price></Message><Message><MessageID>5913005</MessageID><Price>" +
+                "<SKU>O17344-OG17334-US6.5-EU39</SKU><StandardPrice currency=\"DEFAULT\">44.05</StandardPrice></Price></Message><Message><MessageID>5913006</MessageID><Price>" +
+                "<SKU>O17344-OG17334-US7.0-EU40</SKU><StandardPrice currency=\"DEFAULT\">44.05</StandardPrice></Price></Message><Message><MessageID>5913007</MessageID><Price>" +
+                "<SKU>O17344-OG17334-US8.0-EU42</SKU><StandardPrice currency=\"DEFAULT\">44.05</StandardPrice></Price></Message><Message><MessageID>5913008</MessageID><Price>" +
+                "<SKU>O17344-OG17334-US8.5-EU43</SKU><StandardPrice currency=\"DEFAULT\">44.05</StandardPrice></Price></Message><Message><MessageID>5913009</MessageID><Price>" +
+                "<SKU>O17344-OG17334</SKU><StandardPrice currency=\"DEFAULT\">44.05</StandardPrice></Price></Message>" +
+                "" +
+                "</AmazonEnvelope>";
         FileUtils.byte2File(text.getBytes(),"/Users/fengsong/Downloads/amz/","rule_chain.txt");
 
         String s="/Users/fengsong/Downloads/amz/rule_chain.txt";
@@ -176,7 +190,7 @@ public class SubmitFeedSample {
      * the necessary metadata to process the file, such as which type of feed it
      * is. PurgeAndReplace if true means that your existing e.g. inventory is
      * wiped out and replace with the contents of this feed - use with caution
-     * (the default is false).
+     * (the DEFAULT is false).
      * 
      * @param service
      *            instance of MarketplaceWebService service
