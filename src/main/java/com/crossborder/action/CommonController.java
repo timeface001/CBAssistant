@@ -420,15 +420,23 @@ public class CommonController {
             bookingShipment.setWHTLength(Float.valueOf(jsonObject.getString("Length")));
             bookingShipment.setWHTWidth(Float.valueOf(jsonObject.getString("Width")));
             float declareWorth = 0;
+            String enName = "";
+            String cnName = "";
+            String sku = "";
+            int count = 0;
             for (int i = 0; i < applicationInfos.size(); i++) {
                 JSONObject good = applicationInfos.getJSONObject(i);
-                bookingShipment.setGoodsNameENG(good.getString("ApplicationName"));
-                bookingShipment.setGoodsNameCHS(good.getString("PickingName"));
+                enName = enName + good.getString("ApplicationName") + " AND ";
+                cnName = cnName + good.getString("PickingName") + " AND ";
                 bookingShipment.setGoodsDesc(good.getString("ApplicationName"));
-                bookingShipment.setGoodsSKU(good.getString("SKU"));
-                bookingShipment.setGoodsPieceNum(Integer.parseInt(good.getString("Qty")));
+                sku = sku + good.getString("SKU") + " AND ";
+                count += Integer.parseInt(good.getString("Qty"));
                 declareWorth = declareWorth + Float.valueOf(good.getString("Qty")) * Float.valueOf(good.getString("UnitPrice"));
             }
+            bookingShipment.setGoodsPieceNum(count);
+            bookingShipment.setGoodsNameENG(enName);
+            bookingShipment.setGoodsNameCHS(cnName);
+            bookingShipment.setGoodsSKU(sku);
             bookingShipment.setGoodsValue(declareWorth);
             request.setBookingShipment(bookingShipment);
             request.setAuthentication(authentication);
@@ -436,7 +444,7 @@ public class CommonController {
             if (response.getShipmentCompleted().getReturnValue() == -1) {
                 String intlTrackNum = response.getShipmentCompleted().getEquickWBNo();
                 updateOrderStatus(amazonOrderId, shippingObject, jsonObject, intlTrackNum, salesMan, salesCompany, user);
-                map.put("data", response);
+                map.put("data", response.getShipmentCompleted().getEquickWBNo());
                 map.put("code", "0");
                 map.put("msg", "发货成功");
             } else {
@@ -510,7 +518,7 @@ public class CommonController {
             if (_addOrder__return.getOrderActionStatus().equals("Y")) {
                 String intlTrackNum = _addOrder__return.getOrderCode();
                 updateOrderStatus(amazonOrderId, shippingObject, jsonObject, intlTrackNum, salesMan, salesCompany, user);
-                map.put("data", _addOrder__return);
+                map.put("data", _addOrder__return.getOrderCode());
                 map.put("code", "0");
                 map.put("msg", "发货成功");
             } else {
@@ -613,7 +621,7 @@ public class CommonController {
                 map.put("data", url);
                 map.put("code", "0");
                 map.put("msg", "打印成功");
-            } else if(companyId.equals("YT")){
+            } else if (companyId.equals("YT")) {
                 String result = HttpClientUtil.doPostRequest("http://api.yunexpress.com/LMS.API.Lable/Api/PrintUrl", orderNumbers);
                 JSONObject jsonObject = JSONObject.parseObject(result);
                 if (jsonObject.getString("ResultCode").equals("0000")) {
@@ -625,8 +633,19 @@ public class CommonController {
                     map.put("code", "-10");
                     map.put("msg", "打印失败");
                 }
-            }else if(companyId.equals("Equick")){
-
+            } else if (companyId.equals("Equick")) {
+                Authentication authentication = new Authentication("W160960", "W160960");
+                EOCQuickLabelRequest request = new EOCQuickLabelRequest();
+                request.setEquickWBNo(orderCode);
+                request.setAuthentication(authentication);
+                EOCQuickLabelResponse response = EOCWebServicesWS.RequestEOCQuickLabel(request);
+                if (response.getQuickLabelCompleted().getReturnValue() == -1) {
+                    map.put("code", "0");
+                    map.put("msg", "打印成功");
+                } else {
+                    map.put("code", "-10");
+                    map.put("msg", "打印失败");
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

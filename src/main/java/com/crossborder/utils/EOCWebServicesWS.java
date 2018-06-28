@@ -116,7 +116,7 @@ public class EOCWebServicesWS {
         return result;
     }
 
-    public EOCQuickLabelResponse RequestEOCQuickLabel(EOCQuickLabelRequest EOCQuickLabel) {
+    public static EOCQuickLabelResponse RequestEOCQuickLabel(EOCQuickLabelRequest EOCQuickLabel) {
         EOCQuickLabelResponse result = new EOCQuickLabelResponse();
         try {
             java.net.URL url = new java.net.URL(urlAdd);

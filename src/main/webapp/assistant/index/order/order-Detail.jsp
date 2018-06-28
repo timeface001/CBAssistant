@@ -989,7 +989,7 @@
             success: function (data) {
                 layer.closeAll("loading");
                 if (data.code == 0) {
-                    $("#orderCode").val(data.data.orderCode);
+                    $("#orderCode").val(data.data);
                     layer.msg('发货成功!', {icon: 1, time: 1000});
                 } else {
                     layer.msg(data.msg, {icon: 1, time: 2000});
