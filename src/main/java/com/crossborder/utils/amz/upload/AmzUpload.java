@@ -98,7 +98,7 @@ public class AmzUpload {
                         languageItem.setProductStr(mid.getProductStr());
                         languageItem.setRelationsStr(mid.getRelationsStr());
 
-
+                        languageItem.setPriceStr(AmzXmlTemplate.getUploadPriceStr(product, sr.getShop(), vars));
 
                         request.setSkuMap(skuMap);
                         //变更状态为发布中
@@ -163,7 +163,7 @@ public class AmzUpload {
                     i++;
 
                     System.out.println("上传价格信息:");
-                    for (Map.Entry<String, UploadServiceRequest.SplitRequest> entry : sr.getExrateList().entrySet()) {
+                  /*  for (Map.Entry<String, UploadServiceRequest.SplitRequest> entry : sr.getExrateList().entrySet()) {
                         String priceStr = "";
                         for (ProductAmzUpload pp : entry.getValue().getList()) {
                             priceStr = priceStr + AmzXmlTemplate.getUploadPriceStr(pp, entry.getValue().getShopReq(), pVars.get(pp.getId()));
@@ -173,6 +173,15 @@ public class AmzUpload {
                         FileInputStream priceIs = new FileInputStream(FileUtils.byte2File(priceStr.getBytes(), commonSet.getAmzUploadProductPath(), UUID.randomUUID() + "price_fee.txt"));
                         new UploadTask(getService(sr.getShop()), getSubmitFeedRequest(priceIs, sr, entry.getValue().getShopReq().getMarketIds(), AmzFeeType.PRICING_FEED), AmzFeeType.PRICING_FEED).run();
                         i++;
+                    }*/
+
+                    for (UploadItem item1 : items) {
+                        if (StringUtils.isNotBlank(item1.getProductStr())) {
+                            System.out.println(item1.getProductStrHead());
+                            i++;
+                            FileInputStream priceIs = new FileInputStream(FileUtils.byte2File(item1.getPriceStr().getBytes(), commonSet.getAmzUploadProductPath(), UUID.randomUUID() + "product_price.txt"));
+                            new UploadTask(getService(sr.getShop()), getSubmitFeedRequest(priceIs, sr, item1.getShop().getMarketIds(), AmzFeeType.PRICING_FEED), AmzFeeType.PRICING_FEED).run();
+                        }
                     }
 
 

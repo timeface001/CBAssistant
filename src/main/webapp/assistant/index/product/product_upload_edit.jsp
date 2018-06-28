@@ -172,6 +172,26 @@
             </div>
         </div>
 
+        <div class="layui-form-item">
+            <label class="layui-form-label">分类必填参数</label>
+            <div class="layui-input-block">
+                <select name="">
+                    <option value="">请选择</option>
+                    <option value="shoes">鞋子</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">分类必填参数</label>
+            <div class="layui-input-block">
+                <select name="">
+                    <option value="">请选择</option>
+                    <option value="shoes">鞋子</option>
+                </select>
+            </div>
+        </div>
+
 
         <div class="layui-form-item">
             <div class="layui-input-block">
@@ -376,9 +396,9 @@
                         layer.closeAll('loading');
                         if (data.success) {
                             layer.msg(data.msg, {icon: 6, time: 2000});
-                            setTimeout(function () {
+                           /* setTimeout(function () {
                                 layer_close(index);
-                            }, 1000);
+                            }, 1000);*/
                         } else {
                             layer.msg(data.msg, {icon: 5, time: 1000});
                         }
