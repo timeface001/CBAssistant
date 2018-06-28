@@ -8,8 +8,6 @@ import java.util.Map;
 public class ProductTypeExt {
 
     public static Map<String,List<String>> list=new HashMap<>();
-
-
     static {
         List<String> materialType=new ArrayList<>();
         materialType.add("100-percent-cotton");
@@ -108,7 +106,70 @@ public class ProductTypeExt {
         materialType.add("wool-blend");
         materialType.add("worsted-wool");
 
-        list.put("materialType",materialType);
+        list.put("MaterialType", materialType);
+
+        List<String> outerMaterialType = new ArrayList<>();
+        outerMaterialType.add("Beaded");
+        outerMaterialType.add("Canvas");
+        outerMaterialType.add("Felt");
+        outerMaterialType.add("Nubuck Leather");
+        outerMaterialType.add("Patent Leather");
+        outerMaterialType.add("Other Leather");
+        outerMaterialType.add("Rubber");
+        outerMaterialType.add("Satin");
+        outerMaterialType.add("Silk");
+        outerMaterialType.add("Smooth Leather");
+        outerMaterialType.add("Suede Leather");
+        outerMaterialType.add("Synthetic");
+        outerMaterialType.add("Velvet");
+        outerMaterialType.add("Wool");
+
+        list.put("OuterMaterialType", outerMaterialType);
+
+        List<String> styleName = new ArrayList<>();
+        styleName.add("Ankle-Strap");
+        styleName.add("Ballet");
+        styleName.add("Ballroom");
+        styleName.add("Biker Boots");
+        styleName.add("Brogue");
+        styleName.add("Chelsea Boots");
+        styleName.add("Chukka Boots");
+        styleName.add("Closed-Toe");
+        styleName.add("Combat Boots");
+        styleName.add("Cowboy Boots");
+        styleName.add("Derby");
+        styleName.add("Desert Boots");
+        styleName.add("Espadrille");
+        styleName.add("Flatform");
+        styleName.add("Gladiator");
+        styleName.add("High-Top");
+        styleName.add("Jazz & Modern");
+        styleName.add("Low-Top");
+        styleName.add("Moccasin Boots");
+        styleName.add("Open-back");
+        styleName.add("Oxford");
+        styleName.add("Peep-Toe");
+        styleName.add("Platform");
+        styleName.add("Slingback");
+        styleName.add("Slouch Boots");
+        styleName.add("Snow Boots");
+        styleName.add("T-Bar");
+        styleName.add("Tap");
+        styleName.add("Wellington Boots");
+
+        list.put("StyleName", styleName);
+
+        List<String> cTye = new ArrayList<>();
+        cTye.add("Buckle");
+        cTye.add("Button");
+        cTye.add("Lace-Up");
+        cTye.add("Slip-On");
+        cTye.add("Speed-Laces");
+        cTye.add("Velcro");
+        cTye.add("Zip");
+
+
+        list.put("ClosureType", cTye);
     }
 
 }

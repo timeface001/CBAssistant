@@ -90,6 +90,7 @@ public class UploadServiceRequest {
         String serviceUrl = shop.get("ENDPOINT").toString();
         String merchantId = shop.get("MERCHANT_ID").toString();
         String language = shop.get("LANGUAGE").toString();
+        String rate = (shop.get("EXRATE").toString());
 
 
         result.setAccessKey(accessKeyId);
@@ -97,6 +98,7 @@ public class UploadServiceRequest {
         result.setServiceUrl(serviceUrl);
         result.setMerchantId(merchantId);
         result.setLanguage(language);
+        result.setExrate(new BigDecimal(rate));
 
         return result;
 
