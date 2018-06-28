@@ -5,7 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.crossborder.entity.*;
-import com.crossborder.org.tempuri.BookingQuickTypeDataSetResponseBookingQuickTypeDataSetResult;
+import com.crossborder.org.tempuri.*;
 import com.crossborder.service.CommonService;
 import com.crossborder.service.OrderManageService;
 import com.crossborder.service.ShipRate;
@@ -13,7 +13,6 @@ import com.crossborder.utils.CommonSet;
 import com.crossborder.utils.EOCWebServicesWS;
 import com.crossborder.utils.HttpClientUtil;
 import com.crossborder.utils.Tools;
-import org.apache.axis.description.TypeDesc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 import javax.xml.namespace.QName;
+import javax.xml.soap.Node;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -276,8 +276,40 @@ public class CommonController {
 
     private String getEquickShipTypes(String countryCode) {
         Map<String, Object> map = new HashMap<>();
-        BookingQuickTypeDataSetResponseBookingQuickTypeDataSetResult result = EOCWebServicesWS.BookingQuickTypeDataSet();
-        TypeDesc typeDesc= result.getTypeDesc();
+        try {
+            BookingQuickTypeDataSetResponseBookingQuickTypeDataSetResult result = EOCWebServicesWS.BookingQuickTypeDataSet();
+            List<Map<String, String>> ships = new ArrayList<>();
+            for (Object obj : result.get_any()) {
+                Node nd = (Node) obj;
+                for (int m = 0; m < nd.getChildNodes().getLength(); m++) {
+                    Node child = (Node) nd.getChildNodes().item(m);
+                    if ("NewDataSet".equals(child.getNodeName())) {
+                        for (int n = 0; n < child.getChildNodes().getLength(); n++) {
+                            Node childTypes = (Node) child.getChildNodes().item(n);
+                            if ("QuickType".equals(childTypes.getNodeName())) {
+                                Map<String, String> ship = new HashMap<>();
+                                for (int i = 0; i < childTypes.getChildNodes().getLength(); i++) {
+                                    Node childType = (Node) childTypes.getChildNodes().item(i);
+                                    if ("EOCQuickTypeName".equals(childType.getNodeName())) {
+                                        ship.put("name", childType.getValue());
+                                    } else if ("EOCQuickType".equals(childType.getNodeName())) {
+                                        ship.put("code", childType.getValue());
+                                    }
+                                }
+                                ships.add(ship);
+                            }
+                        }
+                    }
+                }
+            }
+            map.put("data", ships);
+            map.put("code", "0");
+            map.put("msg", "查询成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("code", "-10");
+            map.put("msg", "查询失败");
+        }
         return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
@@ -364,6 +396,58 @@ public class CommonController {
 
     private String addEquickOrder(HttpSession session, String json, String amazonOrderId, String salesMan, String salesCompany) {
         Map<String, Object> map = new HashMap<>();
+        try {
+            Map<String, Object> user = (Map<String, Object>) session.getAttribute("user");
+            JSONObject jsonObject = JSONObject.parseArray(json).getJSONObject(0);
+            JSONObject shippingObject = jsonObject.getJSONObject("ShippingInfo");
+            JSONArray applicationInfos = jsonObject.getJSONArray("ApplicationInfos");
+            EOCShipmentRequest request = new EOCShipmentRequest();
+            Authentication authentication = new Authentication("W160960", "W160960");
+            EOCBookingShipment bookingShipment = new EOCBookingShipment();
+            bookingShipment.setBookingCustDate(Calendar.getInstance());
+            bookingShipment.setBookingCustRefNo(jsonObject.getString("OrderNumber"));
+            bookingShipment.setQuickType(jsonObject.getString("ShippingMethodCode"));
+            bookingShipment.setReturnQuest("N");
+            bookingShipment.setToCustLinkman(shippingObject.getString("ShippingFirstName"));
+            bookingShipment.setToCustCountry(shippingObject.getString("CountryCode"));
+            bookingShipment.setToCustCanton(shippingObject.getString("ShippingState"));
+            bookingShipment.setToCustCity(shippingObject.getString("ShippingCity"));
+            bookingShipment.setToCustZipCode(shippingObject.getString("ShippingZip"));
+            bookingShipment.setToCustAddress(shippingObject.getString("ShippingAddress") + "\n \n \n");
+            bookingShipment.setToCustTel(shippingObject.getString("ShippingPhone"));
+            bookingShipment.setWHTFactWHT(Float.valueOf(jsonObject.getString("Weight")));
+            bookingShipment.setWHTHeight(Float.valueOf(jsonObject.getString("Height")));
+            bookingShipment.setWHTLength(Float.valueOf(jsonObject.getString("Length")));
+            bookingShipment.setWHTWidth(Float.valueOf(jsonObject.getString("Width")));
+            float declareWorth = 0;
+            for (int i = 0; i < applicationInfos.size(); i++) {
+                JSONObject good = applicationInfos.getJSONObject(i);
+                bookingShipment.setGoodsNameENG(good.getString("ApplicationName"));
+                bookingShipment.setGoodsNameCHS(good.getString("PickingName"));
+                bookingShipment.setGoodsDesc(good.getString("ApplicationName"));
+                bookingShipment.setGoodsSKU(good.getString("SKU"));
+                bookingShipment.setGoodsPieceNum(Integer.parseInt(good.getString("Qty")));
+                declareWorth = declareWorth + Float.valueOf(good.getString("Qty")) * Float.valueOf(good.getString("UnitPrice"));
+            }
+            bookingShipment.setGoodsValue(declareWorth);
+            request.setBookingShipment(bookingShipment);
+            request.setAuthentication(authentication);
+            EOCShipmentResponse response = EOCWebServicesWS.RequestEOCShipment(request);
+            if (response.getShipmentCompleted().getReturnValue() == -1) {
+                String intlTrackNum = response.getShipmentCompleted().getEquickWBNo();
+                updateOrderStatus(amazonOrderId, shippingObject, jsonObject, intlTrackNum, salesMan, salesCompany, user);
+                map.put("data", response);
+                map.put("code", "0");
+                map.put("msg", "发货成功");
+            } else {
+                map.put("code", "-10");
+                map.put("msg", response.getShipmentCompleted().getReturnMessage());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("code", "-10");
+            map.put("msg", e.getMessage());
+        }
         return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
@@ -424,39 +508,8 @@ public class CommonController {
             _addOrdersRequest.setAddOrderRequestInfo(_addOrdersRequestInfo);
             AddOrderResponse _addOrder__return = port.addOrder(_addOrdersRequest);
             if (_addOrder__return.getOrderActionStatus().equals("Y")) {
-                Map<String, Object> shippingMap = shippingObject;
-                shippingMap.put("amazonOrderId", amazonOrderId);
-                commonService.updateAddress(shippingMap);
-                Map<String, Object> paramMap = new HashMap<>();
-                paramMap.put("amazonOrderId", amazonOrderId);
-                paramMap.put("status", "4");
-                paramMap.put("intlTrackNum", _addOrder__return.getOrderCode());
-                paramMap.put("transportCompany", jsonObject.getString("transportCompany"));
-                orderManageService.updateOrder(paramMap);
-                orderManageService.updateOrderItem(paramMap);
-                insertOperationLog(amazonOrderId, "2", "4", user.get("USER_ID").toString(), "");
-                Map<String, Object> shipMap = new HashMap<>();
-                shipMap.put("amazonOrderId", amazonOrderId);
-                shipMap.put("companyId", jsonObject.getString("transportCompany"));
-                shipMap.put("typeId", jsonObject.getString("ShippingMethodCode"));
-                shipMap.put("custId", jsonObject.getString("OrderNumber"));
-                shipMap.put("length", jsonObject.getString("Length"));
-                shipMap.put("width", jsonObject.getString("Width"));
-                shipMap.put("height", jsonObject.getString("Height"));
-                shipMap.put("packages", jsonObject.getString("PackageNumber"));
-                shipMap.put("weight", jsonObject.getString("Weight"));
-                shipMap.put("trackNum", _addOrder__return.getOrderCode());
-                shipMap.put("orderCode", _addOrder__return.getOrderCode());
-                shipMap.put("salesMan", salesMan);
-                shipMap.put("salesCompany", salesCompany);
-                shipMap.put("status", "0");
-                commonService.insertShipMent(shipMap);
-                JSONArray jsonArray = jsonObject.getJSONArray("ApplicationInfos");
-                for (int i = 0; i < jsonArray.size(); i++) {
-                    Map<String, Object> customsInfo = jsonArray.getJSONObject(i);
-                    customsInfo.put("custId", jsonObject.getString("OrderNumber"));
-                    commonService.insertCustomsInfo(customsInfo);
-                }
+                String intlTrackNum = _addOrder__return.getOrderCode();
+                updateOrderStatus(amazonOrderId, shippingObject, jsonObject, intlTrackNum, salesMan, salesCompany, user);
                 map.put("data", _addOrder__return);
                 map.put("code", "0");
                 map.put("msg", "发货成功");
@@ -477,8 +530,6 @@ public class CommonController {
         Map<String, Object> map = new HashMap<>();
         JSONObject jsonObject = JSONObject.parseArray(json).getJSONObject(0);
         JSONObject shippingObject = jsonObject.getJSONObject("ShippingInfo");
-        Map<String, Object> shippingMap = shippingObject;
-        shippingMap.put("amazonOrderId", amazonOrderId);
         JSONObject senderObjecct = new JSONObject();
         senderObjecct.put("CountryCode", "CN");
         senderObjecct.put("SenderFirstName", "Yongjun");
@@ -497,37 +548,9 @@ public class CommonController {
             String result = HttpClientUtil.doPostRequest("http://api.yunexpress.com/LMS.API/api/WayBill/BatchAdd", json);
             JSONObject resultObject = JSONObject.parseObject(result);
             if (resultObject.getString("ResultCode").equals("0000")) {
-                commonService.updateAddress(shippingMap);
-                Map<String, Object> paramMap = new HashMap<>();
-                paramMap.put("amazonOrderId", amazonOrderId);
-                paramMap.put("status", "4");
-                paramMap.put("intlTrackNum", resultObject.getJSONArray("Item").getJSONObject(0).getString("WayBillNumber"));
-                paramMap.put("transportCompany", jsonObject.getString("transportCompany"));
-                orderManageService.updateOrder(paramMap);
-                orderManageService.updateOrderItem(paramMap);
-                insertOperationLog(amazonOrderId, "2", "4", user.get("USER_ID").toString(), "");
-                Map<String, Object> shipMap = new HashMap<>();
-                shipMap.put("amazonOrderId", amazonOrderId);
-                shipMap.put("companyId", jsonObject.getString("transportCompany"));
-                shipMap.put("typeId", jsonObject.getString("ShippingMethodCode"));
-                shipMap.put("custId", jsonObject.getString("OrderNumber"));
-                shipMap.put("length", jsonObject.getString("Length"));
-                shipMap.put("width", jsonObject.getString("Width"));
-                shipMap.put("height", jsonObject.getString("Height"));
-                shipMap.put("packages", jsonObject.getString("PackageNumber"));
-                shipMap.put("weight", jsonObject.getString("Weight"));
-                shipMap.put("trackNum", resultObject.getJSONArray("Item").getJSONObject(0).getString("WayBillNumber"));
-                shipMap.put("salesMan", salesMan);
-                shipMap.put("salesCompany", salesCompany);
-                shipMap.put("status", "0");
-                commonService.insertShipMent(shipMap);
-                JSONArray jsonArray = jsonObject.getJSONArray("ApplicationInfos");
-                for (int i = 0; i < jsonArray.size(); i++) {
-                    Map<String, Object> customsInfo = jsonArray.getJSONObject(i);
-                    customsInfo.put("custId", jsonObject.getString("OrderNumber"));
-                    commonService.insertCustomsInfo(customsInfo);
-                }
-                map.put("data", result);
+                String intlTrackNum = resultObject.getJSONArray("Item").getJSONObject(0).getString("WayBillNumber");
+                updateOrderStatus(amazonOrderId, shippingObject, jsonObject, intlTrackNum, salesMan, salesCompany, user);
+                map.put("data", resultObject);
                 map.put("code", "0");
                 map.put("msg", "发货成功");
             } else {
@@ -542,6 +565,44 @@ public class CommonController {
         return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
+    private void updateOrderStatus(String amazonOrderId, JSONObject shippingObject,
+                                   JSONObject jsonObject, String intlTrackNum,
+                                   String salesMan, String salesCompany, Map<String, Object> user) {
+        Map<String, Object> shippingMap = shippingObject;
+        shippingMap.put("amazonOrderId", amazonOrderId);
+        commonService.updateAddress(shippingMap);
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("amazonOrderId", amazonOrderId);
+        paramMap.put("status", "4");
+        paramMap.put("intlTrackNum", intlTrackNum);
+        paramMap.put("transportCompany", jsonObject.getString("transportCompany"));
+        orderManageService.updateOrder(paramMap);
+        orderManageService.updateOrderItem(paramMap);
+        insertOperationLog(amazonOrderId, "2", "4", user.get("USER_ID").toString(), "");
+        Map<String, Object> shipMap = new HashMap<>();
+        shipMap.put("amazonOrderId", amazonOrderId);
+        shipMap.put("companyId", jsonObject.getString("transportCompany"));
+        shipMap.put("typeId", jsonObject.getString("ShippingMethodCode"));
+        shipMap.put("custId", jsonObject.getString("OrderNumber"));
+        shipMap.put("length", jsonObject.getString("Length"));
+        shipMap.put("width", jsonObject.getString("Width"));
+        shipMap.put("height", jsonObject.getString("Height"));
+        shipMap.put("packages", jsonObject.getString("PackageNumber"));
+        shipMap.put("weight", jsonObject.getString("Weight"));
+        shipMap.put("trackNum", intlTrackNum);
+        shipMap.put("orderCode", intlTrackNum);
+        shipMap.put("salesMan", salesMan);
+        shipMap.put("salesCompany", salesCompany);
+        shipMap.put("status", "0");
+        commonService.insertShipMent(shipMap);
+        JSONArray jsonArray = jsonObject.getJSONArray("ApplicationInfos");
+        for (int i = 0; i < jsonArray.size(); i++) {
+            Map<String, Object> customsInfo = jsonArray.getJSONObject(i);
+            customsInfo.put("custId", jsonObject.getString("OrderNumber"));
+            commonService.insertCustomsInfo(customsInfo);
+        }
+    }
+
     @ResponseBody
     @RequestMapping(value = "print", produces = "text/plain;charset=UTF-8")
     public String print(String orderNumbers, String companyId, String orderCode) {
@@ -552,7 +613,7 @@ public class CommonController {
                 map.put("data", url);
                 map.put("code", "0");
                 map.put("msg", "打印成功");
-            } else {
+            } else if(companyId.equals("YT")){
                 String result = HttpClientUtil.doPostRequest("http://api.yunexpress.com/LMS.API.Lable/Api/PrintUrl", orderNumbers);
                 JSONObject jsonObject = JSONObject.parseObject(result);
                 if (jsonObject.getString("ResultCode").equals("0000")) {
@@ -564,6 +625,8 @@ public class CommonController {
                     map.put("code", "-10");
                     map.put("msg", "打印失败");
                 }
+            }else if(companyId.equals("Equick")){
+
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -47,4 +47,7 @@ public class ShopManageService {
         return shopManageDao.selectShopsById(map);
     }
 
+    public List<Map<String, Object>> selectShopByCountry(Map<String, Object> map) {
+        return shopManageDao.selectShopByCountry(map);
+    }
 }

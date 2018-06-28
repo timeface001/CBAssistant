@@ -10,6 +10,7 @@
         on t3.company_id = t1.user_company
         WHERE t1.USER_ID = #{userId,jdbcType=VARCHAR}
         AND t1.USER_PWD = #{password,jdbcType=VARCHAR}
+        AND t1.USER_STATE = '1'
     </select>
     <update id="updateLogin" parameterType="java.util.Map">
         UPDATE T_USER_INFO

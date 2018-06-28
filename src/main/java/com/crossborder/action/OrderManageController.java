@@ -425,14 +425,34 @@ public class OrderManageController {
     /**
      * 获取佣金
      *
-     * @param session
      * @param amazonOrderId
      * @return
      */
     @ResponseBody
     @RequestMapping(value = "getCommission", produces = "text/plain;charset=UTF-8")
-    public String getCommission(HttpSession session, String amazonOrderId) {
+    public String getCommission(String amazonOrderId, String merchantId, String countryCode) {
         Map<String, Object> map = new HashMap<>();
+        try {
+            Map<String, Object> shopMap = new HashMap<>();
+            shopMap.put("merchantId", merchantId);
+            shopMap.put("countryCode", countryCode);
+            List<Map<String, Object>> shops = shopManageService.selectShopByCountry(shopMap);
+            List<FeeComponent> feeComponents = getOrderItemFees(shops.get(0), amazonOrderId);
+            double fees = 0;
+            for (int m = 0; m < feeComponents.size(); m++) {
+                fees = fees + feeComponents.get(m).getFeeAmount().getCurrencyAmount().doubleValue();
+            }
+            Map<String, Object> commissionMap = new HashMap<>();
+            commissionMap.put("amazonOrderId", amazonOrderId);
+            commissionMap.put("commission", fees);
+            orderManageService.updateOrderCommission(commissionMap);
+            map.put("code", "0");
+            map.put("msg", "获取成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("code", "-10");
+            map.put("msg", "获取失败");
+        }
         return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 

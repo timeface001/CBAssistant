@@ -23,7 +23,9 @@ public interface ShopManageDao {
 
     public List<Map<String, Object>> selectShopsById(Map<String, Object> map);
 
-    List<Map<String,Object>> selectShopsForImport();
+    public List<Map<String, Object>> selectShopsForImport();
 
-    Map<String,Object> selectShopById(@Param("id") String id);
+    public Map<String, Object> selectShopById(@Param("id") String id);
+
+    public List<Map<String, Object>> selectShopByCountry(Map<String, Object> map);
 }
