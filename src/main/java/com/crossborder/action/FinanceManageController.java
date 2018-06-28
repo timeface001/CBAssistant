@@ -245,7 +245,7 @@ public class FinanceManageController {
         Holder<String> _getFeeByOrderCode_stRegFee = new Holder<String>();
         Holder<String> _getFeeByOrderCode_feeWeight = new Holder<String>();
         port.getFeeByOrderCode(_headerRequest, _getFeeByOrderCode_orderCode, _getFeeByOrderCode_ask, _getFeeByOrderCode_sysTime, _getFeeByOrderCode_msg, _getFeeByOrderCode_baseFee, _getFeeByOrderCode_regFee, _getFeeByOrderCode_dealFee, _getFeeByOrderCode_insurance, _getFeeByOrderCode_totalFee, _getFeeByOrderCode_currencyCode, _getFeeByOrderCode_chargebackTime, _getFeeByOrderCode_chargebackWorkDay, _getFeeByOrderCode_shipTypeCode, _getFeeByOrderCode_subShipType, _getFeeByOrderCode_waybillCode, _getFeeByOrderCode_discount, _getFeeByOrderCode_otherFee, _getFeeByOrderCode_originBaseFee, _getFeeByOrderCode_originAddons, _getFeeByOrderCode_stDealFee, _getFeeByOrderCode_stRegFee, _getFeeByOrderCode_feeWeight);
-        if (StringUtils.isEmpty(_getFeeByOrderCode_totalFee.value)) {
+        if (!StringUtils.isEmpty(_getFeeByOrderCode_totalFee.value)) {
             Map<String, Object> paramMap = new HashMap<>();
             paramMap.put("orderId", orderId);
             paramMap.put("shippingPrice", _getFeeByOrderCode_totalFee.value);

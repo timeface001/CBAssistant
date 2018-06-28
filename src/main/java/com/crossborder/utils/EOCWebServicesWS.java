@@ -88,7 +88,7 @@ public class EOCWebServicesWS {
         return result;
     }
 
-    public EOCShipmentResponse RequestEOCShipment(EOCShipmentRequest EOCShipment) {
+    public static EOCShipmentResponse RequestEOCShipment(EOCShipmentRequest EOCShipment) {
         EOCShipmentResponse result = new EOCShipmentResponse();
         try {
             java.net.URL url = new java.net.URL(urlAdd);

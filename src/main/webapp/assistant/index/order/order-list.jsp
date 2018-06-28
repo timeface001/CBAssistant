@@ -488,7 +488,7 @@
                 {"data": "COMPANY_NAME"},
                 {"data": "RUNNINGTIME"},
                 {"data": "SHOP_NAME"},
-                {"data": "BUYERCOUNTRY"},
+                {"data": "COUNTRYNAME"},
                 {"data": "ITEMPRICE"},
                 {"data": "COST"},
                 {"data": "SHIPPINGPRICE"},
@@ -569,11 +569,11 @@
                     "data": "LOCALSTATUS",
                     "render": function (data, type, full) {
                         if (roleId == 100) {
-                            return "<a style='text-decoration:none' title='获取佣金'  id='edit' data-id='" + data + "'  )>获取佣金</a>" +
+                            return "<a style='text-decoration:none' title='获取佣金'  onClick=\"getCommission('" + full.AMAZONORDERID + "','" + full.MERCHANT_ID + "','" + full.BUYERCOUNTRY + "')\"'>获取佣金</a>" +
                                     "&nbsp;&nbsp;" +
                                     "<a style='text-decoration:none' title='删除'  onClick=\"delOrder('" + full.AMAZONORDERID + "')\"'>删除</a>";
                         } else {
-                            return "<a style='text-decoration:none' title='获取佣金'  id='edit' data-id='" + data + "'  )>获取佣金</a>";
+                            return "<a style='text-decoration:none' title='获取佣金'  onClick=\"getCommission('" + full.AMAZONORDERID + "','" + full.MERCHANT_ID + "','" + full.BUYERCOUNTRY + "')\"'>获取佣金</a>";
                         }
                     }
                 }
@@ -678,6 +678,33 @@
                 dataType: 'json',
                 data: {
                     "amazonOrderId": amazonOrderId
+                },
+                success: function (data) {
+                    layer.closeAll("loading");
+                    if (data.code == 0) {
+                        layer.msg(data.msg, {icon: 1, time: 1000});
+                        reloadTable(0)
+                    } else {
+                        layer.msg(data.msg, {icon: 2, time: 1000});
+                    }
+                },
+                error: function (data) {
+                    layer.msg(data.msg, {icon: 2, time: 1000});
+                }
+            });
+        });
+    }
+    function getCommission(amazonOrderId, merchantId, countryCode) {
+        layer.confirm('您确定要获取佣金吗？', function (index) {
+            layer.load();
+            $.ajax({
+                type: 'POST',
+                url: '<%=request.getContextPath()%>/order/getCommission',
+                dataType: 'json',
+                data: {
+                    "amazonOrderId": amazonOrderId,
+                    "merchantId": merchantId,
+                    "countryCode": countryCode
                 },
                 success: function (data) {
                     layer.closeAll("loading");
