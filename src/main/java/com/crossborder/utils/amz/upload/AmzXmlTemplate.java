@@ -312,7 +312,7 @@ public class AmzXmlTemplate {
         for (ProductItemVar var : vars) {
             i++;
             String saleStr = "";
-            if (var.getSalePrice() != null && var.getSalePrice().compareTo(BigDecimal.ZERO) > 0) {
+            if (var.getSalePrice() != null && var.getSalePrice().compareTo(BigDecimal.ZERO) > 0 & var.getSaleStartTime() != null) {
                 saleStr = " <Sale>" +
                         " <StartDate>" + GeneralUtils.localToUTC(var.getSaleStartTime()) + "</StartDate>" +
                         " <EndDate>" + GeneralUtils.localToUTC(var.getSaleEndTime()) + "</EndDate>" +
