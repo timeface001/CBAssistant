@@ -48,27 +48,7 @@
     <select id="getList" parameterType="java.lang.String" resultType="java.util.Map">
         <![CDATA[
 
-
-
-
-
-
-
-
-
-
-
 			${sqlText}
-
-
-
-
-
-
-
-
-
-
 
         ]]>
     </select>
@@ -76,25 +56,7 @@
         <![CDATA[
 
 
-
-
-
-
-
-
-
-
-
 			${sqlText}
-
-
-
-
-
-
-
-
-
 
 
         ]]>
@@ -206,5 +168,12 @@
         SELECT * FROM T_PRODUCT_TYPE_LOCAL
         WHERE L_C_PID = #{#id,jdbcType=VARCHAR}
         order by l_c_name
+    </select>
+    <select id="selectShipMent" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT * FROM T_ORDER_SHIPMENT
+        WHERE 1=1
+        <if test="orderId !=null and orderId !=''">
+            AND ORDER_ID = #{orderId,jdbcType=VARCHAR}
+        </if>
     </select>
 </mapper>

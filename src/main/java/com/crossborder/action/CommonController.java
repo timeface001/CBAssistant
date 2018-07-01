@@ -636,8 +636,60 @@ public class CommonController {
             } else if (companyId.equals("Equick")) {
                 Authentication authentication = new Authentication("W160960", "W160960");
                 EOCQuickLabelRequest request = new EOCQuickLabelRequest();
-                request.setEquickWBNo(orderCode);
                 request.setAuthentication(authentication);
+                /*request.setQuickLabelType("Lbl10x10");*/
+                request.setEquickWBNo(orderCode);
+                EOCQuickLabelResponse response = EOCWebServicesWS.RequestEOCQuickLabel(request);
+                if (response.getQuickLabelCompleted().getReturnValue() == -1) {
+                    map.put("code", "0");
+                    map.put("msg", "打印成功");
+                } else {
+                    map.put("code", "-10");
+                    map.put("msg", "打印失败");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("code", "-10");
+            map.put("msg", "打印失败");
+        }
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "printByOrderId", produces = "text/plain;charset=UTF-8")
+    public String printByOrderId(String orderId) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            Map<String, Object> paramMap = new HashMap<>();
+            paramMap.put("orderId", orderId);
+            Map<String, Object> shipMent = commonService.selectShipMent(paramMap).get(0);
+            String companyId = shipMent.get("TRANS_COMPANY_ID").toString();
+            String orderCode = shipMent.get("ORDER_CODE").toString();
+            String[] custOrderIds = {shipMent.get("CUST_ORDER_ID").toString()};
+            if (companyId.equals("SFC")) {
+                String url = "http://www.sendfromchina.com/api/label?orderCodeList=" + orderCode + "&printType=1&print_type=pdf&printSize=3&printSort=1";
+                map.put("data", url);
+                map.put("code", "0");
+                map.put("msg", "打印成功");
+            } else if (companyId.equals("YT")) {
+                String result = HttpClientUtil.doPostRequest("http://api.yunexpress.com/LMS.API.Lable/Api/PrintUrl", JSON.toJSONString(custOrderIds));
+                JSONObject jsonObject = JSONObject.parseObject(result);
+                if (jsonObject.getString("ResultCode").equals("0000")) {
+                    JSONObject item = jsonObject.getJSONArray("Item").getJSONObject(0);
+                    map.put("data", item.getString("Url"));
+                    map.put("code", "0");
+                    map.put("msg", "打印成功");
+                } else {
+                    map.put("code", "-10");
+                    map.put("msg", "打印失败");
+                }
+            } else if (companyId.equals("Equick")) {
+                Authentication authentication = new Authentication("W160960", "W160960");
+                EOCQuickLabelRequest request = new EOCQuickLabelRequest();
+                request.setAuthentication(authentication);
+                /*request.setQuickLabelType("Lbl10x10");*/
+                request.setEquickWBNo(orderCode);
                 EOCQuickLabelResponse response = EOCWebServicesWS.RequestEOCQuickLabel(request);
                 if (response.getQuickLabelCompleted().getReturnValue() == -1) {
                     map.put("code", "0");

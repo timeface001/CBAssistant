@@ -537,6 +537,8 @@
                                 return "<a style='text-decoration:none' title='退款'  onClick=\"updateOrder(6,'" + full.ORDERITEMID + "')\"'>退款</a>" +
                                         "&nbsp;&nbsp;&nbsp;&nbsp;" +
                                         "<a style='text-decoration:none' title='妥投'  onClick=\"updateOrder(7,'" + full.ORDERITEMID + "')\"'>妥投</a>" +
+                                        "&nbsp;&nbsp;&nbsp;&nbsp;" +
+                                        "<a style='text-decoration:none' title='打印'  onClick=\"printByOrderId('" + full.ORDERITEMID + "')\"'>打印</a>" +
                                         "&nbsp;&nbsp;&nbsp;&nbsp;";
                             }
                         } else if (data == 5 || data == 6 || data == 7 || data == 8) {
@@ -1017,7 +1019,27 @@
                 if (data.code == 0) {
                     layer_show("打印标签", data.data);
                 } else {
-                    layer.msg(data.msg, {icon: 1, time: 2000});
+                    layer.msg(data.msg, {icon: 2, time: 2000});
+                }
+            },
+            error: function (data) {
+                layer.msg("请求错误！", {icon: 2, time: 2000});
+            }
+        });
+    }
+    function printByOrderId(orderItemId) {
+        $.ajax({
+            type: 'POST',
+            url: '<%=request.getContextPath()%>/common/printByOrderId',
+            dataType: 'json',
+            "data": {
+                "orderId": amazonOrderId,
+            },
+            success: function (data) {
+                if (data.code == 0) {
+                    layer_show("打印标签", data.data);
+                } else {
+                    layer.msg(data.msg, {icon: 2, time: 2000});
                 }
             },
             error: function (data) {

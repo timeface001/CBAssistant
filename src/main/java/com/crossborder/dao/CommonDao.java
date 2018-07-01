@@ -36,4 +36,6 @@ public interface CommonDao {
     public int insertCustomsInfo(Map<String, Object> map);
 
     public List<Map<String, Object>> selectTypes(String id);
+
+    public List<Map<String, Object>> selectShipMent(Map<String, Object> map);
 }

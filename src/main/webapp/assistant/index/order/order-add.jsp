@@ -35,51 +35,90 @@
 <article class="page-container">
     <form class="form form-horizontal" id="addShopForm">
         <input type="hidden" value="<%=id%>" name="id">
-        <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>店铺名称：</label>
-            <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="" placeholder="" id="shopName" name="shopName">
+        <div class="panel panel-success">
+            <div class="panel-header">订单信息</div>
+            <div class="panel-body">
+                <div class="row cl">
+                    <label class="form-label col-xs-1 col-sm-1"><span class="c-red">*</span>订单号：</label>
+                    <div class="formControls col-xs-2 col-sm-2">
+                        <input type="text" class="input-text" value="" placeholder="" id="shopName" name="shopName">
+                    </div>
+                    <label class="form-label col-xs-1 col-sm-1">国家：</label>
+                    <div class="formControls col-xs-2 col-sm-2">
+                        <select id="buyerCounty" name="buyerCounty" class="select" style="height: 32px">
+                            <option value="">请选择</option>
+                        </select>
+                    </div>
+                    <label class="form-label col-xs-1 col-sm-1">业务员：</label>
+                    <div class="formControls col-xs-2 col-sm-2">
+                        <select id="salesMan" name="salesMan" class="select" style="height: 32px">
+                            <option value="">请选择</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row cl">
+                    <label class="form-label col-xs-1 col-sm-1">公司：</label>
+                    <div class="formControls col-xs-2 col-sm-2">
+                        <select id="salesCompany" name="salesCompany" class="select" style="height: 32px">
+                            <option value="">请选择</option>
+                        </select>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>Amazon账号：</label>
-            <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="" placeholder="" id="amazonAccount" name="amazonAccount">
-            </div>
-        </div>
-        <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>授权国家：</label>
-            <div class="formControls col-xs-8 col-sm-9">
-                <select id="countryCode" name="countryCode" class="select" style="height: 32px">
-                    <option value="">请选择</option>
-                </select>
-            </div>
-        </div>
-        <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>Merchant ID：</label>
-            <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="" placeholder="" id="merchantId" name="merchantId">
-            </div>
-        </div>
-        <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>AWS Access Key ID：</label>
-            <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="" placeholder="" id="accesskeyId" name="accesskeyId">
-            </div>
-        </div>
-        <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>Secret Key：</label>
-            <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="" placeholder="" id="secretKey" name="secretKey">
-            </div>
-        </div>
-        <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-3">状态：</label>
-            <div class="formControls col-xs-8 col-sm-9">
-                <select id="state" name="state" class="select" style="height: 32px">
-                    <option value="1" selected>启用</option>
-                    <option value="0">停用</option>
-                </select>
+        <div class="panel panel-success">
+            <div class="panel-header">收货人信息</div>
+            <div class="panel-body">
+                <div class="row cl">
+                    <label class=" col-xs-1 col-sm-1 text-r">收货人：</label>
+                    <div class=" col-xs-2 col-sm-2">
+                        <input type="text" id="name" placeholder=" "
+                               class="input-text" readonly></div>
+                    <label class=" col-xs-2 col-sm-2 text-r">收货公司：</label>
+                    <div class=" col-xs-2 col-sm-2">
+                        <input type="text" id="company" placeholder=" "
+                               class="input-text" readonly></div>
+                    <label class=" col-xs-2 col-sm-2 text-r">电话：</label>
+                    <div class=" col-xs-2 col-sm-2">
+                        <input type="text" id="phone" placeholder=" "
+                               class="input-text" readonly></div>
+                </div>
+                <div class="row cl mt-10">
+                    <label class=" col-xs-1 col-sm-1 text-r">国家：</label>
+                    <div class=" col-xs-2 col-sm-2">
+                        <input type="text" id="countryCode" placeholder=" "
+                               class="input-text" readonly></div>
+                    <label class=" col-xs-2 col-sm-2 text-r">邮编：</label>
+                    <div class=" col-xs-2 col-sm-2">
+                        <input type="text" id="postalCode" placeholder=" "
+                               class="input-text" readonly></div>
+                </div>
+                <div class="row cl mt-10">
+                    <label class=" col-xs-1 col-sm-1 text-r">城市：</label>
+                    <div class=" col-xs-2 col-sm-2">
+                        <input type="text" id="city" placeholder=" "
+                               class="input-text" readonly></div>
+                    <label class=" col-xs-2 col-sm-2 text-r">州名：</label>
+                    <div class=" col-xs-2 col-sm-2">
+                        <input type="text" id="stateOrRegion" placeholder=" "
+                               class="input-text" readonly></div>
+                </div>
+                <div class="row cl mt-10">
+                    <label class=" col-xs-1 col-sm-1 text-r">地址一：</label>
+                    <div class=" col-xs-5 col-sm-5">
+                        <input type="text" id="addressLine1" placeholder=" "
+                               class="input-text" readonly></div>
+                    <label class=" col-xs-1 col-sm-1 text-r">地址二：</label>
+                    <div class=" col-xs-5 col-sm-5">
+                        <input type="text" id="addressLine2" placeholder=" "
+                               class="input-text" readonly></div>
+                </div>
+                <div class="row cl mt-10">
+                    <label class=" col-xs-1 col-sm-1 text-r">地址三：</label>
+                    <div class=" col-xs-5 col-sm-5">
+                        <input type="text" id="addressLine3" placeholder=" "
+                               class="input-text" readonly></div>
+                </div>
             </div>
         </div>
         <div class="row cl">

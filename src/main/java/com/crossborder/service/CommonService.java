@@ -66,4 +66,8 @@ public class CommonService {
     public List<Map<String, Object>> selectTypes(String id) {
         return commonDao.selectTypes(id);
     }
+
+    public List<Map<String, Object>> selectShipMent(Map<String, Object> map) {
+        return commonDao.selectShipMent(map);
+    }
 }
