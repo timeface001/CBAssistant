@@ -513,7 +513,7 @@
                     "targets": [1],
                     "data": "SMALLIMAGE",
                     "render": function (data, type, full) {
-                        return "<img  src='" + data + "'/>";
+                        return "<img  src='" + data.split(",")[0] + "'/>";
                     }
                 },
                 {
