@@ -85,17 +85,13 @@
             <a href="javascript:;" onclick="reloadTable(1)" class="btn btn-default radius">未认领</a>
             <a href="javascript:;" onclick="reloadTable(2)" class="btn btn-default radius">已认领</a>
         </div>--%>
-        <%--<div class="cl pd-5 bg-1 bk-gray" id="count-div"><span class="l"> <a href="javascript:;"
-                                                                             onclick="deleteProduct(null)"
-                                                                             class="btn btn-danger radius"><i
-                class="Hui-iconfont">
-            &#xe6e2;</i> 批量删除</a>
+        <div class="cl pd-5 bg-1 bk-gray" id="count-div"><span class="l">
             <a href="javascript:;"
-               onclick="claimProduct(null)"
-               class="btn btn-danger radius"><i
+               onclick="preBatchPublish()"
+               class="btn  btn-primary radius"><i
                     class="Hui-iconfont">
-                &#xe6e2;</i> 批量认领</a>
-            </span></div>--%>
+                &#xe619;</i> 批量发布</a>
+            </span></div>
         <table id="productTable" class="table table-border table-bordered table-bg table-hover mt-10">
             <thead>
             <tr class="text-c">
@@ -303,7 +299,11 @@
                     "targets": [0],
                     "data": "id",
                     "render": function (data, type, full) {
-                        return "<input type='checkbox' value=" + full.id + ">"
+                        if (full.updateState == "1") {
+                            return "<input type='checkbox' value=" + full.id + ">";
+                        } else {
+                            return "";
+                        }
                     }
                 },
                 {
@@ -360,6 +360,29 @@
         });
         layer.full(index);
     }
+
+    /**
+     * 批量移入待发布
+     * @param ids
+     */
+    function preBatchPublish() {
+        var ids = getIDs();
+        if (ids == null || $.trim(ids).length == 0) {
+            layer.msg('请选择需要批量发布的商品!', {icon: 5, time: 1000});
+            return;
+        }
+        var index = layer.open({
+            type: 2,
+            title: "发布产品",
+            content: '<%=request.getContextPath()%>/product/publish/detail?id=' + ids + "&type=2",
+            end: function () {
+                location.reload();
+            }
+        });
+        layer.full(index);
+    }
+
+
 
     /*产品-删除*/
     function deleteProduct(id) {

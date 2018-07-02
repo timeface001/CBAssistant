@@ -77,13 +77,15 @@
         </div>
 
 
-        <div class="layui-form-item">
-            <label class="layui-form-label">产品标题</label>
-            <div class="layui-input-block">
-                <input type="text" name="itemName" value="${product.itemName}" id="itemName"
-                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+        <c:if test="${type!='2'}" >
+            <div class="layui-form-item">
+                <label class="layui-form-label">产品标题</label>
+                <div class="layui-input-block">
+                    <input type="text" name="itemName" value="${product.itemName}" id="itemName"
+                           lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                </div>
             </div>
-        </div>
+        </c:if>
 
         <div class="layui-form-item">
             <label class="layui-form-label">产品分类</label>
@@ -146,7 +148,7 @@
             </div>
         </div>
 
-        <div class="layui-form-item">
+        <%--<div class="layui-form-item">
             <label class="layui-form-label">商品重量</label>
             <div class="layui-input-block">
                 <input type="text" name="itemWeight" value="${product.itemWeight}" id="itemWeight"
@@ -161,7 +163,7 @@
                        id="websiteShippingWeight"
                        lay-verify="required" placeholder="" autocomplete="off" class="layui-input ">
             </div>
-        </div>
+        </div>--%>
 
 
         <div class="layui-form-item">
@@ -169,16 +171,6 @@
             <div class="layui-input-block">
                 <input type="radio" name="websiteType" value="FBM" title="FBM" checked>
                 <input type="radio" name="websiteType" value="FBA" title="FBA">
-            </div>
-        </div>
-
-        <div class="layui-form-item">
-            <label class="layui-form-label">分类必填参数</label>
-            <div class="layui-input-block">
-                <select name="">
-                    <option value="">请选择</option>
-                    <option value="shoes">鞋子</option>
-                </select>
             </div>
         </div>
 
@@ -386,28 +378,56 @@
             var form = layui.form;
             form.on('submit', function (data) {
                 data.field['type'] = '${type}';
+                //data.field['ids'] = '${id}';
+                //data.field['type'] = '${type}';
                 layer.load();
-                $.ajax({
-                    type: 'POST',
-                    url: '<%=request.getContextPath()%>/product/publish',
-                    dataType: 'json',
-                    data: data.field,
-                    success: function (data, index) {
-                        layer.closeAll('loading');
-                        if (data.success) {
-                            layer.msg(data.msg, {icon: 6, time: 2000});
-                           /* setTimeout(function () {
-                                layer_close(index);
-                            }, 1000);*/
-                        } else {
+                if(type=="2"){//批量预发布
+                    $.ajax({
+                        type: 'POST',
+                        url: '<%=request.getContextPath()%>/product/publish/batch/pre',
+                        dataType: 'json',
+                        data: data.field,
+                        success: function (data, index) {
+                            layer.closeAll('loading');
+                            if (data.success) {
+                                layer.msg(data.msg, {icon: 6, time: 2000});
+                                /* setTimeout(function () {
+                                     layer_close(index);
+                                 }, 1000);*/
+                            } else {
+                                layer.msg(data.msg, {icon: 5, time: 1000});
+                            }
+                        },
+                        error: function (data) {
+                            layer.closeAll('loading');
                             layer.msg(data.msg, {icon: 5, time: 1000});
                         }
-                    },
-                    error: function (data) {
-                        layer.closeAll('loading');
-                        layer.msg(data.msg, {icon: 5, time: 1000});
-                    }
-                });
+                    });
+                }else{
+                    $.ajax({
+                        type: 'POST',
+                        url: '<%=request.getContextPath()%>/product/publish',
+                        dataType: 'json',
+                        data: data.field,
+                        success: function (data, index) {
+                            layer.closeAll('loading');
+                            if (data.success) {
+                                layer.msg(data.msg, {icon: 6, time: 2000});
+                                if(type=="1"){
+                                     setTimeout(function () {
+                                     layer_close(index);
+                                 }, 1000);
+                                }
+                            } else {
+                                layer.msg(data.msg, {icon: 5, time: 1000});
+                            }
+                        },
+                        error: function (data) {
+                            layer.closeAll('loading');
+                            layer.msg(data.msg, {icon: 5, time: 1000});
+                        }
+                    });
+                }
             });
 
             form.on('select(shop)', function (data) {

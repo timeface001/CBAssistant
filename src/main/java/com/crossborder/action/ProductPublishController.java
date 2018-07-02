@@ -82,7 +82,7 @@ public class ProductPublishController extends BaseController {
     @RequestMapping(value = "/product/publish/detail", produces = "text/plain;charset=UTF-8")
     public ModelAndView detail(HttpSession session, String id, HttpServletRequest request) {
         ModelAndView view = new ModelAndView("forward:/assistant/index/product/product_upload_edit.jsp");
-        ProductAmzUpload product = productManagerService.selectAmzUploadProduct(id);
+        ProductAmzUpload product = null;//productManagerService.selectAmzUploadProduct(id);
         //request.setAttribute("product", product);
         //ProductAmzUpload product = productManagerService.selectAmzUploadProduct(id);
         //request.setAttribute("product", product);
@@ -91,16 +91,24 @@ public class ProductPublishController extends BaseController {
             product = productManagerService.selectAmzUploadProduct(id);
             request.setAttribute("type", 1);
         } else {
-            product = productManagerService.selectOneByAmzID(id, null);
-            if (product == null || product.getId() == null) {
-                product = new ProductAmzUpload();
-                ClaimProduct claimProduct = productManagerService.selectClaimProduct(id);
-                product.setId(claimProduct.getId());
-                product.setItemName(claimProduct.getItemCn());
-                request.setAttribute("type", 0);
+            if (type.equals("0")) {
+                product = productManagerService.selectOneByAmzID(id, null);
+                if (product == null || product.getId() == null) {
+                    product = new ProductAmzUpload();
+                    ClaimProduct claimProduct = productManagerService.selectClaimProduct(id);
+                    product.setId(claimProduct.getId());
+                    product.setItemName(claimProduct.getItemCn());
+                    request.setAttribute("type", 0);
+                } else {
+                    request.setAttribute("type", 0);
+                    product.setId(id);
+                }
             } else {
-                request.setAttribute("type", 0);
+
+                request.setAttribute("type", 2);
+                product=new ProductAmzUpload();
                 product.setId(id);
+
             }
         }
         request.setAttribute("product", product);
@@ -151,6 +159,37 @@ public class ProductPublishController extends BaseController {
     @ResponseBody
     public String batchPublish(String ids) {
         productManagerService.batchPublish(new ArrayList<String>(Arrays.asList(ids.split(","))));
+        return JSON.toJSONString(ResponseGen.genSuccess());
+    }
+
+    @RequestMapping(value = "/product/publish/batch/pre", produces = "text/plain;charset=UTF-8")
+    @ResponseBody
+    public String batchPublishPre(ProductAmzUpload product) {
+
+        String[] strArr = product.getId().split(",");
+        System.out.println("claim publish start.....");
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", product.getShopId());
+        List<Map<String, Object>> list = shopManageService.selectShops(params);
+
+        Map<String, Object> shop = list.get(0);
+        for (String id : strArr) {
+            try {
+                id = productManagerService.prePublishProduct(id, shop.get("COUNTRY_CODE").toString(), getUserId(), product.getShopId());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            logger.debug("publish from claim list: upload id :" + id);
+            //ProductAmzUpload product1 = productAmzUploadDao.selectByPrimaryKey(id);
+            System.out.println("publish product:" + id + " to shop:" + product.getShopId());
+            product.setProductAmzId(product.getId());
+            product.setId(id);
+            //product.setAmzSku(product1.getAmzSku());
+
+            productAmzUploadDao.updateByPrimaryKeySelective(product);
+            product = productAmzUploadDao.selectByPrimaryKey(product.getId());
+            productManagerService.uploadProduct(product);
+        }
         return JSON.toJSONString(ResponseGen.genSuccess());
     }
 

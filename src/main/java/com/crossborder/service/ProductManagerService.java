@@ -438,7 +438,13 @@ public class ProductManagerService {
         upload.setLanguageId(languageId);
         upload.setItemName(productName);
         upload.setProductDescription(GeneralUtils.removeAttr(productDesc));
+        try {
+            upload.setItemWeight(new BigDecimal(product.getProductWeight()));
+            upload.setWebsiteShippingWeight(new BigDecimal(product.getDeliveryWeight()));
 
+        } catch (Exception e) {
+            System.out.println("商品或运输重量为空");
+        }
         generateUploadKeywords(upload, keywords);
 
         return upload;

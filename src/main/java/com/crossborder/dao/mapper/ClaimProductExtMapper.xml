@@ -81,6 +81,8 @@
         <result column="b_L_C_NAME" jdbcType="VARCHAR" property="typeName"/>
         <result column="c_USER_NAME" jdbcType="VARCHAR" property="userName"/>
         <result column="a_IS_PREPUBLISH" jdbcType="CHAR" property="isPrepublish"/>
+        <result column="a_PRODUCT_WEIGHT" jdbcType="VARCHAR" property="productWeight"/>
+        <result column="a_DELIVERY_WEIGHT" jdbcType="VARCHAR" property="deliveryWeight"/>
     </resultMap>
     <sql id="Base_Column_List">
         a.ID as a_ID, a.SKU as a_SKU, a.CREATE_USER as a_CREATE_USER, a.PRICE as a_PRICE,
@@ -95,7 +97,7 @@
         a.PRODUCT_DESCRIPTION_DE as a_PRODUCT_DESCRIPTION_DE, a.PRODUCT_DESCRIPTION_IT as a_PRODUCT_DESCRIPTION_IT,
         a.PRODUCT_DESCRIPTION_ES as a_PRODUCT_DESCRIPTION_ES, a.PRODUCT_DESCRIPTION_JP as a_PRODUCT_DESCRIPTION_JP,
         a.PRODUCT_DESCRIPTION_CN as a_PRODUCT_DESCRIPTION_CN, a.CREATE_TIME as a_CREATE_TIME,
-        a.UPDATE_TIME as a_UPDATE_TIME, a.PRODUCT_ID as a_PRODUCT_ID, a.UPDATE_STATE as a_UPDATE_STATE,
+        a.UPDATE_TIME as a_UPDATE_TIME, a.PRODUCT_ID as a_PRODUCT_ID, a.UPDATE_STATE as a_UPDATE_STATE,a.PRODUCT_WEIGHT as a_PRODUCT_WEIGHT,a.DELIVERY_WEIGHT as a_DELIVERY_WEIGHT,
         a.SKU_TYPE as a_SKU_TYPE, a.SOURCE as a_SOURCE, a.TYPE_ID as a_TYPE_ID, a.IS_PREPUBLISH as a_IS_PREPUBLISH,b.L_C_NAME as b_L_C_NAME,
         c.USER_NAME as c_USER_NAME
     </sql>
@@ -270,6 +272,13 @@
             <if test="isPrepublish != null">
                 IS_PREPUBLISH,
             </if>
+            <if test="productWeight != null">
+                PRODUCT_WEIGHT,
+            </if>
+
+            <if test="deliveryWeight != null">
+                DELIVERY_WEIGHT,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             SEQ_PRODUCT_AMZ_ID.nextval,
@@ -391,6 +400,13 @@
             </if>
             <if test="isPrepublish != null">
                 #{isPrepublish,jdbcType=CHAR},
+            </if>
+            <if test="productWeight != null">
+                #{productWeight,jdbcType=VARCHAR},
+            </if>
+
+            <if test="deliveryWeight != null">
+                #{deliveryWeight,jdbcType=VARCHAR},
             </if>
         </trim>
     </insert>
@@ -514,6 +530,13 @@
             </if>
             <if test="isPrepublish != null">
                 IS_PREPUBLISH = #{isPrepublish,jdbcType=CHAR},
+            </if>
+            <if test="productWeight != null">
+                PRODUCT_WEIGHT=#{productWeight,jdbcType=VARCHAR},
+            </if>
+
+            <if test="deliveryWeight != null">
+                DELIVERY_WEIGHT= #{deliveryWeight,jdbcType=VARCHAR},
             </if>
         </set>
         where ID = #{id,jdbcType=VARCHAR}

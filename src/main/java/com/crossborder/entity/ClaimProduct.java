@@ -93,6 +93,26 @@ public class ClaimProduct {
 
     protected String isPrepublish;
 
+    protected String productWeight;
+
+    protected String deliveryWeight;
+
+    public String getProductWeight() {
+        return productWeight;
+    }
+
+    public void setProductWeight(String productWeight) {
+        this.productWeight = productWeight;
+    }
+
+    public String getDeliveryWeight() {
+        return deliveryWeight;
+    }
+
+    public void setDeliveryWeight(String deliveryWeight) {
+        this.deliveryWeight = deliveryWeight;
+    }
+
     public String getId() {
         return id;
     }

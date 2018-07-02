@@ -117,6 +117,22 @@
                 <button class="layui-btn translate1" type="button" style="margin-bottom: 75px;">一键翻译</button>
             </div>
         </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">商品重量</label>
+            <div class="layui-input-block">
+                <input type="text" name="productWeight" lay-verify="required" placeholder="" autocomplete="off"
+                       class="layui-input" value="${product.productWeight}">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">运输重量</label>
+            <div class="layui-input-block">
+                <input type="text" name="delieveryWeight" lay-verify="required" placeholder="" autocomplete="off"
+                       class="layui-input" value="${product.deliveryWeight}">
+            </div>
+        </div>
         </div>
 
         <div id="skuMutiDiv">
