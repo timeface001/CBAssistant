@@ -174,15 +174,25 @@
         t2.smallImage,
         t4.company_name,
         t1.paymentmethod,
-        wm_concat(t2.SELLERSKU) sku,
-        wm_concat(t2.ASIN) asin,
+        t2.sku,
+        t2.asin,
         trunc(sum(t2.itempricermb + t2.shippingPricermb + t1.commission),2) itemprice,
         trunc(sum(t2.cost),2) cost,
         trunc(sum(t2.refundment),2) refundment,
         trunc(sum(t2.itempricermb - t2.cost - t2.refundment - t1.shippingPrice + t2.shippingPricermb + t1.commission),2)
         profit
         from T_ORDER t1
-        left join t_order_item t2
+        left join
+        (select amazonorderid,
+        wm_concat(smallimage) smallimage,
+        wm_concat(sellersku) sku,
+        wm_concat(asin) asin,
+        trunc(sum(itempricermb),2) itempricermb,
+        trunc(sum(shippingPricermb),2) shippingPricermb,
+        trunc(sum(refundment),2) refundment,
+        trunc(sum(cost),2) cost
+        from t_order_item
+        group by amazonorderid) t2
         on t2.amazonorderid = t1.amazonorderid
         left join t_country t3
         on t3.id = t1.buyercountry
@@ -251,7 +261,9 @@
         t2.smallImage,
         t3.exrate,
         t4.company_name,
-        t1.paymentmethod
+        t1.paymentmethod,
+        t2.sku,
+        t2.asin
         ORDER BY t1.purchaseDate DESC
     </select>
 
