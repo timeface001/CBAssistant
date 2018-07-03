@@ -3,7 +3,7 @@ package com.crossborder.entity;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class ProductAmzUpload {
+public class ProductAmzUpload implements Cloneable{
     private String id;
 
     private String languageId;
@@ -712,5 +712,16 @@ public class ProductAmzUpload {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    @Override
+    public ProductAmzUpload clone() {
+        ProductAmzUpload stu = null;
+        try{
+            stu = (ProductAmzUpload)super.clone();
+        }catch(CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return stu;
     }
 }

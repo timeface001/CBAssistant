@@ -173,22 +173,23 @@ public class ProductPublishController extends BaseController {
         List<Map<String, Object>> list = shopManageService.selectShops(params);
 
         Map<String, Object> shop = list.get(0);
-        for (String id : strArr) {
+        for (String aid : strArr) {
+            ProductAmzUpload productTT=product.clone();
+
+            String pid=null;
             try {
-                id = productManagerService.prePublishProduct(id, shop.get("COUNTRY_CODE").toString(), getUserId(), product.getShopId());
+                pid = productManagerService.prePublishProduct(aid, shop.get("COUNTRY_CODE").toString(), getUserId(), productTT.getShopId());
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            logger.debug("publish from claim list: upload id :" + id);
-            //ProductAmzUpload product1 = productAmzUploadDao.selectByPrimaryKey(id);
-            System.out.println("publish product:" + id + " to shop:" + product.getShopId());
-            product.setProductAmzId(product.getId());
-            product.setId(id);
-            //product.setAmzSku(product1.getAmzSku());
+            logger.debug("publish from claim list: upload id :" + pid);
+            System.out.println("publish product:" + pid + " to shop:" + productTT.getShopId());
+            productTT.setProductAmzId(aid);
+            productTT.setId(pid);
 
-            productAmzUploadDao.updateByPrimaryKeySelective(product);
-            product = productAmzUploadDao.selectByPrimaryKey(product.getId());
-            productManagerService.uploadProduct(product);
+            productAmzUploadDao.updateByPrimaryKeySelective(productTT);
+            productTT = productAmzUploadDao.selectByPrimaryKey(productTT.getId());
+            productManagerService.uploadProduct(productTT);
         }
         return JSON.toJSONString(ResponseGen.genSuccess());
     }

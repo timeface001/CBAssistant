@@ -5,7 +5,7 @@
     <select id="selectListByProductId" parameterType="java.lang.String" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from T_PRODUCT_ITEM_VAR a WHERE a.PRODUCT_ID=#{productId}
+        from T_PRODUCT_ITEM_VAR a WHERE a.PRODUCT_ID=#{productId} ORDER BY SKU ASC
     </select>
 
     <delete id="clear" parameterType="java.lang.String">

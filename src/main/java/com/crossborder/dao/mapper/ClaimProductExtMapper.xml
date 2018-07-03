@@ -406,7 +406,7 @@
             </if>
 
             <if test="deliveryWeight != null">
-                #{deliveryWeight,jdbcType=VARCHAR},
+                #{deliveryWeight,jdbcType=VARCHAR}
             </if>
         </trim>
     </insert>
@@ -536,7 +536,7 @@
             </if>
 
             <if test="deliveryWeight != null">
-                DELIVERY_WEIGHT= #{deliveryWeight,jdbcType=VARCHAR},
+                DELIVERY_WEIGHT= #{deliveryWeight,jdbcType=VARCHAR}
             </if>
         </set>
         where ID = #{id,jdbcType=VARCHAR}
