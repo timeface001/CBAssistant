@@ -147,6 +147,8 @@ public class AmzUpload {
                         submitIds.add(feeDto.getData());
                     }
 
+                    System.out.println("sids:"+ JSON.toJSONString(submitIds));
+
 
                     try {
                         Thread.sleep(20000);

@@ -129,7 +129,7 @@
         <div class="layui-form-item">
             <label class="layui-form-label">运输重量</label>
             <div class="layui-input-block">
-                <input type="text" name="delieveryWeight" lay-verify="required" placeholder="" autocomplete="off"
+                <input type="text" name="deliveryWeight" lay-verify="required" placeholder="" autocomplete="off"
                        class="layui-input" value="${product.deliveryWeight}">
             </div>
         </div>
@@ -766,7 +766,7 @@
                             $(".skuBtn").click();
                             form.render(null, 'skuRender');
                         } else if (vvType == "material") {
-                            $("#skuRender button").parent().prev().find('input').val(vars[i].colorMap);
+                            $("#skuRender button").parent().prev().find('input').val(vars[i].materialType);
                             $(".skuBtn").click();
                             form.render(null, 'skuRender');
                         } else if (vvType == "size-material") {
@@ -992,6 +992,26 @@
                         layer.msg("请选择变种主题！", {icon: 5, time: 1000});
                         return false;
                     }
+
+                    var allKey = [];
+                    var allValue = [];
+
+                    $("#skuMutiPath>div").each(function (i, val) {
+                        if ( i % 3 == 0) {
+
+                            var imgs = [];
+                            $(val).next().next().find("img").each(function (k, vv) {
+                                imgs.push($(vv).attr("src").substring(55));
+                            });
+
+                            if (imgs.length > 0) {
+                                allKey.push($(val).attr("val"));
+                                allValue.push(imgs);
+                            }
+                        }
+                    });
+
+
                     var skuVar = [];
                     $("#skuTable tbody tr").each(function (i, val) {
                         var item = {};
@@ -1000,6 +1020,12 @@
                             layer.msg("请上传变体图片", {icon: 5, time: 1000});
                             return false;
                         }
+
+                        var key=$(val).attr("val");
+                        var index=allKey.indexOf(key);
+
+                        itemImgs=allValue[index];
+
                         item["productId"] = $("input[name='id']").val();
                         item["mainPath"] = itemImgs[0];
                         item["attachPath"] = itemImgs.slice(1).join(",");
@@ -1060,6 +1086,8 @@
                         skuVar.push(item);
                     });
                 }
+
+                //return false;
                 /* if (!isItemImags) {
                  layer.msg("请上传变体图片", {icon: 5, time: 1000});
                  return false;
@@ -1167,6 +1195,15 @@
             }
             $("#skuTable tbody").html(dom);
             initSkuSaleDate();
+            //监听价格变化
+            $("#skuTable .price").on('blur', function () {
+                var $this = $(this);
+                $("#skuTable .price").each(function (i, val) {
+                    if ($(val).val() == null || $.trim($(val).val()).length == 0) {
+                        $(val).val($this.val());
+                    }
+                });
+            });
         }
 
         function getTR(isSingle, first, second) {
@@ -1208,7 +1245,7 @@
         }
 
         function getThead(desc) {
-            return "<tr> <th>sku</th>" + desc + "<th>价格</th> <th>促销价</th> <th>促销时间</th> <th>数量</th></tr> ";
+            return "<tr> <th>sku</th>" + desc + "<th width='50px;'>价格</th> <th width='50px;'>促销价</th> <th>促销时间</th> <th>数量</th></tr> ";
         }
 
         function genSkuTypeDom(type) {

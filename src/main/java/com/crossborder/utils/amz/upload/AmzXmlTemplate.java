@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.math.BigDecimal;
 import java.util.List;
 
+import static java.math.BigDecimal.ROUND_DOWN;
 import static java.math.BigDecimal.ROUND_HALF_DOWN;
 
 public class AmzXmlTemplate {
@@ -68,41 +69,44 @@ public class AmzXmlTemplate {
 
 
     private static String getPriceStr(BigDecimal rate, BigDecimal price, String code) {
+        if (rate.compareTo(BigDecimal.ONE) > 0) {
+            rate = rate.setScale(0, ROUND_DOWN);
+        }
 
         if (CountryCodeEnum.US.equal(code)) {
-            return "<StandardPrice currency='USD'>" + GeneralUtils.mutiHalfTwo(price.divide(rate, 2, ROUND_HALF_DOWN)) + "</StandardPrice>";
+            return "<StandardPrice currency='USD'>" + GeneralUtils.mutiHalfTwo(price.divide(rate, 0, ROUND_DOWN)) + ".99</StandardPrice>";
         }
 
         if (CountryCodeEnum.GB.equal(code)) {
-            return "<StandardPrice currency='GBP'>" + GeneralUtils.mutiHalfTwo(price.divide(rate, 2, ROUND_HALF_DOWN)) + "</StandardPrice>";
+            return "<StandardPrice currency='GBP'>" + GeneralUtils.mutiHalfTwo(price.divide(rate, 0, ROUND_DOWN)) + ".99</StandardPrice>";
         }
 
         if (CountryCodeEnum.CA.equal(code)) {
-            return "<StandardPrice currency='CAD'>" + GeneralUtils.mutiHalfTwo(price.divide(rate, 2, ROUND_HALF_DOWN)) + "</StandardPrice>";
+            return "<StandardPrice currency='CAD'>" + GeneralUtils.mutiHalfTwo(price.divide(rate, 0, ROUND_DOWN)) + ".99</StandardPrice>";
         }
 
         if (CountryCodeEnum.DE.equal(code)) {
-            return "<StandardPrice currency='EUR'>" + GeneralUtils.mutiHalfTwo(price.divide(rate, 2, ROUND_HALF_DOWN)) + "</StandardPrice>";
+            return "<StandardPrice currency='EUR'>" + GeneralUtils.mutiHalfTwo(price.divide(rate, 0, ROUND_DOWN)) + ".99</StandardPrice>";
         }
 
         if (CountryCodeEnum.IT.equal(code)) {
-            return "<StandardPrice currency='EUR'>" + GeneralUtils.mutiHalfTwo(price.divide(rate, 2, ROUND_HALF_DOWN)) + "</StandardPrice>";
+            return "<StandardPrice currency='EUR'>" + GeneralUtils.mutiHalfTwo(price.divide(rate, 0, ROUND_DOWN)) + ".99</StandardPrice>";
         }
 
         if (CountryCodeEnum.FR.equal(code)) {
-            return "<StandardPrice currency='EUR'>" + GeneralUtils.mutiHalfTwo(price.divide(rate, 2, ROUND_HALF_DOWN)) + "</StandardPrice>";
+            return "<StandardPrice currency='EUR'>" + GeneralUtils.mutiHalfTwo(price.divide(rate, 0, ROUND_DOWN)) + ".99</StandardPrice>";
         }
 
         if (CountryCodeEnum.MX.equal(code)) {
-            return "<StandardPrice currency='MXN'>" + GeneralUtils.mutiHalfTwo(price.divide(rate, 2, ROUND_HALF_DOWN)) + "</StandardPrice>";
+            return "<StandardPrice currency='MXN'>" + GeneralUtils.mutiHalfTwo(price.divide(rate, 0, ROUND_DOWN)) + ".99</StandardPrice>";
         }
 
         if (CountryCodeEnum.ES.equal(code)) {
-            return "<StandardPrice currency='EUR'>" + GeneralUtils.mutiHalfTwo(price.divide(rate, 2, ROUND_HALF_DOWN)) + "</StandardPrice>";
+            return "<StandardPrice currency='EUR'>" + GeneralUtils.mutiHalfTwo(price.divide(rate, 0, ROUND_DOWN)) + ".99</StandardPrice>";
         }
 
         if (CountryCodeEnum.AU.equal(code)) {
-            return "<StandardPrice currency='AUD'>" + GeneralUtils.mutiHalfTwo(price.divide(rate, 2, ROUND_HALF_DOWN)) + "</StandardPrice>";
+            return "<StandardPrice currency='AUD'>" + GeneralUtils.mutiHalfTwo(price.divide(rate, 0, ROUND_DOWN)) + ".99</StandardPrice>";
         }
 
         if (CountryCodeEnum.CN.equal(code)) {
@@ -309,6 +313,10 @@ public class AmzXmlTemplate {
     public static String getUploadPriceStr(ProductAmzUpload product, UploadServiceRequest.ShopReq shop, List<ProductItemVar> vars) {
         String varStr = "";
         int i = 1;
+        BigDecimal rate=shop.getExrate();
+        if (rate.compareTo(BigDecimal.ONE) > 0) {
+            rate = rate.setScale(0, ROUND_DOWN);
+        }
         for (ProductItemVar var : vars) {
             i++;
             String saleStr = "";
@@ -316,14 +324,14 @@ public class AmzXmlTemplate {
                 saleStr = " <Sale>" +
                         " <StartDate>" + GeneralUtils.localToUTC(var.getSaleStartTime()) + "</StartDate>" +
                         " <EndDate>" + GeneralUtils.localToUTC(var.getSaleEndTime()) + "</EndDate>" +
-                        " <SalePrice currency='DEFAULT'>" + GeneralUtils.formatTwo(var.getSalePrice().divide(shop.getExrate(), 2, ROUND_HALF_DOWN)) + "</SalePrice>" +
+                        " <SalePrice currency='DEFAULT'>" + GeneralUtils.formatTwo(var.getSalePrice().divide(rate, 0, ROUND_DOWN)) + ".99</SalePrice>" +
                         " </Sale>";
             }
             varStr += "<Message>" +
                     "<MessageID>" + product.getId() + numFor1000(i) + "</MessageID>" +
                     "<Price>" +
                     "<SKU>" + product.getItemSku() + "-" + var.getSku() + "</SKU>" +
-                    "<StandardPrice currency=\"DEFAULT\">" + GeneralUtils.mutiHalfTwo(var.getPrice().divide(shop.getExrate(), 2, ROUND_HALF_DOWN)) + "</StandardPrice>" +
+                    "<StandardPrice currency=\"DEFAULT\">" + GeneralUtils.mutiHalfTwo(var.getPrice().divide(rate, 0, ROUND_DOWN)) + ".99</StandardPrice>" +
                     saleStr +
                     "</Price>" +
                     "</Message>";

@@ -116,11 +116,15 @@ public class ProductClaimController extends BaseController {
             if (org.apache.commons.lang3.StringUtils.isNotBlank(vars)) {
                 list = JSON.parseArray(vars, ProductItemVar.class);
                 Integer totalInventory = 0;
+                BigDecimal price = BigDecimal.ZERO;
                 for (ProductItemVar va : list) {
                     totalInventory += va.getQuantity();
+                    price = var.getPrice().compareTo(BigDecimal.ZERO) > 0 ? var.getPrice() : price;
                 }
                 product.setQuantity(totalInventory);
+                product.setPrice(price);
                 var.setQuantity(totalInventory);
+                var.setPrice(price);
             }
         }
         list.add(var);
