@@ -9,7 +9,6 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import static java.math.BigDecimal.ROUND_DOWN;
-import static java.math.BigDecimal.ROUND_HALF_DOWN;
 
 public class AmzXmlTemplate {
 
@@ -324,24 +323,22 @@ public class AmzXmlTemplate {
                 saleStr = " <Sale>" +
                         " <StartDate>" + GeneralUtils.localToUTC(var.getSaleStartTime()) + "</StartDate>" +
                         " <EndDate>" + GeneralUtils.localToUTC(var.getSaleEndTime()) + "</EndDate>" +
-                        " <SalePrice currency='DEFAULT'>" + GeneralUtils.formatTwo(var.getSalePrice().divide(rate, 0, ROUND_DOWN)) + ".99</SalePrice>" +
+                        " <SalePrice currency='DEFAULT'>" + (var.getSalePrice().divide(rate, 0, ROUND_DOWN)) + ".99</SalePrice>" +
                         " </Sale>";
             }
             varStr += "<Message>" +
                     "<MessageID>" + product.getId() + numFor1000(i) + "</MessageID>" +
                     "<Price>" +
                     "<SKU>" + product.getItemSku() + "-" + var.getSku() + "</SKU>" +
-                    "<StandardPrice currency=\"DEFAULT\">" + GeneralUtils.mutiHalfTwo(var.getPrice().divide(rate, 0, ROUND_DOWN)) + ".99</StandardPrice>" +
+                    "<StandardPrice currency=\"DEFAULT\">" + (var.getPrice().divide(rate, 0, ROUND_DOWN)) + ".99</StandardPrice>" +
                     saleStr +
                     "</Price>" +
                     "</Message>";
         }
         String text = varStr;
 
-        //System.out.println(text);
         return text;
     }
-
 
     private static String numFor1000(int num) {
         if (num < 10) {

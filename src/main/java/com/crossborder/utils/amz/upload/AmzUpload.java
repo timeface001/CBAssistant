@@ -178,8 +178,8 @@ public class AmzUpload {
                     }*/
 
                     for (UploadItem item1 : items) {
-                        if (StringUtils.isNotBlank(item1.getProductStr())) {
-                            System.out.println(item1.getProductStrHead());
+                        if (StringUtils.isNotBlank(item1.getPriceStr())) {
+                            System.out.println(item1.getPriceStr());
                             i++;
                             FileInputStream priceIs = new FileInputStream(FileUtils.byte2File(item1.getPriceStr().getBytes(), commonSet.getAmzUploadProductPath(), UUID.randomUUID() + "product_price.txt"));
                             new UploadTask(getService(sr.getShop()), getSubmitFeedRequest(priceIs, sr, item1.getShop().getMarketIds(), AmzFeeType.PRICING_FEED), AmzFeeType.PRICING_FEED).run();
