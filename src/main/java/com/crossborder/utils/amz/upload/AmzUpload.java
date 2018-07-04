@@ -98,7 +98,7 @@ public class AmzUpload {
                         languageItem.setProductStr(mid.getProductStr());
                         languageItem.setRelationsStr(mid.getRelationsStr());
 
-                        languageItem.setPriceStr(AmzXmlTemplate.getUploadPriceStr(product, sr.getShop(), vars));
+                        languageItem.setPriceStr(AmzXmlTemplate.getUploadPriceStr(product,entry.getValue().getShopReq(), vars));
 
                         request.setSkuMap(skuMap);
                         //变更状态为发布中
