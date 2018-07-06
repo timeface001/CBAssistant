@@ -14,7 +14,10 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @Component("quart")
 public class QuartBathUpload {
@@ -30,18 +33,12 @@ public class QuartBathUpload {
     @Autowired
     private ProductUploadLogDao productUploadLogDao;
 
-    @Scheduled(cron = "0 0/10 * * * ?")
+    @Scheduled(cron = "0 0/24 * * * ?")
     public void upload() {
         System.out.println("定时批量发布开始...." + DateUtils.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
 
-        /*ProductAmzUpload pp = productAmzUploadDao.selectByPrimaryKey("10504");
-        if (!pp.getPublishStatus() .equals( PublishStatusEnum.NOT.getVal())) {
-            return;
-        }
-        //获取预发布的产品
-        List<ProductAmzUpload> list = Arrays.asList(pp);*/
 
-
+        //List<ProductAmzUpload> list = list();
         List<ProductAmzUpload> list = productAmzUploadDao.selectList(GeneralUtils.genMap("pStatus", PublishStatusEnum.NOT.getVal()));
         //分组
         List<UploadServiceRequest> resultMap = new ArrayList<>();
@@ -76,5 +73,23 @@ public class QuartBathUpload {
             System.out.println("发布结束。。。。。。");
         }
         System.out.println("定时批量发布结束。。。。");
+    }
+
+
+    private List<ProductAmzUpload> list() {
+        List<ProductAmzUpload> list = new ArrayList<>();
+        String[] arr = {"12325", "12324","12328"};
+
+        for (String id : arr) {
+            ProductAmzUpload pp = productAmzUploadDao.selectByPrimaryKey(id);
+            if (!pp.getPublishStatus().equals(PublishStatusEnum.NOT.getVal())) {
+                continue;
+            }
+
+            list.add(pp);
+        }
+        //获取预发布的产品
+
+        return list;
     }
 }

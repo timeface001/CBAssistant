@@ -76,11 +76,11 @@ public class AmzUpload {
                     for (ProductAmzUpload product : entry.getValue().getList()) {
                         List<ProductItemVar> vars = productSkuTypeService.selectListByProductId(product.getProductAmzId());
                         pVars.put(product.getId(), vars);
-                        UploadItem mid = new UploadItem();
+                        UploadItem mid = null;
                         if (vars.size() == 1) {
                             mid = uploadSingleProductStr(product, vars);
                             skuMap.put(product.getItemSku() + "-" + vars.get(0).getSku(), product);
-                        } else {
+                        } else if(vars.size()>1){
                             mid = uploadMutiProductStr(product, vars);
                             for (ProductItemVar va : vars) {
                                 skuMap.put(product.getItemSku() + "-" + va.getSku(), product);

@@ -74,6 +74,10 @@
             </div>
             <input id="roleId" type="hidden" value="${sessionScope.user.ROLE_ID}">
             <input id="companyId" type="hidden" value="${sessionScope.user.USER_COMPANY}">
+            <label class="form-label col-xs-1 col-sm-1">SKU：</label>
+            <div class="formControls col-xs-2 col-sm-2">
+                <input type="text" name="sku" placeholder=" " class="input-text">
+            </div>
         </div>
     </form>
     <div class="mt-20">

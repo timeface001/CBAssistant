@@ -34,7 +34,10 @@
             AND a.PUBLISH_STATUS=#{pStatus}
         </if>
         <if test="name!=null and name!=''">
-            AND a.ITEM_NAME=#{name}
+            AND a.ITEM_NAME like #{name}
+        </if>
+        <if test="sku!=null and sku!=''">
+            AND (a.ITEM_SKU like #{sku} OR a.AMZ_SKU like #{sku})
         </if>
         <if test="language!=null and language!=''">
             AND a.LANGUAGE_ID=#{language}

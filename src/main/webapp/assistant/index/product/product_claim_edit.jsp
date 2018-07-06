@@ -700,6 +700,10 @@
             });
         }
 
+
+         imgKeys=[],imgValues=[];
+
+
         var selectValue = null;
         layui.use('form', function () {
             var form = layui.form;
