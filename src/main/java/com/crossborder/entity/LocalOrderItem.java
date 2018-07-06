@@ -24,6 +24,10 @@ public class LocalOrderItem {
     private String smallImage;
     private double itemPriceRMB;
     private double shippingPriceRMB;
+    private double giftWrapPrice;
+    private double giftWrapPriceRMB;
+    private double commission;
+    private double commissionRMB;
 
     public String getAsin() {
         return asin;
@@ -183,5 +187,37 @@ public class LocalOrderItem {
 
     public void setShippingPriceRMB(double shippingPriceRMB) {
         this.shippingPriceRMB = shippingPriceRMB;
+    }
+
+    public double getGiftWrapPrice() {
+        return giftWrapPrice;
+    }
+
+    public void setGiftWrapPrice(double giftWrapPrice) {
+        this.giftWrapPrice = giftWrapPrice;
+    }
+
+    public double getGiftWrapPriceRMB() {
+        return giftWrapPriceRMB;
+    }
+
+    public void setGiftWrapPriceRMB(double giftWrapPriceRMB) {
+        this.giftWrapPriceRMB = giftWrapPriceRMB;
+    }
+
+    public double getCommission() {
+        return commission;
+    }
+
+    public void setCommission(double commission) {
+        this.commission = commission;
+    }
+
+    public double getCommissionRMB() {
+        return commissionRMB;
+    }
+
+    public void setCommissionRMB(double commissionRMB) {
+        this.commissionRMB = commissionRMB;
     }
 }

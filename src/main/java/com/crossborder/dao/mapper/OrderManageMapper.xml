@@ -71,7 +71,9 @@
         UPDATE set
         t1.ITEMPRICE = #{itemPrice,jdbcType=VARCHAR},
         t1.QUANTITYSHIPPED = #{quantityShipped,jdbcType=VARCHAR},
-        t1.SMALLIMAGE = #{smallImage,jdbcType=VARCHAR}
+        t1.SMALLIMAGE = #{smallImage,jdbcType=VARCHAR},
+        t1.SHIPPINGPRICERMB = #{shippingPriceRMB,jdbcType=DOUBLE},
+        t1.GIFTWRAPPRICE = #{giftWrapPrice,jdbcType=DOUBLE}
         WHEN not matched THEN
         INSERT (AMAZONORDERID,
         COST,
@@ -92,7 +94,11 @@
         CURRENCYCODE,
         SMALLIMAGE,
         ITEMPRICERMB,
-        SHIPPINGPRICERMB)
+        SHIPPINGPRICERMB,
+        GIFTWRAPPRICE,
+        GIFTWRAPPRICERMB,
+        COMMISSION,
+        COMMISSIONRMB)
         VALUES (#{amazonOrderId,jdbcType=VARCHAR},
         #{cost,jdbcType=VARCHAR},
         #{sellerSKU,jdbcType=VARCHAR},
@@ -111,8 +117,12 @@
         #{volumeWeight,jdbcType=DOUBLE},
         #{currencyCode,jdbcType=VARCHAR},
         #{smallImage,jdbcType=VARCHAR},
-        #{itemPriceRMB,jdbcType=VARCHAR},
-        #{shippingPriceRMB,jdbcType=VARCHAR})
+        #{itemPriceRMB,jdbcType=DOUBLE},
+        #{shippingPriceRMB,jdbcType=DOUBLE},
+        #{giftWrapPrice,jdbcType=DOUBLE},
+        #{giftWrapPriceRMB,jdbcType=DOUBLE},
+        #{commission,jdbcType=DOUBLE},
+        #{commissionRMB,jdbcType=DOUBLE})
     </insert>
     <insert id="insertAddress" parameterType="com.crossborder.entity.AddressInfo">
         MERGE INTO T_ADDRESS t1
@@ -176,11 +186,11 @@
         t1.paymentmethod,
         t2.sku,
         t2.asin,
-        trunc(sum(t2.itempricermb + t2.shippingPricermb + t1.commission),2) itemprice,
+        trunc(sum(t2.itempricermb + t2.shippingPricermb + t2.giftWrapPricermb + t2.commissionRMB),2) itemprice,
         trunc(sum(t2.cost),2) cost,
         trunc(sum(t2.refundment),2) refundment,
-        trunc(sum(t2.itempricermb - t2.cost - t2.refundment - t1.shippingPrice + t2.shippingPricermb + t1.commission),2)
-        profit
+        trunc(sum(t2.itempricermb - t2.cost - t2.refundment - t1.shippingPrice + t2.shippingPricermb +
+        t2.giftWrapPricermb + t2.commissionRMB),2) profit
         from T_ORDER t1
         left join
         (select amazonorderid,
@@ -190,7 +200,9 @@
         trunc(sum(itempricermb),2) itempricermb,
         trunc(sum(shippingPricermb),2) shippingPricermb,
         trunc(sum(refundment),2) refundment,
-        trunc(sum(cost),2) cost
+        trunc(sum(cost),2) cost,
+        trunc(sum(giftWrapPricermb),2) giftWrapPricermb,
+        trunc(sum(commissionRMB),2) commissionRMB
         from t_order_item
         group by amazonorderid) t2
         on t2.amazonorderid = t1.amazonorderid
@@ -268,10 +280,11 @@
     </select>
 
     <select id="selectLocalOrderItem" resultType="java.util.Map" parameterType="java.lang.String">
-        SELECT * from T_ORDER_ITEM
-        WHERE AMAZONORDERID = #{amazonOrderId,jdbcType=VARCHAR}
+        SELECT t1.* ,trunc((t1.ITEMPRICE + t1.SHIPPINGPRICE + t1.GIFTWRAPPRICE + t1.COMMISSION),2) || '(' ||
+        t1.CURRENCYCODE || ')' ITEMPRICESUM from T_ORDER_ITEM t1
+        WHERE t1.AMAZONORDERID = #{amazonOrderId,jdbcType=VARCHAR}
         <if test="orderItemId !=null and orderItemId != ''">
-            AND ORDERITEMID = #{orderItemId,jdbcType=VARCHAR}
+            AND t1.ORDERITEMID = #{orderItemId,jdbcType=VARCHAR}
         </if>
     </select>
     <update id="updateOrder" parameterType="java.util.Map">
@@ -297,11 +310,12 @@
         SHIPPINGPRICE = #{shippingPrice,jdbcType=VARCHAR}
         WHERE AMAZONORDERID = #{amazonOrderId,jdbcType=VARCHAR}
     </update>
-    <update id="updateOrderCommission" parameterType="java.util.Map">
-        UPDATE T_ORDER
+    <update id="updateOrderItemCommission" parameterType="java.util.Map">
+        UPDATE T_ORDER_ITEM
         set
         COMMISSION = #{commission,jdbcType=DOUBLE}
         WHERE AMAZONORDERID = #{amazonOrderId,jdbcType=VARCHAR}
+        AND ORDERITEMID = #{orderItemId,jdbcType=VARCHAR}
     </update>
     <update id="updateOrderItem">
         UPDATE T_ORDER_ITEM

@@ -7,6 +7,7 @@ import com.amazon.mws.finances._2015_05_01.MWSFinancesServiceConfig;
 import com.amazon.mws.finances._2015_05_01.model.FeeComponent;
 import com.amazon.mws.finances._2015_05_01.model.FinancialEvents;
 import com.amazon.mws.finances._2015_05_01.model.ListFinancialEventsRequest;
+import com.amazon.mws.finances._2015_05_01.model.ShipmentItem;
 import com.amazonaws.mws.MarketplaceWebService;
 import com.amazonaws.mws.MarketplaceWebServiceClient;
 import com.amazonaws.mws.MarketplaceWebServiceConfig;
@@ -128,18 +129,12 @@ public class OrderManageController {
             int count = 0;
             for (int i = 0; i < orderList.size(); i++) {
                 Order order = orderList.get(i);
-                List<FeeComponent> feeComponents = getOrderItemFees(shop, order.getAmazonOrderId());
-                double fees = 0;
-                for (int m = 0; m < feeComponents.size(); m++) {
-                    fees = fees + feeComponents.get(m).getFeeAmount().getCurrencyAmount().doubleValue();
-                }
                 //插入订单信息
                 LocalOrder localOrder = new LocalOrder();
                 localOrder.setAmazonOrderId(order.getAmazonOrderId());
                 localOrder.setOrderStatus(order.getOrderStatus());
                 localOrder.setSellerOrderId(order.getSellerOrderId());
                 localOrder.setLocalStatus("1");
-                localOrder.setCommission(fees * Double.parseDouble(shop.get("EXRATE").toString()));
                 Date createDate = order.getPurchaseDate().toGregorianCalendar().getTime();
                 localOrder.setPurchaseDate(simpleDateFormat.format(createDate));
                 Date updateDate = order.getLastUpdateDate().toGregorianCalendar().getTime();
@@ -180,6 +175,7 @@ public class OrderManageController {
                 addressInfo.setStateOrRegion(order.getShippingAddress().getStateOrRegion());
                 orderManageService.insertAddress(addressInfo);
                 //获取订单详情
+                List<ShipmentItem> shipmentItems = getOrderItemFees(shop, order.getAmazonOrderId());
                 List<OrderItem> orderItemList = getOrderItem(order.getAmazonOrderId(), shop);
                 List<LocalOrderItem> localOrderItemList = new ArrayList<>();
                 for (int j = 0; j < orderItemList.size(); j++) {
@@ -212,6 +208,25 @@ public class OrderManageController {
                     } else {
                         localOrderItem.setShippingPrice(0);
                         localOrderItem.setShippingPriceRMB(0);
+                    }
+                    if (orderItem.getGiftWrapPrice() != null) {
+                        localOrderItem.setGiftWrapPrice(Double.parseDouble(orderItem.getGiftWrapPrice().getAmount()));
+                        localOrderItem.setGiftWrapPriceRMB(Double.parseDouble(orderItem.getGiftWrapPrice().getAmount()) * Double.parseDouble(shop.get("EXRATE").toString()));
+                    } else {
+                        localOrderItem.setGiftWrapPrice(0);
+                        localOrderItem.setGiftWrapPriceRMB(0);
+                    }
+
+                    for (int m = 0; m < shipmentItems.size(); m++) {
+                        List<FeeComponent> feeComponents = shipmentItems.get(m).getItemFeeList();
+                        double fees = 0;
+                        for (int n = 0; n < feeComponents.size(); n++) {
+                            fees = fees + feeComponents.get(n).getFeeAmount().getCurrencyAmount().doubleValue();
+                        }
+                        if(shipmentItems.get(i).getOrderItemId().equals(orderItem.getOrderItemId())){
+                            localOrderItem.setCommission(fees);
+                            localOrderItem.setCommissionRMB(fees * Double.parseDouble(shop.get("EXRATE").toString()));
+                        }
                     }
                     localOrderItem.setItemPriceRMB(Double.parseDouble(orderItem.getItemPrice().getAmount()) * Double.parseDouble(shop.get("EXRATE").toString()));
                     localOrderItem.setStatus("1");
@@ -377,7 +392,14 @@ public class OrderManageController {
         }
     }
 
-    public List<FeeComponent> getOrderItemFees(Map<String, Object> shop, String amazonOrderId) {
+    /**
+     * 获取orderItem佣金
+     *
+     * @param shop
+     * @param amazonOrderId
+     * @return
+     */
+    public List<ShipmentItem> getOrderItemFees(Map<String, Object> shop, String amazonOrderId) {
         MWSFinancesServiceConfig config = new MWSFinancesServiceConfig();
         config.setServiceURL(shop.get("ENDPOINT").toString());
         MWSFinancesServiceClient client = new MWSFinancesServiceClient(shop.get("ACCESSKEY_ID").toString(), shop.get("SECRET_KEY").toString(), "", "", config);
@@ -386,9 +408,9 @@ public class OrderManageController {
         request.setAmazonOrderId(amazonOrderId);
         FinancialEvents financialEvents = client.listFinancialEvents(request).getListFinancialEventsResult().getFinancialEvents();
         if (financialEvents.getShipmentEventList() != null && financialEvents.getShipmentEventList().size() > 0) {
-            return financialEvents.getShipmentEventList().get(0).getShipmentItemList().get(0).getItemFeeList();
+            return financialEvents.getShipmentEventList().get(0).getShipmentItemList();
         } else {
-            return new ArrayList<FeeComponent>();
+            return new ArrayList<ShipmentItem>();
         }
     }
 
@@ -436,16 +458,20 @@ public class OrderManageController {
             Map<String, Object> shopMap = new HashMap<>();
             shopMap.put("merchantId", merchantId);
             shopMap.put("countryCode", countryCode);
-            List<Map<String, Object>> shops = shopManageService.selectShopByCountry(shopMap);
-            List<FeeComponent> feeComponents = getOrderItemFees(shops.get(0), amazonOrderId);
-            double fees = 0;
-            for (int m = 0; m < feeComponents.size(); m++) {
-                fees = fees + feeComponents.get(m).getFeeAmount().getCurrencyAmount().doubleValue();
+            Map<String, Object> shop = shopManageService.selectShopByCountry(shopMap).get(0);
+            List<ShipmentItem> shipmentItems = getOrderItemFees(shop, amazonOrderId);
+            for (int i = 0; i < shipmentItems.size(); i++) {
+                List<FeeComponent> feeComponents = shipmentItems.get(i).getItemFeeList();
+                double fees = 0;
+                for (int m = 0; m < feeComponents.size(); m++) {
+                    fees = fees + feeComponents.get(m).getFeeAmount().getCurrencyAmount().doubleValue();
+                }
+                Map<String, Object> commissionMap = new HashMap<>();
+                commissionMap.put("amazonOrderId", amazonOrderId);
+                commissionMap.put("orderItemId", shipmentItems.get(i).getOrderItemId());
+                commissionMap.put("commission", fees * Double.parseDouble(shop.get("EXRATE").toString()));
+                orderManageService.updateOrderItemCommission(commissionMap);
             }
-            Map<String, Object> commissionMap = new HashMap<>();
-            commissionMap.put("amazonOrderId", amazonOrderId);
-            commissionMap.put("commission", fees);
-            orderManageService.updateOrderCommission(commissionMap);
             map.put("code", "0");
             map.put("msg", "获取成功");
         } catch (Exception e) {

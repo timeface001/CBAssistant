@@ -432,7 +432,7 @@
                 {"data": "TITLE"},
                 {"data": "ASIN"},
                 {"data": "QUANTITYSHIPPED"},
-                {"data": "ITEMPRICE"},
+                {"data": "ITEMPRICESUM"},
                 {"data": "COST"},
                 {"data": "REFUNDMENT"},
                 {"data": "TRACKNUM"},

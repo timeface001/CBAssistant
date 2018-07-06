@@ -74,7 +74,7 @@ public class OrderManageService {
         return orderManageDao.updateOrderShipping(map);
     }
 
-    public int updateOrderCommission(Map<String, Object> map) {
+    public int updateOrderItemCommission(Map<String, Object> map) {
         return orderManageDao.updateOrderCommission(map);
     }
 }
