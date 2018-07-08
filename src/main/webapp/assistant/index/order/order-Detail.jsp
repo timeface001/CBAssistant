@@ -783,6 +783,7 @@
             success: function (data) {
                 if (data.code == 0) {
                     var data = data.data;
+                    $("#transType").empty();
                     for (var i = 0; i < data.length; i++) {
                         $("#transType").append($('<option value=' + data[i].code + '>' + data[i].name + '</option>'));
                     }

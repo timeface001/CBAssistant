@@ -35,7 +35,8 @@
         CURRENCYCODE,
         LOCALSTATUS,
         SHIPPINGPRICE,
-        COMMISSION)
+        COMMISSION,
+        UPDATE_TIME)
         VALUES
         (seq_order_id.nextval,
         #{amazonOrderId,jdbcType=VARCHAR},
@@ -61,7 +62,8 @@
         #{currencyCode,jdbcType=VARCHAR},
         #{localStatus,jdbcType=VARCHAR},
         #{shippingPrice,jdbcType=DOUBLE},
-        #{commission,jdbcType=DOUBLE})
+        #{commission,jdbcType=DOUBLE},
+        #{updateTime,jdbcType=VARCHAR})
     </insert>
     <insert id="insertOrderItem" parameterType="com.crossborder.entity.LocalOrderItem">
         MERGE INTO T_ORDER_ITEM t1
@@ -180,6 +182,7 @@
         t1.shippingPrice,
         t1.localstatus,
         t1.remark,
+        t1.update_time,
         t3.name countryName,
         t2.smallImage,
         t4.company_name,
@@ -238,14 +241,36 @@
         <if test="transportCompany !=null and transportCompany !=''">
             AND t1.TRANSPORTCOMPANY = #{transportCompany,jdbcType=VARCHAR}
         </if>
-        <if test="localStatus !=null and localStatus !=''">
-            AND t1.LOCALSTATUS = #{localStatus,jdbcType=VARCHAR}
+        <if test="localStatus != null and localStatus != ''">
+            <choose>
+                <when test='localStatus == "10"'>
+                    AND t1.FULFILLMENTCHANNEL = 'FBA'
+                </when>
+                <otherwise>
+                    AND t1.LOCALSTATUS = #{localStatus,jdbcType=VARCHAR}
+                    AND t1.FULFILLMENTCHANNEL != 'FBA'
+                </otherwise>
+            </choose>
         </if>
-        <if test="logmin !=null and logmin != ''">
-            AND t1.PURCHASEDATE <![CDATA[>=]]> #{logmin,jdbcType=VARCHAR}
+        <if test="logmin != null and logmin != ''">
+            <choose>
+                <when test='localStatus != null and localStatus != "" and localStatus == "4"'>
+                    AND t1.UPDATE_TIME <![CDATA[>=]]> #{logmin,jdbcType=VARCHAR}
+                </when>
+                <otherwise>
+                    AND t1.PURCHASEDATE <![CDATA[>=]]> #{logmin,jdbcType=VARCHAR}
+                </otherwise>
+            </choose>
         </if>
-        <if test="logmax !=null and logmax != ''">
-            AND t1.PURCHASEDATE  <![CDATA[<=]]> #{logmax,jdbcType=VARCHAR}
+        <if test="logmax != null and logmax != ''">
+            <choose>
+                <when test='localStatus != null and localStatus != "" and localStatus == "4"'>
+                    AND t1.UPDATE_TIME  <![CDATA[<=]]> #{logmax,jdbcType=VARCHAR}
+                </when>
+                <otherwise>
+                    AND t1.PURCHASEDATE  <![CDATA[<=]]> #{logmax,jdbcType=VARCHAR}
+                </otherwise>
+            </choose>
         </if>
         <if test="sku !=null and sku != ''">
             AND t2.SELLERSKU LIKE '%${sku}%'
@@ -269,6 +294,7 @@
         t1.shippingPrice,
         t1.localstatus,
         t1.remark,
+        t1.update_time,
         t3.name,
         t2.smallImage,
         t3.exrate,
@@ -276,7 +302,14 @@
         t1.paymentmethod,
         t2.sku,
         t2.asin
-        ORDER BY t1.purchaseDate DESC
+        <choose>
+            <when test='localStatus != null and localStatus != "" and localStatus == "4"'>
+                ORDER BY t1.UPDATE_TIME DESC
+            </when>
+            <otherwise>
+                ORDER BY t1.PURCHASEDATE DESC
+            </otherwise>
+        </choose>
     </select>
 
     <select id="selectLocalOrderItem" resultType="java.util.Map" parameterType="java.lang.String">
@@ -290,8 +323,9 @@
     <update id="updateOrder" parameterType="java.util.Map">
         UPDATE T_ORDER
         set
+        UPDATE_TIME = #{updateTime,jdbcType=VARCHAR}
         <if test="status !=null and status !=''">
-            LOCALSTATUS = #{status,jdbcType=VARCHAR}
+            ,LOCALSTATUS = #{status,jdbcType=VARCHAR}
         </if>
         <if test="intlTrackNum !=null and intlTrackNum !=''">
             ,INTLTRACKNUM = #{intlTrackNum,jdbcType=VARCHAR}
@@ -313,7 +347,8 @@
     <update id="updateOrderItemCommission" parameterType="java.util.Map">
         UPDATE T_ORDER_ITEM
         set
-        COMMISSION = #{commission,jdbcType=DOUBLE}
+        COMMISSION = #{commission,jdbcType=DOUBLE},
+        COMMISSIONRMB = #{commissionRMB,jdbcType=DOUBLE}
         WHERE AMAZONORDERID = #{amazonOrderId,jdbcType=VARCHAR}
         AND ORDERITEMID = #{orderItemId,jdbcType=VARCHAR}
     </update>
@@ -399,13 +434,35 @@
             AND t1.TRANSPORTCOMPANY = #{transportCompany,jdbcType=VARCHAR}
         </if>
         <if test="localStatus !=null and localStatus !=''">
-            AND t1.LOCALSTATUS = #{localStatus,jdbcType=VARCHAR}
+            <choose>
+                <when test="localStatus == '10'">
+                    AND t1.FULFILLMENTCHANNEL = 'FBA'
+                </when>
+                <otherwise>
+                    AND t1.LOCALSTATUS = #{localStatus,jdbcType=VARCHAR}
+                    AND t1.FULFILLMENTCHANNEL != 'FBA'
+                </otherwise>
+            </choose>
         </if>
         <if test="logmin !=null and logmin != ''">
-            AND t1.PURCHASEDATE <![CDATA[>=]]> #{logmin,jdbcType=VARCHAR}
+            <choose>
+                <when test="localStatus == '4'">
+                    AND t1.UPDATE_TIME <![CDATA[>=]]> #{logmin,jdbcType=VARCHAR}
+                </when>
+                <otherwise>
+                    AND t1.PURCHASEDATE <![CDATA[>=]]> #{logmin,jdbcType=VARCHAR}
+                </otherwise>
+            </choose>
         </if>
         <if test="logmax !=null and logmax != ''">
-            AND t1.PURCHASEDATE  <![CDATA[<=]]> #{logmax,jdbcType=VARCHAR}
+            <choose>
+                <when test="localStatus == '4'">
+                    AND t1.UPDATE_TIME  <![CDATA[<=]]> #{logmax,jdbcType=VARCHAR}
+                </when>
+                <otherwise>
+                    AND t1.PURCHASEDATE  <![CDATA[<=]]> #{logmax,jdbcType=VARCHAR}
+                </otherwise>
+            </choose>
         </if>
         <if test="sku !=null and sku != ''">
             AND t2.SELLERSKU LIKE '%${sku}%'

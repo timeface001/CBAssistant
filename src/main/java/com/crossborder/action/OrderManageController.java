@@ -56,6 +56,7 @@ public class OrderManageController {
     private OrderManageService orderManageService;
     @Resource
     private ShopManageService shopManageService;
+    private  SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private static final String Order_Fulfillment_Fee = "_POST_ORDER_FULFILLMENT_DATA_";
 
     /*
@@ -139,6 +140,7 @@ public class OrderManageController {
                 localOrder.setPurchaseDate(simpleDateFormat.format(createDate));
                 Date updateDate = order.getLastUpdateDate().toGregorianCalendar().getTime();
                 localOrder.setLastUpdateDate(simpleDateFormat.format(updateDate));
+                localOrder.setUpdateTime(simpleDateFormat.format(new Date()));
                 localOrder.setCurrencyCode(order.getOrderTotal().getCurrencyCode());
                 localOrder.setOrderTotal(Double.parseDouble(order.getOrderTotal().getAmount()));
                 localOrder.setNumberOfItemsShipped(order.getNumberOfItemsShipped());
@@ -216,14 +218,13 @@ public class OrderManageController {
                         localOrderItem.setGiftWrapPrice(0);
                         localOrderItem.setGiftWrapPriceRMB(0);
                     }
-
                     for (int m = 0; m < shipmentItems.size(); m++) {
                         List<FeeComponent> feeComponents = shipmentItems.get(m).getItemFeeList();
                         double fees = 0;
                         for (int n = 0; n < feeComponents.size(); n++) {
                             fees = fees + feeComponents.get(n).getFeeAmount().getCurrencyAmount().doubleValue();
                         }
-                        if(shipmentItems.get(i).getOrderItemId().equals(orderItem.getOrderItemId())){
+                        if (shipmentItems.get(m).getOrderItemId().equals(orderItem.getOrderItemId())) {
                             localOrderItem.setCommission(fees);
                             localOrderItem.setCommissionRMB(fees * Double.parseDouble(shop.get("EXRATE").toString()));
                         }
@@ -469,7 +470,8 @@ public class OrderManageController {
                 Map<String, Object> commissionMap = new HashMap<>();
                 commissionMap.put("amazonOrderId", amazonOrderId);
                 commissionMap.put("orderItemId", shipmentItems.get(i).getOrderItemId());
-                commissionMap.put("commission", fees * Double.parseDouble(shop.get("EXRATE").toString()));
+                commissionMap.put("commission", fees);
+                commissionMap.put("commissionRMB", fees * Double.parseDouble(shop.get("EXRATE").toString()));
                 orderManageService.updateOrderItemCommission(commissionMap);
             }
             map.put("code", "0");
@@ -621,6 +623,7 @@ public class OrderManageController {
         paramMap.put("trackNum", trackNum);
         paramMap.put("purchaseNum", purchaseNum);
         paramMap.put("shippingPrice", shippingPrice);
+        paramMap.put("updateTime", simpleDateFormat.format(new Date()));
         Map<String, Object> user = (Map<String, Object>) session.getAttribute("user");
         try {
             orderManageService.updateOrder(paramMap);
@@ -712,7 +715,6 @@ public class OrderManageController {
     public void insertOperationLog(String amazonOrderId, String preStatus, String status, String userId, String cost) {
         Map<String, Object> operationMap = new HashMap<>();
         operationMap.put("user", userId);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         operationMap.put("time", simpleDateFormat.format(new Date()));
         operationMap.put("amazonOrderId", amazonOrderId);
         operationMap.put("type", status);

@@ -135,6 +135,7 @@
                     <a href="javascript:;" onclick="reloadTable(6)" class="btn btn-default radius">妥投</a>
                     <a href="javascript:;" onclick="reloadTable(7)" class="btn btn-default radius">代发</a>
                     <a href="javascript:;" onclick="reloadTable(8)" class="btn btn-default radius">全部</a>
+                    <a href="javascript:;" onclick="reloadTable(9)" class="btn btn-default radius">FBA</a>
                 </c:otherwise>
             </c:choose>
         </div>
@@ -498,8 +499,8 @@
                 {"data": "INTLTRACKNUM"},
                 {"data": "FULFILLMENTCHANNEL"},
                 {"data": "LOCALSTATUS"},
-                {"data": "PURCHASEDATE"},
                 {"data": "LOCALSTATUS"},
+                {"data": "LOCALSTATUS"}
             ],
             "columnDefs": [
                 {
@@ -565,6 +566,17 @@
                             return "<div>妥投</div>";
                         } else if (data == 8) {
                             return "<div>代发</div>";
+                        }
+                    }
+                },
+                {
+                    "targets": [18],
+                    "data": "LOCALSTATUS",
+                    "render": function (data, type, full) {
+                        if (data == 4) {
+                            return "<div>" + full.UPDATE_TIME + "</div>";
+                        } else {
+                            return "<div>" + full.PURCHASEDATE + "</div>";
                         }
                     }
                 },

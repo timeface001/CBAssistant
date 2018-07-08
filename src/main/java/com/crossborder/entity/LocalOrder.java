@@ -13,6 +13,7 @@ public class LocalOrder {
     private String localStatus;
     private String purchaseDate;
     private String lastUpdateDate;
+    private String updateTime;
     private String fulfillmentChannel;
     private int numberOfItemsShipped;
     private int numberOfItemsUnshipped;
@@ -239,5 +240,13 @@ public class LocalOrder {
 
     public void setLocalOrderItemList(List<LocalOrderItem> localOrderItemList) {
         this.localOrderItemList = localOrderItemList;
+    }
+
+    public String getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(String updateTime) {
+        this.updateTime = updateTime;
     }
 }
