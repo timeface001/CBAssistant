@@ -119,7 +119,7 @@ public class ProductClaimController extends BaseController {
                 BigDecimal price = BigDecimal.ZERO;
                 for (ProductItemVar va : list) {
                     totalInventory += va.getQuantity();
-                    price = var.getPrice().compareTo(BigDecimal.ZERO) > 0 ? var.getPrice() : price;
+                    price = (va.getPrice().compareTo(price) > 0 && price.compareTo(BigDecimal.ZERO) > 0 ? price:va.getPrice() );
                 }
                 product.setQuantity(totalInventory);
                 product.setPrice(price);

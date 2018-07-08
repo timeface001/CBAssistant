@@ -171,8 +171,8 @@ public class AmzXmlTemplate {
                 "<ItemPackageQuantity>" + (var.getQuantity() == null ? "0" : var.getQuantity()) + "</ItemPackageQuantity>" +
                 /*"<LaunchDate>" + GeneralUtils.formatDate(new Date(), "yyyy-MM-dd'T'hh:mm:ss") + "</LaunchDate>" +*/
                 "<DescriptionData>" +
-                "<Title>" + product.getItemName() + "</Title>" +
-                "<Brand>" + product.getBrandName() + "</Brand> " +
+                "<Title>" + GeneralUtils.replaceHtmlSign(product.getItemName()) + "</Title>" +
+                "<Brand>" + GeneralUtils.replaceHtmlSign(product.getBrandName()) + "</Brand> " +
                 "<Description>" + GeneralUtils.replaceHtmlSign(product.getProductDescription()) + "</Description>" +
                 (StringUtils.isNotBlank(product.getBulletPoint1()) ? ("<BulletPoint>" + GeneralUtils.replaceHtmlSign(product.getBulletPoint1()) + "</BulletPoint>") : "") +
                 (StringUtils.isNotBlank(product.getBulletPoint2()) ? ("<BulletPoint>" + GeneralUtils.replaceHtmlSign(product.getBulletPoint2()) + "</BulletPoint>") : "") +

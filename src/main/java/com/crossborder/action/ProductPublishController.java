@@ -49,7 +49,7 @@ public class ProductPublishController extends BaseController {
      */
     @RequestMapping(value = "/product/publish/list", produces = "text/plain;charset=UTF-8")
     @ResponseBody
-    public String productList(HttpSession session, String data, Integer start, Integer length, Integer draw) {
+    public String productList(HttpSession session, String data, Integer start, Integer length, Integer draw, HttpServletRequest request) {
         Map<String, Object> params = JSON.parseObject(data, Map.class);
         Map<String, Object> user = (Map<String, Object>) session.getAttribute("user");
         if (user.get("ROLE_ID").toString().equals("600")) {
@@ -65,6 +65,7 @@ public class ProductPublishController extends BaseController {
         result.put("draw", draw);
         result.put("recordsTotal", pageInfo.getTotal());
         result.put("recordsFiltered", pageInfo.getTotal());
+        //generateShopSelectResponse(session, request);
         return JSON.toJSONString(result);
     }
 
@@ -72,6 +73,14 @@ public class ProductPublishController extends BaseController {
     @ResponseBody
     public String productDetail(String id) {
         return JSON.toJSONString(productManagerService.selectClaimProduct(id));
+    }
+
+
+    @RequestMapping(value = "/product/shop/select", produces = "text/plain;charset=UTF-8")
+    @ResponseBody
+    public String shopSelect(HttpSession session, HttpServletRequest request) {
+        generateShopSelectResponse(session, request);
+        return JSON.toJSONString(request.getAttribute("maps"));
     }
 
     /**
@@ -111,7 +120,13 @@ public class ProductPublishController extends BaseController {
 
             }
         }
+        generateShopSelectResponse(session, request);
         request.setAttribute("product", product);
+        request.setAttribute("id", id);
+        return view;
+    }
+
+    public void generateShopSelectResponse(HttpSession session, HttpServletRequest request) {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("state", 1);
         Map<String, Object> user = (Map<String, Object>) session.getAttribute("user");
@@ -147,8 +162,7 @@ public class ProductPublishController extends BaseController {
         request.setAttribute("shops", shopKey);
         request.setAttribute("country", countryKey);
         request.setAttribute("maps", resultD);
-        request.setAttribute("id", id);
-        return view;
+
     }
 
     @Resource

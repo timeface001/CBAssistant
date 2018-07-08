@@ -48,6 +48,9 @@
         <if test="salesMan != null and salesMan !=''">
             AND a.create_user=#{salesMan}
         </if>
+        <if test="shopId != null and shopId !=''">
+            AND a.SHOP_ID=#{shopId}
+        </if>
         <if test="companyId != null and companyId !=''">
             AND a.create_user in (SELECT user_id from t_user_info where user_company = #{companyId})
         </if>

@@ -73,8 +73,20 @@ public class AmzUpload {
                 for (Map.Entry<String, UploadServiceRequest.SplitRequest> entry : sr.getLanguageList().entrySet()) {
 
                     UploadItem languageItem = new UploadItem();
+                    int index = 0;
                     for (ProductAmzUpload product : entry.getValue().getList()) {
+
                         List<ProductItemVar> vars = productSkuTypeService.selectListByProductId(product.getProductAmzId());
+                        for (ProductItemVar vat : vars) {
+                            if (vat.getPrice() == null) {
+                                System.out.println("product:" + product.getId() + " sku price is null");
+                                if (index == 0) {
+                                    languageItem = null;
+                                }
+                                break;
+                            }
+                        }
+                        index++;
                         pVars.put(product.getId(), vars);
                         UploadItem mid = null;
                         if (vars.size() == 1) {
@@ -108,7 +120,9 @@ public class AmzUpload {
                         productAmzUploadDao.updateByPrimaryKeySelective(update);
                         productManagerService.updateClaimProduct(PublishStatusEnum.PROCESS, product.getProductAmzId());
                     }
-                    items.add(languageItem);
+                    if (languageItem != null) {
+                        items.add(languageItem);
+                    }
                 }
 
 
@@ -330,27 +344,40 @@ public class AmzUpload {
                     }
                 }
 
+                boolean isAllError = StringUtils.isNotBlank(dto.getMsg());
                 System.out.println("异常结果:"+JSON.toJSONString(errorMap,true));
                 for (Map.Entry<String, ProductAmzUpload> entry : errorMap.entrySet()) {
                     //变更状态为发布失败
-                    ProductAmzUpload update = new ProductAmzUpload();
-                    update.setPublishStatus(PublishStatusEnum.FAILED.getVal());
-                    update.setUploadDesc(entry.getValue().getUploadDesc());
-                    update.setId(entry.getKey());
-                    productAmzUploadDao.updateByPrimaryKeySelective(update);
-                    productManagerService.updateClaimProduct(PublishStatusEnum.FAILED, entry.getValue().getProductAmzId());
+                    if (entry.getKey() != null) {
+                        ProductAmzUpload update = new ProductAmzUpload();
+                        update.setPublishStatus(PublishStatusEnum.FAILED.getVal());
+                        update.setUploadDesc(entry.getValue().getUploadDesc());
+                        update.setId(entry.getKey());
+                        productAmzUploadDao.updateByPrimaryKeySelective(update);
+                        productManagerService.updateClaimProduct(PublishStatusEnum.FAILED, entry.getValue().getProductAmzId());
 
-                    errorList.add(entry.getKey());
+                        errorList.add(entry.getKey());
+                        isAllError = false;
+                    }
                 }
 
                 for (ProductAmzUpload id : req.getProducts()) {
                     //变更状态为发布成功
-                    if (!errorList.contains(id.getId())) {
+                    if (isAllError) {
                         ProductAmzUpload update = new ProductAmzUpload();
-                        update.setPublishStatus(PublishStatusEnum.SUCCESS.getVal());
+                        update.setPublishStatus(PublishStatusEnum.FAILED.getVal());
+                        update.setUploadDesc(dto.getMsg());
                         update.setId(id.getId());
                         productAmzUploadDao.updateByPrimaryKeySelective(update);
-                        productManagerService.updateClaimProduct(PublishStatusEnum.SUCCESS, id.getProductAmzId());
+                        productManagerService.updateClaimProduct(PublishStatusEnum.FAILED, id.getProductAmzId());
+                    } else {
+                        if (!errorList.contains(id.getId())) {
+                            ProductAmzUpload update = new ProductAmzUpload();
+                            update.setPublishStatus(PublishStatusEnum.SUCCESS.getVal());
+                            update.setId(id.getId());
+                            productAmzUploadDao.updateByPrimaryKeySelective(update);
+                            productManagerService.updateClaimProduct(PublishStatusEnum.SUCCESS, id.getProductAmzId());
+                        }
                     }
                 }
 

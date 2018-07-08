@@ -79,6 +79,16 @@
                 <input type="text" name="sku" placeholder=" " class="input-text">
             </div>
         </div>
+
+        <div class="row cl">
+            <label class="form-label col-xs-1 col-sm-1">店铺：</label>
+            <div class="formControls col-xs-2 col-sm-2">
+
+                    <select required name="shopId" id="shopId" lay-filter="shop" class="select" style="height: 32px;">
+
+                    </select>
+            </div>
+        </div>
     </form>
     <div class="mt-20">
         <%--<div id="btn-div" class="row text-c">
@@ -148,6 +158,50 @@
     $("#search").click(function () {
         productTable.ajax.reload();
     });
+
+    var pids=[];
+
+    $(function () {
+        /*layui.use('form', function () {
+            var form = layui.form;
+            form.render("select");
+        });*/
+
+
+        $.ajax({
+            type: 'POST',
+            url: '<%=request.getContextPath()%>/product/shop/select',
+            dataType: 'json',
+            data: {
+
+            },
+            success: function (data) {
+
+                var html='<option value="">请选择</option>';
+                for(var key in  data){
+                    var single="<optgroup label='"+key+"'>";
+                    for(var kk in data[key]){
+                        single+="<option value='"+kk+"'>"+data[key][kk]+"</option>";
+                    }
+                    single+=" </optgroup>";
+                    html+=single;
+                }
+
+                $("#shopId").append(html);
+
+
+
+            },
+            error: function (data) {
+                layer.msg(data.msg, {icon: 2, time: 1000});
+            }
+        });
+        //店铺初始化
+    })
+
+
+
+
     /*产品-添加*/
     function addProduct(title, url, w) {
         layer_show(title, url, w);
@@ -334,6 +388,11 @@
                 }
             }
         });
+
+        //监听一下上一页下一页的点击事件
+        $(".dataTables_paginate").on("click", "a", function() {
+            pids.concat(getIdsArr());
+        });
         return table;
     }
 
@@ -402,7 +461,8 @@
      * @param ids
      */
     function claimProduct(ids) {
-        var ids = getIDs();
+        var ids =getIDs();
+
 
         if (ids == null || ids.length == 0) {
             layer.msg("请选择发布产品！", {icon: 5, time: 1000});
@@ -460,11 +520,16 @@
     }
 
     function getIDs() {
+
+        return getIdsArr().join(",");
+    }
+
+    function getIdsArr() {
         var ids = [];
         $("#productTable td input:checkbox:checked").each(function (i, val) {
             ids.push($(val).val());
         });
-        return ids.join(",");
+        return ids;
     }
 
     function publishProduct(id) {
