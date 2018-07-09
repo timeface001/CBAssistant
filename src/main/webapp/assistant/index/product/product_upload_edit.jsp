@@ -377,19 +377,21 @@
         layui.use('form', function () {
             var form = layui.form;
             form.on('submit', function (data) {
-
-                var shopId=data.field['shopId'].value;
+                var shopId=$("#shopId").val();
                 if(shopId==null||shopId==''){
                     layer.msg("请选择店铺", {icon: 5, time: 1000});
                     return false;
                 }
 
-                return false;
+
                 data.field['type'] = '${type}';
                 //data.field['ids'] = '${id}';
                 //data.field['type'] = '${type}';
                 layer.load();
                 if(type=="2"){//批量预发布
+
+
+
                     $.ajax({
                         type: 'POST',
                         url: '<%=request.getContextPath()%>/product/publish/batch/pre',
@@ -412,6 +414,7 @@
                         }
                     });
                 }else{
+
                     $.ajax({
                         type: 'POST',
                         url: '<%=request.getContextPath()%>/product/publish',
