@@ -369,7 +369,7 @@
                 },
                 error: function (data) {
                     layer.msg(data.msg, {icon: 2, time: 1000});
-                },
+                }
             });
             $.ajax({
                 type: 'POST',
@@ -573,7 +573,7 @@
                     "targets": [18],
                     "data": "LOCALSTATUS",
                     "render": function (data, type, full) {
-                        if (data == 4) {
+                        if (data == 4 && full.FULFILLMENTCHANNEL != "FBA") {
                             return "<div>" + full.UPDATE_TIME + "</div>";
                         } else {
                             return "<div>" + full.PURCHASEDATE + "</div>";
@@ -681,7 +681,7 @@
             title: '订单详情',
             content: 'order-Detail.jsp?amazonOrderId=' + amazonOrderId,
             end: function () {
-                location.reload();
+                /*location.reload();*/
             }
         });
         layer.full(index);

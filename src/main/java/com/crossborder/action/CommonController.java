@@ -39,6 +39,7 @@ public class CommonController {
     private OrderManageService orderManageService;
     @Autowired
     private CommonSet commonSet;
+    private  SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     /**
      * 登录
@@ -583,6 +584,7 @@ public class CommonController {
         paramMap.put("amazonOrderId", amazonOrderId);
         paramMap.put("status", "4");
         paramMap.put("intlTrackNum", intlTrackNum);
+        paramMap.put("updateTime",simpleDateFormat.format(new Date()));
         paramMap.put("transportCompany", jsonObject.getString("transportCompany"));
         orderManageService.updateOrder(paramMap);
         orderManageService.updateOrderItem(paramMap);

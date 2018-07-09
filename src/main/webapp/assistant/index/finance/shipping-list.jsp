@@ -332,9 +332,9 @@
                         if (data == 0) {
                             return "<a style='text-decoration:none' title='获取运费' onClick=\"getShippingPrice('" + full.ORDER_ID + "','" + full.TRACKNUMBER + "','" + full.TRANS_COMPANY_ID + "')\">获取运费</a>" +
                                     "&nbsp;&nbsp;" +
-                                    "<a style='text-decoration:none' title='修改'  onClick=\"updateShipping('" + full.ORDER_ID + "','" + full.FREIGHT + "','" + full.TRACKNUMBER + "')\">修改</a>";
+                                    "<a style='text-decoration:none' title='修改'  onClick=\"updateShipping('" + full.ORDER_ID + "','" + full.FREIGHT + "','" + full.TRACKNUMBER + "','" + full.SHIPPINGPRICE +"')\">修改</a>";
                         } else if (data == 1) {
-                            return "<a style='text-decoration:none' title='修改'  onClick=\"updateShipping('" + full.ORDER_ID + "','" + full.FREIGHT + "','" + full.TRACKNUMBER + "')\">修改</a>" +
+                            return "<a style='text-decoration:none' title='修改'  onClick=\"updateShipping('" + full.ORDER_ID + "','" + full.FREIGHT + "','" + full.TRACKNUMBER + "','" + full.SHIPPINGPRICE +"')\">修改</a>" +
                                     "&nbsp;&nbsp;" +
                                     "<a style='text-decoration:none' title='审核' onClick=\"auditShipping('" + full.ORDER_ID + "','" + full.FREIGHT + "')\">审核</a>";
                         } else {
@@ -371,8 +371,9 @@
     function updateAllShipping(title, url, w) {
         layer_show(title, url, w);
     }
-    function updateShipping(orderId, freight, trackNum) {
-        layer_show("修改运费", "<%=request.getContextPath()%>/assistant/index/finance/shipping-update.jsp?orderId=" + orderId + "&freight=" + freight + "&trackNum=" + trackNum, 400, 300);
+    function updateShipping(orderId, freight, trackNum, shippingPrice) {
+        layer_show("修改运费", "<%=request.getContextPath()%>/assistant/index/finance/shipping-update.jsp?orderId="
+                + orderId + "&freight=" + freight + "&trackNum=" + trackNum + "&shippingPrice=" + shippingPrice, 400, 300);
     }
     /*审核*/
     function auditShipping(orderId, freight) {

@@ -253,7 +253,6 @@ public class FinanceManageController {
             double freight = Double.parseDouble(_getFeeByOrderCode_totalFee.value) * Double.parseDouble(rateMap.get("RATE").toString()) + Double.parseDouble(rateMap.get("DIFFERENCE").toString());
             DecimalFormat df = new DecimalFormat("#.00");
             paramMap.put("freight", df.format(freight));
-            paramMap.put("freight", freight);
             paramMap.put("status", "1");
             paramMap.put("operationUser", user.get("USER_ID"));
             financeManageService.updateShipping(paramMap);

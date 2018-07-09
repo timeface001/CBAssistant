@@ -46,6 +46,9 @@
         <if test="shippingPrice != null and shippingPrice != ''">
             ,SHIPPINGPRICE = #{shippingPrice,jdbcType=VARCHAR}
         </if>
+        <if test="shippingPrice != null and shippingPrice != ''">
+            ,SHIPPINGPRICE = #{shippingPrice,jdbcType=VARCHAR}
+        </if>
         <if test="status != null and status != ''">
             ,STATUS = #{status,jdbcType=VARCHAR}
         </if>

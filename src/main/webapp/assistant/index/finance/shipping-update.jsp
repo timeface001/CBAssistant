@@ -2,6 +2,7 @@
 <%
     String orderId = request.getParameter("orderId");
     String freight = request.getParameter("freight");
+    String shippingPrice = request.getParameter("shippingPrice");
     String trackNum = request.getParameter("trackNum");
 %>
 <!DOCTYPE HTML>
@@ -45,6 +46,13 @@
                 </div>
             </div>
 
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>物流运费：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input type="text" class="input-text" value="<%=shippingPrice%>" placeholder="" id="shippingPrice"
+                           name="shippingPrice">
+                </div>
+            </div>
             <div class="row cl">
                 <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
                     <input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">

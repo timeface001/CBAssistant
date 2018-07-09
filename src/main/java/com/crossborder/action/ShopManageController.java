@@ -43,7 +43,7 @@ public class ShopManageController {
         Map<String, Object> paramMap = JSON.parseObject(data, Map.class);
         Map<String, Object> user = (Map<String, Object>) session.getAttribute("user");
         paramMap.put("createUser", user.get("USER_ID").toString());
-        paramMap.put("shopName", paramMap.get("shopName") + "-" + user.get("USER_NAME").toString());
+        paramMap.put("shopName", paramMap.get("shopName").toString().trim() + "-" + user.get("USER_NAME").toString());
         try {
             List<Map<String, Object>> shops = shopManageService.selectShops(paramMap);
             if (shops != null && shops.size() > 0) {
