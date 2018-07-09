@@ -44,6 +44,11 @@ public class QuartBathUpload {
         List<UploadServiceRequest> resultMap = new ArrayList<>();
         for (ProductAmzUpload product : list) {
 
+            if (product.getShopId() == null) {
+                continue;
+            }
+
+
             Map<String, Object> shop = shopManageService.selectShopById(product.getShopId());
             boolean isContains = false;
             for (UploadServiceRequest request : resultMap) {

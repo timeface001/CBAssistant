@@ -687,8 +687,22 @@
         });
 
         function initSkuSaleDate() {
-
             layui.use('laydate', function () {
+                var laydate = layui.laydate;
+                lay('.saleStart').each(function () {
+                    laydate.render({
+                        elem: this
+                        , trigger: 'click'
+                    });
+                });
+                lay('.saleEnd').each(function () {
+                    laydate.render({
+                        elem: this
+                        , trigger: 'click'
+                    });
+                });
+            });
+            /*layui.use('laydate', function () {
                 var laydate = layui.laydate;
                 laydate.render({
                     elem: '.saleStart' //促销开始时间
@@ -697,7 +711,7 @@
                 laydate.render({
                     elem: '.saleEnd' //促销结束时间
                 });
-            });
+            });*/
         }
 
 
@@ -1199,7 +1213,7 @@
             }
             $("#skuTable tbody").html(dom);
             initSkuSaleDate();
-            //监听价格变化
+            /*//监听价格变化
             $("#skuTable .price").on('blur', function () {
                 var $this = $(this);
                 $("#skuTable .price").each(function (i, val) {
@@ -1207,7 +1221,7 @@
                         $(val).val($this.val());
                     }
                 });
-            });
+            });*/
         }
 
         function getTR(isSingle, first, second) {
