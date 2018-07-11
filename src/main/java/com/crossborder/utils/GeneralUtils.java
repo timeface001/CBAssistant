@@ -177,7 +177,7 @@ public class GeneralUtils {
     }
 
     public static void main(String[] args) {
-        System.out.println(replaceHtmlSign(" <b><span>Parapluie inversé est vraiment bon</span></span></b><p></p> "));
+        System.out.println(translate("my name", "uk", CountryCodeEnum.JP));
     }
 
     public static String removeAttr(String str) {
@@ -285,26 +285,31 @@ public class GeneralUtils {
         return str.matches("[\\u4e00-\\u9fa5]+");
     }
 
-    public static String translate(String str, String lang, String responseLang) {
+    public static String translate(String str, String lang, CountryCodeEnum responseLang) {
+        if (StringUtils.isBlank(str)) {
+            return null;
+        }
         List<String> list = new ArrayList<>();
         list.add(str);
         TranslateDto dto = ProductClaimController.getTanslateList(list, lang).get(0);
-        if (CountryCodeEnum.FR.equal(responseLang)) {
+        if (CountryCodeEnum.FR.equal(responseLang.getVal())) {
             return dto.getFr();
-        } else if (CountryCodeEnum.ES.equal(responseLang)) {
+        } else if (CountryCodeEnum.ES.equal(responseLang.getVal())) {
             return dto.getEs();
-        } else if (CountryCodeEnum.JP.equal(responseLang)) {
+        } else if (CountryCodeEnum.JP.equal(responseLang.getVal())) {
             return dto.getJp();
-        } else if (CountryCodeEnum.CN.equal(responseLang)) {
+        } else if (CountryCodeEnum.CN.equal(responseLang.getVal())) {
             return dto.getCn();
-        } else if (CountryCodeEnum.GB.equal(responseLang)) {
+        } else if (CountryCodeEnum.GB.equal(responseLang.getVal())) {
             return dto.getUk();
-        } else if (CountryCodeEnum.IT.equal(responseLang)) {
+        } else if (CountryCodeEnum.IT.equal(responseLang.getVal())) {
             return dto.getIt();
-        } else if (CountryCodeEnum.DE.equal(responseLang)) {
+        } else if (CountryCodeEnum.DE.equal(responseLang.getVal())) {
             return dto.getDe();
         }
 
         return "";
     }
+
+
 }

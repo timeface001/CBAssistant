@@ -50,6 +50,15 @@
 
         .sortablehover {
         }
+
+        .sign_desc{
+
+            margin-left: 15px;
+            font-size: 5px;
+            margin-top: 3px;
+            color: orange;
+            margin-bottom: 3px;
+        }
     </style>
 </head>
 <body>
@@ -76,6 +85,7 @@
             <label class="layui-form-label">产品标题</label>
             <div class="layui-inline">
                 <div class="layui-tab layui-tab-card" style="width: 670px;">
+                    <ul class="sign_desc">英文首字母大写，最好不超过80，最大不超过200</ul>
                     <ul class="layui-tab-title">
                         <li class="layui-this">中文</li>
                         <li>英语</li>
@@ -86,7 +96,8 @@
                         <li>意大利语</li>
                     </ul>
                     <div class="layui-tab-content" style="height: 50px;">
-                        <div class="layui-tab-item layui-show"><input type="text" name="itemCn"
+                        <div class="layui-tab-item layui-show">
+                            <input type="text" name="itemCn"
                                                                       value="${product.itemCn}"
                                                                       lay-verify="required" placeholder=""
                                                                       autocomplete="off" class="layui-input"
@@ -242,6 +253,7 @@
             <label class="layui-form-label">产品描述</label>
             <div class="layui-inline">
                 <div class="layui-tab layui-tab-card" style="width: 670px;">
+                    <ul class="sign_desc">不要输入html标签，字符长度不超过2000（英语）</ul>
                     <ul class="layui-tab-title">
                         <li class="layui-this">中文</li>
                         <li>英语</li>
@@ -300,6 +312,7 @@
             <label class="layui-form-label">简要描述</label>
             <div class="layui-inline">
                 <div class="layui-tab layui-tab-card" style="width: 670px;" lay-filter="demo">
+                    <ul class="sign_desc">回车分隔，不超过5行，每条字符长度不超过500（英语）</ul>
                     <ul class="layui-tab-title">
                         <li class="layui-this">中文</li>
                         <li>英语</li>
@@ -508,6 +521,7 @@
             <label class="layui-form-label">关键词</label>
             <div class="layui-inline">
                 <div class="layui-tab layui-tab-card" style="width: 670px;">
+                    <ul class="sign_desc">回车分隔，不超过5行，每条字符长度不超过200（英语）</ul>
                     <ul class="layui-tab-title">
                         <li class="layui-this">中文</li>
                         <li>英语</li>

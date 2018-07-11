@@ -89,10 +89,14 @@ public class AmzUpload {
                         index++;
                         pVars.put(product.getId(), vars);
                         UploadItem mid = null;
+
+
                         if (vars.size() == 1) {
                             mid = uploadSingleProductStr(product, vars);
                             skuMap.put(product.getItemSku() + "-" + vars.get(0).getSku(), product);
                         } else if(vars.size()>1){
+                            //翻译变体
+                            translate(vars, entry.getKey());
                             mid = uploadMutiProductStr(product, vars);
                             for (ProductItemVar va : vars) {
                                 skuMap.put(product.getItemSku() + "-" + va.getSku(), product);
@@ -228,6 +232,22 @@ public class AmzUpload {
                 System.out.println("publish product end.....times:"+i);
 
             }
+
+            private void translate(List<ProductItemVar> vars, String key) {
+                if (vars.size() > 1) {
+                    CountryCodeEnum cc = CountryCodeEnum.sign(key);
+                    for (ProductItemVar var : vars) {
+                        String color = GeneralUtils.translate(var.getColorName(), "uk", cc);
+                        String size = GeneralUtils.translate(var.getSizeName(), "uk", cc);
+                        var.setMaterialType(GeneralUtils.translate(var.getMaterialType(), "uk", cc));
+                        var.setColorName(color);
+                        var.setColorMap(color);
+                        var.setSizeName(size);
+                        var.setSizeMap(size);
+                    }
+                }
+
+            }
         }).start();
 
     }
@@ -357,7 +377,7 @@ public class AmzUpload {
                         productManagerService.updateClaimProduct(PublishStatusEnum.FAILED, entry.getValue().getProductAmzId());
 
                         errorList.add(entry.getKey());
-                        isAllError = false;
+                        //isAllError = false;
                     }
                 }
 
@@ -365,19 +385,23 @@ public class AmzUpload {
                     //变更状态为发布成功
                     if (isAllError) {
                         ProductAmzUpload update = new ProductAmzUpload();
+                        if (GeneralUtils.isNotNullOrEmpty(errorList) && !errorList.contains(id.getId())) {
+                            update.setUploadDesc("由于其他商品数据错误引起批量发布失败");
+                        } else {
+                            update.setUploadDesc(dto.getMsg());
+                        }
+
                         update.setPublishStatus(PublishStatusEnum.FAILED.getVal());
-                        update.setUploadDesc(dto.getMsg());
                         update.setId(id.getId());
                         productAmzUploadDao.updateByPrimaryKeySelective(update);
                         productManagerService.updateClaimProduct(PublishStatusEnum.FAILED, id.getProductAmzId());
                     } else {
-                        if (!errorList.contains(id.getId())) {
-                            ProductAmzUpload update = new ProductAmzUpload();
-                            update.setPublishStatus(PublishStatusEnum.SUCCESS.getVal());
-                            update.setId(id.getId());
-                            productAmzUploadDao.updateByPrimaryKeySelective(update);
-                            productManagerService.updateClaimProduct(PublishStatusEnum.SUCCESS, id.getProductAmzId());
-                        }
+
+                        ProductAmzUpload update = new ProductAmzUpload();
+                        update.setPublishStatus(PublishStatusEnum.SUCCESS.getVal());
+                        update.setId(id.getId());
+                        productAmzUploadDao.updateByPrimaryKeySelective(update);
+                        productManagerService.updateClaimProduct(PublishStatusEnum.SUCCESS, id.getProductAmzId());
                     }
                 }
 

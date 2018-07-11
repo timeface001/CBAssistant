@@ -267,7 +267,7 @@ public class ProductManagerService {
         if(GeneralUtils.isNotNullOrEmpty(result)){
             for(ProductAmzUpload upload:result){
                if(StringUtils.isNotBlank(upload.getUploadDesc())){
-                   upload.setUploadDesc(upload.getUploadDesc().length()>200?(upload.getUploadDesc().substring(0,200)+"..."):upload.getUploadDesc());
+                   upload.setUploadDesc(upload.getUploadDesc().length()>200?(upload.getUploadDesc().replaceAll("\"","&quot;").replaceAll("'"," &apos;")):upload.getUploadDesc());
                }
             }
         }

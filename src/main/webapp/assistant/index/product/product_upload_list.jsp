@@ -101,7 +101,8 @@
                onclick="claimProduct(null)"
                class="btn  btn-primary radius"><i class="Hui-iconfont">
                 &#xe619;</i>批量发布</a>
-            </span></div>
+            </span><span style="color: orange;font-size: 5px;float: left;margin-left: 10px;margin-top: 5px;">注意:同一个店铺一次最多可以发布五个国家，等发布成功后再点击发布剩余的国家产品。</span>
+        </div>
         <table id="productTable" class="table table-border table-bordered table-bg table-hover mt-10">
             <thead>
             <tr class="text-c">
