@@ -54,7 +54,6 @@
         .sign_desc{
 
             margin-left: 15px;
-            font-size: 5px;
             margin-top: 3px;
             color: orange;
             margin-bottom: 3px;
@@ -253,7 +252,7 @@
             <label class="layui-form-label">产品描述</label>
             <div class="layui-inline">
                 <div class="layui-tab layui-tab-card" style="width: 670px;">
-                    <ul class="sign_desc">不要输入html标签，字符长度不超过2000（英语）</ul>
+                    <ul class="sign_desc">不要输入html标签，字符长度不超过2000</ul>
                     <ul class="layui-tab-title">
                         <li class="layui-this">中文</li>
                         <li>英语</li>
@@ -312,7 +311,7 @@
             <label class="layui-form-label">简要描述</label>
             <div class="layui-inline">
                 <div class="layui-tab layui-tab-card" style="width: 670px;" lay-filter="demo">
-                    <ul class="sign_desc">回车分隔，不超过5行，每条字符长度不超过500（英语）</ul>
+                    <ul class="sign_desc">回车分隔，不超过5行，字符总长度不超过500</ul>
                     <ul class="layui-tab-title">
                         <li class="layui-this">中文</li>
                         <li>英语</li>
@@ -521,7 +520,7 @@
             <label class="layui-form-label">关键词</label>
             <div class="layui-inline">
                 <div class="layui-tab layui-tab-card" style="width: 670px;">
-                    <ul class="sign_desc">回车分隔，不超过5行，每条字符长度不超过200（英语）</ul>
+                    <ul class="sign_desc">回车分隔，不超过5行，字符总长度不超过200</ul>
                     <ul class="layui-tab-title">
                         <li class="layui-this">中文</li>
                         <li>英语</li>
