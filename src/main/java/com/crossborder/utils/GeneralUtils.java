@@ -195,6 +195,8 @@ public class GeneralUtils {
         str=filterHtml(str,"<\\s*span\\s+([^>]*)\\s*>");
         str=filterHtml(str,"</span>");
         str=filterHtml(str,"<span>");
+        str=filterHtml(str,"<o:p>");
+        str=filterHtml(str,"</o:p>");
         str=filterHtml(str,"</div>");
         str=filterHtml(str,"<\\s*div\\s+([^>]*)\\s*>");
 

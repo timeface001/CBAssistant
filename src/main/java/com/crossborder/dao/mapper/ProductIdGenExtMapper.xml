@@ -52,7 +52,7 @@
     <select id="selectProductIdForUseOne" resultMap="BaseResultMapSB" parameterType="java.util.Map">
         SELECT  <include refid="Base_Column_ListSB" />  FROM (SELECT * FROM ( select
         t.* from T_PRODUCT_ID t left join T_USER_INFO r on t.CREATE_USER=r.USER_ID
-        where t.USE_STATUS=0 AND AMZ_SKU is NULL AND (t.CREATE_USER=#{userId} OR r.ROLE_ID=500)
+        where t.USE_STATUS=0 AND AMZ_SKU is NULL AND t.CREATE_USER=#{userId}
 
         <if test="type!=null and type!=''">
             AND t.TYPE=#{type}
