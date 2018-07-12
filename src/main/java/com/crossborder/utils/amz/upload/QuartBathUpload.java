@@ -83,7 +83,7 @@ public class QuartBathUpload {
 
     private List<ProductAmzUpload> list() {
         List<ProductAmzUpload> list = new ArrayList<>();
-        String[] arr = {"18633","16858"};
+        String[] arr = {"18941","20241","20240"};
 
         for (String id : arr) {
             ProductAmzUpload pp = productAmzUploadDao.selectByPrimaryKey(id);

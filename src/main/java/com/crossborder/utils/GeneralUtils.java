@@ -198,6 +198,7 @@ public class GeneralUtils {
         str=filterHtml(str,"<o:p>");
         str=filterHtml(str,"</o:p>");
         str=filterHtml(str,"</div>");
+        str=filterHtml(str,"<div>");
         str=filterHtml(str,"<\\s*div\\s+([^>]*)\\s*>");
 
         return str;

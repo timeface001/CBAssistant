@@ -96,7 +96,7 @@ public class AmzUpload {
                             skuMap.put(product.getItemSku() + "-" + vars.get(0).getSku(), product);
                         } else if(vars.size()>1){
                             //翻译变体
-                            translate(vars, entry.getKey());
+                            //translate(vars, entry.getKey());
                             mid = uploadMutiProductStr(product, vars);
                             for (ProductItemVar va : vars) {
                                 skuMap.put(product.getItemSku() + "-" + va.getSku(), product);
@@ -660,7 +660,7 @@ public class AmzUpload {
                 //查询之前可用产品ID
 
                 if (StringUtils.isBlank(product.getExternalProductId())) {
-                    gen = productIdGenDao.selectProductIdByAmzSku(product.getItemSku() + "-" + var.getSku());
+                    gen = productIdGenDao.selectProductIdByAmzSku(product.getItemSku() + "-" + GeneralUtils.translate(var.getSku(),"uk",CountryCodeEnum.valueOf(product.getLanguageId())));
                     if (gen != null) {
                         product.setExternalProductId(gen.getProductId());
                         product.setExternalProductIdType(gen.getType());
