@@ -706,4 +706,9 @@ public class ProductManagerService {
 
         return productUploadLogDao.selectLogList(s);
     }
+
+    public void getProductId(Integer type,String userId){
+        //Map<String,Object>
+        productIdGenDao.selectProductIdForUseOne(null, userId);
+    }
 }

@@ -59,6 +59,10 @@ public class GeneralUtils {
         return  ((Map<String, Object>) ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest().getSession().getAttribute("user")).get("USER_ID").toString();
     }
 
+    public static Map<String, Object> getUser() {
+        return ((Map<String, Object>) ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest().getSession().getAttribute("user"));
+    }
+
     public static String nullToEmpty(Object obj) {
         return obj == null ? "" : obj.toString();
     }

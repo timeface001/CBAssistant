@@ -16,6 +16,8 @@ public interface ProductIdGenDao extends ProductIdGenMapper {
 
     List<ProductIdGen> selectProductIdGenList(Map<String, Object> params);
 
+    List<String> oneCompanyUsers(String userId);
+
     Long selectProductIdExist(@Param("type") String type, @Param("productId") String productId);
 
     List<ProductIdGen> selectProductIdForUse(Map<String, Object> params);

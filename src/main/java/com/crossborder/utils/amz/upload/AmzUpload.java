@@ -157,6 +157,7 @@ public class AmzUpload {
                                 update.setId(upload.getId());
                                 productAmzUploadDao.updateByPrimaryKeySelective(update);
                                 productManagerService.updateClaimProduct(PublishStatusEnum.FAILED, upload.getProductAmzId());
+                                sr.getUpdateIds().add(upload.getId());
                             }
                             continue;
                         }
@@ -168,6 +169,7 @@ public class AmzUpload {
                     System.out.println("sids:"+ JSON.toJSONString(submitIds));
 
 
+                    request.setUpdateIds(sr.getUpdateIds());
                     try {
                         Thread.sleep(20000);
                     } catch (InterruptedException e) {
@@ -382,6 +384,10 @@ public class AmzUpload {
                 }
 
                 for (ProductAmzUpload id : req.getProducts()) {
+                    /*if (GeneralUtils.isNotNullOrEmpty(req.getUpdateIds()) && req.getUpdateIds().contains(id.getId())) {
+                        continue;
+                    }*/
+
                     //变更状态为发布成功
                     if (isAllError) {
                         ProductAmzUpload update = new ProductAmzUpload();
@@ -660,7 +666,7 @@ public class AmzUpload {
                 //查询之前可用产品ID
 
                 if (StringUtils.isBlank(product.getExternalProductId())) {
-                    gen = productIdGenDao.selectProductIdByAmzSku(product.getItemSku() + "-" + GeneralUtils.translate(var.getSku(),"uk",CountryCodeEnum.valueOf(product.getLanguageId())));
+                    gen = productIdGenDao.selectProductIdByAmzSku(product.getItemSku() + "-" + var.getSku());
                     if (gen != null) {
                         product.setExternalProductId(gen.getProductId());
                         product.setExternalProductIdType(gen.getType());

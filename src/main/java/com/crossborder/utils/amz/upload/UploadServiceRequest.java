@@ -18,6 +18,8 @@ public class UploadServiceRequest {
 
     private Map<String, SplitRequest> languageList;
 
+    private List<String> updateIds;
+
 
     public UploadServiceRequest(Map<String, Object> shop) {
         this.shop = initShop(shop);
@@ -25,6 +27,7 @@ public class UploadServiceRequest {
         this.exrateList = new HashMap<>();
         this.products=new ArrayList<>();
         this.languageList = new HashMap<>();
+        this.updateIds=new ArrayList<>();
     }
 
     public boolean add(Map<String, Object> shop, ProductAmzUpload product) {
@@ -157,6 +160,14 @@ public class UploadServiceRequest {
         return languageList;
     }
 
+    public List<String> getUpdateIds() {
+        return updateIds;
+    }
+
+    public void setUpdateIds(List<String> updateIds) {
+        this.updateIds = updateIds;
+    }
+
     public void setLanguageList(Map<String, SplitRequest> languageList) {
         this.languageList = languageList;
     }
@@ -261,6 +272,8 @@ public class UploadServiceRequest {
         public void setExrate(BigDecimal exrate) {
             this.exrate = exrate;
         }
+
+
     }
 
     public class SplitRequest {
@@ -317,5 +330,6 @@ public class UploadServiceRequest {
         public void setShopReq(ShopReq shopReq) {
             this.shopReq = shopReq;
         }
+
     }
 }

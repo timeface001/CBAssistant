@@ -27,6 +27,10 @@
         ORDER BY a.CREATE_TIME DESC
     </select>
 
+    <select id="oneCompanyUsers" parameterType="java.util.Map" resultType="java.util.List">
+         SELECT user FROM
+    </select>
+
     <select id="selectProductIdForUse" resultMap="BaseResultMap" parameterType="java.util.Map">
         SELECT
         <include refid="Base_Column_List"/>

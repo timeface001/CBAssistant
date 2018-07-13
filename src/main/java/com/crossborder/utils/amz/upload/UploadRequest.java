@@ -16,6 +16,8 @@ public class UploadRequest {
 
     private List<ProductAmzUpload> products;
 
+    private List<String> updateIds;
+
     public List<ProductAmzUpload> getProducts() {
         return products;
     }
@@ -72,4 +74,12 @@ public class UploadRequest {
 
         return submitIds;
     }*/
+
+    public List<String> getUpdateIds() {
+        return updateIds;
+    }
+
+    public void setUpdateIds(List<String> updateIds) {
+        this.updateIds = updateIds;
+    }
 }
