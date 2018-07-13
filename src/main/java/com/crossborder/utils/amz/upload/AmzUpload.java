@@ -384,9 +384,9 @@ public class AmzUpload {
                 }
 
                 for (ProductAmzUpload id : req.getProducts()) {
-                    /*if (GeneralUtils.isNotNullOrEmpty(req.getUpdateIds()) && req.getUpdateIds().contains(id.getId())) {
+                    if (GeneralUtils.isNotNullOrEmpty(req.getUpdateIds()) && req.getUpdateIds().contains(id.getId())) {
                         continue;
-                    }*/
+                    }
 
                     //变更状态为发布成功
                     if (isAllError) {
