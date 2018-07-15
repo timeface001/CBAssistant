@@ -687,7 +687,7 @@
         layer.full(index);
     }
     function delOrder(amazonOrderId) {
-        layer.confirm('您确定要删除订单吗？', function (index) {
+        layer.confirm('您确定要删除订单吗？', function (i) {
             $.ajax({
                 type: 'POST',
                 url: '<%=request.getContextPath()%>/order/delOrder',
@@ -699,7 +699,7 @@
                     layer.closeAll("loading");
                     if (data.code == 0) {
                         layer.msg(data.msg, {icon: 1, time: 1000});
-                        reloadTable(0)
+                        reloadTable(index)
                     } else {
                         layer.msg(data.msg, {icon: 2, time: 1000});
                     }
@@ -711,7 +711,7 @@
         });
     }
     function getCommission(amazonOrderId, merchantId, countryCode) {
-        layer.confirm('您确定要获取佣金吗？', function (index) {
+        layer.confirm('您确定要获取佣金吗？', function (i) {
             layer.load();
             $.ajax({
                 type: 'POST',
@@ -726,7 +726,7 @@
                     layer.closeAll("loading");
                     if (data.code == 0) {
                         layer.msg(data.msg, {icon: 1, time: 1000});
-                        reloadTable(0)
+                        reloadTable(index)
                     } else {
                         layer.msg(data.msg, {icon: 2, time: 1000});
                     }

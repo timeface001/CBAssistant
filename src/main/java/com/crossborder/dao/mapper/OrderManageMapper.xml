@@ -200,6 +200,7 @@
         wm_concat(smallimage) smallimage,
         wm_concat(sellersku) sku,
         wm_concat(asin) asin,
+        wm_concat(tracknum) tracknum,
         trunc(sum(itempricermb),2) itempricermb,
         trunc(sum(shippingPricermb),2) shippingPricermb,
         trunc(sum(refundment),2) refundment,
@@ -273,7 +274,7 @@
             </choose>
         </if>
         <if test="sku !=null and sku != ''">
-            AND t2.SELLERSKU LIKE '%${sku}%'
+            AND t2.SKU LIKE '%${sku}%'
         </if>
         <if test="trackNum !=null and trackNum != ''">
             AND t2.TRACKNUM LIKE '%${trackNum}%'
@@ -352,7 +353,7 @@
         WHERE AMAZONORDERID = #{amazonOrderId,jdbcType=VARCHAR}
         AND ORDERITEMID = #{orderItemId,jdbcType=VARCHAR}
     </update>
-    <update id="updateOrderItem">
+    <update id="updateOrderItem" parameterType="java.util.Map">
         UPDATE T_ORDER_ITEM
         set STATUS = #{status,jdbcType=VARCHAR}
         <if test="cost !=null and cost !=''">

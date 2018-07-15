@@ -105,5 +105,6 @@
         LEFT JOIN  T_COUNTRY t2
         on t2.id = t1.country_code
         WHERE  t1.merchant_id = #{merchantId,jdbcType=VARCHAR}
+        AND t1.country_code = #{countryCode,jdbcType=VARCHAR}
     </select>
 </mapper>

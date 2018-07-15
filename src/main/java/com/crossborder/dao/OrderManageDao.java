@@ -41,6 +41,6 @@ public interface OrderManageDao {
 
     public int updateOrderShipping(Map<String, Object> map);
 
-    public int updateOrderCommission(Map<String, Object> map);
+    public int updateOrderItemCommission(Map<String, Object> map);
 
 }
