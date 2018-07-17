@@ -77,4 +77,16 @@ public class OrderManageService {
     public int updateOrderItemCommission(Map<String, Object> map) {
         return orderManageDao.updateOrderItemCommission(map);
     }
+
+    public int cloneOrder(String amazonOrderId) {
+        return orderManageDao.cloneOrder(amazonOrderId);
+    }
+
+    public int cloneOrderItem(String amazonOrderId) {
+        return orderManageDao.cloneOrderItem(amazonOrderId);
+    }
+
+    public int cloneAddress(String amazonOrderId) {
+        return orderManageDao.cloneAddress(amazonOrderId);
+    }
 }

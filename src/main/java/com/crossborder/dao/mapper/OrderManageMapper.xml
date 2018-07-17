@@ -65,6 +65,65 @@
         #{commission,jdbcType=DOUBLE},
         #{updateTime,jdbcType=VARCHAR})
     </insert>
+    <insert id="cloneOrder" parameterType="java.lang.String">
+        INSERT INTO
+        T_ORDER(ID,
+                AMAZONORDERID,
+                SELLERORDERID,
+                ORDERSTATUS,
+                PURCHASEDATE,
+                LASTUPDATEDATE,
+                FULFILLMENTCHANNEL,
+                ORDERTOTAL,
+                NUMBEROFITEMSSHIPPED,
+                NUMBEROFITEMSUNSHIPPED,
+                PAYMENTMETHOD,
+                MARKETPLACEID,
+                BUYERNAME,
+                ORDERTYPE,
+                RUNNINGTIME,
+                SALESMAN,
+                SALESCOMPANY,
+                SALESSOURCE,
+                BUYERCOUNTRY,
+                TRANSPORTCOMPANY,
+                INTLTRACKNUM,
+                CURRENCYCODE,
+                LOCALSTATUS,
+                SHIPPINGPRICE,
+                COMMISSION,
+                UPDATE_TIME)
+        SELECT
+        seq_order_id.nextval,
+        t1.AMAZONORDERID || '-clone',
+        t1.SELLERORDERID,
+        t1.ORDERSTATUS,
+        t1.PURCHASEDATE,
+        t1.LASTUPDATEDATE,
+        t1.FULFILLMENTCHANNEL,
+        t1.ORDERTOTAL,
+        t1.NUMBEROFITEMSSHIPPED,
+        t1.NUMBEROFITEMSUNSHIPPED,
+        t1.PAYMENTMETHOD,
+        t1.MARKETPLACEID,
+        t1.BUYERNAME,
+        t1.ORDERTYPE,
+        t1.RUNNINGTIME,
+        t1.SALESMAN,
+        t1.SALESCOMPANY,
+        t1.SALESSOURCE,
+        t1.BUYERCOUNTRY,
+        t1.TRANSPORTCOMPANY,
+        t1.INTLTRACKNUM,
+        t1.CURRENCYCODE,
+        '0',
+        t1.SHIPPINGPRICE,
+        t1.COMMISSION,
+        t1.UPDATE_TIME
+        FROM T_ORDER t1
+        WHERE t1.AMAZONORDERID = #{amazonOrderId,jdbcType=VARCHAR}
+    </insert>
+
     <insert id="insertOrderItem" parameterType="com.crossborder.entity.LocalOrderItem">
         MERGE INTO T_ORDER_ITEM t1
         USING (SELECT #{orderItemId} orderItemId FROM dual) t2
@@ -126,6 +185,60 @@
         #{commission,jdbcType=DOUBLE},
         #{commissionRMB,jdbcType=DOUBLE})
     </insert>
+    <insert id="cloneOrderItem" parameterType="java.lang.String">
+        INSERT INTO
+        T_ORDER_ITEM(AMAZONORDERID,
+        COST,
+        SELLERSKU,
+        ORDERITEMID,
+        TITLE,
+        STATUS,
+        ASIN,
+        QUANTITYSHIPPED,
+        ITEMPRICE,
+        SHIPPINGPRICE,
+        REFUNDMENT,
+        PURCHASENUM,
+        TRACKNUM,
+        ACTUALWEIGHT,
+        PAYWEIGHT,
+        VOLUMEWEIGHT,
+        CURRENCYCODE,
+        SMALLIMAGE,
+        ITEMPRICERMB,
+        SHIPPINGPRICERMB,
+        GIFTWRAPPRICE,
+        GIFTWRAPPRICERMB,
+        COMMISSION,
+        COMMISSIONRMB)
+        SELECT
+        t1.AMAZONORDERID || '-clone',
+        0,
+        t1.SELLERSKU,
+        t1.ORDERITEMID || '-clone',
+        t1.TITLE,
+        t1.STATUS,
+        t1.ASIN,
+        t1.QUANTITYSHIPPED,
+        t1.ITEMPRICE,
+        t1.SHIPPINGPRICE,
+        t1.REFUNDMENT,
+        t1.PURCHASENUM,
+        t1.TRACKNUM,
+        t1.ACTUALWEIGHT,
+        t1.PAYWEIGHT,
+        t1.VOLUMEWEIGHT,
+        t1.CURRENCYCODE,
+        t1.SMALLIMAGE,
+        t1.ITEMPRICERMB,
+        t1.SHIPPINGPRICERMB,
+        t1.GIFTWRAPPRICE,
+        t1.GIFTWRAPPRICERMB,
+        t1.COMMISSION,
+        t1.COMMISSIONRMB
+        FROM T_ORDER_ITEM t1
+        WHERE t1.AMAZONORDERID = #{amazonOrderId,jdbcType=VARCHAR}
+    </insert>
     <insert id="insertAddress" parameterType="com.crossborder.entity.AddressInfo">
         MERGE INTO T_ADDRESS t1
         USING (SELECT #{amazonOrderId} amazonOrderId FROM dual) t2
@@ -160,6 +273,36 @@
         #{addressLine2,jdbcType=VARCHAR},
         #{addressLine3,jdbcType=VARCHAR},
         #{createUser,jdbcType=VARCHAR})
+    </insert>
+    <insert id="cloneAddress" parameterType="java.lang.String">
+        INSERT INTO
+        T_ADDRESS(AMAZONORDERID,
+        USERNAME,
+        COMPANY,
+        PHONE,
+        COUNTRYCODE,
+        POSTALCODE,
+        CITY,
+        STATEORREGION,
+        ADDRESSLINE1,
+        ADDRESSLINE2,
+        ADDRESSLINE3,
+        CREATE_USER)
+        SELECT
+        t1.AMAZONORDERID || '-clone',
+        t1.USERNAME,
+        t1.COMPANY,
+        t1.PHONE,
+        t1.COUNTRYCODE,
+        t1.POSTALCODE,
+        t1.CITY,
+        t1.STATEORREGION,
+        t1.ADDRESSLINE1,
+        t1.ADDRESSLINE2,
+        t1.ADDRESSLINE3,
+        t1.CREATE_USER
+        FROM T_ADDRESS t1
+        WHERE t1.AMAZONORDERID = #{amazonOrderId,jdbcType=VARCHAR}
     </insert>
     <select id="selectAddress" parameterType="java.lang.String" resultType="java.util.Map">
         SELECT * FROM T_ADDRESS

@@ -163,7 +163,7 @@
                 </div>
             </div>
         </div>
-        <c:if test="${sessionScope.user.ROLE_ID eq '100'}">
+        <%--<c:if test="${sessionScope.user.ROLE_ID eq '100'}">
             <div class="cl pd-5 bg-1 bk-gray mt-10" id="count-div"><span class="l">
             <a class="btn btn-primary radius" href="javascript:;"
                onclick="addOrder('添加订单','<%=request.getContextPath()%>/assistant/index/order/order-add.jsp','800')"><i
@@ -176,7 +176,7 @@
                onclick="addOrder('添加订单','<%=request.getContextPath()%>/assistant/index/order/order-add.jsp','800')"><i
                     class="Hui-iconfont">
                 &#xe600;</i> 添加订单</a> </span></div>
-        </c:if>
+        </c:if>--%>
         <table id="orderTable" class="table table-border table-bordered table-bg table-hover">
             <thead>
             <tr class="text-c">
@@ -587,9 +587,13 @@
                         if (roleId == 100) {
                             return "<a style='text-decoration:none' title='获取佣金'  onClick=\"getCommission('" + full.AMAZONORDERID + "','" + full.MERCHANT_ID + "','" + full.BUYERCOUNTRY + "')\"'>获取佣金</a>" +
                                     "&nbsp;&nbsp;" +
+                                    "<a style='text-decoration:none' title='克隆'  onClick=\"cloneOrder('" + full.AMAZONORDERID + "')\"'>克隆</a>" +
+                                    "&nbsp;&nbsp;" +
                                     "<a style='text-decoration:none' title='删除'  onClick=\"delOrder('" + full.AMAZONORDERID + "')\"'>删除</a>";
                         } else {
-                            return "<a style='text-decoration:none' title='获取佣金'  onClick=\"getCommission('" + full.AMAZONORDERID + "','" + full.MERCHANT_ID + "','" + full.BUYERCOUNTRY + "')\"'>获取佣金</a>";
+                            return "<a style='text-decoration:none' title='获取佣金'  onClick=\"getCommission('" + full.AMAZONORDERID + "','" + full.MERCHANT_ID + "','" + full.BUYERCOUNTRY + "')\"'>获取佣金</a>" +
+                                    "&nbsp;&nbsp;" +
+                                    "<a style='text-decoration:none' title='克隆'  onClick=\"cloneOrder('" + full.AMAZONORDERID + "')\"'>克隆</a>";
                         }
                     }
                 }
@@ -691,6 +695,30 @@
             $.ajax({
                 type: 'POST',
                 url: '<%=request.getContextPath()%>/order/delOrder',
+                dataType: 'json',
+                data: {
+                    "amazonOrderId": amazonOrderId
+                },
+                success: function (data) {
+                    layer.closeAll("loading");
+                    if (data.code == 0) {
+                        layer.msg(data.msg, {icon: 1, time: 1000});
+                        reloadTable(index)
+                    } else {
+                        layer.msg(data.msg, {icon: 2, time: 1000});
+                    }
+                },
+                error: function (data) {
+                    layer.msg(data.msg, {icon: 2, time: 1000});
+                }
+            });
+        });
+    }
+    function cloneOrder(amazonOrderId) {
+        layer.confirm('您确定要克隆订单吗？', function (i) {
+            $.ajax({
+                type: 'POST',
+                url: '<%=request.getContextPath()%>/order/cloneOrder',
                 dataType: 'json',
                 data: {
                     "amazonOrderId": amazonOrderId

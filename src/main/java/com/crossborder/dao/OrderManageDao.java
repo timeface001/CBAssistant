@@ -43,4 +43,9 @@ public interface OrderManageDao {
 
     public int updateOrderItemCommission(Map<String, Object> map);
 
+    public int cloneOrder(String amazonOrderId);
+
+    public int cloneOrderItem(String amazonOrderId);
+
+    public int cloneAddress(String amazonOrderId);
 }

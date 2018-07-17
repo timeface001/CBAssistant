@@ -276,7 +276,7 @@ public class ProductClaimController extends BaseController {
     }
 
     public static List<TranslateDto> getTanslateList(List<String> zhs, String language) {
-        String key = "AIzaSyD9ZFuiV0CJYppKv9G6DQ08QQc2JDpOnHk";
+        String key = "AIzaSyBIdrp49-kDa9sNjEny2AzqdQ6dOpmHwYE";
         Translate translate = TranslateOptions.newBuilder().setApiKey(key).build().getService();
         Translation translation = null;
         List<TranslateDto> list = new ArrayList<>();

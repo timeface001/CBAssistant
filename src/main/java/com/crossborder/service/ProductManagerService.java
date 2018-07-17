@@ -113,7 +113,7 @@ public class ProductManagerService {
 
                 //标题翻译
                 String name = GeneralUtils.nullToEmpty(product.get("NAME"));
-                String key = "AIzaSyD9ZFuiV0CJYppKv9G6DQ08QQc2JDpOnHk";
+                String key = "AIzaSyBIdrp49-kDa9sNjEny2AzqdQ6dOpmHwYE";
                 Translate translate = TranslateOptions.newBuilder().setApiKey(key).build().getService();
                 Translation translation = null;
                 String cn = "";

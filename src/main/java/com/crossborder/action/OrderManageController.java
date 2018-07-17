@@ -56,7 +56,7 @@ public class OrderManageController {
     private OrderManageService orderManageService;
     @Resource
     private ShopManageService shopManageService;
-    private  SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private static final String Order_Fulfillment_Fee = "_POST_ORDER_FULFILLMENT_DATA_";
 
     /*
@@ -685,6 +685,30 @@ public class OrderManageController {
             e.printStackTrace();
             map.put("code", "-10");
             map.put("msg", "删除失败");
+        }
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
+    }
+
+    /**
+     * 克隆订单
+     *
+     * @param amazonOrderId
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "cloneOrder", produces = "text/plain;charset=UTF-8")
+    public String cloneOrder(String amazonOrderId) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            orderManageService.cloneOrder(amazonOrderId);
+            orderManageService.cloneOrderItem(amazonOrderId);
+            orderManageService.cloneAddress(amazonOrderId);
+            map.put("code", "0");
+            map.put("msg", "克隆成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("code", "-10");
+            map.put("msg", "克隆失败");
         }
         return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
