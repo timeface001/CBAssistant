@@ -8,7 +8,17 @@ import java.util.Map;
 
 public class UploadRequest {
 
-    private Map<String, ProductAmzUpload> skuMap;
+    private Map<String, Map<String,ProductAmzUpload>> skuMap;
+
+    private Map<String,List<ProductAmzUpload>> submitProducts;
+
+    public Map<String, List<ProductAmzUpload>> getSubmitProducts() {
+        return submitProducts;
+    }
+
+    public void setSubmitProducts(Map<String, List<ProductAmzUpload>> submitProducts) {
+        this.submitProducts = submitProducts;
+    }
 
     private UploadServiceRequest.ShopReq shop;
 
@@ -42,11 +52,11 @@ public class UploadRequest {
         this.products = new ArrayList<>();
     }
 
-    public Map<String, ProductAmzUpload> getSkuMap() {
+    public Map<String, Map<String, ProductAmzUpload>> getSkuMap() {
         return skuMap;
     }
 
-    public void setSkuMap(Map<String, ProductAmzUpload> skuMap) {
+    public void setSkuMap(Map<String, Map<String, ProductAmzUpload>> skuMap) {
         this.skuMap = skuMap;
     }
 
@@ -58,9 +68,7 @@ public class UploadRequest {
         this.shop = shop;
     }
 
-    public ProductAmzUpload getUploadResponse(String sku) {
-        return this.skuMap.containsKey(sku) ? skuMap.get(sku) : new ProductAmzUpload();
-    }
+
 
     /*public List<String> getSubmitIds() throws Exception {
         if (this.submitMap == null || this.submitMap.size() == 0) {
