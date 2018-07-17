@@ -1,7 +1,9 @@
 package com.crossborder.utils.amz.upload;
 
+import com.crossborder.entity.ProductAmzUpload;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.List;
 import java.util.Map;
 
 public class UploadItem {
@@ -11,6 +13,25 @@ public class UploadItem {
     private String inventoryStr;
     private String relationsStr;
     private UploadServiceRequest.ShopReq shop;
+    private Map<String,ProductAmzUpload> productMap;
+
+    private List<ProductAmzUpload> products;
+
+    public List<ProductAmzUpload> getProducts() {
+        return products;
+    }
+
+    public void setProducts(List<ProductAmzUpload> products) {
+        this.products = products;
+    }
+
+    public Map<String, ProductAmzUpload> getProductMap() {
+        return productMap;
+    }
+
+    public void setProductMap(Map<String, ProductAmzUpload> productMap) {
+        this.productMap = productMap;
+    }
 
     public UploadServiceRequest.ShopReq getShop() {
         return shop;

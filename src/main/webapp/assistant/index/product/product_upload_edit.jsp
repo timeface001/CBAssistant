@@ -217,7 +217,7 @@
                         </div>
                         <label id="itemLabel" class="col-xs-1 col-sm-1" style="display: none">产品模版：</label>
                         <div id="itemDiv" class="col-xs-2 col-sm-2" style="display: none">
-                            <input type="text" class="input-text" placeholder="cateType" id="cateType"
+                            <input type="text" class="input-text" placeholder="itemType" id="cateType"
                                    value="${product.itemType}"/>
                         </div>
                     </div>

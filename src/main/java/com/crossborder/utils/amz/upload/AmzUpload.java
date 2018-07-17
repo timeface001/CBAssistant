@@ -68,10 +68,10 @@ public class AmzUpload {
 
                 List<UploadItem> items = new ArrayList<>();
                 System.out.println("publish product start.....");
-                Map<String, ProductAmzUpload> skuMap = new HashMap<>();
 
                 for (Map.Entry<String, UploadServiceRequest.SplitRequest> entry : sr.getLanguageList().entrySet()) {
 
+                    Map<String, ProductAmzUpload> skuMap = new HashMap<>();
                     UploadItem languageItem = new UploadItem();
                     int index = 0;
                     for (ProductAmzUpload product : entry.getValue().getList()) {
@@ -116,7 +116,7 @@ public class AmzUpload {
 
                         languageItem.setPriceStr(AmzXmlTemplate.getUploadPriceStr(product,entry.getValue().getShopReq(), vars));
 
-                        request.setSkuMap(skuMap);
+                        //request.setSkuMap(skuMap);
                         //变更状态为发布中
                         ProductAmzUpload update = new ProductAmzUpload();
                         update.setPublishStatus(PublishStatusEnum.PROCESS.getVal());
@@ -124,6 +124,8 @@ public class AmzUpload {
                         productAmzUploadDao.updateByPrimaryKeySelective(update);
                         productManagerService.updateClaimProduct(PublishStatusEnum.PROCESS, product.getProductAmzId());
                     }
+                    languageItem.setProductMap(skuMap);
+                    languageItem.setProducts(entry.getValue().getList());
                     if (languageItem != null) {
                         items.add(languageItem);
                     }
@@ -142,6 +144,8 @@ public class AmzUpload {
 
                     List<String> submitIds = new ArrayList<>();
                     System.out.println("请求上传商品主体....");
+                    Map<String, Map<String, ProductAmzUpload>> submitMap = new HashMap<>();
+                    Map<String, List<ProductAmzUpload>> submitList = new HashMap<>();
                     for (UploadItem item1 : items) {
                         System.out.println();
                         System.out.println(item1.getProductStrHead());
@@ -150,7 +154,7 @@ public class AmzUpload {
                         ResponseDto<String> feeDto = getUploadResult(getService(sr.getShop()), getSubmitFeedRequest(productIs, sr, item1.getShop().getMarketIds(), AmzFeeType.PRODUCT_FEED));
                         i++;
                         if (!feeDto.isSuccess()) {
-                            for (ProductAmzUpload upload : sr.getProducts()) {
+                            for (ProductAmzUpload upload : item1.getProducts()) {
                                 ProductAmzUpload update = new ProductAmzUpload();
                                 update.setPublishStatus(PublishStatusEnum.FAILED.getVal());
                                 update.setUploadDesc(feeDto.getMsg());
@@ -164,11 +168,16 @@ public class AmzUpload {
 
 
                         submitIds.add(feeDto.getData());
+                        submitMap.put(feeDto.getData(), item1.getProductMap());
+                        submitList.put(feeDto.getData(), item1.getProducts());
+
                     }
 
                     System.out.println("sids:"+ JSON.toJSONString(submitIds));
 
 
+                    request.setSkuMap(submitMap);
+                    request.setSubmitProducts(submitList);
                     request.setUpdateIds(sr.getUpdateIds());
                     try {
                         Thread.sleep(20000);
@@ -328,9 +337,9 @@ public class AmzUpload {
             boolean isSuccess = true;
             if (isDone) {
 
-                Map<String, ProductAmzUpload> errorMap = new HashMap<>();
-                List<String> errorList = new ArrayList<>();
                 for (String submitId : submitIds) {
+                    List<String> errorList = new ArrayList<>();
+                    Map<String, ProductAmzUpload> errorMap = new HashMap<>();
                     GetFeedSubmissionResultRequest resultRequest = new GetFeedSubmissionResultRequest();
                     resultRequest.setMerchant(req.getShop().getMerchantId());
 
@@ -349,7 +358,7 @@ public class AmzUpload {
                     try {
                         JSONObject res = XmlUtil.xml2JSON(FileUtils.File2byte(new File(path)));
                         System.out.println(JSON.toJSONString(res));
-                        ProductAmzUpload result = getErrorMsg(res, req);
+                        ProductAmzUpload result = getErrorMsg(res, req.getSkuMap().get(submitId));
                         dto.setMsg(result.getUploadDesc());
                         System.out.println("submitId:" + submitId + ",result:" + JSON.toJSONString(result, true));
                         if (StringUtils.isNotBlank(dto.getMsg())) {
@@ -364,52 +373,55 @@ public class AmzUpload {
                         dto.setMsg(e.getMessage());
                         isSuccess = false;
                     }
-                }
 
-                boolean isAllError = StringUtils.isNotBlank(dto.getMsg());
-                System.out.println("异常结果:"+JSON.toJSONString(errorMap,true));
-                for (Map.Entry<String, ProductAmzUpload> entry : errorMap.entrySet()) {
-                    //变更状态为发布失败
-                    if (entry.getKey() != null) {
-                        ProductAmzUpload update = new ProductAmzUpload();
-                        update.setPublishStatus(PublishStatusEnum.FAILED.getVal());
-                        update.setUploadDesc(entry.getValue().getUploadDesc());
-                        update.setId(entry.getKey());
-                        productAmzUploadDao.updateByPrimaryKeySelective(update);
-                        productManagerService.updateClaimProduct(PublishStatusEnum.FAILED, entry.getValue().getProductAmzId());
 
-                        errorList.add(entry.getKey());
-                        //isAllError = false;
-                    }
-                }
+                    boolean isAllError = StringUtils.isNotBlank(dto.getMsg());
+                    System.out.println("异常结果:"+JSON.toJSONString(errorMap,true));
+                    for (Map.Entry<String, ProductAmzUpload> entry : errorMap.entrySet()) {
+                        //变更状态为发布失败
+                        if (entry.getKey() != null) {
+                            ProductAmzUpload update = new ProductAmzUpload();
+                            update.setPublishStatus(PublishStatusEnum.FAILED.getVal());
+                            update.setUploadDesc(entry.getValue().getUploadDesc());
+                            update.setId(entry.getKey());
+                            productAmzUploadDao.updateByPrimaryKeySelective(update);
+                            productManagerService.updateClaimProduct(PublishStatusEnum.FAILED, entry.getValue().getProductAmzId());
 
-                for (ProductAmzUpload id : req.getProducts()) {
-                    if (GeneralUtils.isNotNullOrEmpty(req.getUpdateIds()) && req.getUpdateIds().contains(id.getId())) {
-                        continue;
+                            errorList.add(entry.getKey());
+                            //isAllError = false;
+                        }
                     }
 
-                    //变更状态为发布成功
-                    if (isAllError) {
-                        ProductAmzUpload update = new ProductAmzUpload();
-                        if (GeneralUtils.isNotNullOrEmpty(errorList) && !errorList.contains(id.getId())) {
-                            update.setUploadDesc("由于其他商品数据错误引起批量发布失败");
-                        } else {
-                            update.setUploadDesc(dto.getMsg());
+                    for (ProductAmzUpload id : req.getSubmitProducts().get(submitId)) {
+                        if (GeneralUtils.isNotNullOrEmpty(req.getUpdateIds()) && req.getUpdateIds().contains(id.getId())) {
+                            continue;
                         }
 
-                        update.setPublishStatus(PublishStatusEnum.FAILED.getVal());
-                        update.setId(id.getId());
-                        productAmzUploadDao.updateByPrimaryKeySelective(update);
-                        productManagerService.updateClaimProduct(PublishStatusEnum.FAILED, id.getProductAmzId());
-                    } else {
+                        //变更状态为发布成功
+                        if (isAllError) {
+                            ProductAmzUpload update = new ProductAmzUpload();
+                            if (GeneralUtils.isNotNullOrEmpty(errorList) && !errorList.contains(id.getId())) {
+                                update.setUploadDesc("由于其他商品数据错误引起批量发布失败");
+                            } else {
+                                update.setUploadDesc(dto.getMsg());
+                            }
 
-                        ProductAmzUpload update = new ProductAmzUpload();
-                        update.setPublishStatus(PublishStatusEnum.SUCCESS.getVal());
-                        update.setId(id.getId());
-                        productAmzUploadDao.updateByPrimaryKeySelective(update);
-                        productManagerService.updateClaimProduct(PublishStatusEnum.SUCCESS, id.getProductAmzId());
+                            update.setPublishStatus(PublishStatusEnum.FAILED.getVal());
+                            update.setId(id.getId());
+                            productAmzUploadDao.updateByPrimaryKeySelective(update);
+                            productManagerService.updateClaimProduct(PublishStatusEnum.FAILED, id.getProductAmzId());
+                        } else {
+
+                            ProductAmzUpload update = new ProductAmzUpload();
+                            update.setPublishStatus(PublishStatusEnum.SUCCESS.getVal());
+                            update.setId(id.getId());
+                            productAmzUploadDao.updateByPrimaryKeySelective(update);
+                            productManagerService.updateClaimProduct(PublishStatusEnum.SUCCESS, id.getProductAmzId());
+                        }
                     }
                 }
+
+
 
             }
 
@@ -424,7 +436,7 @@ public class AmzUpload {
 
     }
 
-    public ProductAmzUpload getErrorMsg(JSONObject json, UploadRequest req) {
+    public ProductAmzUpload getErrorMsg(JSONObject json, Map<String,ProductAmzUpload> skuMap) {
         String str = "";
         JSONArray array = json.getJSONObject("AmazonEnvelope").getJSONArray("Message");
         ProductAmzUpload upload = new ProductAmzUpload();
@@ -449,7 +461,9 @@ public class AmzUpload {
 
                     if (object.getString("ResultCode").equals("[Error]")) {
                         if (StringUtils.isNotBlank(sku)) {
-                            upload = req.getUploadResponse(sku.substring(1, sku.length() - 1));
+                            sku=sku.substring(1, sku.length() - 1);
+
+                            upload = skuMap.containsKey(sku) ? skuMap.get(sku) : new ProductAmzUpload();
                             upload.setUploadDesc(object.getString("ResultDescription") + ",");
                             break;
                         }
@@ -460,6 +474,9 @@ public class AmzUpload {
         }
         return upload;
     }
+
+
+
 
     private boolean getFeedResult(GetFeedSubmissionListResponse response) {
         boolean isDone = true;
