@@ -147,6 +147,7 @@ public class OrderManageController {
                 localOrder.setNumberOfItemsUnshipped(order.getNumberOfItemsUnshipped());
                 localOrder.setBuyerCounty(order.getShippingAddress().getCountryCode());
                 localOrder.setBuyerName(order.getBuyerName());
+                localOrder.setOrderCountry(shop.get("COUNTRY_CODE").toString());
                 if (order.getFulfillmentChannel().equals("MFN")) {
                     localOrder.setFulfillmentChannel("FBM");
                 } else {

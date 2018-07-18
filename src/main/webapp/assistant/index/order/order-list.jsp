@@ -585,13 +585,13 @@
                     "data": "LOCALSTATUS",
                     "render": function (data, type, full) {
                         if (roleId == 100) {
-                            return "<a style='text-decoration:none' title='获取佣金'  onClick=\"getCommission('" + full.AMAZONORDERID + "','" + full.MERCHANT_ID + "','" + full.BUYERCOUNTRY + "')\"'>获取佣金</a>" +
+                            return "<a style='text-decoration:none' title='获取佣金'  onClick=\"getCommission('" + full.AMAZONORDERID + "','" + full.MERCHANT_ID + "','" + full.ORDERCOUNTRY + "')\"'>获取佣金</a>" +
                                     "&nbsp;&nbsp;" +
                                     "<a style='text-decoration:none' title='克隆'  onClick=\"cloneOrder('" + full.AMAZONORDERID + "')\"'>克隆</a>" +
                                     "&nbsp;&nbsp;" +
                                     "<a style='text-decoration:none' title='删除'  onClick=\"delOrder('" + full.AMAZONORDERID + "')\"'>删除</a>";
                         } else {
-                            return "<a style='text-decoration:none' title='获取佣金'  onClick=\"getCommission('" + full.AMAZONORDERID + "','" + full.MERCHANT_ID + "','" + full.BUYERCOUNTRY + "')\"'>获取佣金</a>" +
+                            return "<a style='text-decoration:none' title='获取佣金'  onClick=\"getCommission('" + full.AMAZONORDERID + "','" + full.MERCHANT_ID + "','" + full.ORDERCOUNTRY + "')\"'>获取佣金</a>" +
                                     "&nbsp;&nbsp;" +
                                     "<a style='text-decoration:none' title='克隆'  onClick=\"cloneOrder('" + full.AMAZONORDERID + "')\"'>克隆</a>";
                         }

@@ -8,7 +8,8 @@
         WHEN matched THEN
         UPDATE set t1.ORDERSTATUS = #{orderStatus,jdbcType=VARCHAR},
         t1.LASTUPDATEDATE = #{lastUpdateDate,jdbcType=VARCHAR},
-        t1.COMMISSION = #{commission,jdbcType=DOUBLE}
+        t1.COMMISSION = #{commission,jdbcType=DOUBLE},
+        t1.ORDERCOUNTRY = #{orderCountry,jdbcType=VARCHAR}
         WHEN not matched THEN
         INSERT
         (ID,
@@ -36,7 +37,8 @@
         LOCALSTATUS,
         SHIPPINGPRICE,
         COMMISSION,
-        UPDATE_TIME)
+        UPDATE_TIME,
+        ORDERCOUNTRY)
         VALUES
         (seq_order_id.nextval,
         #{amazonOrderId,jdbcType=VARCHAR},
@@ -63,7 +65,8 @@
         #{localStatus,jdbcType=VARCHAR},
         #{shippingPrice,jdbcType=DOUBLE},
         #{commission,jdbcType=DOUBLE},
-        #{updateTime,jdbcType=VARCHAR})
+        #{updateTime,jdbcType=VARCHAR},
+        #{orderCountry,jdbcType=VARCHAR})
     </insert>
     <insert id="cloneOrder" parameterType="java.lang.String">
         INSERT INTO
@@ -92,7 +95,8 @@
                 LOCALSTATUS,
                 SHIPPINGPRICE,
                 COMMISSION,
-                UPDATE_TIME)
+                UPDATE_TIME,
+                ORDERCOUNTRY)
         SELECT
         seq_order_id.nextval,
         t1.AMAZONORDERID || '-clone',
@@ -119,7 +123,8 @@
         '0',
         t1.SHIPPINGPRICE,
         t1.COMMISSION,
-        t1.UPDATE_TIME
+        t1.UPDATE_TIME,
+        t1.ORDERCOUNTRY
         FROM T_ORDER t1
         WHERE t1.AMAZONORDERID = #{amazonOrderId,jdbcType=VARCHAR}
     </insert>
@@ -314,6 +319,7 @@
         t1.salesman,
         t1.salescompany,
         t1.buyercountry,
+        t1.ordercountry,
         t6.user_name,
         t5.shop_name,
         t5.merchant_id,
@@ -427,6 +433,7 @@
         t1.salesman,
         t1.salescompany,
         t1.buyercountry,
+        t1.ordercountry,
         t6.user_name,
         t5.shop_name,
         t5.merchant_id,
@@ -546,14 +553,22 @@
     </select>
     <select id="selectFees" parameterType="java.util.Map" resultType="java.util.Map">
         SELECT
-        nvl(trunc(sum(t2.itempricermb + t2.shippingPricermb + t1.commission),2),0) itemprice,
+        nvl(trunc(sum(t2.itempricermb + t2.shippingPricermb + t2.giftWrapPricermb + t2.commissionRMB),2),0) itemprice,
         nvl(trunc(sum(t1.shippingPrice),2),0) shippingPrice,
         nvl(trunc(sum(t2.cost),2),0) cost,
         nvl(trunc(sum(t2.refundment),2),0) refundment,
-        nvl(trunc(sum(t2.itempricermb - t2.cost - t2.refundment - t1.shippingPrice + t2.shippingPricermb +
-        t1.commission),2),0) profit
+        nvl(trunc(sum(t2.itempricermb - t2.cost - t2.refundment - t1.shippingPrice + t2.shippingPricermb + t2.giftWrapPricermb + t2.commissionRMB),2),0) profit
         FROM T_ORDER t1
-        left join t_order_item t2
+        LEFT JOIN
+        (select amazonorderid,
+        trunc(sum(itempricermb),2) itempricermb,
+        trunc(sum(shippingPricermb),2) shippingPricermb,
+        trunc(sum(refundment),2) refundment,
+        trunc(sum(cost),2) cost,
+        trunc(sum(giftWrapPricermb),2) giftWrapPricermb,
+        trunc(sum(commissionRMB),2) commissionRMB
+        from t_order_item
+        group by amazonorderid) t2
         on t2.amazonorderid = t1.amazonorderid
         WHERE 1=1
         <if test="amazonOrderId !=null and amazonOrderId !=''">
@@ -590,7 +605,7 @@
         </if>
         <if test="logmin !=null and logmin != ''">
             <choose>
-                <when test="localStatus == '4'">
+                <when test='localStatus != null and localStatus != "" and localStatus == "4"'>
                     AND t1.UPDATE_TIME <![CDATA[>=]]> #{logmin,jdbcType=VARCHAR}
                 </when>
                 <otherwise>
@@ -600,7 +615,7 @@
         </if>
         <if test="logmax !=null and logmax != ''">
             <choose>
-                <when test="localStatus == '4'">
+                <when test='localStatus != null and localStatus != "" and localStatus == "4"'>
                     AND t1.UPDATE_TIME  <![CDATA[<=]]> #{logmax,jdbcType=VARCHAR}
                 </when>
                 <otherwise>
