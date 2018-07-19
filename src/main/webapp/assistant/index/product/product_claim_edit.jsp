@@ -51,7 +51,7 @@
         .sortablehover {
         }
 
-        .sign_desc{
+        .sign_desc {
 
             margin-left: 15px;
             margin-top: 3px;
@@ -97,10 +97,10 @@
                     <div class="layui-tab-content" style="height: 50px;">
                         <div class="layui-tab-item layui-show">
                             <input type="text" name="itemCn"
-                                                                      value="${product.itemCn}"
-                                                                      lay-verify="required" placeholder=""
-                                                                      autocomplete="off" class="layui-input"
-                                                                      maxlength="600"></div>
+                                   value="${product.itemCn}"
+                                   lay-verify="required" placeholder=""
+                                   autocomplete="off" class="layui-input"
+                                   maxlength="600"></div>
                         <div class="layui-tab-item"><input type="text" id="itemUk" name="itemUk"
                                                            value="<c:out value='${product.itemUk}'/>"
                                                            lay-verify="required" placeholder="" autocomplete="off"
@@ -593,7 +593,8 @@
 <script type="text/javascript"
         src="<%=request.getContextPath()%>/assistant/lib/interface/interface.js"></script>--%>
 <script type="text/javascript" src="<%=request.getContextPath()%>/assistant/lib/jquery/1.9.1/jquery.min.js"></script>
-<script type="text/javascript" src="<%=request.getContextPath()%>/assistant/lib/jquery-ui/jquery-ui-1.10.4.custom.min.js"></script>
+<script type="text/javascript"
+        src="<%=request.getContextPath()%>/assistant/lib/jquery-ui/jquery-ui-1.10.4.custom.min.js"></script>
 <script type="text/javascript" src="<%=request.getContextPath()%>/assistant/lib/layer/2.4/layer.js"></script>
 <script type="text/javascript" src="<%=request.getContextPath()%>/assistant/static/h-ui/js/H-ui.min.js"></script>
 <script type="text/javascript"
@@ -623,8 +624,8 @@
     var esedit;
     var itedit;
     $(function () {
-        $( "#imagePathSrc" ).sortable();
-        $( "#imagePathSrc" ).disableSelection();
+        $("#imagePathSrc").sortable();
+        $("#imagePathSrc").disableSelection();
         /*$("#itemUk").val(ukName);*/
         /*$('#imagePathSrc').Sortable(
          {
@@ -719,19 +720,19 @@
                 });
             });
             /*layui.use('laydate', function () {
-                var laydate = layui.laydate;
-                laydate.render({
-                    elem: '.saleStart' //促销开始时间
-                });
+             var laydate = layui.laydate;
+             laydate.render({
+             elem: '.saleStart' //促销开始时间
+             });
 
-                laydate.render({
-                    elem: '.saleEnd' //促销结束时间
-                });
-            });*/
+             laydate.render({
+             elem: '.saleEnd' //促销结束时间
+             });
+             });*/
         }
 
 
-         imgKeys=[],imgValues=[];
+        imgKeys = [], imgValues = [];
 
 
         var selectValue = null;
@@ -757,7 +758,6 @@
                     }
                 }
                 $("#selectMuti").val(theme);
-
                 form.render("select");
                 selectValue = theme;
                 $("#skuRender").html("");
@@ -784,8 +784,6 @@
                             form.render(null, "skuTable");
                             $this.parent().parent().find("input").val('');
                         }
-
-
                     }
                 });
                 for (var i = 0; i < vars.length; i++) {
@@ -850,7 +848,6 @@
                             $(".skuBtn").click();
                             form.render(null, 'skuRender');
                         }
-
                         //form.render('checkbox');
                         //initSKuPath(null,null);
                     }
@@ -933,6 +930,7 @@
                 })
             } else {//单体
                 singleSku();
+                loadSingleImage();
                 $("input[name='skuType']").eq(0).attr("checked", 'checked');
                 $("input[name='skuType']").eq(1).removeAttr("checked");
             }
@@ -1031,7 +1029,7 @@
                     var allValue = [];
 
                     $("#skuMutiPath>div").each(function (i, val) {
-                        if ( i % 3 == 0) {
+                        if (i % 3 == 0) {
 
                             var imgs = [];
                             $(val).next().next().find("img").each(function (k, vv) {
@@ -1055,10 +1053,10 @@
                             return false;
                         }
 
-                        var key=$(val).attr("val");
-                        var index=allKey.indexOf(key);
+                        var key = $(val).attr("val");
+                        var index = allKey.indexOf(key);
 
-                        itemImgs=allValue[index];
+                        itemImgs = allValue[index];
 
                         item["productId"] = $("input[name='id']").val();
                         item["mainPath"] = itemImgs[0];
@@ -1230,14 +1228,14 @@
             $("#skuTable tbody").html(dom);
             initSkuSaleDate();
             /*//监听价格变化
-            $("#skuTable .price").on('blur', function () {
-                var $this = $(this);
-                $("#skuTable .price").each(function (i, val) {
-                    if ($(val).val() == null || $.trim($(val).val()).length == 0) {
-                        $(val).val($this.val());
-                    }
-                });
-            });*/
+             $("#skuTable .price").on('blur', function () {
+             var $this = $(this);
+             $("#skuTable .price").each(function (i, val) {
+             if ($(val).val() == null || $.trim($(val).val()).length == 0) {
+             $(val).val($this.val());
+             }
+             });
+             });*/
         }
 
         function getTR(isSingle, first, second) {
@@ -1723,6 +1721,9 @@
         $("#skuSingleDiv").css("display", "");
         $("#priceInfo").css("display", "");
         initSingleImage();
+
+    }
+    function loadSingleImage() {
         for (var i = 0; i < imagePathArr.length; i++) {
             $("#imagePathSrc").append("<div class='sortableitem' style='width:100px;height:110px;margin-left:2px;float:left;'><img width='100px' height='90px' style='padding-right:5px;' src=<%=session.getAttribute("productPath")%>" + imagePathArr[i] + " /><i class='layui-icon delImage' style='font-size:20px;margin-left:35px;'>&#xe640;</i></div>");
             $(".delImage").on("click", function () {
@@ -1744,7 +1745,6 @@
             })
         }
     }
-
     function mutiSku() {
         $("#skuMutiDiv").css("display", "");
         $("#skuSingleDiv").css("display", "none");
