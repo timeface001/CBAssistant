@@ -593,6 +593,7 @@
 <script type="text/javascript"
         src="<%=request.getContextPath()%>/assistant/lib/interface/interface.js"></script>--%>
 <script type="text/javascript" src="<%=request.getContextPath()%>/assistant/lib/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="<%=request.getContextPath()%>/assistant/lib/jquery-ui/jquery-ui-1.10.4.custom.min.js"></script>
 <script type="text/javascript" src="<%=request.getContextPath()%>/assistant/lib/layer/2.4/layer.js"></script>
 <script type="text/javascript" src="<%=request.getContextPath()%>/assistant/static/h-ui/js/H-ui.min.js"></script>
 <script type="text/javascript"
@@ -622,6 +623,8 @@
     var esedit;
     var itedit;
     $(function () {
+        $( "#imagePathSrc" ).sortable();
+        $( "#imagePathSrc" ).disableSelection();
         /*$("#itemUk").val(ukName);*/
         /*$('#imagePathSrc').Sortable(
          {
