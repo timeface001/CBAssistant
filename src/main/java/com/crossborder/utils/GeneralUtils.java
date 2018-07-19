@@ -181,7 +181,7 @@ public class GeneralUtils {
     }
 
     public static void main(String[] args) {
-        System.out.println(translate("my name", "uk", CountryCodeEnum.JP));
+        System.out.println(removeAttr("<table><td width=\"261\"></table>"));
     }
 
     public static String removeAttr(String str) {
@@ -194,6 +194,11 @@ public class GeneralUtils {
         str = deleteAttr("tabindex", str);
         str = deleteAttr("title", str);
         str = deleteAttr("id", str);
+        str = deleteAttr("width", str);
+        str = deleteAttr("heght", str);
+        str = deleteAttr("cellspacing", str);
+        str = deleteAttr("cellpadding", str);
+        str = deleteAttr("border", str);
         str = deleteAttr("align", str);
         //str = str.replace("<span>", "").replace("</span>", "");
         str=filterHtml(str,"<\\s*span\\s+([^>]*)\\s*>");
@@ -203,6 +208,17 @@ public class GeneralUtils {
         str=filterHtml(str,"</o:p>");
         str=filterHtml(str,"</div>");
         str=filterHtml(str,"<div>");
+        str=filterHtml(str,"</table>");
+        str=filterHtml(str,"<table>");
+        str=filterHtml(str,"<tbody>");
+        str=filterHtml(str,"</tbody>");
+
+        str=filterHtml(str,"<\\s*td\\s+([^>]*)\\s*>");
+        str=filterHtml(str,"<\\s*table\\s+([^>]*)\\s*>");
+        str=filterHtml(str,"<\\s*tr\\s+([^>]*)\\s*>");
+        str=filterHtml(str,"</td>");
+        str=filterHtml(str,"<td>");
+        str=filterHtml(str,"</tr>");
         str=filterHtml(str,"<\\s*div\\s+([^>]*)\\s*>");
 
         return str;

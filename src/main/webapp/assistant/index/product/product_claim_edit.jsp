@@ -237,7 +237,7 @@
                     <button type="button" class="layui-btn" id="imagePathBtn">
                         <i class="layui-icon">&#xe67c;</i>上传图片
                     </button>
-                    <span style="font-size: 10px;">(最多9张)</span>
+                    <span style="font-size: 10px;">(最多9张，每张尺寸要求1001*1001以上)</span>
                 </div>
                 <div id="imagePathSrc" class="layui-input-block" style='margin-top: 5px;height: 110px;'>
                     <%--<img class="pathDemo"
