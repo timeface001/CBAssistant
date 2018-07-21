@@ -48,4 +48,8 @@ public interface OrderManageDao {
     public int cloneOrderItem(String amazonOrderId);
 
     public int cloneAddress(String amazonOrderId);
+
+    public int delOrderItem(String amazonOrderId);
+
+    public int delAddress(String amazonOrderId);
 }

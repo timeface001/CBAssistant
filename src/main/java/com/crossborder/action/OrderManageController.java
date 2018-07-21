@@ -680,6 +680,8 @@ public class OrderManageController {
         Map<String, Object> map = new HashMap<>();
         try {
             orderManageService.delOrder(amazonOrderId);
+            orderManageService.delOrderItem(amazonOrderId);
+            orderManageService.delAddress(amazonOrderId);
             map.put("code", "0");
             map.put("msg", "删除成功");
         } catch (Exception e) {

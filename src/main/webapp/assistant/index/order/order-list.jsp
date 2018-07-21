@@ -434,6 +434,7 @@
     var isShowStatus = false;
     var index = 0;
     function reloadTable(id) {
+        layer.load();
         index = id;
         if (id == 8) {
             isShowStatus = true;
@@ -633,6 +634,7 @@
                 "data": JSON.stringify(getFormJson("#orderForm"))
             },
             success: function (data) {
+                layer.closeAll("loading");
                 if (data.code == 0) {
                     var data = data.data;
                     $("#total").html(data.ITEMPRICE);

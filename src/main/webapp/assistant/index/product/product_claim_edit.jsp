@@ -1200,7 +1200,6 @@
             }
             $("#skuMutiPath").append(getSKuPathDom(arr));
             if (!isDisplay) {
-
                 initSKuPath(null, null);
             }
         }
@@ -1291,7 +1290,6 @@
                 for (var i = 0; i < arr.length; i++) {
                     dom += (getSkuItemDom(arr[i]));
                 }
-
             } else {
                 dom = (getSkuItemDom(type));
             }
@@ -1317,12 +1315,11 @@
             if (arr == null || arr.length == 0) {
                 return "";
             }
-
             var dom = "";
             for (var i = 0; i < arr.length; i++) {
                 var id = "skuMainPath" + i;
                 var sid = "skuOtherPath" + i;
-
+                var imageSrcId = "skuImageSrc" + i;
                 var key = "";
                 var arrKeys = $.trim(arr[i]).split(/\s+/);
                 for (var ind = 0; ind < arrKeys.length; ind++) {
@@ -1333,28 +1330,14 @@
                 dom += "<div class=\"layui-input-block\" val=" + key.substring(1) + ">" +
                         " <div class='layui-inline layui-bg-gray' style='margin-top: 10px;'>变种属性 " + arr[i] + "</div>" +
                         " </div>" +
-                            /*" <div class=\"layui-input-block\">\n" +
-                             " <button id=" + id + " type=\"button\" class=\"layui-btn skuMainPath\" >\n" +
-                             " <i class=\"layui-icon\">&#xe67c;</i>上传主图\n" +
-                             " </button>" +
-                             " </div>\n" +*/
-
-
-                            /* " <div class=\"layui-input-block\" style='margin-top: 5px'>" +
-                             "<img src='http://bpic.588ku.com/element_origin_min_pic/01/47/02/12574338a640011.jpg!r650' width='100' height='90' />" +
-                             " </div>" +*/
-
-
                         " <div class=\"layui-input-block\" style='margin-top: 10px;'>\n" +
                         " <button type=\"button\" id=" + sid + " class=\"layui-btn skuOtherPath\" >\n" +
                         " <i class=\"layui-icon\">&#xe67c;</i>上传图片\n" +
                         " </button>" +
                         " </div>" +
-                        " <div class=\"layui-input-block\" style='margin-top: 5px;height: 110px;'>" +
+                        " <div id=" + imageSrcId + " class=\"layui-input-block skuImageSrc\" style='margin-top: 5px;height: 110px;'>" +
                         "<img class=\"pathDemo\" src='http://bpic.588ku.com/element_origin_min_pic/01/47/02/12574338a640011.jpg!r650' width='100' height='90' />" +
                         " </div>";
-
-
             }
             return dom;
         }
@@ -1381,6 +1364,8 @@
 
 
         function initSKuPath(id, sid) {
+            $(".skuImageSrc").sortable();
+            $(".skuImageSrc").disableSelection();
             layui.use('upload', function () {
                 var upload = layui.upload;
                 //执行实例
@@ -1401,7 +1386,6 @@
 
                         $(".delImageMain").on("click", function () {
                             $("#skuTable tbody tr").each(function (i, val) {
-
                                 if ($(val).attr("val") == key) {
                                     $(val).find(".trMainPath").val("");
                                 }
@@ -1409,7 +1393,7 @@
                             var pprent = $(this).parent().parent();
                             $(this).parent().remove();
                             pprent.append("<img src='http://bpic.588ku.com/element_origin_min_pic/01/47/02/12574338a640011.jpg!r650' width='100' height='90' />");
-                        })
+                        });
                         //上传完毕回调
                     }
                     , error: function () {

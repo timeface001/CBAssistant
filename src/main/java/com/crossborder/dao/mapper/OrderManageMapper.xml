@@ -120,10 +120,10 @@
         t1.TRANSPORTCOMPANY,
         t1.INTLTRACKNUM,
         t1.CURRENCYCODE,
-        '0',
+        '1',
         t1.SHIPPINGPRICE,
         t1.COMMISSION,
-        t1.UPDATE_TIME,
+        to_char(CURRENT_DATE ,'yyyy-MM-dd hh24:mi:ss'),
         t1.ORDERCOUNTRY
         FROM T_ORDER t1
         WHERE t1.AMAZONORDERID = #{amazonOrderId,jdbcType=VARCHAR}
@@ -225,9 +225,9 @@
         t1.STATUS,
         t1.ASIN,
         t1.QUANTITYSHIPPED,
-        t1.ITEMPRICE,
-        t1.SHIPPINGPRICE,
-        t1.REFUNDMENT,
+        0,
+        0,
+        0,
         t1.PURCHASENUM,
         t1.TRACKNUM,
         t1.ACTUALWEIGHT,
@@ -235,12 +235,12 @@
         t1.VOLUMEWEIGHT,
         t1.CURRENCYCODE,
         t1.SMALLIMAGE,
-        t1.ITEMPRICERMB,
-        t1.SHIPPINGPRICERMB,
-        t1.GIFTWRAPPRICE,
-        t1.GIFTWRAPPRICERMB,
-        t1.COMMISSION,
-        t1.COMMISSIONRMB
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
         FROM T_ORDER_ITEM t1
         WHERE t1.AMAZONORDERID = #{amazonOrderId,jdbcType=VARCHAR}
     </insert>
@@ -371,7 +371,7 @@
         on t7.id = t1.transportcompany
         WHERE 1=1
         <if test="amazonOrderId !=null and amazonOrderId !=''">
-            AND t1.AMAZONORDERID = #{amazonOrderId,jdbcType=VARCHAR}
+            AND t1.AMAZONORDERID LIKE '%${amazonOrderId}%'
         </if>
         <if test="salesMan !=null and salesMan !=''">
             AND t1.SALESMAN = #{salesMan,jdbcType=VARCHAR}
@@ -557,10 +557,13 @@
         nvl(trunc(sum(t1.shippingPrice),2),0) shippingPrice,
         nvl(trunc(sum(t2.cost),2),0) cost,
         nvl(trunc(sum(t2.refundment),2),0) refundment,
-        nvl(trunc(sum(t2.itempricermb - t2.cost - t2.refundment - t1.shippingPrice + t2.shippingPricermb + t2.giftWrapPricermb + t2.commissionRMB),2),0) profit
+        nvl(trunc(sum(t2.itempricermb - t2.cost - t2.refundment - t1.shippingPrice + t2.shippingPricermb +
+        t2.giftWrapPricermb + t2.commissionRMB),2),0) profit
         FROM T_ORDER t1
         LEFT JOIN
         (select amazonorderid,
+        wm_concat(sellersku) sku,
+        wm_concat(tracknum) tracknum,
         trunc(sum(itempricermb),2) itempricermb,
         trunc(sum(shippingPricermb),2) shippingPricermb,
         trunc(sum(refundment),2) refundment,
@@ -624,7 +627,7 @@
             </choose>
         </if>
         <if test="sku !=null and sku != ''">
-            AND t2.SELLERSKU LIKE '%${sku}%'
+            AND t2.SKU LIKE '%${sku}%'
         </if>
         <if test="trackNum !=null and trackNum != ''">
             AND t2.TRACKNUM LIKE '%${trackNum}%'
@@ -632,6 +635,14 @@
     </select>
     <delete id="delOrder" parameterType="java.lang.String">
         DELETE FROM T_ORDER
+        WHERE AMAZONORDERID = #{amazonOrderId,jdbcType=VARCHAR}
+    </delete>
+    <delete id="delOrderItem" parameterType="java.lang.String">
+        DELETE FROM T_ORDER_ITEM
+        WHERE AMAZONORDERID = #{amazonOrderId,jdbcType=VARCHAR}
+    </delete>
+    <delete id="delAddress" parameterType="java.lang.String">
+        DELETE FROM T_ADDRESS
         WHERE AMAZONORDERID = #{amazonOrderId,jdbcType=VARCHAR}
     </delete>
 </mapper>
