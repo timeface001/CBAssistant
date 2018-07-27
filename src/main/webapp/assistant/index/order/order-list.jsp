@@ -163,7 +163,7 @@
                 </div>
             </div>
         </div>
-        <%--<c:if test="${sessionScope.user.ROLE_ID eq '100'}">
+        <c:if test="${sessionScope.user.ROLE_ID eq '100'}">
             <div class="cl pd-5 bg-1 bk-gray mt-10" id="count-div"><span class="l">
             <a class="btn btn-primary radius" href="javascript:;"
                onclick="addOrder('添加订单','<%=request.getContextPath()%>/assistant/index/order/order-add.jsp','800')"><i
@@ -176,7 +176,7 @@
                onclick="addOrder('添加订单','<%=request.getContextPath()%>/assistant/index/order/order-add.jsp','800')"><i
                     class="Hui-iconfont">
                 &#xe600;</i> 添加订单</a> </span></div>
-        </c:if>--%>
+        </c:if>
         <table id="orderTable" class="table table-border table-bordered table-bg table-hover">
             <thead>
             <tr class="text-c">
@@ -229,6 +229,8 @@
             $("#localStatus").val(2);
             initSalesSelect("all");
         } else if (roleId == 500) {
+            $("#salesCompany").empty();
+            $("#salesCompany").append($("<option value='${sessionScope.user.USER_COMPANY}'>${sessionScope.user.COMPANY_NAME}</option>"));
             initSalesSelect("owner");
         } else if (roleId == 600) {
             $("#salesMan").empty();
@@ -264,7 +266,7 @@
                 if (data.code == 0) {
                     var data = data.data;
                     for (var i = 0; i < data.length; i++) {
-                        $("#buyerCounty").append($('<option value=' + data[i].ID + '>' + data[i].NAME + '</option>'));
+                        $("#buyerCounty").append($('<option value=' + data[i].ID +  '>' + data[i].NAME + '</option>'));
                     }
                 }
             },
@@ -371,7 +373,7 @@
                     layer.msg(data.msg, {icon: 2, time: 1000});
                 }
             });
-            $.ajax({
+            /*$.ajax({
                 type: 'POST',
                 url: '<%=request.getContextPath()%>/system/selectCompanies',
                 dataType: 'json',
@@ -385,14 +387,14 @@
                         for (var i = 0; i < data.length; i++) {
                             $("#salesCompany").append($('<option value=' + data[i].COMPANY_ID + '>' + data[i].COMPANY_NAME + '</option>'));
                         }
-                        /*var salesCompany = document.getElementById('salesCompany');
-                         salesCompany[0].selected = true;*/
+                        /!*var salesCompany = document.getElementById('salesCompany');
+                         salesCompany[0].selected = true;*!/
                     }
                 },
                 error: function (data) {
                     layer.msg(data.msg, {icon: 2, time: 1000});
                 }
-            });
+            });*/
             $.ajax({
                 type: 'POST',
                 url: '<%=request.getContextPath()%>/shop/selectShopsById',

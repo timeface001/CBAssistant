@@ -46,6 +46,8 @@
             <div class=" col-xs-2 col-sm-2">
                 <input type="text" id="salesSource" placeholder=" "
                        class="input-text" readonly></div>
+            <input type="hidden" id="orderCountry">
+            <input type="hidden" id="merchantId">
         </div>
     </div>
 </div>
@@ -322,6 +324,8 @@
         $("#amazonOrderId").val(localOrder.AMAZONORDERID);
         $("#amazonId").val(localOrder.AMAZONORDERID);
         $("#remark").val(localOrder.REMARK);
+        $("#orderCountry").val(localOrder.ORDERCOUNTRY);
+        $("#merchantId").val(localOrder.MERCHANT_ID);
         var customsDiv = document.getElementById("customsDiv");
         if (roleId == 100 || roleId == 400) {
             if (localOrder.LOCALSTATUS == 2) {
@@ -642,7 +646,7 @@
                     "targets": [2],
                     "data": "COUNT",
                     "render": function (data, type, full) {
-                        return "<input type='text' value=''  class='input-text' name='count'/>";
+                        return "<input type='text' value='1'  class='input-text' name='count'/>";
                     }
                 },
                 {
@@ -658,7 +662,7 @@
                     "targets": [4],
                     "data": "PRICE",
                     "render": function (data, type, full) {
-                        return "<input type='text' value=''  class='input-text' name='price'/>";
+                        return "<input type='text' value='6'  class='input-text' name='price'/>";
                     }
                 },
                 {
@@ -672,7 +676,7 @@
                     "targets": [6],
                     "data": "WEIGHT",
                     "render": function (data, type, full) {
-                        return "<input type='text' value=''  class='input-text' name='weight'/>";
+                        return "<input type='text' value='1'  class='input-text' name='weight'/>";
                     }
                 },
                 {
@@ -987,7 +991,9 @@
                 "amazonOrderId": amazonOrderId,
                 "salesMan": $("#salesManId").val(),
                 "salesCompany": $("#salesCompanyId").val(),
-                "companyId": document.getElementById("transportCompany").value
+                "companyId": document.getElementById("transportCompany").value,
+                "orderCountry":$("#orderCountry").val(),
+                "merchantId":$("#merchantId").val()
             },
             success: function (data) {
                 layer.closeAll("loading");

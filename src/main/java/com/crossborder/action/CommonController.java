@@ -4,15 +4,17 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.amazonaws.mws.MarketplaceWebService;
+import com.amazonaws.mws.MarketplaceWebServiceClient;
+import com.amazonaws.mws.MarketplaceWebServiceConfig;
+import com.amazonaws.mws.model.*;
 import com.crossborder.entity.*;
 import com.crossborder.org.tempuri.*;
 import com.crossborder.service.CommonService;
 import com.crossborder.service.OrderManageService;
 import com.crossborder.service.ShipRate;
-import com.crossborder.utils.CommonSet;
-import com.crossborder.utils.EOCWebServicesWS;
-import com.crossborder.utils.HttpClientUtil;
-import com.crossborder.utils.Tools;
+import com.crossborder.service.ShopManageService;
+import com.crossborder.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,8 +23,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
+import javax.xml.datatype.DatatypeFactory;
 import javax.xml.namespace.QName;
 import javax.xml.soap.Node;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -37,9 +43,12 @@ public class CommonController {
     private CommonService commonService;
     @Resource
     private OrderManageService orderManageService;
+    @Resource
+    private ShopManageService shopManageService;
     @Autowired
     private CommonSet commonSet;
-    private  SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static final String Order_Fulfillment_Fee = "_POST_ORDER_FULFILLMENT_DATA_";
 
     /**
      * 登录
@@ -264,11 +273,11 @@ public class CommonController {
     @ResponseBody
     @RequestMapping(value = "getShipTypes", produces = "text/plain;charset=UTF-8")
     public String getShipTypes(String countryCode, String companyId, String weight) {
-        if (companyId.equals("SFC")) {
+        if (companyId.contains("SFC")) {
             return getSFCShipTypes(countryCode, weight);
-        } else if (companyId.equals("YT")) {
+        } else if (companyId.contains("YT")) {
             return getYTShipTypes(countryCode);
-        } else if (companyId.equals("Equick")) {
+        } else if (companyId.contains("Equick")) {
             return getEquickShipTypes(countryCode);
         } else {
             return getYTShipTypes(countryCode);
@@ -383,19 +392,26 @@ public class CommonController {
 
     @ResponseBody
     @RequestMapping(value = "confirmOrder", produces = "text/plain;charset=UTF-8")
-    public String confirmOrder(String amazonOrderId, String json, String companyId, String salesMan, String salesCompany, HttpSession session) {
-        if (companyId.equals("SFC")) {
-            return addSFCOrder(session, json, amazonOrderId, salesMan, salesCompany);
-        } else if (companyId.equals("YT")) {
-            return addYTOrder(session, json, amazonOrderId, salesMan, salesCompany);
-        } else if (companyId.equals("Equick")) {
-            return addEquickOrder(session, json, amazonOrderId, salesMan, salesCompany);
+    public String confirmOrder(String amazonOrderId, String json, String companyId, String salesMan, String salesCompany, String orderCountry, String merchantId, HttpSession session) {
+        if (companyId.contains("SFC")) {
+            return addSFCOrder(session, json, amazonOrderId, salesMan, salesCompany, companyId, orderCountry, merchantId);
+        } else if (companyId.contains("Yun")) {
+            return addYTOrder(session, json, amazonOrderId, salesMan, salesCompany, companyId, orderCountry, merchantId);
+        } else if (companyId.contains("Equick")) {
+            return addEquickOrder(session, json, amazonOrderId, salesMan, salesCompany, companyId, orderCountry, merchantId);
         } else {
-            return addYTOrder(session, json, amazonOrderId, salesMan, salesCompany);
+            return addYTOrder(session, json, amazonOrderId, salesMan, salesCompany, companyId, orderCountry, merchantId);
         }
     }
 
-    private String addEquickOrder(HttpSession session, String json, String amazonOrderId, String salesMan, String salesCompany) {
+    private String addEquickOrder(HttpSession session,
+                                  String json,
+                                  String amazonOrderId,
+                                  String salesMan,
+                                  String salesCompany,
+                                  String companyId,
+                                  String orderCountry,
+                                  String merchantId) {
         Map<String, Object> map = new HashMap<>();
         try {
             Map<String, Object> user = (Map<String, Object>) session.getAttribute("user");
@@ -444,7 +460,8 @@ public class CommonController {
             EOCShipmentResponse response = EOCWebServicesWS.RequestEOCShipment(request);
             if (response.getShipmentCompleted().getReturnValue() == -1) {
                 String intlTrackNum = response.getShipmentCompleted().getEquickWBNo();
-                updateOrderStatus(amazonOrderId, shippingObject, jsonObject, intlTrackNum, salesMan, salesCompany, user);
+                updateLocalOrderStatus(amazonOrderId, shippingObject, jsonObject, intlTrackNum, salesMan, salesCompany, user);
+                updateAmazonOrderStatus(amazonOrderId, companyId, intlTrackNum, orderCountry, merchantId);
                 map.put("data", response.getShipmentCompleted().getEquickWBNo());
                 map.put("code", "0");
                 map.put("msg", "发货成功");
@@ -460,7 +477,14 @@ public class CommonController {
         return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
-    private String addSFCOrder(HttpSession session, String json, String amazonOrderId, String salesMan, String salesCompany) {
+    private String addSFCOrder(HttpSession session,
+                               String json,
+                               String amazonOrderId,
+                               String salesMan,
+                               String salesCompany,
+                               String companyId,
+                               String orderCountry,
+                               String merchantId) {
         Map<String, Object> map = new HashMap<>();
         Map<String, Object> user = (Map<String, Object>) session.getAttribute("user");
         try {
@@ -518,7 +542,8 @@ public class CommonController {
             AddOrderResponse _addOrder__return = port.addOrder(_addOrdersRequest);
             if (_addOrder__return.getOrderActionStatus().equals("Y")) {
                 String intlTrackNum = _addOrder__return.getOrderCode();
-                updateOrderStatus(amazonOrderId, shippingObject, jsonObject, intlTrackNum, salesMan, salesCompany, user);
+                updateLocalOrderStatus(amazonOrderId, shippingObject, jsonObject, intlTrackNum, salesMan, salesCompany, user);
+                updateAmazonOrderStatus(amazonOrderId, companyId, intlTrackNum, orderCountry, merchantId);
                 map.put("data", _addOrder__return.getOrderCode());
                 map.put("code", "0");
                 map.put("msg", "发货成功");
@@ -534,7 +559,14 @@ public class CommonController {
         return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
-    private String addYTOrder(HttpSession session, String json, String amazonOrderId, String salesMan, String salesCompany) {
+    private String addYTOrder(HttpSession session,
+                              String json,
+                              String amazonOrderId,
+                              String salesMan,
+                              String salesCompany,
+                              String companyId,
+                              String orderCountry,
+                              String merchantId) {
         Map<String, Object> user = (Map<String, Object>) session.getAttribute("user");
         Map<String, Object> map = new HashMap<>();
         JSONObject jsonObject = JSONObject.parseArray(json).getJSONObject(0);
@@ -558,7 +590,8 @@ public class CommonController {
             JSONObject resultObject = JSONObject.parseObject(result);
             if (resultObject.getString("ResultCode").equals("0000")) {
                 String intlTrackNum = resultObject.getJSONArray("Item").getJSONObject(0).getString("WayBillNumber");
-                updateOrderStatus(amazonOrderId, shippingObject, jsonObject, intlTrackNum, salesMan, salesCompany, user);
+                updateLocalOrderStatus(amazonOrderId, shippingObject, jsonObject, intlTrackNum, salesMan, salesCompany, user);
+                updateAmazonOrderStatus(amazonOrderId, companyId, intlTrackNum, orderCountry, merchantId);
                 map.put("data", resultObject);
                 map.put("code", "0");
                 map.put("msg", "发货成功");
@@ -574,9 +607,82 @@ public class CommonController {
         return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
-    private void updateOrderStatus(String amazonOrderId, JSONObject shippingObject,
-                                   JSONObject jsonObject, String intlTrackNum,
-                                   String salesMan, String salesCompany, Map<String, Object> user) {
+    public void updateAmazonOrderStatus(String amazonOrderId,
+                                        String companyId,
+                                        String trackingNumber,
+                                        String orderCountry,
+                                        String merchantId) {
+        try {
+            GregorianCalendar cal = new GregorianCalendar();
+            cal.setTime(new Date());
+            String header = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+                    "<AmazonEnvelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"amznenvelope.xsd\">" +
+                    "<Header>" +
+                    "<DocumentVersion>1.01</DocumentVersion>" +
+                    "<MerchantIdentifier>" + merchantId + "</MerchantIdentifier>" +
+                    "</Header>" +
+                    "<MessageType>OrderFulfillment</MessageType>";
+            String message = "<Message>" +
+                    "<MessageID>1</MessageID>" +
+                    "<OrderFulfillment>" +
+                    "<AmazonOrderID>" + amazonOrderId + "</AmazonOrderID>" +
+                    "<FulfillmentDate>" + DatatypeFactory.newInstance().newXMLGregorianCalendar(cal) + "</FulfillmentDate>" +
+                    "<FulfillmentData>" +
+                    "<CarrierName>" + companyId + "</CarrierName>" +
+                    "<ShippingMethod>Standard</ShippingMethod>" +
+                    "<ShipperTrackingNumber>" + trackingNumber + "</ShipperTrackingNumber>" +
+                    "</FulfillmentData>" +
+            /*        "<Item>" +
+                    "<AmazonOrderItemCode>06743192371019</AmazonOrderItemCode>" +
+                    "<Quantity>1</Quantity>" +
+                    "</Item>" +*/
+                    "</OrderFulfillment>" +
+                    "</Message>";
+            String end = "</AmazonEnvelope>";
+            StringBuffer stringBuffer = new StringBuffer();
+            String fulfillmentXml = stringBuffer.append(header).append(message).append(end).toString();
+            FileWriter writer = new FileWriter("/home/amz/updateStatus.txt");
+            writer.write(fulfillmentXml);
+            writer.flush();
+            writer.close();
+            FileInputStream fis = new FileInputStream(new File("/home/amz/updateStatus.txt"));
+            Map<String, Object> shopMap = new HashMap<>();
+            shopMap.put("merchantId", merchantId);
+            shopMap.put("countryCode", orderCountry);
+            Map<String, Object> shop = shopManageService.selectShopByCountry(shopMap).get(0);
+            MarketplaceWebServiceConfig config = new MarketplaceWebServiceConfig();
+            config.setServiceURL(shop.get("ENDPOINT").toString());
+            MarketplaceWebService service = new MarketplaceWebServiceClient(shop.get("ACCESSKEY_ID").toString(), shop.get("SECRET_KEY").toString(), "", "", config);
+            SubmitFeedRequest request = new SubmitFeedRequest();
+            IdList idList = new IdList();
+            List<String> ids = new ArrayList<>();
+            ids.add(shop.get("MARKETPLACEID").toString());
+            idList.setId(ids);
+            request.setMarketplaceIdList(idList);
+            request.setMerchant(shop.get("MERCHANT_ID").toString());
+            request.setFeedContent(fis);
+            request.setFeedType(Order_Fulfillment_Fee);
+            request.setContentMD5(MD5.computeContentMD5HeaderValue(fis));
+            SubmitFeedResponse response = service.submitFeed(request);
+            if (response.isSetSubmitFeedResult()) {
+                SubmitFeedResult submitFeedResult = response
+                        .getSubmitFeedResult();
+                if (submitFeedResult.isSetFeedSubmissionInfo()) {
+                    FeedSubmissionInfo feedSubmissionInfo = submitFeedResult
+                            .getFeedSubmissionInfo();
+                    if (feedSubmissionInfo.isSetFeedSubmissionId()) {
+
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void updateLocalOrderStatus(String amazonOrderId, JSONObject shippingObject,
+                                        JSONObject jsonObject, String intlTrackNum,
+                                        String salesMan, String salesCompany, Map<String, Object> user) {
         Map<String, Object> shippingMap = shippingObject;
         shippingMap.put("amazonOrderId", amazonOrderId);
         commonService.updateAddress(shippingMap);
@@ -584,7 +690,7 @@ public class CommonController {
         paramMap.put("amazonOrderId", amazonOrderId);
         paramMap.put("status", "4");
         paramMap.put("intlTrackNum", intlTrackNum);
-        paramMap.put("updateTime",simpleDateFormat.format(new Date()));
+        paramMap.put("updateTime", simpleDateFormat.format(new Date()));
         paramMap.put("transportCompany", jsonObject.getString("transportCompany"));
         orderManageService.updateOrder(paramMap);
         orderManageService.updateOrderItem(paramMap);
@@ -618,12 +724,12 @@ public class CommonController {
     public String print(String orderNumbers, String companyId, String orderCode) {
         Map<String, Object> map = new HashMap<>();
         try {
-            if (companyId.equals("SFC")) {
+            if (companyId.contains("SFC")) {
                 String url = "http://www.sendfromchina.com/api/label?orderCodeList=" + orderCode + "&printType=1&print_type=pdf&printSize=3&printSort=1";
                 map.put("data", url);
                 map.put("code", "0");
                 map.put("msg", "打印成功");
-            } else if (companyId.equals("YT")) {
+            } else if (companyId.contains("Yun")) {
                 String result = HttpClientUtil.doPostRequest("http://api.yunexpress.com/LMS.API.Lable/Api/PrintUrl", orderNumbers);
                 JSONObject jsonObject = JSONObject.parseObject(result);
                 if (jsonObject.getString("ResultCode").equals("0000")) {
@@ -635,7 +741,7 @@ public class CommonController {
                     map.put("code", "-10");
                     map.put("msg", "打印失败");
                 }
-            } else if (companyId.equals("Equick")) {
+            } else if (companyId.contains("Equick")) {
                 Authentication authentication = new Authentication("W160960", "W160960");
                 EOCQuickLabelRequest request = new EOCQuickLabelRequest();
                 request.setAuthentication(authentication);
@@ -669,12 +775,12 @@ public class CommonController {
             String companyId = shipMent.get("TRANS_COMPANY_ID").toString();
             String orderCode = shipMent.get("ORDER_CODE").toString();
             String[] custOrderIds = {shipMent.get("CUST_ORDER_ID").toString()};
-            if (companyId.equals("SFC")) {
+            if (companyId.contains("SFC")) {
                 String url = "http://www.sendfromchina.com/api/label?orderCodeList=" + orderCode + "&printType=1&print_type=pdf&printSize=3&printSort=1";
                 map.put("data", url);
                 map.put("code", "0");
                 map.put("msg", "打印成功");
-            } else if (companyId.equals("YT")) {
+            } else if (companyId.contains("Yun")) {
                 String result = HttpClientUtil.doPostRequest("http://api.yunexpress.com/LMS.API.Lable/Api/PrintUrl", JSON.toJSONString(custOrderIds));
                 JSONObject jsonObject = JSONObject.parseObject(result);
                 if (jsonObject.getString("ResultCode").equals("0000")) {
@@ -686,7 +792,7 @@ public class CommonController {
                     map.put("code", "-10");
                     map.put("msg", "打印失败");
                 }
-            } else if (companyId.equals("Equick")) {
+            } else if (companyId.contains("Equick")) {
                 Authentication authentication = new Authentication("W160960", "W160960");
                 EOCQuickLabelRequest request = new EOCQuickLabelRequest();
                 request.setAuthentication(authentication);

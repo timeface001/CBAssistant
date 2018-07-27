@@ -101,7 +101,7 @@
         </if>
     </select>
     <select id="selectShopByCountry" parameterType="java.util.Map" resultType="java.util.Map">
-        SELECT distinct t1.merchant_id,t1.accesskey_id,t1.secret_key,t2.ENDPOINT,t2.EXRATE from T_SHOP t1
+        SELECT distinct t1.merchant_id,t1.accesskey_id,t1.secret_key,t2.ENDPOINT,t2.EXRATE,t2.MARKETPLACEID from T_SHOP t1
         LEFT JOIN  T_COUNTRY t2
         on t2.id = t1.country_code
         WHERE  t1.merchant_id = #{merchantId,jdbcType=VARCHAR}

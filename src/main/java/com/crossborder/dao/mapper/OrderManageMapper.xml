@@ -462,7 +462,6 @@
             </otherwise>
         </choose>
     </select>
-
     <select id="selectLocalOrderItem" resultType="java.util.Map" parameterType="java.lang.String">
         SELECT t1.* ,trunc((t1.ITEMPRICE + t1.SHIPPINGPRICE + t1.GIFTWRAPPRICE + t1.COMMISSION),2) || '(' ||
         t1.CURRENCYCODE || ')' ITEMPRICESUM from T_ORDER_ITEM t1

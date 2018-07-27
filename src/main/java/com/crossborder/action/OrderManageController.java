@@ -122,7 +122,6 @@ public class OrderManageController {
     public String getListOrders(MarketplaceWebServiceOrders client,
                                 ListOrdersRequest request, Map<String, Object> user, Map<String, Object> shop) {
         Map<String, Object> map = new HashMap<>();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try {
             ListOrdersResponse response = client.listOrders(request);
             List<Order> orderList = response.getListOrdersResult().getOrders();
@@ -178,7 +177,6 @@ public class OrderManageController {
                 addressInfo.setStateOrRegion(order.getShippingAddress().getStateOrRegion());
                 orderManageService.insertAddress(addressInfo);
                 //获取订单详情
-                List<ShipmentItem> shipmentItems = getOrderItemFees(shop, order.getAmazonOrderId());
                 List<OrderItem> orderItemList = getOrderItem(order.getAmazonOrderId(), shop);
                 List<LocalOrderItem> localOrderItemList = new ArrayList<>();
                 for (int j = 0; j < orderItemList.size(); j++) {
@@ -219,6 +217,7 @@ public class OrderManageController {
                         localOrderItem.setGiftWrapPrice(0);
                         localOrderItem.setGiftWrapPriceRMB(0);
                     }
+                    List<ShipmentItem> shipmentItems = getOrderItemFees(shop, order.getAmazonOrderId());
                     for (int m = 0; m < shipmentItems.size(); m++) {
                         List<FeeComponent> feeComponents = shipmentItems.get(m).getItemFeeList();
                         double fees = 0;
@@ -241,9 +240,9 @@ public class OrderManageController {
                 localOrder.setLocalOrderItemList(localOrderItemList);
                 localOrderList.add(localOrder);
             }
-            /*if (localOrderList.size() > 0) {
-                updateOrderStatus(localOrderList,shop);
-            }*/
+            if (localOrderList.size() > 0) {
+                updateOrderStatus(localOrderList, shop);
+            }
             map.put("count", orderList.size());
             map.put("code", "0");
             map.put("msg", "下载成功");
@@ -271,30 +270,29 @@ public class OrderManageController {
                 message = message + "<Message>" +
                         "<MessageID>" + (i + 1) + "</MessageID>" +
                         "<OrderFulfillment>" +
-                        "<MerchantOrderID>" + localOrderList.get(i).getAmazonOrderId() + "</MerchantOrderID>" +
-                        "<MerchantFulfillmentID>" + new Date().getTime() + "</MerchantFulfillmentID>" +
+                        "<AmazonOrderID>" + localOrderList.get(i).getAmazonOrderId() + "</AmazonOrderID>" +
                         "<FulfillmentDate>" + DatatypeFactory.newInstance().newXMLGregorianCalendar(cal) + "</FulfillmentDate>" +
                         "<FulfillmentData>" +
-                        "<CarrierCode>Yun Express</CarrierCode>" +
-                        "<ShippingMethod>SMT-XSA-F</ShippingMethod>" +
+                        "<CarrierName>Yun Express</CarrierName>" +
+                        "<ShippingMethod>Standard</ShippingMethod>" +
                         "<ShipperTrackingNumber>" + Tools.createIntlTrackNum() + "</ShipperTrackingNumber>" +
                         "</FulfillmentData>" +
-                        "<Item>" +
+                       /* "<Item>" +
                         "<MerchantOrderItemID>" + localOrderList.get(i).getLocalOrderItemList().get(0).getOrderItemId() + "</MerchantOrderItemID>" +
                         "<MerchantFulfillmentItemID>" + new Date().getTime() + "</MerchantFulfillmentItemID>" +
                         "<Quantity>" + localOrderList.get(i).getLocalOrderItemList().get(0).getQuantityShipped() + "</Quantity>" +
-                        "</Item>" +
+                        "</Item>" +*/
                         "</OrderFulfillment>" +
                         "</Message>";
             }
             String end = "</AmazonEnvelope>";
             StringBuffer stringBuffer = new StringBuffer();
             String fulfillmentXml = stringBuffer.append(header).append(message).append(end).toString();
-            FileWriter writer = new FileWriter("d:/home/test.txt");
+            FileWriter writer = new FileWriter("/home/amz/updateStatus.txt");
             writer.write(fulfillmentXml);
             writer.flush();
             writer.close();
-            FileInputStream fis = new FileInputStream(new File("d:/home/test.txt"));
+            FileInputStream fis = new FileInputStream(new File("/home/amz/updateStatus.txt"));
             MarketplaceWebServiceConfig config = new MarketplaceWebServiceConfig();
             config.setServiceURL(shop.get("ENDPOINT").toString());
             MarketplaceWebService service = new MarketplaceWebServiceClient(shop.get("ACCESSKEY_ID").toString(), shop.get("SECRET_KEY").toString(), "", "", config);
@@ -319,8 +317,6 @@ public class OrderManageController {
 
                     }
                 }
-            } else {
-
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -335,23 +331,23 @@ public class OrderManageController {
                     "<AmazonEnvelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"amznenvelope.xsd\">" +
                     "<Header>" +
                     "<DocumentVersion>1.01</DocumentVersion>" +
-                    "<MerchantIdentifier>A38JYHNQ83XYNO</MerchantIdentifier>" +
+                    "<MerchantIdentifier>APC8KTCSFWL6Q</MerchantIdentifier>" +
                     "</Header>" +
                     "<MessageType>OrderFulfillment</MessageType>";
             String message = "<Message>" +
                     "<MessageID>1</MessageID>" +
                     "<OrderFulfillment>" +
-                    "<AmazonOrderID>403-6887564-6894727</AmazonOrderID>" +
+                    "<AmazonOrderID>403-7603796-8465911</AmazonOrderID>" +
                     "<FulfillmentDate>" + DatatypeFactory.newInstance().newXMLGregorianCalendar(cal) + "</FulfillmentDate>" +
                     "<FulfillmentData>" +
-                    "<CarrierCode>Yun Express</CarrierCode>" +
-                    "<ShippingMethod>SMT-XSA-F</ShippingMethod>" +
+                    "<CarrierName>Yun Express</CarrierName>" +
+                    "<ShippingMethod>Standard</ShippingMethod>" +
                     "<ShipperTrackingNumber>" + Tools.createIntlTrackNum() + "</ShipperTrackingNumber>" +
                     "</FulfillmentData>" +
-                    "<Item>" +
+            /*        "<Item>" +
                     "<AmazonOrderItemCode>06743192371019</AmazonOrderItemCode>" +
                     "<Quantity>1</Quantity>" +
-                    "</Item>" +
+                    "</Item>" +*/
                     "</OrderFulfillment>" +
                     "</Message>";
             String end = "</AmazonEnvelope>";
@@ -364,14 +360,14 @@ public class OrderManageController {
             FileInputStream fis = new FileInputStream(new File("d:/home/test.txt"));
             MarketplaceWebServiceConfig config = new MarketplaceWebServiceConfig();
             config.setServiceURL("https://mws-eu.amazonservices.com");
-            MarketplaceWebService service = new MarketplaceWebServiceClient("AKIAID6IAW2WZTGHFZKQ", "6CB0q8aTXwwjTUIee2p6cJNsHsIoHr6DIb0ajxt2", "", "", config);
+            MarketplaceWebService service = new MarketplaceWebServiceClient("AKIAJYOHHDMS3SD5C7MQ", "YgpkkQ4HnDyiBSqwW5pV0vgFH8ctvw64lh8K2OW0", "", "", config);
             SubmitFeedRequest request = new SubmitFeedRequest();
             IdList idList = new IdList();
             List<String> ids = new ArrayList<>();
             ids.add("A13V1IB3VIYZZH");
             idList.setId(ids);
             request.setMarketplaceIdList(idList);
-            request.setMerchant("A38JYHNQ83XYNO");
+            request.setMerchant("APC8KTCSFWL6Q");
             request.setFeedContent(fis);
             request.setFeedType(Order_Fulfillment_Fee);
             request.setContentMD5(MD5.computeContentMD5HeaderValue(fis));
@@ -386,8 +382,6 @@ public class OrderManageController {
 
                     }
                 }
-            } else {
-
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -493,6 +487,7 @@ public class OrderManageController {
     @ResponseBody
     @RequestMapping(value = "selectLocalOrder", produces = "text/plain;charset=UTF-8")
     public String selectLocalOrder(HttpSession session, String data, Integer draw, Integer start, Integer length) {
+        System.out.println("时间1：" + simpleDateFormat.format(new Date()));
         Map<String, Object> map = new HashMap<>();
         Map<String, Object> paramMap = JSON.parseObject(data, Map.class);
         Map<String, Object> user = (Map<String, Object>) session.getAttribute("user");
@@ -510,10 +505,10 @@ public class OrderManageController {
         try {
             PageHelper.startPage(start == null ? 1 : (start / length + 1), length);
             localOrderList = orderManageService.selectLocalOrder(paramMap);
+            System.out.println("时间2：" + simpleDateFormat.format(new Date()));
             PageInfo<Map<String, Object>> pageInfo = new PageInfo<Map<String, Object>>(localOrderList);
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             for (int i = 0; i < localOrderList.size(); i++) {
-                Date createDate = sdf.parse(localOrderList.get(i).get("PURCHASEDATE").toString());
+                Date createDate = simpleDateFormat.parse(localOrderList.get(i).get("PURCHASEDATE").toString());
                 localOrderList.get(i).put("RUNNINGTIME", Tools.timeDifference(createDate.getTime(), new Date().getTime()));
             }
             map.put("data", localOrderList);
@@ -712,6 +707,51 @@ public class OrderManageController {
             e.printStackTrace();
             map.put("code", "-10");
             map.put("msg", "克隆失败");
+        }
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
+    }
+
+    /**
+     * 添加订单
+     *
+     * @param orderData
+     * @param orderItemData
+     * @param addressData
+     * @param session
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "addOrder", produces = "text/plain;charset=UTF-8")
+    public String addOrder(String orderData, String orderItemData, String addressData, HttpSession session) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            Map<String, Object> user = (Map<String, Object>) session.getAttribute("user");
+            LocalOrder localOrder = JSON.parseObject(orderData, LocalOrder.class);
+            localOrder.setUpdateTime(simpleDateFormat.format(new Date()));
+            localOrder.setLocalStatus("1");
+            String exrate = localOrder.getOrderCountry().split("\\|")[1];
+            localOrder.setOrderCountry(localOrder.getOrderCountry().split("\\|")[0]);
+            orderManageService.insertOrders(localOrder);
+            AddressInfo addressInfo = JSON.parseObject(addressData, AddressInfo.class);
+            addressInfo.setCreateUser(user.get("USER_ID").toString());
+            addressInfo.setAmazonOrderId(localOrder.getAmazonOrderId());
+            orderManageService.insertAddress(addressInfo);
+            List<LocalOrderItem> localOrderItemList = JSON.parseArray(orderItemData, LocalOrderItem.class);
+            for (int i = 0; i < localOrderItemList.size(); i++) {
+                localOrderItemList.get(i).setAmazonOrderId(localOrder.getAmazonOrderId());
+                localOrderItemList.get(i).setStatus("1");
+                localOrderItemList.get(i).setShippingPriceRMB(localOrderItemList.get(i).getShippingPrice() * Double.parseDouble(exrate));
+                localOrderItemList.get(i).setGiftWrapPriceRMB(localOrderItemList.get(i).getGiftWrapPrice() * Double.parseDouble(exrate));
+                localOrderItemList.get(i).setCommissionRMB(localOrderItemList.get(i).getCommission() * Double.parseDouble(exrate));
+                orderManageService.insertOrderItem(localOrderItemList.get(i));
+            }
+            /*updateOrderStatusTest();*/
+            map.put("code", "0");
+            map.put("msg", "添加成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("code", "-10");
+            map.put("msg", "添加失败");
         }
         return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
