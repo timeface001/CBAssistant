@@ -109,7 +109,6 @@ public class OrderManageController {
                 request.setOrderStatus(orderStatus);
                 result = getListOrders(client, request, user, shop);
             }
-            /*updateOrderStatusTest();*/
             return result;
         } else {
             Map<String, Object> map = new HashMap<>();
@@ -125,7 +124,11 @@ public class OrderManageController {
         try {
             ListOrdersResponse response = client.listOrders(request);
             List<Order> orderList = response.getListOrdersResult().getOrders();
-            List<LocalOrder> localOrderList = new ArrayList<>();
+            //修改亚马逊订单状态
+            if (orderList.size() > 0) {
+                updateOrderStatus(orderList, shop);
+            }
+           /* List<LocalOrder> localOrderList = new ArrayList<>();*/
             int count = 0;
             for (int i = 0; i < orderList.size(); i++) {
                 Order order = orderList.get(i);
@@ -238,10 +241,7 @@ public class OrderManageController {
                     orderManageService.insertOrderItem(localOrderItem);
                 }
                 localOrder.setLocalOrderItemList(localOrderItemList);
-                localOrderList.add(localOrder);
-            }
-            if (localOrderList.size() > 0) {
-                updateOrderStatus(localOrderList, shop);
+                /*localOrderList.add(localOrder);*/
             }
             map.put("count", orderList.size());
             map.put("code", "0");
@@ -254,7 +254,7 @@ public class OrderManageController {
         return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
-    public void updateOrderStatus(List<LocalOrder> localOrderList, Map<String, Object> shop) {
+    public void updateOrderStatus(List<Order> orderList, Map<String, Object> shop) {
         try {
             GregorianCalendar cal = new GregorianCalendar();
             cal.setTime(new Date());
@@ -266,11 +266,11 @@ public class OrderManageController {
                     "</Header>" +
                     "<MessageType>OrderFulfillment</MessageType>";
             String message = "";
-            for (int i = 0; i < localOrderList.size(); i++) {
+            for (int i = 0; i < orderList.size(); i++) {
                 message = message + "<Message>" +
                         "<MessageID>" + (i + 1) + "</MessageID>" +
                         "<OrderFulfillment>" +
-                        "<AmazonOrderID>" + localOrderList.get(i).getAmazonOrderId() + "</AmazonOrderID>" +
+                        "<AmazonOrderID>" + orderList.get(i).getAmazonOrderId() + "</AmazonOrderID>" +
                         "<FulfillmentDate>" + DatatypeFactory.newInstance().newXMLGregorianCalendar(cal) + "</FulfillmentDate>" +
                         "<FulfillmentData>" +
                         "<CarrierName>Yun Express</CarrierName>" +

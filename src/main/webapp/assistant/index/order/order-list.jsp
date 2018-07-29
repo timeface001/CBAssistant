@@ -266,7 +266,7 @@
                 if (data.code == 0) {
                     var data = data.data;
                     for (var i = 0; i < data.length; i++) {
-                        $("#buyerCounty").append($('<option value=' + data[i].ID +  '>' + data[i].NAME + '</option>'));
+                        $("#buyerCounty").append($('<option value=' + data[i].ID + '>' + data[i].NAME + '</option>'));
                     }
                 }
             },
@@ -374,27 +374,28 @@
                 }
             });
             /*$.ajax({
-                type: 'POST',
-                url: '<%=request.getContextPath()%>/system/selectCompanies',
-                dataType: 'json',
-                data: {
-                    "id": companyId
-                },
-                success: function (data) {
-                    if (data.code == 0) {
-                        var data = data.data;
-                        $("#salesCompany").empty();
-                        for (var i = 0; i < data.length; i++) {
-                            $("#salesCompany").append($('<option value=' + data[i].COMPANY_ID + '>' + data[i].COMPANY_NAME + '</option>'));
-                        }
-                        /!*var salesCompany = document.getElementById('salesCompany');
-                         salesCompany[0].selected = true;*!/
-                    }
-                },
-                error: function (data) {
-                    layer.msg(data.msg, {icon: 2, time: 1000});
-                }
-            });*/
+             type: 'POST',
+             url: '
+            <%=request.getContextPath()%>/system/selectCompanies',
+             dataType: 'json',
+             data: {
+             "id": companyId
+             },
+             success: function (data) {
+             if (data.code == 0) {
+             var data = data.data;
+             $("#salesCompany").empty();
+             for (var i = 0; i < data.length; i++) {
+             $("#salesCompany").append($('<option value=' + data[i].COMPANY_ID + '>' + data[i].COMPANY_NAME + '</option>'));
+             }
+             /!*var salesCompany = document.getElementById('salesCompany');
+             salesCompany[0].selected = true;*!/
+             }
+             },
+             error: function (data) {
+             layer.msg(data.msg, {icon: 2, time: 1000});
+             }
+             });*/
             $.ajax({
                 type: 'POST',
                 url: '<%=request.getContextPath()%>/shop/selectShopsById',
@@ -518,7 +519,7 @@
                     "data": "SMALLIMAGE",
                     "render": function (data, type, full) {
                         if (data != null) {
-                            return "<img  src='" + data.split(",")[0] + "'/>";
+                            return "<img id='" + full.ID + "' onmousemove=\"moveBig()\" onmouseout=\"hiddenBig()\" onmouseover=\"showBig('" + full.ID + "','" + data.split(",")[0] + "')\"src='" + data.split(",")[0] + "'/>";
                         } else {
                             return "<img  src='" + data + "'/>";
                         }
@@ -767,6 +768,28 @@
                     layer.msg(data.msg, {icon: 2, time: 1000});
                 }
             });
+        });
+    }
+    var x = 10;
+    var y = -300;
+    function showBig(id, url, e) {
+        e = window.event || e;
+        url = url.replace("SL75");
+        var bigDiv = "<div id='bigDiv' style='position: absolute;width: 300px;height: 300px'><img src='" + url + "' width='300px' height='300px' /></div>";
+        $("body").append(bigDiv);
+        $("#bigDiv").css({
+            "top": (e.pageY + y) + "px",
+            "left": (e.pageX + x) + "px"
+        }).show("fast");
+    }
+    function hiddenBig() {
+        $("#bigDiv").remove();
+    }
+    function moveBig(e) {
+        e = window.event || e;
+        $("#bigDiv").css({
+            "top": (e.pageY + y) + "px",
+            "left": (e.pageX + x) + "px"
         });
     }
 </script>
