@@ -50,4 +50,16 @@ public class ShopManageService {
     public List<Map<String, Object>> selectShopByCountry(Map<String, Object> map) {
         return shopManageDao.selectShopByCountry(map);
     }
+
+    public List<Map<String, Object>> getMerchantId(Map<String, Object> map) {
+        return shopManageDao.getMerchantId(map);
+    }
+
+    public List<Map<String, Object>> getMarketPlaceId(Map<String, Object> map) {
+        return shopManageDao.getMarketPlaceId(map);
+    }
+
+    public String getExrate(String currencyCode) {
+        return shopManageDao.getExrate(currencyCode);
+    }
 }

@@ -392,15 +392,15 @@ public class CommonController {
 
     @ResponseBody
     @RequestMapping(value = "confirmOrder", produces = "text/plain;charset=UTF-8")
-    public String confirmOrder(String amazonOrderId, String json, String companyId, String salesMan, String salesCompany, String orderCountry, String merchantId, HttpSession session) {
+    public String confirmOrder(String amazonOrderId, String json, String companyId, String salesMan, String salesCompany, String marketplaceId, String merchantId, HttpSession session) {
         if (companyId.contains("SFC")) {
-            return addSFCOrder(session, json, amazonOrderId, salesMan, salesCompany, companyId, orderCountry, merchantId);
+            return addSFCOrder(session, json, amazonOrderId, salesMan, salesCompany, companyId, marketplaceId, merchantId);
         } else if (companyId.contains("Yun")) {
-            return addYTOrder(session, json, amazonOrderId, salesMan, salesCompany, companyId, orderCountry, merchantId);
+            return addYTOrder(session, json, amazonOrderId, salesMan, salesCompany, companyId, marketplaceId, merchantId);
         } else if (companyId.contains("Equick")) {
-            return addEquickOrder(session, json, amazonOrderId, salesMan, salesCompany, companyId, orderCountry, merchantId);
+            return addEquickOrder(session, json, amazonOrderId, salesMan, salesCompany, companyId, marketplaceId, merchantId);
         } else {
-            return addYTOrder(session, json, amazonOrderId, salesMan, salesCompany, companyId, orderCountry, merchantId);
+            return addYTOrder(session, json, amazonOrderId, salesMan, salesCompany, companyId, marketplaceId, merchantId);
         }
     }
 
@@ -410,7 +410,7 @@ public class CommonController {
                                   String salesMan,
                                   String salesCompany,
                                   String companyId,
-                                  String orderCountry,
+                                  String marketplaceId,
                                   String merchantId) {
         Map<String, Object> map = new HashMap<>();
         try {
@@ -461,7 +461,7 @@ public class CommonController {
             if (response.getShipmentCompleted().getReturnValue() == -1) {
                 String intlTrackNum = response.getShipmentCompleted().getEquickWBNo();
                 updateLocalOrderStatus(amazonOrderId, shippingObject, jsonObject, intlTrackNum, salesMan, salesCompany, user);
-                updateAmazonOrderStatus(amazonOrderId, companyId, intlTrackNum, orderCountry, merchantId);
+                updateAmazonOrderStatus(amazonOrderId, companyId, intlTrackNum, marketplaceId, merchantId);
                 map.put("data", response.getShipmentCompleted().getEquickWBNo());
                 map.put("code", "0");
                 map.put("msg", "发货成功");
@@ -483,7 +483,7 @@ public class CommonController {
                                String salesMan,
                                String salesCompany,
                                String companyId,
-                               String orderCountry,
+                               String marketplaceId,
                                String merchantId) {
         Map<String, Object> map = new HashMap<>();
         Map<String, Object> user = (Map<String, Object>) session.getAttribute("user");
@@ -543,7 +543,7 @@ public class CommonController {
             if (_addOrder__return.getOrderActionStatus().equals("Y")) {
                 String intlTrackNum = _addOrder__return.getOrderCode();
                 updateLocalOrderStatus(amazonOrderId, shippingObject, jsonObject, intlTrackNum, salesMan, salesCompany, user);
-                updateAmazonOrderStatus(amazonOrderId, companyId, intlTrackNum, orderCountry, merchantId);
+                updateAmazonOrderStatus(amazonOrderId, companyId, intlTrackNum, marketplaceId, merchantId);
                 map.put("data", _addOrder__return.getOrderCode());
                 map.put("code", "0");
                 map.put("msg", "发货成功");
@@ -565,7 +565,7 @@ public class CommonController {
                               String salesMan,
                               String salesCompany,
                               String companyId,
-                              String orderCountry,
+                              String marketplaceId,
                               String merchantId) {
         Map<String, Object> user = (Map<String, Object>) session.getAttribute("user");
         Map<String, Object> map = new HashMap<>();
@@ -591,7 +591,7 @@ public class CommonController {
             if (resultObject.getString("ResultCode").equals("0000")) {
                 String intlTrackNum = resultObject.getJSONArray("Item").getJSONObject(0).getString("WayBillNumber");
                 updateLocalOrderStatus(amazonOrderId, shippingObject, jsonObject, intlTrackNum, salesMan, salesCompany, user);
-                updateAmazonOrderStatus(amazonOrderId, companyId, intlTrackNum, orderCountry, merchantId);
+                updateAmazonOrderStatus(amazonOrderId, companyId, intlTrackNum, marketplaceId, merchantId);
                 map.put("data", resultObject);
                 map.put("code", "0");
                 map.put("msg", "发货成功");
@@ -610,7 +610,7 @@ public class CommonController {
     public void updateAmazonOrderStatus(String amazonOrderId,
                                         String companyId,
                                         String trackingNumber,
-                                        String orderCountry,
+                                        String marketplaceId,
                                         String merchantId) {
         try {
             GregorianCalendar cal = new GregorianCalendar();
@@ -648,7 +648,7 @@ public class CommonController {
             FileInputStream fis = new FileInputStream(new File("/home/amz/updateStatus.txt"));
             Map<String, Object> shopMap = new HashMap<>();
             shopMap.put("merchantId", merchantId);
-            shopMap.put("countryCode", orderCountry);
+            shopMap.put("marketplaceId", marketplaceId);
             Map<String, Object> shop = shopManageService.selectShopByCountry(shopMap).get(0);
             MarketplaceWebServiceConfig config = new MarketplaceWebServiceConfig();
             config.setServiceURL(shop.get("ENDPOINT").toString());
@@ -656,7 +656,7 @@ public class CommonController {
             SubmitFeedRequest request = new SubmitFeedRequest();
             IdList idList = new IdList();
             List<String> ids = new ArrayList<>();
-            ids.add(shop.get("MARKETPLACEID").toString());
+            ids.add(marketplaceId);
             idList.setId(ids);
             request.setMarketplaceIdList(idList);
             request.setMerchant(shop.get("MERCHANT_ID").toString());

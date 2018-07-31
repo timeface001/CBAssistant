@@ -13,9 +13,9 @@ import java.util.Map;
  */
 @Repository
 public interface OrderManageDao {
-    public int insertOrders(LocalOrder order);
+    public int insertOrders(List<LocalOrder> list);
 
-    public int insertOrderItem(LocalOrderItem localOrderItem);
+    public int insertOrderItem(List<LocalOrderItem> list);
 
     public List<Map<String, Object>> selectLocalOrder(Map<String, Object> map);
 
@@ -31,7 +31,7 @@ public interface OrderManageDao {
 
     public List<Map<String, Object>> selectOperationLog(String amazonOrderId);
 
-    public int insertAddress(AddressInfo addressInfo);
+    public int insertAddress(List<AddressInfo> list);
 
     public List<Map<String, Object>> selectAddress(String amazonOrderId);
 

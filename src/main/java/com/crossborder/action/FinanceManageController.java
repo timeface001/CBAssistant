@@ -78,8 +78,10 @@ public class FinanceManageController {
     @RequestMapping(value = "getShippingPrice", produces = "text/plain;charset=UTF-8")
     public String getShippingPrice(HttpSession session, String companyId, String orderId, String custId) {
         Map<String, Object> user = (Map<String, Object>) session.getAttribute("user");
-        if (companyId.equals("YT")) {
+        if (companyId.contains("Yun")) {
             return getYTShippingPrice(orderId, custId, user);
+        } else if (companyId.contains("SFC")) {
+            return getSFCShippingPrice(orderId, custId, user);
         } else {
             return getSFCShippingPrice(orderId, custId, user);
         }

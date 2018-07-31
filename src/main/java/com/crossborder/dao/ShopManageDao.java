@@ -28,4 +28,10 @@ public interface ShopManageDao {
     public Map<String, Object> selectShopById(@Param("id") String id);
 
     public List<Map<String, Object>> selectShopByCountry(Map<String, Object> map);
+
+    public List<Map<String,Object>> getMerchantId(Map<String, Object> map);
+
+    public List<Map<String,Object>> getMarketPlaceId(Map<String, Object> map);
+
+    public String getExrate(String currencyCode);
 }

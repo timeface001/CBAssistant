@@ -1,15 +1,85 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.crossborder.dao.OrderManageDao">
-    <insert id="insertOrders" parameterType="com.crossborder.entity.LocalOrder">
+    <!--    <insert id="insertOrders" parameterType="com.crossborder.entity.LocalOrder">
+            MERGE INTO T_ORDER t1
+            USING (SELECT #{amazonOrderId} orderId FROM dual) t2
+            ON (t1.AMAZONORDERID = t2.orderId)
+            WHEN matched THEN
+            UPDATE set t1.ORDERSTATUS = #{orderStatus,jdbcType=VARCHAR},
+            t1.LASTUPDATEDATE = #{lastUpdateDate,jdbcType=VARCHAR},
+            t1.COMMISSION = #{commission,jdbcType=DOUBLE},
+            t1.ORDERCOUNTRY = #{orderCountry,jdbcType=VARCHAR}
+            WHEN not matched THEN
+            INSERT
+            (ID,
+            AMAZONORDERID,
+            SELLERORDERID,
+            ORDERSTATUS,
+            PURCHASEDATE,
+            LASTUPDATEDATE,
+            FULFILLMENTCHANNEL,
+            ORDERTOTAL,
+            NUMBEROFITEMSSHIPPED,
+            NUMBEROFITEMSUNSHIPPED,
+            PAYMENTMETHOD,
+            MARKETPLACEID,
+            BUYERNAME,
+            ORDERTYPE,
+            RUNNINGTIME,
+            SALESMAN,
+            SALESCOMPANY,
+            SALESSOURCE,
+            BUYERCOUNTRY,
+            TRANSPORTCOMPANY,
+            INTLTRACKNUM,
+            CURRENCYCODE,
+            LOCALSTATUS,
+            SHIPPINGPRICE,
+            COMMISSION,
+            UPDATE_TIME,
+            ORDERCOUNTRY)
+            VALUES
+            (seq_order_id.nextval,
+            #{amazonOrderId,jdbcType=VARCHAR},
+            #{sellerOrderId,jdbcType=VARCHAR},
+            #{orderStatus,jdbcType=VARCHAR},
+            #{purchaseDate,jdbcType=VARCHAR},
+            #{lastUpdateDate,jdbcType=VARCHAR},
+            #{fulfillmentChannel,jdbcType=VARCHAR},
+            #{orderTotal,jdbcType=DOUBLE},
+            #{numberOfItemsShipped,jdbcType=INTEGER},
+            #{numberOfItemsUnshipped,jdbcType=INTEGER},
+            #{paymentMethod,jdbcType=VARCHAR},
+            #{marketplaceId,jdbcType=VARCHAR},
+            #{buyerName,jdbcType=VARCHAR},
+            #{orderType,jdbcType=VARCHAR},
+            #{runningTime,jdbcType=VARCHAR},
+            #{salesMan,jdbcType=VARCHAR},
+            #{salesCompany,jdbcType=VARCHAR},
+            #{salesSource,jdbcType=VARCHAR},
+            #{buyerCounty,jdbcType=VARCHAR},
+            #{transportCompany,jdbcType=VARCHAR},
+            #{intlTrackNum,jdbcType=VARCHAR},
+            #{currencyCode,jdbcType=VARCHAR},
+            #{localStatus,jdbcType=VARCHAR},
+            #{shippingPrice,jdbcType=DOUBLE},
+            #{commission,jdbcType=DOUBLE},
+            #{updateTime,jdbcType=VARCHAR},
+            #{orderCountry,jdbcType=VARCHAR})
+        </insert>-->
+    <insert id="insertOrders" parameterType="java.util.List">
         MERGE INTO T_ORDER t1
-        USING (SELECT #{amazonOrderId} orderId FROM dual) t2
+        USING (
+        <foreach close="" collection="list" index="index" item="item" open="" separator="union">
+            SELECT #{item.amazonOrderId} orderId FROM dual
+        </foreach>
+        ) t2
         ON (t1.AMAZONORDERID = t2.orderId)
         WHEN matched THEN
-        UPDATE set t1.ORDERSTATUS = #{orderStatus,jdbcType=VARCHAR},
-        t1.LASTUPDATEDATE = #{lastUpdateDate,jdbcType=VARCHAR},
-        t1.COMMISSION = #{commission,jdbcType=DOUBLE},
-        t1.ORDERCOUNTRY = #{orderCountry,jdbcType=VARCHAR}
+        UPDATE set t1.ORDERSTATUS = #{item.orderStatus,jdbcType=VARCHAR},
+        t1.LASTUPDATEDATE = #{item.lastUpdateDate,jdbcType=VARCHAR},
+        t1.COMMISSION = #{item.commission,jdbcType=DOUBLE}
         WHEN not matched THEN
         INSERT
         (ID,
@@ -37,36 +107,34 @@
         LOCALSTATUS,
         SHIPPINGPRICE,
         COMMISSION,
-        UPDATE_TIME,
-        ORDERCOUNTRY)
+        UPDATE_TIME)
         VALUES
         (seq_order_id.nextval,
-        #{amazonOrderId,jdbcType=VARCHAR},
-        #{sellerOrderId,jdbcType=VARCHAR},
-        #{orderStatus,jdbcType=VARCHAR},
-        #{purchaseDate,jdbcType=VARCHAR},
-        #{lastUpdateDate,jdbcType=VARCHAR},
-        #{fulfillmentChannel,jdbcType=VARCHAR},
-        #{orderTotal,jdbcType=DOUBLE},
-        #{numberOfItemsShipped,jdbcType=INTEGER},
-        #{numberOfItemsUnshipped,jdbcType=INTEGER},
-        #{paymentMethod,jdbcType=VARCHAR},
-        #{marketplaceId,jdbcType=VARCHAR},
-        #{buyerName,jdbcType=VARCHAR},
-        #{orderType,jdbcType=VARCHAR},
-        #{runningTime,jdbcType=VARCHAR},
-        #{salesMan,jdbcType=VARCHAR},
-        #{salesCompany,jdbcType=VARCHAR},
-        #{salesSource,jdbcType=VARCHAR},
-        #{buyerCounty,jdbcType=VARCHAR},
-        #{transportCompany,jdbcType=VARCHAR},
-        #{intlTrackNum,jdbcType=VARCHAR},
-        #{currencyCode,jdbcType=VARCHAR},
-        #{localStatus,jdbcType=VARCHAR},
-        #{shippingPrice,jdbcType=DOUBLE},
-        #{commission,jdbcType=DOUBLE},
-        #{updateTime,jdbcType=VARCHAR},
-        #{orderCountry,jdbcType=VARCHAR})
+        #{item.amazonOrderId,jdbcType=VARCHAR},
+        #{item.sellerOrderId,jdbcType=VARCHAR},
+        #{item.orderStatus,jdbcType=VARCHAR},
+        #{item.purchaseDate,jdbcType=VARCHAR},
+        #{item.lastUpdateDate,jdbcType=VARCHAR},
+        #{item.fulfillmentChannel,jdbcType=VARCHAR},
+        #{item.orderTotal,jdbcType=DOUBLE},
+        #{item.numberOfItemsShipped,jdbcType=INTEGER},
+        #{item.numberOfItemsUnshipped,jdbcType=INTEGER},
+        #{item.paymentMethod,jdbcType=VARCHAR},
+        #{item.marketplaceId,jdbcType=VARCHAR},
+        #{item.buyerName,jdbcType=VARCHAR},
+        #{item.orderType,jdbcType=VARCHAR},
+        #{item.runningTime,jdbcType=VARCHAR},
+        #{item.salesMan,jdbcType=VARCHAR},
+        #{item.salesCompany,jdbcType=VARCHAR},
+        #{item.salesSource,jdbcType=VARCHAR},
+        #{item.buyerCounty,jdbcType=VARCHAR},
+        #{item.transportCompany,jdbcType=VARCHAR},
+        #{item.intlTrackNum,jdbcType=VARCHAR},
+        #{item.currencyCode,jdbcType=VARCHAR},
+        #{item.localStatus,jdbcType=VARCHAR},
+        #{item.shippingPrice,jdbcType=DOUBLE},
+        #{item.commission,jdbcType=DOUBLE},
+        #{item.updateTime,jdbcType=VARCHAR})
     </insert>
     <insert id="cloneOrder" parameterType="java.lang.String">
         INSERT INTO
@@ -95,8 +163,7 @@
                 LOCALSTATUS,
                 SHIPPINGPRICE,
                 COMMISSION,
-                UPDATE_TIME,
-                ORDERCOUNTRY)
+                UPDATE_TIME)
         SELECT
         seq_order_id.nextval,
         t1.AMAZONORDERID || '-clone',
@@ -123,23 +190,88 @@
         '1',
         t1.SHIPPINGPRICE,
         t1.COMMISSION,
-        to_char(CURRENT_DATE ,'yyyy-MM-dd hh24:mi:ss'),
-        t1.ORDERCOUNTRY
+        to_char(CURRENT_DATE ,'yyyy-MM-dd hh24:mi:ss')
         FROM T_ORDER t1
         WHERE t1.AMAZONORDERID = #{amazonOrderId,jdbcType=VARCHAR}
     </insert>
 
-    <insert id="insertOrderItem" parameterType="com.crossborder.entity.LocalOrderItem">
+    <!--    <insert id="insertOrderItem" parameterType="com.crossborder.entity.LocalOrderItem">
+            MERGE INTO T_ORDER_ITEM t1
+            USING (SELECT #{orderItemId} orderItemId FROM dual) t2
+            ON (t1.ORDERITEMID = t2.orderItemId)
+            WHEN matched THEN
+            UPDATE set
+            t1.ITEMPRICE = #{itemPrice,jdbcType=VARCHAR},
+            t1.QUANTITYSHIPPED = #{quantityShipped,jdbcType=VARCHAR},
+            t1.SMALLIMAGE = #{smallImage,jdbcType=VARCHAR},
+            t1.SHIPPINGPRICERMB = #{shippingPriceRMB,jdbcType=DOUBLE},
+            t1.GIFTWRAPPRICE = #{giftWrapPrice,jdbcType=DOUBLE}
+            WHEN not matched THEN
+            INSERT (AMAZONORDERID,
+            COST,
+            SELLERSKU,
+            ORDERITEMID,
+            TITLE,
+            STATUS,
+            ASIN,
+            QUANTITYSHIPPED,
+            ITEMPRICE,
+            SHIPPINGPRICE,
+            REFUNDMENT,
+            PURCHASENUM,
+            TRACKNUM,
+            ACTUALWEIGHT,
+            PAYWEIGHT,
+            VOLUMEWEIGHT,
+            CURRENCYCODE,
+            SMALLIMAGE,
+            ITEMPRICERMB,
+            SHIPPINGPRICERMB,
+            GIFTWRAPPRICE,
+            GIFTWRAPPRICERMB,
+            COMMISSION,
+            COMMISSIONRMB)
+            VALUES (#{amazonOrderId,jdbcType=VARCHAR},
+            #{cost,jdbcType=VARCHAR},
+            #{sellerSKU,jdbcType=VARCHAR},
+            #{orderItemId,jdbcType=VARCHAR},
+            #{title,jdbcType=VARCHAR},
+            #{status,jdbcType=VARCHAR},
+            #{asin,jdbcType=VARCHAR},
+            #{quantityShipped,jdbcType=INTEGER},
+            #{itemPrice,jdbcType=DOUBLE},
+            #{shippingPrice,jdbcType=DOUBLE},
+            #{refundment,jdbcType=DOUBLE},
+            #{purchaseNum,jdbcType=VARCHAR},
+            #{trackNum,jdbcType=VARCHAR},
+            #{actualWeight,jdbcType=DOUBLE},
+            #{payWeight,jdbcType=DOUBLE},
+            #{volumeWeight,jdbcType=DOUBLE},
+            #{currencyCode,jdbcType=VARCHAR},
+            #{smallImage,jdbcType=VARCHAR},
+            #{itemPriceRMB,jdbcType=DOUBLE},
+            #{shippingPriceRMB,jdbcType=DOUBLE},
+            #{giftWrapPrice,jdbcType=DOUBLE},
+            #{giftWrapPriceRMB,jdbcType=DOUBLE},
+            #{commission,jdbcType=DOUBLE},
+            #{commissionRMB,jdbcType=DOUBLE})
+        </insert>-->
+
+    <insert id="insertOrderItem" parameterType="java.util.List">
         MERGE INTO T_ORDER_ITEM t1
-        USING (SELECT #{orderItemId} orderItemId FROM dual) t2
+        USING (
+        <foreach close="" collection="list" index="index" item="item" open="" separator="union">
+            SELECT #{item.orderItemId} orderItemId FROM dual
+        </foreach>
+        ) t2
         ON (t1.ORDERITEMID = t2.orderItemId)
         WHEN matched THEN
         UPDATE set
-        t1.ITEMPRICE = #{itemPrice,jdbcType=VARCHAR},
-        t1.QUANTITYSHIPPED = #{quantityShipped,jdbcType=VARCHAR},
-        t1.SMALLIMAGE = #{smallImage,jdbcType=VARCHAR},
-        t1.SHIPPINGPRICERMB = #{shippingPriceRMB,jdbcType=DOUBLE},
-        t1.GIFTWRAPPRICE = #{giftWrapPrice,jdbcType=DOUBLE}
+        t1.ITEMPRICE = #{item.itemPrice,jdbcType=VARCHAR},
+        t1.QUANTITYSHIPPED = #{item.quantityShipped,jdbcType=VARCHAR},
+        t1.SMALLIMAGE = #{item.smallImage,jdbcType=VARCHAR},
+        t1.SHIPPINGPRICERMB = #{item.shippingPriceRMB,jdbcType=DOUBLE},
+        t1.GIFTWRAPPRICE = #{item.giftWrapPrice,jdbcType=DOUBLE}
         WHEN not matched THEN
         INSERT (AMAZONORDERID,
         COST,
@@ -165,30 +297,30 @@
         GIFTWRAPPRICERMB,
         COMMISSION,
         COMMISSIONRMB)
-        VALUES (#{amazonOrderId,jdbcType=VARCHAR},
-        #{cost,jdbcType=VARCHAR},
-        #{sellerSKU,jdbcType=VARCHAR},
-        #{orderItemId,jdbcType=VARCHAR},
-        #{title,jdbcType=VARCHAR},
-        #{status,jdbcType=VARCHAR},
-        #{asin,jdbcType=VARCHAR},
-        #{quantityShipped,jdbcType=INTEGER},
-        #{itemPrice,jdbcType=DOUBLE},
-        #{shippingPrice,jdbcType=DOUBLE},
-        #{refundment,jdbcType=DOUBLE},
-        #{purchaseNum,jdbcType=VARCHAR},
-        #{trackNum,jdbcType=VARCHAR},
-        #{actualWeight,jdbcType=DOUBLE},
-        #{payWeight,jdbcType=DOUBLE},
-        #{volumeWeight,jdbcType=DOUBLE},
-        #{currencyCode,jdbcType=VARCHAR},
-        #{smallImage,jdbcType=VARCHAR},
-        #{itemPriceRMB,jdbcType=DOUBLE},
-        #{shippingPriceRMB,jdbcType=DOUBLE},
-        #{giftWrapPrice,jdbcType=DOUBLE},
-        #{giftWrapPriceRMB,jdbcType=DOUBLE},
-        #{commission,jdbcType=DOUBLE},
-        #{commissionRMB,jdbcType=DOUBLE})
+        VALUES (#{item.amazonOrderId,jdbcType=VARCHAR},
+        #{item.cost,jdbcType=VARCHAR},
+        #{item.sellerSKU,jdbcType=VARCHAR},
+        #{item.orderItemId,jdbcType=VARCHAR},
+        #{item.title,jdbcType=VARCHAR},
+        #{item.status,jdbcType=VARCHAR},
+        #{item.asin,jdbcType=VARCHAR},
+        #{item.quantityShipped,jdbcType=INTEGER},
+        #{item.itemPrice,jdbcType=DOUBLE},
+        #{item.shippingPrice,jdbcType=DOUBLE},
+        #{item.refundment,jdbcType=DOUBLE},
+        #{item.purchaseNum,jdbcType=VARCHAR},
+        #{item.trackNum,jdbcType=VARCHAR},
+        #{item.actualWeight,jdbcType=DOUBLE},
+        #{item.payWeight,jdbcType=DOUBLE},
+        #{item.volumeWeight,jdbcType=DOUBLE},
+        #{item.currencyCode,jdbcType=VARCHAR},
+        #{item.smallImage,jdbcType=VARCHAR},
+        #{item.itemPriceRMB,jdbcType=DOUBLE},
+        #{item.shippingPriceRMB,jdbcType=DOUBLE},
+        #{item.giftWrapPrice,jdbcType=DOUBLE},
+        #{item.giftWrapPriceRMB,jdbcType=DOUBLE},
+        #{item.commission,jdbcType=DOUBLE},
+        #{item.commissionRMB,jdbcType=DOUBLE})
     </insert>
     <insert id="cloneOrderItem" parameterType="java.lang.String">
         INSERT INTO
@@ -244,7 +376,7 @@
         FROM T_ORDER_ITEM t1
         WHERE t1.AMAZONORDERID = #{amazonOrderId,jdbcType=VARCHAR}
     </insert>
-    <insert id="insertAddress" parameterType="com.crossborder.entity.AddressInfo">
+<!--    <insert id="insertAddress" parameterType="com.crossborder.entity.AddressInfo">
         MERGE INTO T_ADDRESS t1
         USING (SELECT #{amazonOrderId} amazonOrderId FROM dual) t2
         ON (t1.AMAZONORDERID = t2.amazonOrderId)
@@ -278,6 +410,45 @@
         #{addressLine2,jdbcType=VARCHAR},
         #{addressLine3,jdbcType=VARCHAR},
         #{createUser,jdbcType=VARCHAR})
+    </insert>-->
+    <insert id="insertAddress" parameterType="java.util.List">
+        MERGE INTO T_ADDRESS t1
+        USING (
+        <foreach close="" collection="list" index="index" item="item" open="" separator="union">
+            SELECT #{item.amazonOrderId} amazonOrderId FROM dual
+        </foreach>
+        ) t2
+        ON (t1.AMAZONORDERID = t2.amazonOrderId)
+        WHEN matched THEN
+        UPDATE set
+        t1.CREATE_USER = #{item.createUser,jdbcType=VARCHAR}
+        WHEN not matched THEN
+        INSERT(
+        AMAZONORDERID,
+        USERNAME,
+        COMPANY,
+        PHONE,
+        COUNTRYCODE,
+        POSTALCODE,
+        CITY,
+        STATEORREGION,
+        ADDRESSLINE1,
+        ADDRESSLINE2,
+        ADDRESSLINE3,
+        CREATE_USER)
+        VALUES (
+        #{item.amazonOrderId,jdbcType=VARCHAR},
+        #{item.name,jdbcType=VARCHAR},
+        #{item.company,jdbcType=VARCHAR},
+        #{item.phone,jdbcType=VARCHAR},
+        #{item.countryCode,jdbcType=VARCHAR},
+        #{item.postalCode,jdbcType=VARCHAR},
+        #{item.city,jdbcType=VARCHAR},
+        #{item.stateOrRegion,jdbcType=VARCHAR},
+        #{item.addressLine1,jdbcType=VARCHAR},
+        #{item.addressLine2,jdbcType=VARCHAR},
+        #{item.addressLine3,jdbcType=VARCHAR},
+        #{item.createUser,jdbcType=VARCHAR})
     </insert>
     <insert id="cloneAddress" parameterType="java.lang.String">
         INSERT INTO
@@ -319,7 +490,7 @@
         t1.salesman,
         t1.salescompany,
         t1.buyercountry,
-        t1.ordercountry,
+        t1.marketplaceId,
         t6.user_name,
         t5.shop_name,
         t5.merchant_id,
@@ -433,7 +604,7 @@
         t1.salesman,
         t1.salescompany,
         t1.buyercountry,
-        t1.ordercountry,
+        t1.marketplaceId,
         t6.user_name,
         t5.shop_name,
         t5.merchant_id,

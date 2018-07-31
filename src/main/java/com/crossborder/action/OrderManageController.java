@@ -69,7 +69,7 @@ public class OrderManageController {
         Map<String, Object> shopMap = new HashMap<>();
         Map<String, Object> user = (Map<String, Object>) session.getAttribute("user");
         shopMap.put("createUser", user.get("USER_ID").toString());
-        List<Map<String, Object>> shops = shopManageService.selectShops(shopMap);
+        List<Map<String, Object>> shops = shopManageService.getMerchantId(shopMap);
         if (shops != null && shops.size() > 0) {
             for (int i = 0; i < shops.size(); i++) {
                 Map<String, Object> shop = shops.get(i);
@@ -99,15 +99,18 @@ public class OrderManageController {
                 }
                 request.setCreatedAfter(createdAfter);
                 request.setCreatedBefore(createdBefore);
+                List<Map<String, Object>> marketplaceIds = shopManageService.getMarketPlaceId(shop);
                 List<String> marketplaceId = new ArrayList<String>();
-                marketplaceId.add(shop.get("MARKETPLACEID").toString());
+                for (int m = 0; m < marketplaceIds.size(); m++) {
+                    marketplaceId.add(marketplaceIds.get(m).get("MARKETPLACEID").toString());
+                }
                 request.setMarketplaceId(marketplaceId);
                 List<String> orderStatus = new ArrayList<String>();
                 orderStatus.add("Unshipped");
                 orderStatus.add("PartiallyShipped");
                 orderStatus.add("Shipped");
                 request.setOrderStatus(orderStatus);
-                result = getListOrders(client, request, user, shop);
+                result = getListOrders(client, request, user, shop, marketplaceIds);
             }
             return result;
         } else {
@@ -119,16 +122,18 @@ public class OrderManageController {
     }
 
     public String getListOrders(MarketplaceWebServiceOrders client,
-                                ListOrdersRequest request, Map<String, Object> user, Map<String, Object> shop) {
+                                ListOrdersRequest request, Map<String, Object> user, Map<String, Object> shop, List<Map<String, Object>> marketplaceIds) {
         Map<String, Object> map = new HashMap<>();
         try {
             ListOrdersResponse response = client.listOrders(request);
             List<Order> orderList = response.getListOrdersResult().getOrders();
             //修改亚马逊订单状态
             if (orderList.size() > 0) {
-                updateOrderStatus(orderList, shop);
+                updateOrderStatus(orderList, shop, marketplaceIds);
             }
-           /* List<LocalOrder> localOrderList = new ArrayList<>();*/
+            List<LocalOrder> localOrderList = new ArrayList<>();
+            List<LocalOrderItem> localOrderItemList = new ArrayList<>();
+            List<AddressInfo> addressInfoList = new ArrayList<>();
             int count = 0;
             for (int i = 0; i < orderList.size(); i++) {
                 Order order = orderList.get(i);
@@ -145,11 +150,11 @@ public class OrderManageController {
                 localOrder.setUpdateTime(simpleDateFormat.format(new Date()));
                 localOrder.setCurrencyCode(order.getOrderTotal().getCurrencyCode());
                 localOrder.setOrderTotal(Double.parseDouble(order.getOrderTotal().getAmount()));
+                String exrate = shopManageService.getExrate(order.getOrderTotal().getCurrencyCode());
                 localOrder.setNumberOfItemsShipped(order.getNumberOfItemsShipped());
                 localOrder.setNumberOfItemsUnshipped(order.getNumberOfItemsUnshipped());
                 localOrder.setBuyerCounty(order.getShippingAddress().getCountryCode());
                 localOrder.setBuyerName(order.getBuyerName());
-                localOrder.setOrderCountry(shop.get("COUNTRY_CODE").toString());
                 if (order.getFulfillmentChannel().equals("MFN")) {
                     localOrder.setFulfillmentChannel("FBM");
                 } else {
@@ -164,7 +169,7 @@ public class OrderManageController {
                 localOrder.setOrderType(order.getOrderType());
                 localOrder.setShippingPrice(0);
                 localOrder.setIntlTrackNum("");
-                orderManageService.insertOrders(localOrder);
+                /*orderManageService.insertOrders(localOrder);*/
                 AddressInfo addressInfo = new AddressInfo();
                 addressInfo.setAmazonOrderId(order.getAmazonOrderId());
                 addressInfo.setName(order.getShippingAddress().getName());
@@ -178,13 +183,18 @@ public class OrderManageController {
                 addressInfo.setCountryCode(order.getShippingAddress().getCountryCode());
                 addressInfo.setPostalCode(order.getShippingAddress().getPostalCode());
                 addressInfo.setStateOrRegion(order.getShippingAddress().getStateOrRegion());
-                orderManageService.insertAddress(addressInfo);
+                addressInfoList.add(addressInfo);
+               /* orderManageService.insertAddress(addressInfo);*/
                 //获取订单详情
+                if (i > 29) {
+                    Thread.sleep(2 * 1000);
+                }
+                System.out.println(simpleDateFormat.format(new Date()));
                 List<OrderItem> orderItemList = getOrderItem(order.getAmazonOrderId(), shop);
-                List<LocalOrderItem> localOrderItemList = new ArrayList<>();
+               /* List<LocalOrderItem> localOrderItemList = new ArrayList<>();*/
                 for (int j = 0; j < orderItemList.size(); j++) {
                     OrderItem orderItem = orderItemList.get(j);
-                    Product product = getProduct(orderItem, shop);
+                    Product product = getProduct(orderItem, shop, order.getMarketplaceId());
                     LocalOrderItem localOrderItem = new LocalOrderItem();
                     for (Object obj : product.getAttributeSets().getAny()) {
                         Node nd = (Node) obj;
@@ -208,20 +218,20 @@ public class OrderManageController {
                     localOrderItem.setSellerSKU(orderItem.getSellerSKU());
                     if (orderItem.getShippingPrice() != null) {
                         localOrderItem.setShippingPrice(Double.parseDouble(orderItem.getShippingPrice().getAmount()));
-                        localOrderItem.setShippingPriceRMB(Double.parseDouble(orderItem.getShippingPrice().getAmount()) * Double.parseDouble(shop.get("EXRATE").toString()));
+                        localOrderItem.setShippingPriceRMB(Double.parseDouble(orderItem.getShippingPrice().getAmount()) * Double.parseDouble(exrate));
                     } else {
                         localOrderItem.setShippingPrice(0);
                         localOrderItem.setShippingPriceRMB(0);
                     }
                     if (orderItem.getGiftWrapPrice() != null) {
                         localOrderItem.setGiftWrapPrice(Double.parseDouble(orderItem.getGiftWrapPrice().getAmount()));
-                        localOrderItem.setGiftWrapPriceRMB(Double.parseDouble(orderItem.getGiftWrapPrice().getAmount()) * Double.parseDouble(shop.get("EXRATE").toString()));
+                        localOrderItem.setGiftWrapPriceRMB(Double.parseDouble(orderItem.getGiftWrapPrice().getAmount()) * Double.parseDouble(exrate));
                     } else {
                         localOrderItem.setGiftWrapPrice(0);
                         localOrderItem.setGiftWrapPriceRMB(0);
                     }
-                    List<ShipmentItem> shipmentItems = getOrderItemFees(shop, order.getAmazonOrderId());
-                    for (int m = 0; m < shipmentItems.size(); m++) {
+                    /*List<ShipmentItem> shipmentItems = getOrderItemFees(shop, order.getAmazonOrderId());*/
+                    /*for (int m = 0; m < shipmentItems.size(); m++) {
                         List<FeeComponent> feeComponents = shipmentItems.get(m).getItemFeeList();
                         double fees = 0;
                         for (int n = 0; n < feeComponents.size(); n++) {
@@ -229,19 +239,27 @@ public class OrderManageController {
                         }
                         if (shipmentItems.get(m).getOrderItemId().equals(orderItem.getOrderItemId())) {
                             localOrderItem.setCommission(fees);
-                            localOrderItem.setCommissionRMB(fees * Double.parseDouble(shop.get("EXRATE").toString()));
+                            localOrderItem.setCommissionRMB(fees * Double.parseDouble(exrate));
                         }
-                    }
-                    localOrderItem.setItemPriceRMB(Double.parseDouble(orderItem.getItemPrice().getAmount()) * Double.parseDouble(shop.get("EXRATE").toString()));
+                    }*/
+                    localOrderItem.setItemPriceRMB(Double.parseDouble(orderItem.getItemPrice().getAmount()) * Double.parseDouble(exrate));
                     localOrderItem.setStatus("1");
                     localOrderItem.setCost(0);
                     localOrderItem.setRefundment(0);
                     localOrderItem.setTitle(orderItem.getTitle());
                     localOrderItemList.add(localOrderItem);
-                    orderManageService.insertOrderItem(localOrderItem);
                 }
                 localOrder.setLocalOrderItemList(localOrderItemList);
-                /*localOrderList.add(localOrder);*/
+                localOrderList.add(localOrder);
+            }
+            if (localOrderList.size() > 0) {
+                orderManageService.insertOrders(localOrderList);
+            }
+            if (localOrderItemList.size() > 0) {
+                orderManageService.insertOrderItem(localOrderItemList);
+            }
+            if (addressInfoList.size() > 0) {
+                orderManageService.insertAddress(addressInfoList);
             }
             map.put("count", orderList.size());
             map.put("code", "0");
@@ -254,7 +272,7 @@ public class OrderManageController {
         return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
-    public void updateOrderStatus(List<Order> orderList, Map<String, Object> shop) {
+    public void updateOrderStatus(List<Order> orderList, Map<String, Object> shop, List<Map<String, Object>> marketplaceIds) {
         try {
             GregorianCalendar cal = new GregorianCalendar();
             cal.setTime(new Date());
@@ -262,7 +280,7 @@ public class OrderManageController {
                     "<AmazonEnvelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"amznenvelope.xsd\">" +
                     "<Header>" +
                     "<DocumentVersion>1.01</DocumentVersion>" +
-                    "<MerchantIdentifier>" + shop.get("MARKETPLACEID").toString() + "</MerchantIdentifier>" +
+                    "<MerchantIdentifier>" + shop.get("MERCHANT_ID").toString() + "</MerchantIdentifier>" +
                     "</Header>" +
                     "<MessageType>OrderFulfillment</MessageType>";
             String message = "";
@@ -288,18 +306,20 @@ public class OrderManageController {
             String end = "</AmazonEnvelope>";
             StringBuffer stringBuffer = new StringBuffer();
             String fulfillmentXml = stringBuffer.append(header).append(message).append(end).toString();
-            FileWriter writer = new FileWriter("/home/amz/updateStatus.txt");
+            FileWriter writer = new FileWriter("D:\\home\\test.txt");
             writer.write(fulfillmentXml);
             writer.flush();
             writer.close();
-            FileInputStream fis = new FileInputStream(new File("/home/amz/updateStatus.txt"));
+            FileInputStream fis = new FileInputStream(new File("D:\\home\\test.txt"));
             MarketplaceWebServiceConfig config = new MarketplaceWebServiceConfig();
             config.setServiceURL(shop.get("ENDPOINT").toString());
             MarketplaceWebService service = new MarketplaceWebServiceClient(shop.get("ACCESSKEY_ID").toString(), shop.get("SECRET_KEY").toString(), "", "", config);
             SubmitFeedRequest request = new SubmitFeedRequest();
             IdList idList = new IdList();
             List<String> ids = new ArrayList<>();
-            ids.add(shop.get("MARKETPLACEID").toString());
+            for (int i = 0; i < marketplaceIds.size(); i++) {
+                ids.add(marketplaceIds.get(i).get("MARKETPLACEID").toString());
+            }
             idList.setId(ids);
             request.setMarketplaceIdList(idList);
             request.setMerchant(shop.get("MERCHANT_ID").toString());
@@ -422,14 +442,14 @@ public class OrderManageController {
         return response.getListOrderItemsResult().getOrderItems();
     }
 
-    public Product getProduct(OrderItem orderItem, Map<String, Object> shop) {
+    public Product getProduct(OrderItem orderItem, Map<String, Object> shop, String marketplaceId) {
         MarketplaceWebServiceProductsConfig config = new MarketplaceWebServiceProductsConfig();
         config.setServiceURL(shop.get("ENDPOINT").toString() + "/Products/2011-10-01");
         MarketplaceWebServiceProductsClient client = new MarketplaceWebServiceProductsClient(shop.get("ACCESSKEY_ID").toString(), shop.get("SECRET_KEY").toString(), config);
         GetMatchingProductForIdRequest request = new GetMatchingProductForIdRequest();
         request.setSellerId(shop.get("MERCHANT_ID").toString());
         request.setMWSAuthToken("");
-        request.setMarketplaceId(shop.get("MARKETPLACEID").toString());
+        request.setMarketplaceId(marketplaceId);
         request.setIdType("ASIN");
         IdListType idList = new IdListType();
         List<String> asins = new ArrayList<>();
@@ -448,12 +468,12 @@ public class OrderManageController {
      */
     @ResponseBody
     @RequestMapping(value = "getCommission", produces = "text/plain;charset=UTF-8")
-    public String getCommission(String amazonOrderId, String merchantId, String countryCode) {
+    public String getCommission(String amazonOrderId, String merchantId, String marketplaceId) {
         Map<String, Object> map = new HashMap<>();
         try {
             Map<String, Object> shopMap = new HashMap<>();
             shopMap.put("merchantId", merchantId);
-            shopMap.put("countryCode", countryCode);
+            shopMap.put("marketplaceId", marketplaceId);
             Map<String, Object> shop = shopManageService.selectShopByCountry(shopMap).get(0);
             List<ShipmentItem> shipmentItems = getOrderItemFees(shop, amazonOrderId);
             for (int i = 0; i < shipmentItems.size(); i++) {
@@ -725,7 +745,7 @@ public class OrderManageController {
     public String addOrder(String orderData, String orderItemData, String addressData, HttpSession session) {
         Map<String, Object> map = new HashMap<>();
         try {
-            Map<String, Object> user = (Map<String, Object>) session.getAttribute("user");
+            /*Map<String, Object> user = (Map<String, Object>) session.getAttribute("user");
             LocalOrder localOrder = JSON.parseObject(orderData, LocalOrder.class);
             localOrder.setUpdateTime(simpleDateFormat.format(new Date()));
             localOrder.setLocalStatus("1");
@@ -744,7 +764,7 @@ public class OrderManageController {
                 localOrderItemList.get(i).setGiftWrapPriceRMB(localOrderItemList.get(i).getGiftWrapPrice() * Double.parseDouble(exrate));
                 localOrderItemList.get(i).setCommissionRMB(localOrderItemList.get(i).getCommission() * Double.parseDouble(exrate));
                 orderManageService.insertOrderItem(localOrderItemList.get(i));
-            }
+            }*/
             /*updateOrderStatusTest();*/
             map.put("code", "0");
             map.put("msg", "添加成功");

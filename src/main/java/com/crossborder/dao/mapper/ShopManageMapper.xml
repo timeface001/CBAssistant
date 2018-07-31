@@ -103,8 +103,27 @@
     <select id="selectShopByCountry" parameterType="java.util.Map" resultType="java.util.Map">
         SELECT distinct t1.merchant_id,t1.accesskey_id,t1.secret_key,t2.ENDPOINT,t2.EXRATE,t2.MARKETPLACEID from T_SHOP t1
         LEFT JOIN  T_COUNTRY t2
-        on t2.id = t1.country_code
+        on t1.country_code = t2.id
         WHERE  t1.merchant_id = #{merchantId,jdbcType=VARCHAR}
-        AND t1.country_code = #{countryCode,jdbcType=VARCHAR}
+        AND t2.marketplaceid = #{marketplaceId,jdbcType=VARCHAR}
+    </select>
+    <select id="getMerchantId" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT DISTINCT t1.merchant_id,t1.accesskey_id,t1.secret_key,t2.ENDPOINT FROM T_SHOP t1
+        LEFT JOIN T_COUNTRY t2
+        ON t2.id = t1.country_code
+        WHERE t1.create_user = #{createUser,jdbcType=VARCHAR}
+        AND t1.shop_state = '1'
+    </select>
+    <select id="getMarketPlaceId" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT * FROM T_COUNTRY t1
+        WHERE t1.id IN (SELECT country_code FROM T_SHOP t2
+         where t2.shop_state = '1'
+         AND t2.MERCHANT_ID = #{MERCHANT_ID,jdbcType=VARCHAR})
+         AND t1.c_state = '1'
+    </select>
+    <select id="getExrate" parameterType="java.util.Map" resultType="java.lang.String">
+        SELECT exrate from T_COUNTRY
+        WHERE currencycode = #{currencyCode,jdbcType=VARCHAR}
+        AND rownum = 1
     </select>
 </mapper>

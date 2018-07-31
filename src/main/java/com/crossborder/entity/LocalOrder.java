@@ -32,7 +32,6 @@ public class LocalOrder {
     private String orderType;
     private double shippingPrice;
     private double commission;
-    private String orderCountry;
     private List<LocalOrderItem> localOrderItemList;
 
     public int getId() {
@@ -242,15 +241,6 @@ public class LocalOrder {
     public void setLocalOrderItemList(List<LocalOrderItem> localOrderItemList) {
         this.localOrderItemList = localOrderItemList;
     }
-
-    public String getOrderCountry() {
-        return orderCountry;
-    }
-
-    public void setOrderCountry(String orderCountry) {
-        this.orderCountry = orderCountry;
-    }
-
     public String getUpdateTime() {
         return updateTime;
     }

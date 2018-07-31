@@ -18,12 +18,12 @@ public class OrderManageService {
     @Resource
     private OrderManageDao orderManageDao;
 
-    public int insertOrders(LocalOrder order) {
-        return orderManageDao.insertOrders(order);
+    public int insertOrders(List<LocalOrder> list) {
+        return orderManageDao.insertOrders(list);
     }
 
-    public int insertOrderItem(LocalOrderItem localOrderItem) {
-        return orderManageDao.insertOrderItem(localOrderItem);
+    public int insertOrderItem(List<LocalOrderItem> list) {
+        return orderManageDao.insertOrderItem(list);
     }
 
     public List<Map<String, Object>> selectLocalOrder(Map<String, Object> map) {
@@ -54,8 +54,8 @@ public class OrderManageService {
         return orderManageDao.selectOperationLog(amazonOrderId);
     }
 
-    public int insertAddress(AddressInfo addressInfo) {
-        return orderManageDao.insertAddress(addressInfo);
+    public int insertAddress(List<AddressInfo> list) {
+        return orderManageDao.insertAddress(list);
     }
 
     public List<Map<String, Object>> selectAddress(String amazonOrderId) {
@@ -69,12 +69,15 @@ public class OrderManageService {
     public int delOrder(String amazonOrderId) {
         return orderManageDao.delOrder(amazonOrderId);
     }
+
     public int delOrderItem(String amazonOrderId) {
         return orderManageDao.delOrderItem(amazonOrderId);
     }
+
     public int delAddress(String amazonOrderId) {
         return orderManageDao.delAddress(amazonOrderId);
     }
+
     public int updateOrderShipping(Map<String, Object> map) {
         return orderManageDao.updateOrderShipping(map);
     }
