@@ -31,6 +31,7 @@ import com.crossborder.utils.MD5;
 import com.crossborder.utils.Tools;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -121,12 +122,27 @@ public class OrderManageController {
         }
     }
 
+    private List<Order> getNextTokenOrders(String nextToken, MarketplaceWebServiceOrders client, List<Order> orderList, String sellerId) {
+        ListOrdersByNextTokenRequest nextTokenRequest = new ListOrdersByNextTokenRequest();
+        nextTokenRequest.setSellerId(sellerId);
+        nextTokenRequest.setNextToken(nextToken);
+        ListOrdersByNextTokenResponse nextTokenResponse = client.listOrdersByNextToken(nextTokenRequest);
+        orderList.addAll(nextTokenResponse.getListOrdersByNextTokenResult().getOrders());
+        if (StringUtils.isNotBlank(nextTokenResponse.getListOrdersByNextTokenResult().getNextToken())) {
+            getNextTokenOrders(nextTokenResponse.getListOrdersByNextTokenResult().getNextToken(), client, orderList, sellerId);
+        }
+        return orderList;
+    }
+
     public String getListOrders(MarketplaceWebServiceOrders client,
                                 ListOrdersRequest request, Map<String, Object> user, Map<String, Object> shop, List<Map<String, Object>> marketplaceIds) {
         Map<String, Object> map = new HashMap<>();
         try {
             ListOrdersResponse response = client.listOrders(request);
             List<Order> orderList = response.getListOrdersResult().getOrders();
+            if (StringUtils.isNotBlank(response.getListOrdersResult().getNextToken())) {
+                orderList = getNextTokenOrders(response.getListOrdersResult().getNextToken(), client, orderList, request.getSellerId());
+            }
             //修改亚马逊订单状态
             if (orderList.size() > 0) {
                 updateOrderStatus(orderList, shop, marketplaceIds);
@@ -169,7 +185,7 @@ public class OrderManageController {
                 localOrder.setOrderType(order.getOrderType());
                 localOrder.setShippingPrice(0);
                 localOrder.setIntlTrackNum("");
-                /*orderManageService.insertOrders(localOrder);*/
+                orderManageService.insertOrders(localOrder);
                 AddressInfo addressInfo = new AddressInfo();
                 addressInfo.setAmazonOrderId(order.getAmazonOrderId());
                 addressInfo.setName(order.getShippingAddress().getName());
@@ -184,12 +200,12 @@ public class OrderManageController {
                 addressInfo.setPostalCode(order.getShippingAddress().getPostalCode());
                 addressInfo.setStateOrRegion(order.getShippingAddress().getStateOrRegion());
                 addressInfoList.add(addressInfo);
-               /* orderManageService.insertAddress(addressInfo);*/
+                orderManageService.insertAddress(addressInfo);
                 //获取订单详情
                 if (i > 29) {
                     Thread.sleep(2 * 1000);
                 }
-                System.out.println(simpleDateFormat.format(new Date()));
+//                System.out.println(simpleDateFormat.format(new Date()));
                 List<OrderItem> orderItemList = getOrderItem(order.getAmazonOrderId(), shop);
                /* List<LocalOrderItem> localOrderItemList = new ArrayList<>();*/
                 for (int j = 0; j < orderItemList.size(); j++) {
@@ -247,12 +263,13 @@ public class OrderManageController {
                     localOrderItem.setCost(0);
                     localOrderItem.setRefundment(0);
                     localOrderItem.setTitle(orderItem.getTitle());
+                    orderManageService.insertOrderItem(localOrderItem);
                     localOrderItemList.add(localOrderItem);
                 }
-                localOrder.setLocalOrderItemList(localOrderItemList);
+                /*localOrder.setLocalOrderItemList(localOrderItemList);*/
                 localOrderList.add(localOrder);
             }
-            if (localOrderList.size() > 0) {
+            /*if (localOrderList.size() > 0) {
                 orderManageService.insertOrders(localOrderList);
             }
             if (localOrderItemList.size() > 0) {
@@ -260,7 +277,7 @@ public class OrderManageController {
             }
             if (addressInfoList.size() > 0) {
                 orderManageService.insertAddress(addressInfoList);
-            }
+            }*/
             map.put("count", orderList.size());
             map.put("code", "0");
             map.put("msg", "下载成功");
@@ -285,23 +302,25 @@ public class OrderManageController {
                     "<MessageType>OrderFulfillment</MessageType>";
             String message = "";
             for (int i = 0; i < orderList.size(); i++) {
-                message = message + "<Message>" +
-                        "<MessageID>" + (i + 1) + "</MessageID>" +
-                        "<OrderFulfillment>" +
-                        "<AmazonOrderID>" + orderList.get(i).getAmazonOrderId() + "</AmazonOrderID>" +
-                        "<FulfillmentDate>" + DatatypeFactory.newInstance().newXMLGregorianCalendar(cal) + "</FulfillmentDate>" +
-                        "<FulfillmentData>" +
-                        "<CarrierName>Yun Express</CarrierName>" +
-                        "<ShippingMethod>Standard</ShippingMethod>" +
-                        "<ShipperTrackingNumber>" + Tools.createIntlTrackNum() + "</ShipperTrackingNumber>" +
-                        "</FulfillmentData>" +
+                if (orderList.get(i).getOrderStatus() != "Shipped") {//已发货的不需要再修改状态
+                    message = message + "<Message>" +
+                            "<MessageID>" + (i + 1) + "</MessageID>" +
+                            "<OrderFulfillment>" +
+                            "<AmazonOrderID>" + orderList.get(i).getAmazonOrderId() + "</AmazonOrderID>" +
+                            "<FulfillmentDate>" + DatatypeFactory.newInstance().newXMLGregorianCalendar(cal) + "</FulfillmentDate>" +
+                            "<FulfillmentData>" +
+                            "<CarrierName>Yun Express</CarrierName>" +
+                            "<ShippingMethod>Standard</ShippingMethod>" +
+                            "<ShipperTrackingNumber>" + Tools.createIntlTrackNum() + "</ShipperTrackingNumber>" +
+                            "</FulfillmentData>" +
                        /* "<Item>" +
                         "<MerchantOrderItemID>" + localOrderList.get(i).getLocalOrderItemList().get(0).getOrderItemId() + "</MerchantOrderItemID>" +
                         "<MerchantFulfillmentItemID>" + new Date().getTime() + "</MerchantFulfillmentItemID>" +
                         "<Quantity>" + localOrderList.get(i).getLocalOrderItemList().get(0).getQuantityShipped() + "</Quantity>" +
                         "</Item>" +*/
-                        "</OrderFulfillment>" +
-                        "</Message>";
+                            "</OrderFulfillment>" +
+                            "</Message>";
+                }
             }
             String end = "</AmazonEnvelope>";
             StringBuffer stringBuffer = new StringBuffer();
@@ -745,12 +764,12 @@ public class OrderManageController {
     public String addOrder(String orderData, String orderItemData, String addressData, HttpSession session) {
         Map<String, Object> map = new HashMap<>();
         try {
-            /*Map<String, Object> user = (Map<String, Object>) session.getAttribute("user");
+            Map<String, Object> user = (Map<String, Object>) session.getAttribute("user");
             LocalOrder localOrder = JSON.parseObject(orderData, LocalOrder.class);
             localOrder.setUpdateTime(simpleDateFormat.format(new Date()));
             localOrder.setLocalStatus("1");
-            String exrate = localOrder.getOrderCountry().split("\\|")[1];
-            localOrder.setOrderCountry(localOrder.getOrderCountry().split("\\|")[0]);
+            String exrate = localOrder.getMarketplaceId().split("\\|")[1];
+            localOrder.setMarketplaceId(localOrder.getMarketplaceId().split("\\|")[0]);
             orderManageService.insertOrders(localOrder);
             AddressInfo addressInfo = JSON.parseObject(addressData, AddressInfo.class);
             addressInfo.setCreateUser(user.get("USER_ID").toString());
@@ -764,8 +783,7 @@ public class OrderManageController {
                 localOrderItemList.get(i).setGiftWrapPriceRMB(localOrderItemList.get(i).getGiftWrapPrice() * Double.parseDouble(exrate));
                 localOrderItemList.get(i).setCommissionRMB(localOrderItemList.get(i).getCommission() * Double.parseDouble(exrate));
                 orderManageService.insertOrderItem(localOrderItemList.get(i));
-            }*/
-            /*updateOrderStatusTest();*/
+            }
             map.put("code", "0");
             map.put("msg", "添加成功");
         } catch (Exception e) {

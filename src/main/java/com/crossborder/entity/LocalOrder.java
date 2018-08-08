@@ -1,7 +1,5 @@
 package com.crossborder.entity;
 
-import java.util.List;
-
 /**
  * Created by s on 2018/3/23.
  */
@@ -32,7 +30,7 @@ public class LocalOrder {
     private String orderType;
     private double shippingPrice;
     private double commission;
-    private List<LocalOrderItem> localOrderItemList;
+    /*private List<LocalOrderItem> localOrderItemList;*/
 
     public int getId() {
         return id;
@@ -234,13 +232,13 @@ public class LocalOrder {
         this.commission = commission;
     }
 
-    public List<LocalOrderItem> getLocalOrderItemList() {
+    /*public List<LocalOrderItem> getLocalOrderItemList() {
         return localOrderItemList;
     }
 
     public void setLocalOrderItemList(List<LocalOrderItem> localOrderItemList) {
         this.localOrderItemList = localOrderItemList;
-    }
+    }*/
     public String getUpdateTime() {
         return updateTime;
     }

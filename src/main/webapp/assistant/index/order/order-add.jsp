@@ -60,7 +60,7 @@
                 <div class="row cl">
                     <label class=" col-xs-1 col-sm-1"><span class="c-red">*</span>站点国家：</label>
                     <div class=" col-xs-2 col-sm-2">
-                        <select id="orderCountry" name="orderCountry" class="select" style="height: 32px">
+                        <select id="marketPlaceId" name="marketPlaceId" class="select" style="height: 32px">
                             <option value="">请选择</option>
                         </select>
                     </div>
@@ -268,7 +268,7 @@
                 if (data.code == 0) {
                     var data = data.data;
                     for (var i = 0; i < data.length; i++) {
-                        $("#orderCountry").append($('<option value=' + data[i].ID + '|' + data[i].EXRATE + '>' + data[i].NAME + '</option>'));
+                        $("#marketPlaceId").append($('<option value=' + data[i].MARKETPLACEID + '|' + data[i].EXRATE + '>' + data[i].NAME + '</option>'));
                     }
                 }
             },

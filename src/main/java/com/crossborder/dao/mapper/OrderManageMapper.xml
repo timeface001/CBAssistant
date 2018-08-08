@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.crossborder.dao.OrderManageDao">
-    <!--    <insert id="insertOrders" parameterType="com.crossborder.entity.LocalOrder">
+    <insert id="insertOrders" parameterType="com.crossborder.entity.LocalOrder">
             MERGE INTO T_ORDER t1
             USING (SELECT #{amazonOrderId} orderId FROM dual) t2
             ON (t1.AMAZONORDERID = t2.orderId)
             WHEN matched THEN
             UPDATE set t1.ORDERSTATUS = #{orderStatus,jdbcType=VARCHAR},
             t1.LASTUPDATEDATE = #{lastUpdateDate,jdbcType=VARCHAR},
-            t1.COMMISSION = #{commission,jdbcType=DOUBLE},
-            t1.ORDERCOUNTRY = #{orderCountry,jdbcType=VARCHAR}
+            t1.COMMISSION = #{commission,jdbcType=DOUBLE}
             WHEN not matched THEN
             INSERT
             (ID,
@@ -37,8 +36,7 @@
             LOCALSTATUS,
             SHIPPINGPRICE,
             COMMISSION,
-            UPDATE_TIME,
-            ORDERCOUNTRY)
+            UPDATE_TIME)
             VALUES
             (seq_order_id.nextval,
             #{amazonOrderId,jdbcType=VARCHAR},
@@ -65,10 +63,9 @@
             #{localStatus,jdbcType=VARCHAR},
             #{shippingPrice,jdbcType=DOUBLE},
             #{commission,jdbcType=DOUBLE},
-            #{updateTime,jdbcType=VARCHAR},
-            #{orderCountry,jdbcType=VARCHAR})
-        </insert>-->
-    <insert id="insertOrders" parameterType="java.util.List">
+            #{updateTime,jdbcType=VARCHAR})
+        </insert>
+    <!--<insert id="insertOrders" parameterType="java.util.List">
         MERGE INTO T_ORDER t1
         USING (
         <foreach close="" collection="list" index="index" item="item" open="" separator="union">
@@ -135,7 +132,7 @@
         #{item.shippingPrice,jdbcType=DOUBLE},
         #{item.commission,jdbcType=DOUBLE},
         #{item.updateTime,jdbcType=VARCHAR})
-    </insert>
+    </insert>-->
     <insert id="cloneOrder" parameterType="java.lang.String">
         INSERT INTO
         T_ORDER(ID,
@@ -195,7 +192,7 @@
         WHERE t1.AMAZONORDERID = #{amazonOrderId,jdbcType=VARCHAR}
     </insert>
 
-    <!--    <insert id="insertOrderItem" parameterType="com.crossborder.entity.LocalOrderItem">
+    <insert id="insertOrderItem" parameterType="com.crossborder.entity.LocalOrderItem">
             MERGE INTO T_ORDER_ITEM t1
             USING (SELECT #{orderItemId} orderItemId FROM dual) t2
             ON (t1.ORDERITEMID = t2.orderItemId)
@@ -255,9 +252,9 @@
             #{giftWrapPriceRMB,jdbcType=DOUBLE},
             #{commission,jdbcType=DOUBLE},
             #{commissionRMB,jdbcType=DOUBLE})
-        </insert>-->
+        </insert>
 
-    <insert id="insertOrderItem" parameterType="java.util.List">
+    <!--<insert id="insertOrderItem" parameterType="java.util.List">
         MERGE INTO T_ORDER_ITEM t1
         USING (
         <foreach close="" collection="list" index="index" item="item" open="" separator="union">
@@ -321,7 +318,7 @@
         #{item.giftWrapPriceRMB,jdbcType=DOUBLE},
         #{item.commission,jdbcType=DOUBLE},
         #{item.commissionRMB,jdbcType=DOUBLE})
-    </insert>
+    </insert>-->
     <insert id="cloneOrderItem" parameterType="java.lang.String">
         INSERT INTO
         T_ORDER_ITEM(AMAZONORDERID,
@@ -354,7 +351,7 @@
         t1.SELLERSKU,
         t1.ORDERITEMID || '-clone',
         t1.TITLE,
-        t1.STATUS,
+        '1',
         t1.ASIN,
         t1.QUANTITYSHIPPED,
         0,
@@ -376,7 +373,7 @@
         FROM T_ORDER_ITEM t1
         WHERE t1.AMAZONORDERID = #{amazonOrderId,jdbcType=VARCHAR}
     </insert>
-<!--    <insert id="insertAddress" parameterType="com.crossborder.entity.AddressInfo">
+    <insert id="insertAddress" parameterType="com.crossborder.entity.AddressInfo">
         MERGE INTO T_ADDRESS t1
         USING (SELECT #{amazonOrderId} amazonOrderId FROM dual) t2
         ON (t1.AMAZONORDERID = t2.amazonOrderId)
@@ -410,8 +407,8 @@
         #{addressLine2,jdbcType=VARCHAR},
         #{addressLine3,jdbcType=VARCHAR},
         #{createUser,jdbcType=VARCHAR})
-    </insert>-->
-    <insert id="insertAddress" parameterType="java.util.List">
+    </insert>
+    <!--<insert id="insertAddress" parameterType="java.util.List">
         MERGE INTO T_ADDRESS t1
         USING (
         <foreach close="" collection="list" index="index" item="item" open="" separator="union">
@@ -449,7 +446,7 @@
         #{item.addressLine2,jdbcType=VARCHAR},
         #{item.addressLine3,jdbcType=VARCHAR},
         #{item.createUser,jdbcType=VARCHAR})
-    </insert>
+    </insert>-->
     <insert id="cloneAddress" parameterType="java.lang.String">
         INSERT INTO
         T_ADDRESS(AMAZONORDERID,
@@ -534,7 +531,7 @@
         on t3.id = t1.buyercountry
         left join t_user_company t4
         on t4.company_id = t1.salescompany
-        left join (select distinct merchant_id,shop_name from t_shop) t5
+        left join (select distinct merchant_id,shop_name,create_user from t_shop) t5
         on t5.merchant_id = t1.salessource
         left join t_user_info t6
         on t6.user_id= t1.salesman
@@ -546,6 +543,7 @@
         </if>
         <if test="salesMan !=null and salesMan !=''">
             AND t1.SALESMAN = #{salesMan,jdbcType=VARCHAR}
+            AND t5.CREATE_USER = #{salesMan,jdbcType=VARCHAR}
         </if>
         <if test="salesCompany !=null and salesCompany !=''">
             AND t1.SALESCOMPANY = #{salesCompany,jdbcType=VARCHAR}

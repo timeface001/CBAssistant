@@ -5,10 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.crossborder.entity.HeaderRequest;
 import com.crossborder.entity.ShipRate_Service;
-import com.crossborder.service.CommonService;
-import com.crossborder.service.FinanceManageService;
-import com.crossborder.service.OrderManageService;
-import com.crossborder.service.ShipRate;
+import com.crossborder.service.*;
 import com.crossborder.utils.ExcelRead;
 import com.crossborder.utils.HttpClientUtil;
 import com.github.pagehelper.PageHelper;
@@ -42,6 +39,8 @@ public class FinanceManageController {
     private CommonService commonService;
     @Resource
     private OrderManageService orderManageService;
+    @Resource
+    private AccountManageService accountManageService;
 
     /**
      * 查询店铺
@@ -121,6 +120,7 @@ public class FinanceManageController {
         Map<String, Object> map = new HashMap<>();
         Map<String, Object> paramMap = new HashMap<>();
         Map<String, Object> orderMap = new HashMap<>();
+        Map<String, Object> accountMap = new HashMap<>();
         Map<String, Object> user = (Map<String, Object>) session.getAttribute("user");
         paramMap.put("status", "2");
         paramMap.put("orderId", orderId);
@@ -131,6 +131,8 @@ public class FinanceManageController {
             orderMap.put("amazonOrderId", orderId);
             orderMap.put("shippingPrice", freight);
             orderManageService.updateOrderShipping(orderMap);
+            /*accountMap.put("","");
+            accountManageService.addAccount(accountMap);*/
             map.put("code", "0");
             map.put("msg", "审核成功");
         } catch (Exception e) {
@@ -287,7 +289,7 @@ public class FinanceManageController {
                 map.put("msg", "获取成功");
             } else {
                 map.put("code", "-10");
-                map.put("msg", "获取失败");
+                map.put("msg", resultObject.get("ResultDesc"));
             }
         } catch (Exception e) {
             e.printStackTrace();

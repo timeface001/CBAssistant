@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.crossborder.dao.StockManageDao">
+    <insert id="addGoods" parameterType="java.util.Map">
+        INSERT INTO T_STOCK_PRODUCT(
+        P_SKU,
+        P_TYPE,
+        P_CATEGORY,
+        NAME_CN,
+        NAME_EN,
+        PLAT_SKU,
+        SOURCE_URL,
+        IMAGE,
+        OPER_USER,
+        OPERA_TIME,
+        COMPANY_ID
+        )
+        VALUES (
+        #{pSku,jdbcType=VARCHAR},
+        #{pType,jdbcType=VARCHAR},
+        #{pCategory,jdbcType=VARCHAR},
+        #{nameCn,jdbcType=VARCHAR},
+        #{nameEn,jdbcType=VARCHAR},
+        #{platSku,jdbcType=VARCHAR},
+        #{sourceUrl,jdbcType=VARCHAR},
+        #{image,jdbcType=VARCHAR},
+        #{createUser,jdbcType=VARCHAR},
+        CURRENT_DATE ,
+        #{company,jdbcType=VARCHAR}
+        )
+    </insert>
+    <select id="getGoods" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT t1.*,t2.USER_NAME,t3.COMPANY_NAME FROM T_STOCK_PRODUCT t1
+        LEFT JOIN T_USER_INFO t2
+        ON t1.OPER_USER = t2.USER_ID
+        LEFT JOIN T_USER_COMPANY t3
+        ON t1.COMPANY_ID = t3.COMPANY_ID
+        WHERE 1=1
+        <if test="company !=null and company !=''">
+            AND t1.COMPANY_ID = #{company,jdbcType=VARCHAR}
+        </if>
+        <if test="nameCn !=null and nameCn !=''">
+            AND t1.NAME_CN = #{nameCn,jdbcType=VARCHAR}
+        </if>
+        <if test="nameEn !=null and nameEn !=''">
+            AND t1.NAME_EN = #{nameEn,jdbcType=VARCHAR}
+        </if>
+        <if test="pType !=null and pType !=''">
+            AND t1.P_TYPE = #{pType,jdbcType=VARCHAR}
+        </if>
+        <if test="pSku !=null and pSku !=''">
+            AND t1.P_SKU = #{pSku,jdbcType=VARCHAR}
+        </if>
+        <if test="logmin != null and logmin != ''">
+            AND to_char(t1.OPERA_TIME,'yyyy-MM-dd hh24:mi:ss')  <![CDATA[>=]]> #{logmin,jdbcType=VARCHAR}
+        </if>
+        <if test="logmax != null and logmax != ''">
+            AND to_char(t1.OPERA_TIME,'yyyy-MM-dd hh24:mi:ss')  <![CDATA[<=]]> #{logmax,jdbcType=VARCHAR}
+        </if>
+        ORDER BY OPERA_TIME DESC
+    </select>
+</mapper>
