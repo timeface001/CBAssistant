@@ -34,6 +34,10 @@ public class OrderManageService {
         return orderManageDao.selectLocalOrderItem(map);
     }
 
+    public List<Map<String, Object>> selectNewLocalOrderItem() {
+        return orderManageDao.selectNewLocalOrderItem();
+    }
+
     public int updateOrder(Map<String, Object> map) {
         return orderManageDao.updateOrder(map);
     }

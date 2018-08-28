@@ -122,4 +122,23 @@ public class SystemManageService {
     public List<Map<String,Object>> selectShops(Map<String, Object> paramMap) {
         return systemManageDao.selectShops(paramMap);
     }
+    public int addTranslation(Map<String, Object> map) {
+        return systemManageDao.addTranslation(map);
+    }
+
+    public List<Map<String, Object>> selectTranslations(Map<String, Object> map) {
+        return systemManageDao.selectTranslations(map);
+    }
+
+    public int updateTranslationState(Map<String, Object> map) {
+        return systemManageDao.updateTranslationState(map);
+    }
+
+    public int deleteTranslation(String id) {
+        return systemManageDao.deleteTranslation(id);
+    }
+
+    public int updateTranslation(Map<String, Object> map) {
+        return systemManageDao.updateTranslation(map);
+    }
 }

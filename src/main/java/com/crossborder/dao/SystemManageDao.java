@@ -64,4 +64,14 @@ public interface SystemManageDao {
 
     public List<Map<String, Object>> selectShops(Map<String, Object> paramMap);
 
+    public int addTranslation(Map<String, Object> map);
+
+    public List<Map<String, Object>> selectTranslations(Map<String, Object> map);
+
+    public int updateTranslationState(Map<String, Object> map);
+
+    public int deleteTranslation(String id);
+
+    public int updateTranslation(Map<String, Object> map);
+
 }

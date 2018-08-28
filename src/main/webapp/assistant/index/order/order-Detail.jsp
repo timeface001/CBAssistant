@@ -184,7 +184,6 @@
             <div class=" col-xs-2 col-sm-2">
                 <input type="text" id="count" placeholder=" "
                        class="input-text" value="1"></div>
-
         </div>
         <div class="row cl">
             <label class=" col-xs-1 col-sm-1 text-r">长(cm)：</label>
@@ -992,8 +991,8 @@
                 "salesMan": $("#salesManId").val(),
                 "salesCompany": $("#salesCompanyId").val(),
                 "companyId": document.getElementById("transportCompany").value,
-                "marketplaceId":$("#marketplaceId").val(),
-                "merchantId":$("#merchantId").val()
+                "marketplaceId": $("#marketplaceId").val(),
+                "merchantId": $("#merchantId").val()
             },
             success: function (data) {
                 layer.closeAll("loading");

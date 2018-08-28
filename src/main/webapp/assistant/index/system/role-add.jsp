@@ -234,6 +234,7 @@
         } else {
             url = '<%=request.getContextPath()%>/system/addRole';
         }
+        layer.load();
         $.ajax({
             type: 'POST',
             url: url,
@@ -242,15 +243,16 @@
                 "data": JSON.stringify(getFormJson("#addRoleForm"))
             },
             success: function (data) {
-                layer.msg(data.msg, {icon: 1, time: 1000});
+                layer.closeAll("loading");
+                layer.msg(data.msg, {icon: 1, time: 2000});
                 layer_close();
             },
             error: function (data) {
-                layer.msg(data.msg, {icon: 2, time: 1000});
+                layer.closeAll("loading");
+                layer.msg(data.msg, {icon: 2, time: 2000});
             },
         });
     });
 </script>
-<!--/请在上方写此页面业务相关的脚本-->
 </body>
 </html>

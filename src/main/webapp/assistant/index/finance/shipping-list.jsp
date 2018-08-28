@@ -332,13 +332,15 @@
                         if (data == 0) {
                             return "<a style='text-decoration:none' title='获取运费' onClick=\"getShippingPrice('" + full.ORDER_ID + "','" + full.TRACKNUMBER + "','" + full.TRANS_COMPANY_ID + "')\">获取运费</a>" +
                                     "&nbsp;&nbsp;" +
-                                    "<a style='text-decoration:none' title='修改'  onClick=\"updateShipping('" + full.ORDER_ID + "','" + full.FREIGHT + "','" + full.TRACKNUMBER + "','" + full.SHIPPINGPRICE +"')\">修改</a>";
+                                    "<a style='text-decoration:none' title='修改'  onClick=\"updateShipping('" + full.ORDER_ID + "','" + full.FREIGHT + "','" + full.TRACKNUMBER + "','" + full.SHIPPINGPRICE + "')\">修改</a>";
                         } else if (data == 1) {
-                            return "<a style='text-decoration:none' title='修改'  onClick=\"updateShipping('" + full.ORDER_ID + "','" + full.FREIGHT + "','" + full.TRACKNUMBER + "','" + full.SHIPPINGPRICE +"')\">修改</a>" +
+                            return "<a style='text-decoration:none' title='修改'  onClick=\"updateShipping('" + full.ORDER_ID + "','" + full.FREIGHT + "','" + full.TRACKNUMBER + "','" + full.SHIPPINGPRICE + "')\">修改</a>" +
                                     "&nbsp;&nbsp;" +
                                     "<a style='text-decoration:none' title='审核' onClick=\"auditShipping('" + full.ORDER_ID + "','" + full.FREIGHT + "')\">审核</a>";
                         } else {
-                            return "<a style='text-decoration:none'  id='edit' data-id='" + data + "'  )>已审核</a>";
+                            return "<a style='text-decoration:none' title='修改'  onClick=\"updateShipping('" + full.ORDER_ID + "','" + full.FREIGHT + "','" + full.TRACKNUMBER + "','" + full.SHIPPINGPRICE + "')\">修改</a>" +
+                                    "&nbsp;&nbsp;" +
+                                    "<a style='text-decoration:none'  id='edit' data-id='" + data + "'  )>已审核</a>";
                         }
                     }
                 }

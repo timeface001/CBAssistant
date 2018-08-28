@@ -6,6 +6,7 @@ import com.crossborder.entity.ClaimProduct;
 import com.crossborder.entity.ProductItemVar;
 import com.crossborder.service.ProductManagerService;
 import com.crossborder.service.ProductSkuTypeService;
+import com.crossborder.service.SystemManageService;
 import com.crossborder.utils.GeneralUtils;
 import com.crossborder.utils.ResponseGen;
 import com.crossborder.utils.TranslateDto;
@@ -44,6 +45,8 @@ public class ProductClaimController extends BaseController {
     private ProductSkuTypeService productSkuTypeService;
     @Autowired
     private ProductClaimDao productClaimDao;
+    @Resource
+    private SystemManageService systemManageService;
 
     /**
      * 已认领产品列表
@@ -119,7 +122,7 @@ public class ProductClaimController extends BaseController {
                 BigDecimal price = BigDecimal.ZERO;
                 for (ProductItemVar va : list) {
                     totalInventory += va.getQuantity();
-                    price = (va.getPrice().compareTo(price) > 0 && price.compareTo(BigDecimal.ZERO) > 0 ? price:va.getPrice() );
+                    price = (va.getPrice().compareTo(price) > 0 && price.compareTo(BigDecimal.ZERO) > 0 ? price : va.getPrice());
                 }
                 product.setQuantity(totalInventory);
                 product.setPrice(price);
@@ -275,8 +278,9 @@ public class ProductClaimController extends BaseController {
         }
     }
 
-    public static List<TranslateDto> getTanslateList(List<String> zhs, String language) {
-        String key = "AIzaSyBIdrp49-kDa9sNjEny2AzqdQ6dOpmHwYE";
+    public List<TranslateDto> getTanslateList(List<String> zhs, String language) {
+        Map<String, Object> translationMap = systemManageService.selectTranslations(new HashMap<String, Object>()).get(0);
+        String key = translationMap.get("SECRET_KEY").toString();//"AIzaSyAN1tQ7mgCZ7fVPtc6PCKMw69P-TbZv-5w";
         Translate translate = TranslateOptions.newBuilder().setApiKey(key).build().getService();
         Translation translation = null;
         List<TranslateDto> list = new ArrayList<>();

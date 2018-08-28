@@ -28,30 +28,38 @@
             src="<%=request.getContextPath()%>/assistant/lib/DD_belatedPNG_0.0.8a-min.js"></script>
     <script>DD_belatedPNG.fix('*');</script>
     <![endif]-->
-    <title>财务列表</title>
+    <title>商品清单</title>
 </head>
 <body>
-<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 财务管理 <span
-        class="c-gray en">&gt;</span> 财务列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px"
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 库存管理 <span
+        class="c-gray en">&gt;</span> 商品清单 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px"
                                               href="javascript:location.replace(location.href);" title="刷新"><i
         class="Hui-iconfont">&#xe68f;</i></a></nav>
 <div class="page-container">
-    <form id="accountForm" class="form form-horizontal">
+    <form id="goodsListForm" class="form form-horizontal">
         <div class="row cl">
-            <label class="form-label col-xs-2 col-sm-2">用户公司：</label>
+            <label class="form-label col-xs-2 col-sm-2">商品sku：</label>
             <div class="formControls col-xs-2 col-sm-2">
-                <select id="userCompany" name="userCompany" class="select" style="height: 32px">
-                    <option value="">请选择</option>
-                </select>
+                <input type="text" id="pSku" name="pSku" placeholder=" "
+                       class="input-text">
             </div>
-            <label class="form-label col-xs-2 col-sm-2">货运公司：</label>
+            <label class="form-label col-xs-2 col-sm-2">分类：</label>
             <div class="formControls col-xs-2 col-sm-2">
-                <select id="shipCompany" name="shipCompany" class="select" style="height: 32px">
-                    <option value="">请选择</option>
-                </select>
+                <input type="text" id="pCategory" name="pCategory" placeholder=" "
+                       class="input-text">
+            </div>
+            <label class="form-label col-xs-2 col-sm-2">货架编号：</label>
+            <div class="formControls col-xs-2 col-sm-2">
+                <input type="text" id="shelNo" name="shelNo" placeholder=" "
+                       class="input-text">
             </div>
         </div>
         <div class="row cl">
+            <label class="form-label col-xs-2 col-sm-2">仓库：</label>
+            <div class="formControls col-xs-2 col-sm-2">
+                <input type="text" id="wareRomm" name="wareRomm" placeholder=" "
+                       class="input-text">
+            </div>
             <label class="form-label col-xs-2 col-sm-2">开始日期：</label>
             <div class="formControls col-xs-2 col-sm-2">
                 <input type="text" onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'logmax\')||\'%y-%M-%d\'}' })"
@@ -69,23 +77,22 @@
         </div>
     </form>
     <div class="mt-20">
-        <div class="cl pd-5 bg-1 bk-gray mt-10" id="count-div"><span class="l">
-            <a class="btn btn-primary radius" href="javascript:;"
-               onclick="addAccount('添加财务','<%=request.getContextPath()%>/assistant/index/finance/account-add.jsp','800')"><i
-                    class="Hui-iconfont">
-                &#xe600;</i> 添加财务</a> </span></div>
-        <table id="accountTable" class="table table-border table-bordered table-bg table-hover">
+        <table id="goodsListTable" class="table table-border table-bordered table-bg table-hover">
             <thead>
             <tr class="text-c">
-                <th width="100">流水号</th>
-                <th width="100">用户公司</th>
-                <th width="100">账户余额</th>
-                <th width="100">类型</th>
-                <th width="100">金额</th>
-                <th width="100">运输公司</th>
-                <th width="100">国际跟踪号</th>
-                <th width="100">备注</th>
-                <th width="100">创建时间</th>
+                <th width="100">图片</th>
+                <th width="100">商品sku</th>
+                <th width="100">分类</th>
+                <th width="100">库存数</th>
+                <th width="100">运输数量</th>
+                <th width="100">单价</th>
+                <th width="100">总价</th>
+                <th width="100">货架编码</th>
+                <th width="100">仓库</th>
+                <th width="100">公司</th>
+                <th width="100">操作人</th>
+                <th width="100">操作时间</th>
+                <th width="100">操作</th>
             </tr>
             </thead>
         </table>
@@ -104,38 +111,19 @@
         src="<%=request.getContextPath()%>/assistant/lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="<%=request.getContextPath()%>/assistant/lib/laypage/1.2/laypage.js"></script>
 <script type="text/javascript">
-    var accountTable = null;
+    var goodsListTable = null;
     $(function () {
         initSelect();
         var sd = new Date();
         sd.setDate(sd.getDate() - 6);
         $("#logmin").val(sd.format("yyyy-MM-dd"));
         $("#logmax").val(new Date().format("yyyy-MM-dd"));
-        accountTable = initializeTable();
+        goodsListTable = initializeTable();
         $("#search").click(function () {
-            accountTable.ajax.reload();
+            goodsListTable.ajax.reload();
         });
     });
     function initSelect() {
-        $.ajax({
-            type: 'POST',
-            url: '<%=request.getContextPath()%>/common/getList',
-            dataType: 'json',
-            data: {
-                "code": "transportCompanies"
-            },
-            success: function (data) {
-                if (data.code == 0) {
-                    var data = data.data;
-                    for (var i = 0; i < data.length; i++) {
-                        $("#shipCompany").append($('<option value=' + data[i].ID + '>' + data[i].NAME + '</option>'));
-                    }
-                }
-            },
-            error: function (data) {
-                layer.msg(data.msg, {icon: 2, time: 1000});
-            }
-        });
         $.ajax({
             type: 'POST',
             url: '<%=request.getContextPath()%>/common/getList',
@@ -147,7 +135,7 @@
                 if (data.code == 0) {
                     var data = data.data;
                     for (var i = 0; i < data.length; i++) {
-                        $("#userCompany").append($('<option value=' + data[i].COMPANY_ID + '>' + data[i].COMPANY_NAME + '</option>'));
+                        $("#company").append($('<option value=' + data[i].COMPANY_ID + '>' + data[i].COMPANY_NAME + '</option>'));
                     }
                 }
             },
@@ -156,13 +144,10 @@
             }
         });
     }
-    function addAccount(title, url, w) {
-        layer_show(title, url, w);
-    }
-    /*查询财务*/
+    /*查询商品清单*/
     function reloadTable(id) {
         layer.load();
-        accountTable.ajax.reload();
+        goodsListTable.ajax.reload();
         var btnDiv = document.getElementById("btn-div");
         var btns = btnDiv.getElementsByTagName("a");
         for (var i = 0; i < btns.length; i++) {
@@ -175,7 +160,7 @@
     }
     /*初始化table*/
     function initializeTable() {
-        var table = $("#accountTable").DataTable({
+        var table = $("#goodsListTable").DataTable({
             "processing": true,
             "serverSide": true,
             "pagingType": "full_numbers",
@@ -183,11 +168,11 @@
             "searching": false,
             "bLengthChange": false,
             "ajax": {
-                "url": "<%=request.getContextPath()%>/account/getAccounts",
+                "url": "<%=request.getContextPath()%>/stock/getGoodsList",
                 "type": "POST",
                 "data": function (d) {
                     return $.extend({}, d, {
-                        "data": JSON.stringify(getFormJson("#accountForm"))
+                        "data": JSON.stringify(getFormJson("#goodsListForm"))
                     });
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
@@ -197,52 +182,50 @@
                 }
             },
             "columns": [
-                {"data": "ACC_ID"},
-                {"data": "USERCOMPANY"},
-                {"data": "ACC_BALANCE"},
-                {"data": "FEE_TYPE"},
-                {"data": "AMOUNT"},
-                {"data": "SHIPCOMPANY"},
-                {"data": "TRACKING_NO"},
-                {"data": "T_DESC"},
-                {"data": "CREATE_TIME"}
+                {"data": "IMAGE"},
+                {"data": "P_SKU"},
+                {"data": "P_CATEGORY"},
+                {"data": "P_STOCK_NUM"},
+                {"data": "P_WAY_NUM"},
+                {"data": "PRICE"},
+                {"data": "TOTAL_PRICE"},
+                {"data": "SHELF_NO"},
+                {"data": "WAREROOM"},
+                {"data": "COMPANY_NAME"},
+                {"data": "USER_NAME"},
+                {"data": "UPDATE_TIME"},
+                {"data": "UPDATE_TIME"}
             ],
             "columnDefs": [
-                /*{
-                 "targets": [0],
-                 "data": "ID",
-                 "render": function (data, type, full) {
-                 return "<a class='maincolor' href='javascript:;' onClick=\"toDetail('" + full.AMAZONaccountID + "')\"'>" + data + "</a>";
-                 }
-                 },*/
                 {
-                    "targets": [3],
-                    "data": "LOCALSTATUS",
+                    "targets": [0],
+                    "data": "IMAGE",
                     "render": function (data, type, full) {
-                        if (data == 1) {
-                            return "<div>充值</div>";
-                        } else if (data == 2) {
-                            return "<div>物流扣费</div>";
-                        } else if (data == 3) {
-                            return "<div>抽成</div>";
-                        }
+                        return data == null ? "" : "<img width='100px' height='90px'  src='<%=session.getAttribute("productPath")%>" + data + "'/>";
                     }
                 },
                 {
-                    "targets": [8],
-                    "data": "CREATE_TIME",
+                    "targets": [11],
+                    "data": "UPDATE_TIME",
                     "render": function (data, type, full) {
                         return "<div>" + getMyDate(data) + "</div>"
                     }
                 },
+                {
+                    "targets": [12],
+                    "data": "UPDATE_TIME",
+                    "render": function (data, type, full) {
+                        return "<a style='text-decoration:none' title='单独出库'  onClick=\"addGoodsOut('" + full.P_SKU + "')\"'>单独出库</a>" +
+                                "&nbsp;&nbsp;" +
+                                "<a style='text-decoration:none' title='批量出库'  onClick=\"addAllGoodsOut('" + full.P_SKU + "')\"'>批量出库</a>";
+                    }
+                }
             ],
             "rowCallback": function (row, data, displayIndex) {
                 $(row).attr("class", "text-c");
             },
             "initComplete": function (settings, json) {
-
             },
-            /* "dom": "t<'dataTables_info'il>p",*/
             "language": {
                 "processing": "正在加载中......",
                 "lengthMenu": "每页 _MENU_ 条",
@@ -258,6 +241,14 @@
             }
         });
         return table;
+    }
+    function addGoodsOut(pSku) {
+        layer_show("单独出库",
+                "<%=request.getContextPath()%>/assistant/index/stock/goodsOut-add.jsp?pSku=" + pSku, 400, 300);
+    }
+    function addAllGoodsOut(pSku) {
+        layer_show("批量出库",
+                "<%=request.getContextPath()%>/assistant/index/stock/goodsOut-addAll.jsp?pSku=" + pSku, 400, 300);
     }
 </script>
 </body>

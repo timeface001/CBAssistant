@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -565,6 +566,130 @@ public class SystemManageController {
         Map<String, Object> map = new HashMap<>();
         try {
             int count = systemManageService.deleteRole(id);
+            map.put("count", count);
+            map.put("code", "0");
+            map.put("msg", "删除成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("code", "-10");
+            map.put("msg", "删除失败");
+        }
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
+    }
+
+    /**
+     * 添加翻译
+     *
+     * @param data
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "addTranslation", produces = "text/plain;charset=UTF-8")
+    public String addTranslation(String data, HttpSession session) {
+        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> user = (Map<String, Object>) session.getAttribute("user");
+        try {
+            Map<String, Object> paramMap = JSON.parseObject(data, Map.class);
+            paramMap.put("createUser", user.get("USER_ID").toString());
+            int count = systemManageService.addTranslation(paramMap);
+            map.put("count", count);
+            map.put("code", "0");
+            map.put("msg", "添加成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("code", "-10");
+            map.put("msg", "添加失败");
+        }
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
+    }
+
+    /**
+     * 查询翻译
+     *
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "selectTranslations", produces = "text/plain;charset=UTF-8")
+    public String selectTranslations(String id) {
+        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("id", id);
+        try {
+            List<Map<String, Object>> list = systemManageService.selectTranslations(paramMap);
+            map.put("data", list);
+            map.put("code", "0");
+            map.put("msg", "查询成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("code", "-10");
+            map.put("msg", "查询失败");
+        }
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
+    }
+
+    /**
+     * 修改翻译信息
+     *
+     * @param data
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "updateTranslation", produces = "text/plain;charset=UTF-8")
+    public String updateTranslation(String data) {
+        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> paramMap = JSON.parseObject(data, Map.class);
+        try {
+            int count = systemManageService.updateTranslation(paramMap);
+            map.put("count", count);
+            map.put("code", "0");
+            map.put("msg", "更新成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("code", "-10");
+            map.put("msg", "更新失败");
+        }
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
+    }
+
+    /**
+     * 启用或停用
+     *
+     * @param id
+     * @param state
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "updateTranslationState", produces = "text/plain;charset=UTF-8")
+    public String updateTranslationState(String id, String state) {
+        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("id", id);
+        paramMap.put("state", state);
+        try {
+            int count = systemManageService.updateTranslationState(paramMap);
+            map.put("count", count);
+            map.put("code", "0");
+            map.put("msg", "更新成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("code", "-10");
+            map.put("msg", "更新失败");
+        }
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
+    }
+
+    /**
+     * 删除翻译
+     *
+     * @param id
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "deleteTranslation", produces = "text/plain;charset=UTF-8")
+    public String deleteTranslation(String id) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            int count = systemManageService.deleteTranslation(id);
             map.put("count", count);
             map.put("code", "0");
             map.put("msg", "删除成功");

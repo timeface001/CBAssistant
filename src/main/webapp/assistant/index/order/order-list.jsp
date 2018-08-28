@@ -40,7 +40,8 @@
         <div class="row cl">
             <label class="form-label col-xs-2 col-sm-2">公司：</label>
             <div class="formControls col-xs-2 col-sm-2">
-                <select id="salesCompany" name="salesCompany" class="select" style="height: 32px">
+                <select id="salesCompany" name="salesCompany" class="select" style="height: 32px"
+                        onchange="loadUsers(this.value)">
                     <option value="">请选择</option>
                 </select>
             </div>
@@ -413,6 +414,29 @@
                 }
             });
         }
+    }
+    function loadUsers(value) {
+        $.ajax({
+            type: 'POST',
+            url: '<%=request.getContextPath()%>/system/selectUsers',
+            dataType: 'json',
+            data: {
+                "companyId": value
+            },
+            success: function (data) {
+                if (data.code == 0) {
+                    var data = data.data;
+                    $("#salesMan").empty();
+                    $("#salesMan").append($("<option value=''>请选择</option>"));
+                    for (var i = 0; i < data.length; i++) {
+                        $("#salesMan").append($('<option value=' + data[i].USER_ID + '>' + data[i].USER_NAME + '</option>'));
+                    }
+                }
+            },
+            error: function (data) {
+                layer.msg(data.msg, {icon: 2, time: 2000});
+            }
+        });
     }
     /*查询个人授权店铺*/
     function initSalesSource() {

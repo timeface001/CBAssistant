@@ -1,4 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%
+    String pSku = request.getParameter("pSku");
+%>
 <!DOCTYPE HTML>
 <html>
 <head>
@@ -21,6 +24,8 @@
           href="<%=request.getContextPath()%>/assistant/static/h-ui.admin/skin/default/skin.css" id="skin"/>
     <link rel="stylesheet" type="text/css"
           href="<%=request.getContextPath()%>/assistant/static/h-ui.admin/css/style.css"/>
+    <link rel="stylesheet" type="text/css"
+          href="<%=request.getContextPath()%>/assistant/lib/layui/css/layui.css"/>
     <!--[if IE 6]>
     <script type="text/javascript"
             src="<%=request.getContextPath()%>/assistant/lib/DD_belatedPNG_0.0.8a-min.js"></script>
@@ -34,14 +39,14 @@
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>商品sku：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" id="pSku"
-                       name="pSku">
+                <input type="text" class="input-text" id="pSku" name="pSku">
             </div>
         </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>类型：</label>
             <div class="formControls col-xs-8 col-sm-9">
                 <select id="pType" name="pType" class="select" style="height: 32px">
+                    <option value="">请选择</option>
                     <option value="1">商品</option>
                     <option value="2">赠品</option>
                     <option value="3">包材</option>
@@ -85,7 +90,7 @@
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>平台sku：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="" placeholder="" id="platSku" name="platSku">
+                <input type="text" class="input-text" value="" placeholder="多个sku请用逗号隔开" id="platSku" name="platSku">
             </div>
         </div>
         <div class="row cl">
@@ -95,9 +100,18 @@
             </div>
         </div>
         <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-3">图片路径：</label>
+            <label class="form-label col-xs-4 col-sm-3">图片：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="" placeholder="" id="image" name="image">
+                <input name="image" type="hidden" lay-verify="required"/>
+                <button type="button" class="layui-btn" id="image">
+                    <i class="layui-icon">&#xe67c;</i>上传图片
+                </button>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3"><span class=""></span></label>
+            <div class="formControls col-xs-8 col-sm-9" id="imageSrc">
+
             </div>
         </div>
         <div class="row cl">
@@ -216,9 +230,28 @@
         src="<%=request.getContextPath()%>/assistant/lib/jquery.validation/1.14.0/messages_zh.js"></script>
 <script type="text/javascript"
         src="<%=request.getContextPath()%>/assistant/lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="<%=request.getContextPath()%>/assistant/lib/layui/layui.js"></script>
 <script type="text/javascript">
+    var pSku = '<%=pSku%>';
     $(function () {
         initSelect();
+        layui.use('upload', function () {
+            var upload = layui.upload;
+            //执行实例
+            var uploadInst = upload.render({
+                accept: "images",
+                acceptMime: "image/*",
+                elem: '#image',
+                url: '<%=request.getContextPath()%>/upload/image',
+                done: function (res) {
+                    $("#imageSrc").html("<img width='100px' height='90px' src=<%=session.getAttribute("productPath")%>" + res.data + " />")
+                    $("input[name='image']").val(res.data);
+                }
+                , error: function () {
+                    //请求异常回调
+                }
+            });
+        });
         $("#goodsForm").validate({
             rules: {
                 pSku: {
@@ -262,6 +295,7 @@
                     for (var i = 0; i < data.length; i++) {
                         $("#company").append($('<option value=' + data[i].COMPANY_ID + '>' + data[i].COMPANY_NAME + '</option>'));
                     }
+                    initGoodsInfo();
                 }
             },
             error: function (data) {
@@ -269,18 +303,56 @@
             }
         });
     }
+    function initGoodsInfo() {
+        if (pSku != null && pSku != "" && pSku != "null" && pSku != undefined) {
+            $.ajax({
+                type: 'POST',
+                url: '<%=request.getContextPath()%>/stock/getGoodsBySku',
+                dataType: 'json',
+                data: {
+                    "pSku": pSku
+                },
+                success: function (data) {
+                    if (data.code == 0) {
+                        var data = data.data[0];
+                        $("#pSku").val(data.P_SKU);
+                        $("#categoryName").val(data.L_C_NAME);
+                        $("#pCategory").val(data.P_CATEGORY);
+                        $("#pType").val(data.P_TYPE);
+                        $("#nameEn").val(data.NAME_EN);
+                        $("#nameCn").val(data.NAME_CN);
+                        $("#company").val(data.COMPANY_ID);
+                        $("#sourceUrl").val(data.SOURCE_URL);
+                        $("#image").val(data.IMAGE);
+                        $("#platSku").val(data.PLAT_SKU);
+                    } else {
+                        layer.msg(data.msg, {icon: 6, time: 1000});
+                    }
+                },
+                error: function (data) {
+                    layer.msg(data.msg, {icon: 5, time: 1000});
+                }
+            });
+        }
+    }
     function ajaxSubmit() {
         layer.load();
+        var url = '<%=request.getContextPath()%>/stock/addGoods';
+        if (pSku != null && pSku != "" && pSku != "null" && pSku != undefined) {
+            url = '<%=request.getContextPath()%>/stock/updateGoods';
+        } else {
+            url = '<%=request.getContextPath()%>/stock/addGoods';
+        }
         $.ajax({
             type: 'POST',
             dataType: 'json',
             data: {
                 "data": JSON.stringify(getFormJson("#goodsForm"))
             },
-            url: "<%=request.getContextPath()%>/stock/addGoods",
+            url: url,
             error: function () {
                 layer.closeAll("loading");
-                layer.msg('新增失败!', {icon: 2, time: 1000});
+                layer.msg('网络错误，请求失败!', {icon: 2, time: 2000});
             },
             success: function (data) {
                 layer.closeAll("loading");
@@ -288,7 +360,7 @@
                     var index = parent.layer.getFrameIndex(window.name);
                     parent.layer.close(index);
                 } else {
-                    layer.msg('新增失败!', {icon: 2, time: 1000});
+                    layer.msg(data.msg, {icon: 2, time: 2000});
                 }
             }
         });
@@ -315,7 +387,7 @@
                 }
             },
             error: function (data) {
-                layer.msg(data.msg, {icon: 2, time: 1000});
+                layer.msg(data.msg, {icon: 2, time: 2000});
             },
         });
     }
@@ -345,7 +417,7 @@
                 }
             },
             error: function (data) {
-                layer.msg(data.msg, {icon: 2, time: 1000});
+                layer.msg(data.msg, {icon: 2, time: 2000});
             }
         });
     }

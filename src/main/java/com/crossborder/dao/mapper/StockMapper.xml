@@ -29,24 +29,186 @@
         #{company,jdbcType=VARCHAR}
         )
     </insert>
+    <update id="updateGoods" parameterType="java.util.Map">
+        UPDATE T_STOCK_PRODUCT
+        SET P_SKU = #{pSku,jdbcType=VARCHAR},
+        P_TYPE = #{pType,jdbcType=VARCHAR},
+        P_CATEGORY = #{pCategory,jdbcType=VARCHAR},
+        NAME_CN = #{nameCn,jdbcType=VARCHAR},
+        NAME_EN = #{nameEn,jdbcType=VARCHAR},
+        PLAT_SKU = #{platSku,jdbcType=VARCHAR},
+        SOURCE_URL = #{sourceUrl,jdbcType=VARCHAR},
+        IMAGE =  #{image,jdbcType=VARCHAR},
+        COMPANY_ID = #{company,jdbcType=VARCHAR}
+        WHERE P_SKU = #{pSku,jdbcType=VARCHAR}
+    </update>
     <select id="getGoods" parameterType="java.util.Map" resultType="java.util.Map">
-        SELECT t1.*,t2.USER_NAME,t3.COMPANY_NAME FROM T_STOCK_PRODUCT t1
+        SELECT t1.*,t2.USER_NAME,t3.COMPANY_NAME,t4.L_C_NAME FROM T_STOCK_PRODUCT t1
         LEFT JOIN T_USER_INFO t2
         ON t1.OPER_USER = t2.USER_ID
         LEFT JOIN T_USER_COMPANY t3
         ON t1.COMPANY_ID = t3.COMPANY_ID
+        LEFT JOIN T_PRODUCT_TYPE_LOCAL t4
+        ON t1.P_CATEGORY = t4.L_C_ID
         WHERE 1=1
         <if test="company !=null and company !=''">
             AND t1.COMPANY_ID = #{company,jdbcType=VARCHAR}
         </if>
         <if test="nameCn !=null and nameCn !=''">
-            AND t1.NAME_CN = #{nameCn,jdbcType=VARCHAR}
+            AND t1.NAME_CN LIKE '%${nameCn}%'
         </if>
         <if test="nameEn !=null and nameEn !=''">
-            AND t1.NAME_EN = #{nameEn,jdbcType=VARCHAR}
+            AND t1.NAME_EN LIKE '%${nameEn}%'
         </if>
         <if test="pType !=null and pType !=''">
             AND t1.P_TYPE = #{pType,jdbcType=VARCHAR}
+        </if>
+        <if test="pSku !=null and pSku !=''">
+            AND t1.P_SKU LIKE '%${pSku}%'
+        </if>
+        <if test="platSku !=null and platSku !=''">
+            AND t1.PLAT_SKU LIKE '%${platSku}%'
+        </if>
+        <if test="createUser !=null and createUser !=''">
+            AND t1.OPER_USER = #{createUser,jdbcType=VARCHAR}
+        </if>
+        <if test="logmin != null and logmin != ''">
+            AND to_char(t1.OPERA_TIME,'yyyy-MM-dd hh24:mi:ss')  <![CDATA[>=]]> #{logmin,jdbcType=VARCHAR}
+        </if>
+        <if test="logmax != null and logmax != ''">
+            AND to_char(t1.OPERA_TIME,'yyyy-MM-dd hh24:mi:ss')  <![CDATA[<=]]> #{logmax,jdbcType=VARCHAR}
+        </if>
+        ORDER BY OPERA_TIME DESC
+    </select>
+    <insert id="addGoodsIn" parameterType="java.util.Map">
+        INSERT INTO T_STOCK_PRODUCT_IN(
+        ID,
+        P_SKU,
+        TOTAL_PRICE,
+        P_IN_NUM,
+        ACTUAL_P_IN_NUM,
+        TRACK_NUBMER,
+        SHELF_NO,
+        WAREROOM,
+        P_STATE,
+        OPER_USER,
+        OPERA_TIME
+        )
+        VALUES (seq_goodsIn_id.nextval,
+        #{pSku,jdbcType=VARCHAR},
+        #{totalPrice,jdbcType=DOUBLE},
+        #{pInNum,jdbcType=INTEGER},
+        0,
+        #{trackNo,jdbcType=VARCHAR},
+        #{shelfNo,jdbcType=VARCHAR},
+        #{wareRoom,jdbcType=VARCHAR},
+        '1',
+        #{createUser,jdbcType=VARCHAR},
+        CURRENT_DATE
+        )
+    </insert>
+    <update id="updateGoodsIn" parameterType="java.util.Map">
+        UPDATE T_STOCK_PRODUCT_IN
+        SET
+        UPDATE_TIME = CURRENT_DATE
+        <if test="pInNum !=null and pInNum !=''">
+            ,P_IN_NUM = #{pInNum,jdbcType=INTEGER}
+        </if>
+        <if test="actualPInNum !=null and actualPInNum !=''">
+            ,ACTUAL_P_IN_NUM = #{actualPInNum,jdbcType=INTEGER}
+        </if>
+        <if test="totalPrice !=null and totalPrice !=''">
+            ,TOTAL_PRICE = #{totalPrice,jdbcType=DOUBLE}
+        </if>
+        <if test="pState !=null and pState !=''">
+            ,P_STATE = #{pState,jdbcType=VARCHAR}
+        </if>
+        <if test="trackNo !=null and trackNo !=''">
+            ,TRACK_NUBMER = #{trackNo,jdbcType=VARCHAR}
+        </if>
+        <if test="shelfNo !=null and shelfNo !=''">
+            ,SHELF_NO = #{shelfNo,jdbcType=VARCHAR}
+        </if>
+        <if test="wareRoom !=null and wareRoom !=''">
+            ,WAREROOM = #{wareRoom,jdbcType=VARCHAR}
+        </if>
+        WHERE ID = #{id,jdbcType=VARCHAR}
+    </update>
+    <select id="getGoodsIn" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT t1.*,t2.USER_NAME,t3.IMAGE FROM T_STOCK_PRODUCT_IN t1
+        LEFT JOIN T_USER_INFO t2
+        ON t1.OPER_USER = t2.USER_ID
+        LEFT JOIN T_STOCK_PRODUCT t3
+        ON t1.P_SKU = t3.P_SKU
+        WHERE 1=1
+        <if test="trackNo !=null and trackNo !=''">
+            AND t1.TRACK_NUBMER = #{trackNo,jdbcType=VARCHAR}
+        </if>
+        <if test="wareRoom !=null and wareRoom !=''">
+            AND t1.WAREROOM = #{wareRoom,jdbcType=VARCHAR}
+        </if>
+        <if test="shelfNo !=null and shelfNo !=''">
+            AND t1.SHELF_NO = #{shelfNo,jdbcType=VARCHAR}
+        </if>
+        <if test="pSku !=null and pSku !=''">
+            AND t1.P_SKU = #{pSku,jdbcType=VARCHAR}
+        </if>
+        <if test="pState !=null and pState !=''">
+            AND t1.P_STATE = #{pState,jdbcType=VARCHAR}
+        </if>
+        <if test="id !=null and id !=''">
+            AND t1.ID = #{id,jdbcType=VARCHAR}
+        </if>
+        <if test="logmin != null and logmin != ''">
+            AND to_char(t1.OPERA_TIME,'yyyy-MM-dd hh24:mi:ss')  <![CDATA[>=]]> #{logmin,jdbcType=VARCHAR}
+        </if>
+        <if test="logmax != null and logmax != ''">
+            AND to_char(t1.OPERA_TIME,'yyyy-MM-dd hh24:mi:ss')  <![CDATA[<=]]> #{logmax,jdbcType=VARCHAR}
+        </if>
+        ORDER BY t1.OPERA_TIME DESC
+    </select>
+    <insert id="addGoodsOut" parameterType="java.util.Map">
+        INSERT INTO T_STOCK_PRODUCT_OUT(
+                ID,
+                P_SKU,
+                ORDERITEM_ID,
+                OUT_NUM,
+                SHELF_NO,
+                WAREROOM,
+                P_STOCK_NUM,
+                OPERA_TIME,
+                OPER_USER,
+                USER_ID,
+                COMPANY_ID
+                )
+                VALUES (seq_goodsOut_id.nextval,
+                #{pSku,jdbcType=VARCHAR},
+                #{orderItemId,jdbcType=DOUBLE},
+                #{outNum,jdbcType=INTEGER},
+                #{shelfNo,jdbcType=VARCHAR},
+                #{wareRoom,jdbcType=VARCHAR},
+                #{pStockNum,jdbcType=VARCHAR},
+                CURRENT_DATE,
+                #{createUser,jdbcType=VARCHAR},
+                #{createUser,jdbcType=VARCHAR},
+                #{company,jdbcType=VARCHAR}
+                )
+    </insert>
+    <select id="getGoodsOut" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT t1.*,t2.USER_NAME,t3.IMAGE FROM T_STOCK_PRODUCT_OUT t1
+        LEFT JOIN T_USER_INFO t2
+        ON t1.OPER_USER = t2.USER_ID
+        LEFT JOIN T_STOCK_PRODUCT t3
+        ON t1.P_SKU = t3.P_SKU
+        WHERE 1=1
+        <if test="orderId !=null and orderId !=''">
+            AND t1.ORDERITEM_ID = #{orderItemId,jdbcType=VARCHAR}
+        </if>
+        <if test="wareRoom !=null and wareRoom !=''">
+            AND t1.WAREROOM = #{wareRoom,jdbcType=VARCHAR}
+        </if>
+        <if test="shelfNo !=null and shelfNo !=''">
+            AND t1.SHELF_NO = #{shelfNo,jdbcType=VARCHAR}
         </if>
         <if test="pSku !=null and pSku !=''">
             AND t1.P_SKU = #{pSku,jdbcType=VARCHAR}
@@ -57,6 +219,104 @@
         <if test="logmax != null and logmax != ''">
             AND to_char(t1.OPERA_TIME,'yyyy-MM-dd hh24:mi:ss')  <![CDATA[<=]]> #{logmax,jdbcType=VARCHAR}
         </if>
-        ORDER BY OPERA_TIME DESC
+        ORDER BY t1.OPERA_TIME DESC
     </select>
+    <insert id="addGoodsList" parameterType="java.util.Map">
+        INSERT INTO T_STOCK_PRODUCT_LIST(
+        P_SKU,
+        P_CATEGORY,
+        P_STOCK_NUM,
+        P_WAY_NUM,
+        PRICE,
+        TOTAL_PRICE,
+        SHELF_NO,
+        WAREROOM,
+        UPDATE_TIME,
+        OPER_USER,
+        COMPANY_ID,
+        TRACK_NUBMER
+        )
+        VALUES (
+        #{pSku,jdbcType=VARCHAR},
+        #{pCategory,jdbcType=VARCHAR},
+        0,
+        0,
+        0,
+        0,
+        '',
+        '',
+        CURRENT_DATE,
+        #{createUser,jdbcType=VARCHAR},
+        #{company,jdbcType=VARCHAR},
+        #{trackNo,jdbcType=VARCHAR}
+        )
+    </insert>
+    <update id="updateGoodsList" parameterType="java.util.Map">
+        UPDATE T_STOCK_PRODUCT_LIST
+        SET
+        UPDATE_TIME = CURRENT_DATE
+        <if test="shelfNo !=null and shelfNo !=''">
+            ,SHELF_NO = #{shelfNo,jdbcType=VARCHAR}
+        </if>
+        <if test="wareRoom !=null and wareRoom !=''">
+            ,WAREROOM = #{wareRoom,jdbcType=VARCHAR}
+        </if>
+        <if test="pStockNum !=null and pStockNum !=''">
+            ,P_STOCK_NUM = #{pStockNum,jdbcType=INTEGER}
+        </if>
+        <if test="pInNum !=null and pInNum !=''">
+            ,P_WAY_NUM = #{pInNum,jdbcType=INTEGER}
+        </if>
+        <if test="price !=null and price !=''">
+            ,PRICE = #{price,jdbcType=DOUBLE}
+        </if>
+        <if test="totalPrice !=null and totalPrice !=''">
+            ,TOTAL_PRICE = #{totalPrice,jdbcType=DOUBLE}
+        </if>
+        <if test="trackNo !=null and trackNo !=''">
+            ,TRACK_NUBMER = #{trackNo,jdbcType=DOUBLE}
+        </if>
+        WHERE P_SKU = #{pSku,jdbcType=VARCHAR}
+    </update>
+    <select id="getGoodsList" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT t1.*,t2.USER_NAME,t3.COMPANY_NAME,t4.PLAT_SKU,t4.IMAGE FROM T_STOCK_PRODUCT_LIST t1
+        LEFT JOIN T_USER_INFO t2
+        ON t1.OPER_USER = t2.USER_ID
+        LEFT JOIN T_USER_COMPANY t3
+        ON t1.COMPANY_ID = t3.COMPANY_ID
+        LEFT JOIN T_STOCK_PRODUCT t4
+        ON t1.P_SKU = t4.P_SKU
+        WHERE 1=1
+        <if test="company !=null and company !=''">
+            AND t1.COMPANY_ID = #{company,jdbcType=VARCHAR}
+        </if>
+        <if test="wareRoom !=null and wareRoom !=''">
+            AND t1.WAREROOM = #{wareRoom,jdbcType=VARCHAR}
+        </if>
+        <if test="shelfNo !=null and shelfNo !=''">
+            AND t1.SHELF_NO = #{shelfNo,jdbcType=VARCHAR}
+        </if>
+        <if test="pSku !=null and pSku !=''">
+            AND t1.P_SKU = #{pSku,jdbcType=VARCHAR}
+        </if>
+        <if test="logmin != null and logmin != ''">
+            AND to_char(t1.UPDATE_TIME,'yyyy-MM-dd hh24:mi:ss')  <![CDATA[>=]]> #{logmin,jdbcType=VARCHAR}
+        </if>
+        <if test="logmax != null and logmax != ''">
+            AND to_char(t1.UPDATE_TIME,'yyyy-MM-dd hh24:mi:ss')  <![CDATA[<=]]> #{logmax,jdbcType=VARCHAR}
+        </if>
+        ORDER BY t1.UPDATE_TIME DESC
+    </select>
+    <delete id="delGoods" parameterType="java.lang.String">
+        DELETE FROM T_STOCK_PRODUCT
+        WHERE P_SKU = #{pSku,jdbcType=VARCHAR}
+    </delete>
+    <delete id="delGoodsList" parameterType="java.lang.String">
+        DELETE FROM T_STOCK_PRODUCT_LIST
+        WHERE P_SKU = #{pSku,jdbcType=VARCHAR}
+    </delete>
+    <delete id="delGoodsIn" parameterType="java.lang.String">
+        DELETE FROM T_STOCK_PRODUCT_IN
+        WHERE ID = #{id,jdbcType=VARCHAR}
+    </delete>
 </mapper>

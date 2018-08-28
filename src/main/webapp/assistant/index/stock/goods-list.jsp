@@ -40,7 +40,14 @@
         <div class="row cl">
             <label class="form-label col-xs-2 col-sm-2">公司：</label>
             <div class="formControls col-xs-2 col-sm-2">
-                <select id="company" name="company" class="select" style="height: 32px">
+                <select id="company" name="company" class="select" style="height: 32px"
+                        onchange="loadUsers(this.value)">
+                    <option value="">请选择</option>
+                </select>
+            </div>
+            <label class="form-label col-xs-2 col-sm-2">操作人：</label>
+            <div class="formControls col-xs-2 col-sm-2">
+                <select id="createUser" name="createUser" class="select" style="height: 32px">
                     <option value="">请选择</option>
                 </select>
             </div>
@@ -49,6 +56,8 @@
                 <input type="text" id="pSku" name="pSku" placeholder=" "
                        class="input-text">
             </div>
+        </div>
+        <div class="row cl">
             <label class="form-label col-xs-2 col-sm-2">类型：</label>
             <div class="formControls col-xs-2 col-sm-2">
                 <select id="pType" name="pType" class="select" style="height: 32px">
@@ -57,8 +66,6 @@
                     <option value="3">包材</option>
                 </select>
             </div>
-        </div>
-        <div class="row cl">
             <label class="form-label col-xs-2 col-sm-2">中文名称：</label>
             <div class="formControls col-xs-2 col-sm-2">
                 <input type="text" id="nameCn" name="nameCn" placeholder=" "
@@ -81,6 +88,11 @@
                 <input type="text" onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'logmin\')}',maxDate:'%y-%M-%d' })"
                        name="logmax" class="input-text Wdate" id="logmax" readonly>
             </div>
+            <label class="form-label col-xs-2 col-sm-2">平台sku：</label>
+            <div class="formControls col-xs-2 col-sm-2">
+                <input type="text" id="platSku" name="platSku" placeholder=" "
+                       class="input-text">
+            </div>
         </div>
         <div class="text-c cl row">
             <button id="search" class="btn btn-success" type="button"><i class="Hui-iconfont">&#xe665;</i> 搜索
@@ -95,17 +107,18 @@
         <table id="goodsTable" class="table table-border table-bordered table-bg table-hover">
             <thead>
             <tr class="text-c">
+                <th width="100">图片</th>
                 <th width="100">商品sku</th>
                 <th width="50">类型</th>
                 <th width="100">所属分类</th>
+                <th width="150">来源链接</th>
                 <th width="100">中文名称</th>
                 <th width="100">英文名称</th>
                 <th width="100">平台sku</th>
-                <th width="150">来源链接</th>
-                <th width="100">图片路径</th>
                 <th width="100">公司</th>
                 <th width="50">操作人</th>
                 <th width="100">操作时间</th>
+                <th width="100">操作</th>
             </tr>
             </thead>
         </table>
@@ -153,8 +166,27 @@
                 }
             },
             error: function (data) {
-                layer.msg(data.msg, {icon: 2, time: 1000});
+                layer.msg(data.msg, {icon: 2, time: 2000});
             }
+        });
+        $.ajax({
+            type: 'POST',
+            url: '<%=request.getContextPath()%>/common/getList',
+            dataType: 'json',
+            data: {
+                "code": "users"
+            },
+            success: function (data) {
+                if (data.code == 0) {
+                    var data = data.data;
+                    for (var i = 0; i < data.length; i++) {
+                        $("#createUser").append($('<option value=' + data[i].USER_ID + '>' + data[i].USER_NAME + '</option>'));
+                    }
+                }
+            },
+            error: function (data) {
+                layer.msg(data.msg, {icon: 2, time: 2000});
+            },
         });
     }
     function addGoods(title, url) {
@@ -168,19 +200,9 @@
         });
         layer.full(index);
     }
-    /*查询财务*/
+    /*查询商品*/
     function reloadTable(id) {
-        layer.load();
         goodsTable.ajax.reload();
-        var btnDiv = document.getElementById("btn-div");
-        var btns = btnDiv.getElementsByTagName("a");
-        for (var i = 0; i < btns.length; i++) {
-            if (i == id) {
-                btns[i].className = 'btn btn-success radius'
-            } else {
-                btns[i].className = 'btn btn-default radius'
-            }
-        }
     }
     /*初始化table*/
     function initializeTable() {
@@ -206,39 +228,47 @@
                 }
             },
             "columns": [
+                {"data": "IMAGE"},
                 {"data": "P_SKU"},
                 {"data": "P_TYPE"},
-                {"data": "P_CATEGORY"},
+                {"data": "L_C_NAME"},
+                {"data": "SOURCE_URL"},
                 {"data": "NAME_CN"},
                 {"data": "NAME_EN"},
                 {"data": "PLAT_SKU"},
-                {"data": "SOURCE_URL"},
-                {"data": "IMAGE"},
                 {"data": "COMPANY_NAME"},
                 {"data": "USER_NAME"},
+                {"data": "OPERA_TIME"},
                 {"data": "OPERA_TIME"}
             ],
             "columnDefs": [
-                /*{
-                 "targets": [0],
-                 "data": "ID",
-                 "render": function (data, type, full) {
-                 return "<a class='maincolor' href='javascript:;' onClick=\"toDetail('" + full.AMAZONgoodsID + "')\"'>" + data + "</a>";
-                 }
-                 },*/
                 {
-                 "targets": [1],
-                 "data": "P_TYPE",
-                 "render": function (data, type, full) {
-                 if (data == 1) {
-                 return "<div>商品</div>";
-                 } else if (data == 2) {
-                 return "<div>赠品</div>";
-                 } else if (data == 3) {
-                 return "<div>包材</div>";
-                 }
-                 }
-                 },
+                    "targets": [0],
+                    "data": "IMAGE",
+                    "render": function (data, type, full) {
+                        return data == null ? "" : "<img width='100px' height='90px'  src='<%=session.getAttribute("productPath")%>" + data + "'/>";
+                    }
+                },
+                {
+                    "targets": [2],
+                    "data": "P_TYPE",
+                    "render": function (data, type, full) {
+                        if (data == 1) {
+                            return "<div>商品</div>";
+                        } else if (data == 2) {
+                            return "<div>赠品</div>";
+                        } else if (data == 3) {
+                            return "<div>包材</div>";
+                        }
+                    }
+                },
+                {
+                    "targets": [4],
+                    "data": "SOURCE_URL",
+                    "render": function (data, type, full) {
+                        return data == null ? "" : "<a target='_blank' href='" + data + "'>" + data + "</a>";
+                    }
+                },
                 {
                     "targets": [10],
                     "data": "OPERA_TIME",
@@ -246,6 +276,15 @@
                         return "<div>" + getMyDate(data) + "</div>"
                     }
                 },
+                {
+                    "targets": [11],
+                    "data": "OPERA_TIME",
+                    "render": function (data, type, full) {
+                        return "<a style='text-decoration:none' title='编辑'  onClick=\"editGoods('" + full.P_SKU + "')\"'>编辑</a>" +
+                                "&nbsp;&nbsp;" +
+                                "<a style='text-decoration:none' title='删除'  onClick=\"delGoods('" + full.P_SKU + "')\"'>删除</a>";
+                    }
+                }
             ],
             "rowCallback": function (row, data, displayIndex) {
                 $(row).attr("class", "text-c");
@@ -269,6 +308,64 @@
             }
         });
         return table;
+    }
+    function delGoods(pSku) {
+        layer.confirm('您确定要删除入库记录吗？', function (i) {
+            $.ajax({
+                type: 'POST',
+                url: '<%=request.getContextPath()%>/stock/delGoods',
+                dataType: 'json',
+                data: {
+                    "pSku": pSku
+                },
+                success: function (data) {
+                    layer.closeAll("loading");
+                    if (data.code == 0) {
+                        layer.msg(data.msg, {icon: 1, time: 2000});
+                        reloadTable()
+                    } else {
+                        layer.msg(data.msg, {icon: 2, time: 2000});
+                    }
+                },
+                error: function (data) {
+                    layer.msg(data.msg, {icon: 2, time: 2000});
+                }
+            });
+        });
+    }
+    function loadUsers(value) {
+        $.ajax({
+            type: 'POST',
+            url: '<%=request.getContextPath()%>/system/selectUsers',
+            dataType: 'json',
+            data: {
+                "companyId": value
+            },
+            success: function (data) {
+                if (data.code == 0) {
+                    var data = data.data;
+                    $("#createUser").empty();
+                    $("#createUser").append($("<option value=''>请选择</option>"));
+                    for (var i = 0; i < data.length; i++) {
+                        $("#createUser").append($('<option value=' + data[i].USER_ID + '>' + data[i].USER_NAME + '</option>'));
+                    }
+                }
+            },
+            error: function (data) {
+                layer.msg(data.msg, {icon: 2, time: 2000});
+            }
+        });
+    }
+    function editGoods(pSku) {
+        var index = layer.open({
+            type: 2,
+            title: "编辑商品",
+            content: "<%=request.getContextPath()%>/assistant/index/stock/goods-add.jsp?pSku=" + pSku,
+            end: function () {
+                location.reload();
+            }
+        });
+        layer.full(index);
     }
 </script>
 </body>

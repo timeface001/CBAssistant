@@ -1,9 +1,7 @@
 package com.crossborder.utils;
 
-import com.crossborder.action.ProductClaimController;
 import com.crossborder.entity.ClaimProduct;
 import com.crossborder.entity.ProductItemVar;
-import com.crossborder.utils.amz.upload.CountryCodeEnum;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.ClassUtils;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -308,7 +306,7 @@ public class GeneralUtils {
         return str.matches("[\\u4e00-\\u9fa5]+");
     }
 
-    public static String translate(String str, String lang, CountryCodeEnum responseLang) {
+    /*public static String translate(String str, String lang, CountryCodeEnum responseLang) {
         if (StringUtils.isBlank(str)) {
             return null;
         }
@@ -330,9 +328,7 @@ public class GeneralUtils {
         } else if (CountryCodeEnum.DE.equal(responseLang.getVal())) {
             return dto.getDe();
         }
-
         return "";
-    }
-
+    }*/
 
 }

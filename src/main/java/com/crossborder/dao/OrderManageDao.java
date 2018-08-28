@@ -21,6 +21,8 @@ public interface OrderManageDao {
 
     public List<Map<String, Object>> selectLocalOrderItem(Map<String, Object> map);
 
+    public List<Map<String, Object>> selectNewLocalOrderItem();
+
     public int updateOrder(Map<String, Object> map);
 
     public int updateOrderItem(Map<String, Object> map);

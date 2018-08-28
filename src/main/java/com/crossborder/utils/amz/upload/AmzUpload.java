@@ -244,7 +244,7 @@ public class AmzUpload {
 
             }
 
-            private void translate(List<ProductItemVar> vars, String key) {
+            /*private void translate(List<ProductItemVar> vars, String key) {
                 if (vars.size() > 1) {
                     CountryCodeEnum cc = CountryCodeEnum.sign(key);
                     for (ProductItemVar var : vars) {
@@ -257,8 +257,7 @@ public class AmzUpload {
                         var.setSizeMap(size);
                     }
                 }
-
-            }
+            }*/
         }).start();
 
     }

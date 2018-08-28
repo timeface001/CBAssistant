@@ -250,4 +250,57 @@
         SELECT * FROM T_MENU_ROLE
         WHERE ROLE_ID = #{id,jdbcType=VARCHAR}
     </select>
+    <insert id="addTranslation" parameterType="java.util.Map">
+        INSERT INTO T_TRANSLATION(
+        ID,
+        ACCOUNT,
+        SECRET_KEY,
+        TYPE,
+        STATE,
+        CREATE_USER,
+        CREATE_TIME
+        )
+        VALUES (
+        seq_translation_id.nextval,
+        #{account,jdbcType=VARCHAR},
+        #{secretKey,jdbcType=VARCHAR},
+        #{type,jdbcType=VARCHAR},
+        #{state,jdbcType=VARCHAR},
+        #{createUser,jdbcType=VARCHAR},
+        CURRENT_DATE
+        )
+    </insert>
+    <select id="selectTranslations" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT t1.*,t2.USER_NAME FROM T_TRANSLATION t1
+        LEFT JOIN T_USER_INFO t2
+        ON t1.CREATE_USER = t2.USER_ID
+        WHERE 1=1
+        <if test="account !=null and account !=''">
+            AND ACCOUNT = #{account,jdbcType=VARCHAR}
+        </if>
+        <if test="id !=null and id !=''">
+            AND ID = #{id,jdbcType=VARCHAR}
+        </if>
+    </select>
+    <delete id="deleteTranslation" parameterType="java.lang.String">
+        DELETE FROM T_TRANSLATION
+        WHERE ID = #{id,jdbcType=VARCHAR}
+    </delete>
+    <update id="updateTranslationState" parameterType="java.util.Map">
+        UPDATE T_TRANSLATION
+        set
+        STATE =  #{state,jdbcType=VARCHAR}
+        WHERE
+        ID = #{id,jdbcType=VARCHAR}
+    </update>
+    <update id="updateTranslation" parameterType="java.util.Map">
+        UPDATE T_TRANSLATION
+        set
+        STATE =  #{state,jdbcType=VARCHAR},
+        ACCOUNT =  #{account,jdbcType=VARCHAR},
+        SECRET_KEY =  #{secretKey,jdbcType=VARCHAR},
+        TYPE =  #{type,jdbcType=VARCHAR}
+        WHERE
+        ID = #{id,jdbcType=VARCHAR}
+    </update>
 </mapper>

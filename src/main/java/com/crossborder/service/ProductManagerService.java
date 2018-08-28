@@ -42,6 +42,8 @@ public class ProductManagerService {
     private AmzUpload amzUpload;
     @Autowired
     private ProductUploadCategoryDao productUploadCategoryDao;
+    @Resource
+    private SystemManageService systemManageService;
 
     private Logger logger = Logger.getLogger(ProductManagerService.class);
 
@@ -113,7 +115,8 @@ public class ProductManagerService {
 
                 //标题翻译
                 String name = GeneralUtils.nullToEmpty(product.get("NAME"));
-                String key = "AIzaSyBIdrp49-kDa9sNjEny2AzqdQ6dOpmHwYE";
+                Map<String, Object> translationMap = systemManageService.selectTranslations(new HashMap<String, Object>()).get(0);
+                String key = translationMap.get("SECRET_KEY").toString();//"AIzaSyAN1tQ7mgCZ7fVPtc6PCKMw69P-TbZv-5w";
                 Translate translate = TranslateOptions.newBuilder().setApiKey(key).build().getService();
                 Translation translation = null;
                 String cn = "";

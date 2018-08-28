@@ -392,15 +392,15 @@ public class CommonController {
 
     @ResponseBody
     @RequestMapping(value = "confirmOrder", produces = "text/plain;charset=UTF-8")
-    public String confirmOrder(String amazonOrderId, String json, String companyId, String salesMan, String salesCompany, String marketplaceId, String merchantId, HttpSession session) {
+    public String confirmOrder(String amazonOrderId, String json, String companyId, String salesMan, String salesCompany, String marketplaceId, String merchantId, String alikeOrderId, HttpSession session) {
         if (companyId.contains("SFC")) {
-            return addSFCOrder(session, json, amazonOrderId, salesMan, salesCompany, companyId, marketplaceId, merchantId);
+            return addSFCOrder(session, json, amazonOrderId, salesMan, salesCompany, companyId, marketplaceId, merchantId, alikeOrderId);
         } else if (companyId.contains("Yun")) {
-            return addYTOrder(session, json, amazonOrderId, salesMan, salesCompany, companyId, marketplaceId, merchantId);
+            return addYTOrder(session, json, amazonOrderId, salesMan, salesCompany, companyId, marketplaceId, merchantId, alikeOrderId);
         } else if (companyId.contains("Equick")) {
-            return addEquickOrder(session, json, amazonOrderId, salesMan, salesCompany, companyId, marketplaceId, merchantId);
+            return addEquickOrder(session, json, amazonOrderId, salesMan, salesCompany, companyId, marketplaceId, merchantId, alikeOrderId);
         } else {
-            return addYTOrder(session, json, amazonOrderId, salesMan, salesCompany, companyId, marketplaceId, merchantId);
+            return addYTOrder(session, json, amazonOrderId, salesMan, salesCompany, companyId, marketplaceId, merchantId, alikeOrderId);
         }
     }
 
@@ -411,7 +411,8 @@ public class CommonController {
                                   String salesCompany,
                                   String companyId,
                                   String marketplaceId,
-                                  String merchantId) {
+                                  String merchantId,
+                                  String alikeOrderId) {
         Map<String, Object> map = new HashMap<>();
         try {
             Map<String, Object> user = (Map<String, Object>) session.getAttribute("user");
@@ -484,7 +485,8 @@ public class CommonController {
                                String salesCompany,
                                String companyId,
                                String marketplaceId,
-                               String merchantId) {
+                               String merchantId,
+                               String alikeOrderId) {
         Map<String, Object> map = new HashMap<>();
         Map<String, Object> user = (Map<String, Object>) session.getAttribute("user");
         try {
@@ -566,7 +568,8 @@ public class CommonController {
                               String salesCompany,
                               String companyId,
                               String marketplaceId,
-                              String merchantId) {
+                              String merchantId,
+                              String alikeOrderId) {
         Map<String, Object> user = (Map<String, Object>) session.getAttribute("user");
         Map<String, Object> map = new HashMap<>();
         JSONObject jsonObject = JSONObject.parseArray(json).getJSONObject(0);
@@ -678,6 +681,18 @@ public class CommonController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void updateAlikeOrder(String alikeOrderId, String intlTrackNum, JSONObject jsonObject, Map<String, Object> user) {
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("amazonOrderId", alikeOrderId);
+        paramMap.put("status", "4");
+        paramMap.put("intlTrackNum", intlTrackNum);
+        paramMap.put("updateTime", simpleDateFormat.format(new Date()));
+        paramMap.put("transportCompany", jsonObject.getString("transportCompany"));
+        orderManageService.updateOrder(paramMap);
+        orderManageService.updateOrderItem(paramMap);
+        insertOperationLog(alikeOrderId, "2", "4", user.get("USER_ID").toString(), "");
     }
 
     private void updateLocalOrderStatus(String amazonOrderId, JSONObject shippingObject,
