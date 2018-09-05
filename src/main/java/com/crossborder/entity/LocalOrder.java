@@ -19,6 +19,7 @@ public class LocalOrder {
     private String marketplaceId;
     private String buyerName;
     private String buyerCounty;
+    private String buyerEmail;
     private String runningTime;
     private String salesMan;
     private String salesCompany;
@@ -245,5 +246,13 @@ public class LocalOrder {
 
     public void setUpdateTime(String updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public String getBuyerEmail() {
+        return buyerEmail;
+    }
+
+    public void setBuyerEmail(String buyerEmail) {
+        this.buyerEmail = buyerEmail;
     }
 }

@@ -171,6 +171,7 @@ public class OrderManageController {
                 localOrder.setNumberOfItemsUnshipped(order.getNumberOfItemsUnshipped());
                 localOrder.setBuyerCounty(order.getShippingAddress().getCountryCode());
                 localOrder.setBuyerName(order.getBuyerName());
+                localOrder.setBuyerEmail(order.getBuyerEmail());
                 if (order.getFulfillmentChannel().equals("MFN")) {
                     localOrder.setFulfillmentChannel("FBM");
                 } else {
@@ -764,9 +765,11 @@ public class OrderManageController {
     public String cloneOrder(String amazonOrderId) {
         Map<String, Object> map = new HashMap<>();
         try {
-            orderManageService.cloneOrder(amazonOrderId);
-            orderManageService.cloneOrderItem(amazonOrderId);
-            orderManageService.cloneAddress(amazonOrderId);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+            String date = sdf.format(new Date());
+            orderManageService.cloneOrder(amazonOrderId, date);
+            orderManageService.cloneOrderItem(amazonOrderId, date);
+            orderManageService.cloneAddress(amazonOrderId, date);
             map.put("code", "0");
             map.put("msg", "克隆成功");
         } catch (Exception e) {

@@ -90,15 +90,15 @@ public class OrderManageService {
         return orderManageDao.updateOrderItemCommission(map);
     }
 
-    public int cloneOrder(String amazonOrderId) {
-        return orderManageDao.cloneOrder(amazonOrderId);
+    public int cloneOrder(String amazonOrderId,String date) {
+        return orderManageDao.cloneOrder(amazonOrderId,date);
     }
 
-    public int cloneOrderItem(String amazonOrderId) {
-        return orderManageDao.cloneOrderItem(amazonOrderId);
+    public int cloneOrderItem(String amazonOrderId,String date) {
+        return orderManageDao.cloneOrderItem(amazonOrderId,date);
     }
 
-    public int cloneAddress(String amazonOrderId) {
-        return orderManageDao.cloneAddress(amazonOrderId);
+    public int cloneAddress(String amazonOrderId,String date) {
+        return orderManageDao.cloneAddress(amazonOrderId,date);
     }
 }

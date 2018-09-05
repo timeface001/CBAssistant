@@ -8,7 +8,8 @@
             WHEN matched THEN
             UPDATE set t1.ORDERSTATUS = #{orderStatus,jdbcType=VARCHAR},
             t1.LASTUPDATEDATE = #{lastUpdateDate,jdbcType=VARCHAR},
-            t1.COMMISSION = #{commission,jdbcType=DOUBLE}
+            t1.COMMISSION = #{commission,jdbcType=DOUBLE},
+            t1.BUYEREMAIL = #{buyerEmail,jdbcType=VARCHAR}
             WHEN not matched THEN
             INSERT
             (ID,
@@ -36,7 +37,8 @@
             LOCALSTATUS,
             SHIPPINGPRICE,
             COMMISSION,
-            UPDATE_TIME)
+            UPDATE_TIME,
+            BUYEREMAIL)
             VALUES
             (seq_order_id.nextval,
             #{amazonOrderId,jdbcType=VARCHAR},
@@ -63,7 +65,8 @@
             #{localStatus,jdbcType=VARCHAR},
             #{shippingPrice,jdbcType=DOUBLE},
             #{commission,jdbcType=DOUBLE},
-            #{updateTime,jdbcType=VARCHAR})
+            #{updateTime,jdbcType=VARCHAR},
+            #{buyerEmail,jdbcType=VARCHAR})
         </insert>
     <!--<insert id="insertOrders" parameterType="java.util.List">
         MERGE INTO T_ORDER t1
@@ -160,10 +163,11 @@
                 LOCALSTATUS,
                 SHIPPINGPRICE,
                 COMMISSION,
-                UPDATE_TIME)
+                UPDATE_TIME,
+                BUYEREMAIL)
         SELECT
         seq_order_id.nextval,
-        t1.AMAZONORDERID || '-clone',
+        t1.AMAZONORDERID || '-clone-' || #{date,jdbcType=VARCHAR},
         t1.SELLERORDERID,
         t1.ORDERSTATUS,
         t1.PURCHASEDATE,
@@ -187,7 +191,8 @@
         '1',
         0,
         0,
-        to_char(CURRENT_DATE ,'yyyy-MM-dd hh24:mi:ss')
+        to_char(CURRENT_DATE ,'yyyy-MM-dd hh24:mi:ss'),
+        t1.BUYEREMAIL
         FROM T_ORDER t1
         WHERE t1.AMAZONORDERID = #{amazonOrderId,jdbcType=VARCHAR}
     </insert>
@@ -346,10 +351,10 @@
         COMMISSION,
         COMMISSIONRMB)
         SELECT
-        t1.AMAZONORDERID || '-clone',
+        t1.AMAZONORDERID || '-clone-' || #{date,jdbcType=VARCHAR},
         0,
         t1.SELLERSKU,
-        t1.ORDERITEMID || '-clone',
+        t1.ORDERITEMID || '-clone-' || #{date,jdbcType=VARCHAR},
         t1.TITLE,
         '1',
         t1.ASIN,
@@ -462,7 +467,7 @@
         ADDRESSLINE3,
         CREATE_USER)
         SELECT
-        t1.AMAZONORDERID || '-clone',
+        t1.AMAZONORDERID || '-clone-' || #{date,jdbcType=VARCHAR},
         t1.USERNAME,
         t1.COMPANY,
         t1.PHONE,
@@ -555,7 +560,7 @@
             AND t1.BUYERCOUNTRY = #{buyerCounty,jdbcType=VARCHAR}
         </if>
         <if test="intlTrackNum !=null and intlTrackNum !=''">
-            AND t1.INTLTRACKNUM = #{intlTrackNum,jdbcType=VARCHAR}
+            AND t1.INTLTRACKNUM '%${intlTrackNum}%'
         </if>
         <if test="transportCompany !=null and transportCompany !=''">
             AND t1.TRANSPORTCOMPANY = #{transportCompany,jdbcType=VARCHAR}
@@ -592,7 +597,7 @@
             </choose>
         </if>
         <if test="sku !=null and sku != ''">
-            AND t2.SKU LIKE '%${sku}%'
+            AND t2.SKU LIKE '%'||#{sku}||'%'
         </if>
         <if test="trackNum !=null and trackNum != ''">
             AND t2.TRACKNUM LIKE '%${trackNum}%'
@@ -753,7 +758,7 @@
         on t2.amazonorderid = t1.amazonorderid
         WHERE 1=1
         <if test="amazonOrderId !=null and amazonOrderId !=''">
-            AND t1.AMAZONORDERID = #{amazonOrderId,jdbcType=VARCHAR}
+            AND t1.AMAZONORDERID LIKE '%${amazonOrderId}%'
         </if>
         <if test="salesMan !=null and salesMan !=''">
             AND t1.SALESMAN = #{salesMan,jdbcType=VARCHAR}
@@ -768,7 +773,7 @@
             AND t1.BUYERCOUNTRY = #{buyerCounty,jdbcType=VARCHAR}
         </if>
         <if test="intlTrackNum !=null and intlTrackNum !=''">
-            AND t1.INTLTRACKNUM = #{intlTrackNum,jdbcType=VARCHAR}
+            AND t1.INTLTRACKNUM LIKE '%${intlTrackNum}%'
         </if>
         <if test="transportCompany !=null and transportCompany !=''">
             AND t1.TRANSPORTCOMPANY = #{transportCompany,jdbcType=VARCHAR}
@@ -805,7 +810,7 @@
             </choose>
         </if>
         <if test="sku !=null and sku != ''">
-            AND t2.SKU LIKE '%${sku}%'
+            AND t2.SKU LIKE '%'||#{sku}||'%'
         </if>
         <if test="trackNum !=null and trackNum != ''">
             AND t2.TRACKNUM LIKE '%${trackNum}%'

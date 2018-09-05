@@ -3,6 +3,7 @@ package com.crossborder.dao;
 import com.crossborder.entity.AddressInfo;
 import com.crossborder.entity.LocalOrder;
 import com.crossborder.entity.LocalOrderItem;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -45,11 +46,11 @@ public interface OrderManageDao {
 
     public int updateOrderItemCommission(Map<String, Object> map);
 
-    public int cloneOrder(String amazonOrderId);
+    public int cloneOrder(@Param("amazonOrderId")String amazonOrderId, @Param("date")String date);
 
-    public int cloneOrderItem(String amazonOrderId);
+    public int cloneOrderItem(@Param("amazonOrderId")String amazonOrderId, @Param("date")String date);
 
-    public int cloneAddress(String amazonOrderId);
+    public int cloneAddress(@Param("amazonOrderId")String amazonOrderId, @Param("date")String date);
 
     public int delOrderItem(String amazonOrderId);
 
