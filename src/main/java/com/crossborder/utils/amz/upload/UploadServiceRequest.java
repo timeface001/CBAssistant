@@ -62,14 +62,10 @@ public class UploadServiceRequest {
                 mid.setMarketIds(new HashSet<String>(Arrays.asList(marketId)));
                 languageList.put(language, new SplitRequest(new ArrayList<ProductAmzUpload>(Arrays.asList(product)), mid));
             }
-
             products.add(product);
-
             return true;
         }
-
         return false;
-
     }
 
     private boolean isCanAddProduct(ProductAmzUpload product) {
@@ -94,6 +90,7 @@ public class UploadServiceRequest {
         String merchantId = shop.get("MERCHANT_ID").toString();
         String language = shop.get("LANGUAGE").toString();
         String rate = (shop.get("EXRATE").toString());
+        String authToken = shop.get("MWSAUTHTOKEN").toString();
 
 
         result.setAccessKey(accessKeyId);
@@ -102,7 +99,7 @@ public class UploadServiceRequest {
         result.setMerchantId(merchantId);
         result.setLanguage(language);
         result.setExrate(new BigDecimal(rate));
-
+        result.setAuthToken(authToken);
         return result;
 
     }
@@ -176,6 +173,7 @@ public class UploadServiceRequest {
         private String accessKey;
         private String secretKey;
         private String merchantId;
+        private String authToken;
         private String countryCode;
         private String shopId;
         private String serviceUrl;
@@ -273,7 +271,13 @@ public class UploadServiceRequest {
             this.exrate = exrate;
         }
 
+        public String getAuthToken() {
+            return authToken;
+        }
 
+        public void setAuthToken(String authToken) {
+            this.authToken = authToken;
+        }
     }
 
     public class SplitRequest {

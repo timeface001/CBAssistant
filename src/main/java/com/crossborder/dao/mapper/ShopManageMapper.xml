@@ -12,7 +12,8 @@
         CREATE_USER,
         SHOP_STATE,
         COUNTRY_CODE,
-        EMAIL
+        EMAIL,
+        MWSAUTHTOKEN
         )
         VALUES (
           seq_shop_id.nextval,
@@ -24,7 +25,8 @@
         #{createUser,jdbcType=VARCHAR},
         #{state,jdbcType=VARCHAR},
         #{countryCode,jdbcType=VARCHAR},
-        #{email,jdbcType=VARCHAR}
+        #{email,jdbcType=VARCHAR},
+        #{authToken,jdbcType=VARCHAR}
         )
     </insert>
     <select id="selectShops" parameterType="java.util.Map" resultType="java.util.Map">
@@ -108,7 +110,7 @@
         AND t2.marketplaceid = #{marketplaceId,jdbcType=VARCHAR}
     </select>
     <select id="getMerchantId" parameterType="java.util.Map" resultType="java.util.Map">
-        SELECT DISTINCT t1.merchant_id,t1.accesskey_id,t1.secret_key,t2.ENDPOINT FROM T_SHOP t1
+        SELECT DISTINCT t1.merchant_id,t1.accesskey_id,t1.secret_key,t1.MWSAUTHTOKEN,t2.ENDPOINT FROM T_SHOP t1
         LEFT JOIN T_COUNTRY t2
         ON t2.id = t1.country_code
         WHERE t1.create_user = #{createUser,jdbcType=VARCHAR}
@@ -125,5 +127,9 @@
         SELECT exrate from T_COUNTRY
         WHERE currencycode = #{currencyCode,jdbcType=VARCHAR}
         AND rownum = 1
+    </select>
+    <select id="getDevelopInfo" parameterType="java.lang.String" resultType="java.util.Map">
+        SELECT * FROM T_SECRET
+        WHERE country_type = (SELECT country_type FROM T_COUNTRY WHERE id = #{countryCode,jdbcType=VARCHAR})
     </select>
 </mapper>

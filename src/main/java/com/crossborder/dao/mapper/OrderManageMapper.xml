@@ -186,7 +186,7 @@
         t1.SALESSOURCE,
         t1.BUYERCOUNTRY,
         t1.TRANSPORTCOMPANY,
-        t1.INTLTRACKNUM,
+        '',
         t1.CURRENCYCODE,
         '1',
         0,
@@ -483,24 +483,39 @@
         WHERE t1.AMAZONORDERID = #{amazonOrderId,jdbcType=VARCHAR}
     </insert>
     <select id="selectAddress" parameterType="java.lang.String" resultType="java.util.Map">
-        SELECT * FROM T_ADDRESS
-        WHERE AMAZONORDERID = #{amazonOrderId,jdbcType=VARCHAR}
+        SELECT t1.* FROM T_ADDRESS t1
+        <if test="amazonOrderId != null and amazonOrderId != ''">
+            <choose>
+                <when test="amazonOrderId.indexOf('merged') != -1">
+                    WHERE t1.AMAZONORDERID IN (SELECT AMAZONORDERID FROM T_ORDER WHERE MERGEDID =
+                    #{amazonOrderId,jdbcType=VARCHAR})
+                </when>
+                <otherwise>
+                    WHERE t1.AMAZONORDERID = #{amazonOrderId,jdbcType=VARCHAR}
+                </otherwise>
+            </choose>
+        </if>
     </select>
     <select id="selectLocalOrder" resultType="java.util.Map" parameterType="java.util.Map">
-        select t1.id,
+        SELECT * FROM (select t1.id,
         t1.amazonorderid,
+        t1.MERGEDID,
         t1.salesman,
         t1.salescompany,
+        t1.salessource,
         t1.buyercountry,
+        t1.buyeremail,
         t1.marketplaceId,
         t6.user_name,
         t5.shop_name,
         t5.merchant_id,
+        t5.create_user,
         t1.runningtime,
         t1.intltracknum,
         t1.purchaseDate,
         t1.FULFILLMENTCHANNEL,
-        t7.name transportCompany,
+        t7.name transportCompanyName,
+        t1.transportCompany,
         t1.shippingPrice,
         t1.localstatus,
         t1.remark,
@@ -511,6 +526,7 @@
         t1.paymentmethod,
         t2.sku,
         t2.asin,
+        t2.tracknum,
         trunc(sum(t2.itempricermb + t2.shippingPricermb + t2.giftWrapPricermb + t2.commissionRMB),2) itemprice,
         trunc(sum(t2.cost),2) cost,
         trunc(sum(t2.refundment),2) refundment,
@@ -542,80 +558,25 @@
         on t6.user_id= t1.salesman
         left join t_transport_company t7
         on t7.id = t1.transportcompany
-        WHERE 1=1
-        <if test="amazonOrderId !=null and amazonOrderId !=''">
-            AND t1.AMAZONORDERID LIKE '%${amazonOrderId}%'
-        </if>
-        <if test="salesMan !=null and salesMan !=''">
-            AND t1.SALESMAN = #{salesMan,jdbcType=VARCHAR}
-            AND t5.CREATE_USER = #{salesMan,jdbcType=VARCHAR}
-        </if>
-        <if test="salesCompany !=null and salesCompany !=''">
-            AND t1.SALESCOMPANY = #{salesCompany,jdbcType=VARCHAR}
-        </if>
-        <if test="salesSource !=null and salesSource !=''">
-            AND t1.SALESSOURCE = #{salesSource,jdbcType=VARCHAR}
-        </if>
-        <if test="buyerCounty !=null and buyerCounty !=''">
-            AND t1.BUYERCOUNTRY = #{buyerCounty,jdbcType=VARCHAR}
-        </if>
-        <if test="intlTrackNum !=null and intlTrackNum !=''">
-            AND t1.INTLTRACKNUM '%${intlTrackNum}%'
-        </if>
-        <if test="transportCompany !=null and transportCompany !=''">
-            AND t1.TRANSPORTCOMPANY = #{transportCompany,jdbcType=VARCHAR}
-        </if>
-        <if test="localStatus != null and localStatus != ''">
-            <choose>
-                <when test='localStatus == "10"'>
-                    AND t1.FULFILLMENTCHANNEL = 'FBA'
-                </when>
-                <otherwise>
-                    AND t1.LOCALSTATUS = #{localStatus,jdbcType=VARCHAR}
-                    AND t1.FULFILLMENTCHANNEL != 'FBA'
-                </otherwise>
-            </choose>
-        </if>
-        <if test="logmin != null and logmin != ''">
-            <choose>
-                <when test='localStatus != null and localStatus != "" and localStatus == "4"'>
-                    AND t1.UPDATE_TIME <![CDATA[>=]]> #{logmin,jdbcType=VARCHAR}
-                </when>
-                <otherwise>
-                    AND t1.PURCHASEDATE <![CDATA[>=]]> #{logmin,jdbcType=VARCHAR}
-                </otherwise>
-            </choose>
-        </if>
-        <if test="logmax != null and logmax != ''">
-            <choose>
-                <when test='localStatus != null and localStatus != "" and localStatus == "4"'>
-                    AND t1.UPDATE_TIME  <![CDATA[<=]]> #{logmax,jdbcType=VARCHAR}
-                </when>
-                <otherwise>
-                    AND t1.PURCHASEDATE  <![CDATA[<=]]> #{logmax,jdbcType=VARCHAR}
-                </otherwise>
-            </choose>
-        </if>
-        <if test="sku !=null and sku != ''">
-            AND t2.SKU LIKE '%'||#{sku}||'%'
-        </if>
-        <if test="trackNum !=null and trackNum != ''">
-            AND t2.TRACKNUM LIKE '%${trackNum}%'
-        </if>
         group by t1.id,
         t1.amazonorderid,
+        t1.MERGEDID,
         t1.salesman,
         t1.salescompany,
+        t1.salessource,
         t1.buyercountry,
+        t1.buyeremail,
         t1.marketplaceId,
         t6.user_name,
         t5.shop_name,
         t5.merchant_id,
+        t5.create_user,
         t1.runningtime,
         t1.intltracknum,
         t1.purchaseDate,
         t1.FULFILLMENTCHANNEL,
         t7.name,
+        t1.transportCompany,
         t1.shippingPrice,
         t1.localstatus,
         t1.remark,
@@ -626,13 +587,88 @@
         t4.company_name,
         t1.paymentmethod,
         t2.sku,
-        t2.asin
+        t2.asin,
+        t2.tracknum) p
+        WHERE 1=1
+        <if test="amazonOrderId !=null and amazonOrderId !=''">
+            <choose>
+                <when test="amazonOrderId.indexOf('merged') != -1">
+                    AND p.MERGEDID = #{amazonOrderId,jdbcType=VARCHAR}
+                </when>
+                <otherwise>
+                    AND p.AMAZONORDERID LIKE '%${amazonOrderId}%'
+                </otherwise>
+            </choose>
+        </if>
+        <if test="salesMan !=null and salesMan !=''">
+            AND p.SALESMAN = #{salesMan,jdbcType=VARCHAR}
+            AND p.CREATE_USER = #{salesMan,jdbcType=VARCHAR}
+        </if>
+        <if test="salesCompany !=null and salesCompany !=''">
+            AND p.SALESCOMPANY = #{salesCompany,jdbcType=VARCHAR}
+        </if>
+        <if test="salesSource !=null and salesSource !=''">
+            AND p.SALESSOURCE = #{salesSource,jdbcType=VARCHAR}
+        </if>
+        <if test="buyerCounty !=null and buyerCounty !=''">
+            AND p.BUYERCOUNTRY = #{buyerCounty,jdbcType=VARCHAR}
+        </if>
+        <if test="intlTrackNum !=null and intlTrackNum !=''">
+            AND p.INTLTRACKNUM LIKE '%${intlTrackNum}%'
+        </if>
+        <if test="transportCompany !=null and transportCompany !=''">
+            AND p.TRANSPORTCOMPANY = #{transportCompany,jdbcType=VARCHAR}
+        </if>
+        <if test="localStatus != null and localStatus != ''">
+            <choose>
+                <when test='localStatus == "10"'>
+                    AND p.FULFILLMENTCHANNEL = 'FBA'
+                </when>
+                <when test='localStatus == "2"'>
+                    AND (p.LOCALSTATUS = '2' OR p.LOCALSTATUS = '11')
+                    AND p.FULFILLMENTCHANNEL != 'FBA'
+                </when>
+                <otherwise>
+                    AND p.LOCALSTATUS = #{localStatus,jdbcType=VARCHAR}
+                    AND p.FULFILLMENTCHANNEL != 'FBA'
+                </otherwise>
+            </choose>
+        </if>
+        <if test="logmin != null and logmin != ''">
+            <choose>
+                <when test='localStatus != null and localStatus != "" and localStatus == "4"'>
+                    AND p.UPDATE_TIME <![CDATA[>=]]> #{logmin,jdbcType=VARCHAR}
+                </when>
+                <otherwise>
+                    AND p.PURCHASEDATE <![CDATA[>=]]> #{logmin,jdbcType=VARCHAR}
+                </otherwise>
+            </choose>
+        </if>
+        <if test="logmax != null and logmax != ''">
+            <choose>
+                <when test='localStatus != null and localStatus != "" and localStatus == "4"'>
+                    AND p.UPDATE_TIME  <![CDATA[<=]]> #{logmax,jdbcType=VARCHAR}
+                </when>
+                <otherwise>
+                    AND p.PURCHASEDATE  <![CDATA[<=]]> #{logmax,jdbcType=VARCHAR}
+                </otherwise>
+            </choose>
+        </if>
+        <if test="sku !=null and sku != ''">
+            AND p.SKU LIKE '%'||#{sku}||'%'
+        </if>
+        <if test="trackNum !=null and trackNum != ''">
+            AND p.TRACKNUM LIKE '%${trackNum}%'
+        </if>
         <choose>
             <when test='localStatus != null and localStatus != "" and localStatus == "4"'>
-                ORDER BY t1.UPDATE_TIME DESC
+                ORDER BY p.UPDATE_TIME DESC
+            </when>
+            <when test='localStatus != null and localStatus != "" and localStatus == "2"'>
+                ORDER BY p.LOCALSTATUS,p.PURCHASEDATE DESC
             </when>
             <otherwise>
-                ORDER BY t1.PURCHASEDATE DESC
+                ORDER BY p.PURCHASEDATE DESC
             </otherwise>
         </choose>
     </select>
@@ -641,7 +677,15 @@
         t1.CURRENCYCODE || ')' ITEMPRICESUM from T_ORDER_ITEM t1
         WHERE 1=1
         <if test="amazonOrderId !=null and amazonOrderId != ''">
-            AND t1.AMAZONORDERID = #{amazonOrderId,jdbcType=VARCHAR}
+            <choose>
+                <when test="amazonOrderId.indexOf('merged') != -1">
+                    AND t1.AMAZONORDERID IN (SELECT AMAZONORDERID FROM T_ORDER WHERE MERGEDID =
+                    #{amazonOrderId,jdbcType=VARCHAR})
+                </when>
+                <otherwise>
+                    AND t1.AMAZONORDERID = #{amazonOrderId,jdbcType=VARCHAR}
+                </otherwise>
+            </choose>
         </if>
         <if test="orderItemId !=null and orderItemId != ''">
             AND t1.ORDERITEMID = #{orderItemId,jdbcType=VARCHAR}
@@ -756,6 +800,12 @@
         from t_order_item
         group by amazonorderid) t2
         on t2.amazonorderid = t1.amazonorderid
+        <if test="sku !=null and sku != ''">
+            AND t2.SKU LIKE '%'||#{sku}||'%'
+        </if>
+        <if test="trackNum !=null and trackNum != ''">
+            AND t2.TRACKNUM LIKE '%${trackNum}%'
+        </if>
         WHERE 1=1
         <if test="amazonOrderId !=null and amazonOrderId !=''">
             AND t1.AMAZONORDERID LIKE '%${amazonOrderId}%'
@@ -780,8 +830,12 @@
         </if>
         <if test="localStatus !=null and localStatus !=''">
             <choose>
-                <when test="localStatus == '10'">
+                <when test='localStatus == "10"'>
                     AND t1.FULFILLMENTCHANNEL = 'FBA'
+                </when>
+                <when test='localStatus == "2"'>
+                    AND (t1.LOCALSTATUS = '2' OR t1.LOCALSTATUS = '11')
+                    AND t1.FULFILLMENTCHANNEL != 'FBA'
                 </when>
                 <otherwise>
                     AND t1.LOCALSTATUS = #{localStatus,jdbcType=VARCHAR}
@@ -789,7 +843,7 @@
                 </otherwise>
             </choose>
         </if>
-        <if test="logmin !=null and logmin != ''">
+        <if test="logmin != null and logmin != ''">
             <choose>
                 <when test='localStatus != null and localStatus != "" and localStatus == "4"'>
                     AND t1.UPDATE_TIME <![CDATA[>=]]> #{logmin,jdbcType=VARCHAR}
@@ -809,12 +863,6 @@
                 </otherwise>
             </choose>
         </if>
-        <if test="sku !=null and sku != ''">
-            AND t2.SKU LIKE '%'||#{sku}||'%'
-        </if>
-        <if test="trackNum !=null and trackNum != ''">
-            AND t2.TRACKNUM LIKE '%${trackNum}%'
-        </if>
     </select>
     <delete id="delOrder" parameterType="java.lang.String">
         DELETE FROM T_ORDER
@@ -828,4 +876,79 @@
         DELETE FROM T_ADDRESS
         WHERE AMAZONORDERID = #{amazonOrderId,jdbcType=VARCHAR}
     </delete>
+    <select id="selectLocalMergeOrder" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT t1.id,
+        t1.amazonorderid,
+        t2.smallimage,
+        t1.buyeremail,
+        t5.addressline1,
+        t5.addressline2,
+        t5.addressline3,
+        t2.sku,
+        t1.salesman,
+        t1.salescompany,
+        t1.buyercountry,
+        t1.mergedid,
+        t3.name countryName,
+        t1.localstatus,
+        t4.company_name,
+        t1.purchaseDate,
+        t1.FULFILLMENTCHANNEL,
+        t6.shop_name,
+        t7.user_name
+        from T_ORDER t1
+        left join
+        (select amazonorderid,
+        wm_concat(smallimage) smallimage,
+        wm_concat(sellersku) sku
+        from t_order_item
+        group by amazonorderid) t2
+        on t2.amazonorderid = t1.amazonorderid
+        left join t_country t3
+        on t3.id = t1.buyercountry
+        left join t_user_company t4
+        on t4.company_id = t1.salescompany
+        LEFT JOIN t_address t5
+        on t5.amazonorderid = t1.amazonorderid
+        left join (select distinct merchant_id,shop_name,create_user from t_shop) t6
+        on t6.merchant_id = t1.salessource
+        left join t_user_info t7
+        on t7.user_id= t1.salesman
+        WHERE  t1.buyeremail in
+        (select buyeremail from t_order where localstatus = '1' or localstatus = '2'  group by buyeremail having count (buyeremail) > 2)
+        ORDER BY t1.buyeremail, t5.addressline1, t5.addressline2,t5.addressline3
+    </select>
+    <insert id="insertMergedOrder" parameterType="java.util.Map">
+        INSERT INTO T_MERGED_ORDER
+        (ID,
+        MERGEDID,
+        CREATE_TIME,
+        CREATE_USER)
+        VALUES (seq_merged_id.nextval,
+        #{mergedId,jdbcType=VARCHAR},
+        CURRENT_DATE ,
+        #{createUser,jdbcType=VARCHAR}
+        )
+    </insert>
+    <update id="updateOrderMergeId" parameterType="java.util.Map">
+        UPDATE T_ORDER
+        SET MERGEDID = #{mergedId,jdbcType=VARCHAR}
+        WHERE ID = #{id,jdbcType=VARCHAR}
+    </update>
+    <select id="selectMergedOrder" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT t1.*,t2.buyeremail,t3.user_name FROM T_MERGED_ORDER t1
+        LEFT JOIN (SELECT DISTINCT buyeremail,mergedid FROM T_ORDER) t2
+        ON t2.mergedid = t1.mergedid
+        LEFT JOIN t_user_info t3
+        on t3.user_id= t1.create_user
+    </select>
+    <select id="selectAmazonOrderId" parameterType="java.lang.String" resultType="java.util.Map">
+        SELECT wm_concat(amazonorderid) amazonorderid from t_order
+        WHERE mergedid = #{mergedId,jdbcType=VARCHAR}
+    </select>
+    <select id="selectSmallImage" parameterType="java.lang.String" resultType="java.util.Map">
+        SELECT wm_concat(smallimage) smallimage from t_order_item
+        where amazonorderid in (SELECT amazonorderid from t_order
+        WHERE mergedid = #{mergedId,jdbcType=VARCHAR})
+    </select>
 </mapper>

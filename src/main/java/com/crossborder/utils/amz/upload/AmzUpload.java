@@ -284,7 +284,6 @@ public class AmzUpload {
             request.setFeedContent(fis);
             request.setContentMD5(MD5.computeContentMD5HeaderValue(fis));
             request.setMarketplaceIdList(new IdList(new ArrayList<String>(marketIds)));
-
         } catch (Exception e) {
             e.printStackTrace();
         }

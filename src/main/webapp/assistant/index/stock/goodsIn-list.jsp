@@ -70,6 +70,7 @@
                 <input type="text" onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'logmin\')}',maxDate:'%y-%M-%d' })"
                        name="logmax" class="input-text Wdate" id="logmax" readonly>
             </div>
+            <input id="roleId" type="hidden" value="${sessionScope.user.ROLE_ID}">
         </div>
         <div class="text-c cl row">
             <button id="search" class="btn btn-success" type="button"><i class="Hui-iconfont">&#xe665;</i> 搜索
@@ -117,6 +118,7 @@
 <script type="text/javascript" src="<%=request.getContextPath()%>/assistant/lib/laypage/1.2/laypage.js"></script>
 <script type="text/javascript">
     var goodsInTable = null;
+    var roleId = $("#roleId").val();
     $(function () {
         initSelect();
         var sd = new Date();
@@ -233,11 +235,17 @@
                     "data": "P_STATE",
                     "render": function (data, type, full) {
                         if (data == 1) {
-                            return "<a style='text-decoration:none' title='签收'  onClick=\"auditGoodsIn('" + full.ID + "','" + full.P_SKU + "','" + full.P_IN_NUM + "','" + full.TOTAL_PRICE + "')\"'>签收</a>" +
-                                    "&nbsp;&nbsp;" +
-                                    "<a style='text-decoration:none' title='修改'  onClick=\"updateGoodsIn('" + full.ID + "')\"'>修改</a>" +
-                                    "&nbsp;&nbsp;" +
-                                    "<a style='text-decoration:none' title='删除'  onClick=\"delGoodsIn('" + full.ID + "')\"'>删除</a>";
+                            if (roleId == 400) {
+                                return "<a style='text-decoration:none' title='签收'  onClick=\"auditGoodsIn('" + full.ID + "','" + full.P_SKU + "','" + full.P_IN_NUM + "','" + full.TOTAL_PRICE + "')\"'>签收</a>" +
+                                        "&nbsp;&nbsp;" +
+                                        "<a style='text-decoration:none' title='修改'  onClick=\"updateGoodsIn('" + full.ID + "')\"'>修改</a>" +
+                                        "&nbsp;&nbsp;" +
+                                        "<a style='text-decoration:none' title='删除'  onClick=\"delGoodsIn('" + full.ID + "')\"'>删除</a>";
+                            } else {
+                                return "<a style='text-decoration:none' title='修改'  onClick=\"updateGoodsIn('" + full.ID + "')\"'>修改</a>" +
+                                        "&nbsp;&nbsp;" +
+                                        "<a style='text-decoration:none' title='删除'  onClick=\"delGoodsIn('" + full.ID + "')\"'>删除</a>";
+                            }
                         } else {
                             return "";
                         }

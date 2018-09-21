@@ -36,10 +36,10 @@
         ORDER BY MENU_ORDER
     </select>
     <select id="selectCountryByCode" parameterType="java.lang.String" resultType="java.util.Map">
-        SELECT t1.* FROM T_COUNTRY t1
-        LEFT JOIN T_COUNTRY t2
+        SELECT t1.*,t2.AWSACCESSKEYID,t2.SECRETKEY FROM T_COUNTRY t1
+        LEFT JOIN T_SECRET t2
         ON t2.COUNTRY_TYPE = t1.COUNTRY_TYPE
-        WHERE t2.ID = #{id,jdbcType=VARCHAR}
+        WHERE t1.COUNTRY_TYPE = (SELECT country_type FROM T_COUNTRY WHERE id = #{id,jdbcType=VARCHAR})
     </select>
     <select id="getSql" parameterType="java.lang.String" resultType="java.util.Map">
         SELECT * FROM T_COMMON_SQL

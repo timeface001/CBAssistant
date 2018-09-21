@@ -1,4 +1,4 @@
-﻿<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page isELIgnored="false" %>
 <!DOCTYPE HTML>
@@ -28,12 +28,12 @@
             src="<%=request.getContextPath()%>/assistant/lib/DD_belatedPNG_0.0.8a-min.js"></script>
     <script>DD_belatedPNG.fix('*');</script>
     <![endif]-->
-    <title>订单列表</title>
+    <title>已合并</title>
 </head>
 <body>
 <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 订单管理 <span
-        class="c-gray en">&gt;</span> 订单列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px"
-                                              href="javascript:location.replace(location.href);" title="刷新"><i
+        class="c-gray en">&gt;</span> 已合并 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px"
+                                             href="javascript:location.replace(location.href);" title="刷新"><i
         class="Hui-iconfont">&#xe68f;</i></a></nav>
 <div class="page-container">
     <form id="orderForm" class="form form-horizontal">
@@ -105,103 +105,31 @@
                 <input type="text" name="intlTrackNum" placeholder=" " class="input-text"
                        onkeyup="this.value=this.value.replace(/(^\s+)|(\s+$)/g,'')">
             </div>
+            <label class="form-label col-xs-2 col-sm-2"></label>
+            <div class="formControls col-xs-2 col-sm-2">
+                <button id="search" class="btn btn-success" type="button"><i class="Hui-iconfont">&#xe665;</i> 搜订单
+                </button>
+            </div>
         </div>
         <input id="localStatus" type="hidden" name="localStatus" value="1">
         <input id="roleId" type="hidden" value="${sessionScope.user.ROLE_ID}">
         <input id="userId" type="hidden" value="${sessionScope.user.USER_ID}">
         <input id="companyId" type="hidden" value="${sessionScope.user.USER_COMPANY}">
-        <div class="text-c cl row">
-            <button id="search" class="btn btn-success" type="button"><i class="Hui-iconfont">&#xe665;</i> 搜订单
-            </button>
-            <button id="downloadOrder" class="btn btn-success" type="button"><i
-                    class="Hui-iconfont">
-                &#xe665;</i> 下载订单
-            </button>
-        </div>
     </form>
     <div class="mt-20">
-        <div id="btn-div" class="row text-c">
-            <c:choose>
-                <c:when test="${sessionScope.user.ROLE_ID eq '400'}">
-                    <a href="javascript:;" onclick="reloadTable(1)" class="btn btn-success radius">备货</a>
-                    <a href="javascript:;" onclick="reloadTable(3)" class="btn btn-default radius">发货</a>
-                </c:when>
-                <c:otherwise>
-                    <a href="javascript:;" onclick="reloadTable(0)" class="btn btn-success radius">新单</a>
-                    <a href="javascript:;" onclick="reloadTable(1)" class="btn btn-default radius">备货</a>
-                    <a href="javascript:;" onclick="reloadTable(2)" class="btn btn-default radius">缺货</a>
-                    <a href="javascript:;" onclick="reloadTable(3)" class="btn btn-default radius">发货</a>
-                    <a href="javascript:;" onclick="reloadTable(4)" class="btn btn-default radius">问题</a>
-                    <a href="javascript:;" onclick="reloadTable(5)" class="btn btn-default radius">退款</a>
-                    <a href="javascript:;" onclick="reloadTable(6)" class="btn btn-default radius">妥投</a>
-                    <a href="javascript:;" onclick="reloadTable(7)" class="btn btn-default radius">代发</a>
-                    <a href="javascript:;" onclick="reloadTable(8)" class="btn btn-default radius">全部</a>
-                    <a href="javascript:;" onclick="reloadTable(9)" class="btn btn-default radius">FBA</a>
-                    <a href="javascript:;" onclick="reloadTable(11)" class="btn btn-default radius">拦截</a>
-                </c:otherwise>
-            </c:choose>
-        </div>
-        <div class="panel panel-success mt-10">
-            <div class="panel-body row cl">
-                <div class="formControls col-xs-2 col-sm-2">
-                    <label class="form-label f-l">销售额：</label>
-                    <label class="form-label f-l" id="total">0.00</label>
-                </div>
-                <div class="formControls col-xs-2 col-sm-2">
-                    <label class="form-label f-l">成本：</label>
-                    <label class="form-label f-l" id="cost">0.00</label>
-                </div>
-                <div class="formControls col-xs-2 col-sm-2">
-                    <label class="form-label f-l">运费：</label>
-                    <label class="form-label f-l" id="shippingPrice">0.00</label>
-                </div>
-                <div class="formControls col-xs-2 col-sm-2">
-                    <label class="form-label f-l">退款：</label>
-                    <label class="form-label f-l" id="refund">0.00</label>
-                </div>
-                <div class="formControls col-xs-2 col-sm-2">
-                    <label class="form-label f-l">利润：</label>
-                    <label class="form-label f-l" id="profit">0.00</label>
-                </div>
-            </div>
-        </div>
-        <c:if test="${sessionScope.user.ROLE_ID eq '100'}">
-            <div class="cl pd-5 bg-1 bk-gray mt-10" id="count-div"><span class="l">
-            <a class="btn btn-primary radius" href="javascript:;"
-               onclick="addOrder('添加订单','<%=request.getContextPath()%>/assistant/index/order/order-add.jsp','800')"><i
-                    class="Hui-iconfont">
-                &#xe600;</i> 添加订单</a></span></div>
-        </c:if>
-        <c:if test="${sessionScope.user.ROLE_ID eq '200'}">
-            <div class="cl pd-5 bg-1 bk-gray mt-10" id="count-div"><span class="l">
-            <a class="btn btn-primary radius" href="javascript:;"
-               onclick="addOrder('添加订单','<%=request.getContextPath()%>/assistant/index/order/order-add.jsp','800')"><i
-                    class="Hui-iconfont">
-                &#xe600;</i> 添加订单</a> </span></div>
-        </c:if>
         <table id="orderTable" class="table table-border table-bordered table-bg table-hover">
             <thead>
             <tr class="text-c">
                 <th width="80">序号</th>
                 <th width="100">产品图</th>
+                <th width="100">合并ID</th>
                 <th width="100">亚马逊订单号</th>
-                <th width="100">SKU</th>
-                <th width="100">业务员</th>
-                <th width="150">公司</th>
-                <th width="60">运行时间</th>
-                <th width="100">销售来源</th>
-                <th width="100">国家</th>
-                <th width="50">销售额（元）</th>
-                <th width="50">成本（元）</th>
-                <th width="50">运费（元）</th>
-                <th width="50">退款额（元）</th>
-                <th width="50">利润（元）</th>
-                <th width="100">货运公司</th>
-                <th width="100">国际跟踪号</th>
-                <th width="50">渠道</th>
-                <th width="50">状态</th>
+                <th width="100">收件人邮箱</th>
+                <th width="100">收件地址1</th>
+                <th width="100">收件地址2</th>
+                <th width="100">收件地址3</th>
+                <th width="100">创建人</th>
                 <th width="100">创建时间</th>
-                <th width="90">操作</th>
             </tr>
             </thead>
         </table>
@@ -246,14 +174,12 @@
         $("#logmin").val(sd.format("yyyy-MM-dd"));
         $("#logmax").val(new Date().format("yyyy-MM-dd"));
         orderTable = initializeTable();
-        selectFees();
         initSelect();
         $("#downloadOrder").click(function () {
             downloadOrder();
         });
         $("#search").click(function () {
             orderTable.ajax.reload();
-            selectFees();
         });
     });
     function initSelect() {
@@ -287,7 +213,7 @@
                 if (data.code == 0) {
                     var data = data.data;
                     for (var i = 0; i < data.length; i++) {
-                        $("#transportCompany").append($("<option value=\"" + data[i].ID + "\">" + data[i].NAME + "</option>"));
+                        $("#transportCompany").append($('<option value=' + data[i].ID + '>' + data[i].NAME + '</option>'));
                     }
                 }
             },
@@ -375,29 +301,6 @@
                     layer.msg(data.msg, {icon: 2, time: 1000});
                 }
             });
-            /*$.ajax({
-             type: 'POST',
-             url: '
-            <%=request.getContextPath()%>/system/selectCompanies',
-             dataType: 'json',
-             data: {
-             "id": companyId
-             },
-             success: function (data) {
-             if (data.code == 0) {
-             var data = data.data;
-             $("#salesCompany").empty();
-             for (var i = 0; i < data.length; i++) {
-             $("#salesCompany").append($('<option value=' + data[i].COMPANY_ID + '>' + data[i].COMPANY_NAME + '</option>'));
-             }
-             /!*var salesCompany = document.getElementById('salesCompany');
-             salesCompany[0].selected = true;*!/
-             }
-             },
-             error: function (data) {
-             layer.msg(data.msg, {icon: 2, time: 1000});
-             }
-             });*/
             $.ajax({
                 type: 'POST',
                 url: '<%=request.getContextPath()%>/shop/selectShopsById',
@@ -459,35 +362,12 @@
         });
     }
     /*查询订单*/
-    var isShowStatus = false;
-    var index = 0;
-    function reloadTable(id) {
+    function reloadTable() {
         layer.load();
-        index = id;
-        if (id == 8) {
-            isShowStatus = true;
-            document.getElementById('localStatus').value = "";
-        } else {
-            $("#localStatus").val(id + 1);
-        }
         orderTable.ajax.reload();
-        selectFees();
-        var btnDiv = document.getElementById("btn-div");
-        var btns = btnDiv.getElementsByTagName("a");
-        for (var i = 0; i < btns.length; i++) {
-            if (i == id) {
-                btns[i].className = 'btn btn-success radius'
-            } else {
-                btns[i].className = 'btn btn-default radius'
-            }
-        }
     }
     /*初始化table*/
     function initializeTable() {
-        var vis = true;
-        if (roleId == 400) {
-            vis = false;
-        }
         var table = $("#orderTable").DataTable({
             "processing": true,
             "serverSide": true,
@@ -496,14 +376,16 @@
             "searching": false,
             "bLengthChange": false,
             "ajax": {
-                "url": "<%=request.getContextPath()%>/order/selectLocalOrder",
+                "url": "<%=request.getContextPath()%>/order/selectMergedOrder",
                 "type": "POST",
                 "data": function (d) {
+                    layer.closeAll("loading");
                     return $.extend({}, d, {
                         "data": JSON.stringify(getFormJson("#orderForm"))
                     });
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
+                    layer.closeAll("loading");
                     if (jqXHR.getResponseHeader("sessionstatus") == "timeOut") {
                         top.window.location.replace("<%=request.getContextPath()%>/assistant/index/login.jsp");
                     }
@@ -512,31 +394,21 @@
             "columns": [
                 {"data": "ID"},
                 {"data": "SMALLIMAGE"},
+                {"data": "MERGEDID"},
                 {"data": "AMAZONORDERID"},
-                {"data": "SKU"},
+                {"data": "BUYEREMAIL"},
+                {"data": "ADDRESSLINE1"},
+                {"data": "ADDRESSLINE2"},
+                {"data": "ADDRESSLINE3"},
                 {"data": "USER_NAME"},
-                {"data": "COMPANY_NAME"},
-                {"data": "RUNNINGTIME"},
-                {"data": "SHOP_NAME"},
-                {"data": "COUNTRYNAME"},
-                {"data": "ITEMPRICE"},
-                {"data": "COST"},
-                {"data": "SHIPPINGPRICE"},
-                {"data": "REFUNDMENT"},
-                {"data": "PROFIT"},
-                {"data": "TRANSPORTCOMPANYNAME"},
-                {"data": "INTLTRACKNUM"},
-                {"data": "FULFILLMENTCHANNEL"},
-                {"data": "LOCALSTATUS"},
-                {"data": "LOCALSTATUS"},
-                {"data": "LOCALSTATUS"}
+                {"data": "CREATE_TIME"}
             ],
             "columnDefs": [
                 {
                     "targets": [0],
                     "data": "ID",
                     "render": function (data, type, full) {
-                        return "<a class='maincolor' href='javascript:;' onClick=\"toDetail('" + full.AMAZONORDERID + "')\"'>" + data + "</a>";
+                        return "<a class='maincolor' href='javascript:;' onClick=\"toDetail('" + full.MERGEDID + "')\"'>" + data + "</a>";
                     }
                 },
                 {
@@ -552,102 +424,14 @@
                 },
                 {
                     "targets": [9],
-                    "data": "ITEMPRICE",
-                    "visible": vis
-                },
-                {
-                    "targets": [10],
-                    "data": "COST",
-                    "visible": vis
-                },
-                {
-                    "targets": [11],
-                    "data": "SHIPPINGPRICE",
-                    "visible": vis
-                },
-                {
-                    "targets": [12],
-                    "data": "REFUNDMENT",
-                    "visible": vis
-                },
-                {
-                    "targets": [13],
-                    "data": "PROFIT",
-                    "visible": vis
-                },
-                {
-                    "targets": [17],
-                    "data": "LOCALSTATUS",
+                    "data": "CREATE_TIME",
                     "render": function (data, type, full) {
-                        if (data == 1) {
-                            return "<div>新单</div>";
-                        } else if (data == 2) {
-                            return "<div>备货</div>";
-                        } else if (data == 3) {
-                            return "<div>缺货</div>";
-                        } else if (data == 4) {
-                            return "<div>发货</div>";
-                        } else if (data == 5) {
-                            return "<div>问题</div>";
-                        } else if (data == 6) {
-                            return "<div>退款</div>";
-                        } else if (data == 7) {
-                            return "<div>妥投</div>";
-                        } else if (data == 8) {
-                            return "<div>代发</div>";
-                        } else if (data == 11) {
-                            return "<div style='color: red'>加急</div>";
-                        } else if (data == 12) {
-                            return "<div>拦截</div>";
-                        }
+                        return "<div>" + getMyDate(data) + "</div>"
                     }
                 },
-                {
-                    "targets": [18],
-                    "data": "LOCALSTATUS",
-                    "render": function (data, type, full) {
-                        if (data == 4 && full.FULFILLMENTCHANNEL != "FBA") {
-                            return "<div>" + full.UPDATE_TIME + "</div>";
-                        } else {
-                            return "<div>" + full.PURCHASEDATE + "</div>";
-                        }
-                    }
-                },
-                {
-                    "targets": [19],
-                    "data": "LOCALSTATUS",
-                    "render": function (data, type, full) {
-                        if (roleId == 100) {
-                            return "<a style='text-decoration:none' title='获取佣金'  onClick=\"getCommission('" + full.AMAZONORDERID + "','" + full.MERCHANT_ID + "','" + full.MARKETPLACEID + "')\"'>获取佣金</a>" +
-                                    "&nbsp;&nbsp;" +
-                                    "<a style='text-decoration:none' title='克隆'  onClick=\"cloneOrder('" + full.AMAZONORDERID + "')\"'>克隆</a>" +
-                                    "&nbsp;&nbsp;" +
-                                    "<a style='text-decoration:none' title='删除'  onClick=\"delOrder('" + full.AMAZONORDERID + "')\"'>删除</a>";
-                        } else {
-                            return "<a style='text-decoration:none' title='获取佣金'  onClick=\"getCommission('" + full.AMAZONORDERID + "','" + full.MERCHANT_ID + "','" + full.MARKETPLACEID + "')\"'>获取佣金</a>" +
-                                    "&nbsp;&nbsp;" +
-                                    "<a style='text-decoration:none' title='克隆'  onClick=\"cloneOrder('" + full.AMAZONORDERID + "')\"'>克隆</a>";
-                        }
-                    }
-                }
             ],
             "rowCallback": function (row, data, displayIndex) {
                 $(row).attr("class", "text-c");
-            },
-            "drawCallback": function (settings) {
-                // 核心实现：不能放到initComplete方法里，因为表格重载后跳转功能会消失
-                $("#orderTable_info").append('<div class="jump-page" style="float: right;margin-left: 50px">跳到 <input type="number" style="width: 50px" id="jump_page" min="1"> 页</div>');
-                var oTable = $("#orderTable").dataTable();
-                $('#jump_page').keyup(function(e){
-                    if(e.keyCode==13){
-                        if($(this).val() && $(this).val()>0){
-                            var redirectpage = $(this).val()-1;
-                        }else{
-                            var redirectpage = 0;
-                        }
-                        oTable.fnPageChange( redirectpage );
-                    }
-                });
             },
             "initComplete": function (settings, json) {
 
@@ -668,153 +452,6 @@
             }
         });
         return table;
-    }
-
-    /*
-     查询订单总费用明细
-     */
-    function selectFees() {
-        $.ajax({
-            type: 'POST',
-            url: '<%=request.getContextPath()%>/order/selectFees',
-            dataType: 'json',
-            data: {
-                "data": JSON.stringify(getFormJson("#orderForm"))
-            },
-            success: function (data) {
-                layer.closeAll("loading");
-                if (data.code == 0) {
-                    var data = data.data;
-                    $("#total").html(data.ITEMPRICE);
-                    $("#cost").html(data.COST);
-                    $("#shippingPrice").html(data.SHIPPINGPRICE);
-                    $("#refund").html(data.REFUNDMENT);
-                    $("#profit").html(data.PROFIT);
-                } else {
-                    layer.msg(data.msg, {icon: 2, time: 1000});
-                }
-            },
-            error: function (data) {
-                layer.msg(data.msg, {icon: 2, time: 1000});
-            }
-        });
-    }
-    /*订单-添加*/
-    function addOrder(title, url, w) {
-        layer_show(title, url, w);
-    }
-    /*下载订单*/
-    function downloadOrder() {
-        layer.load();
-        $.ajax({
-            type: 'POST',
-            url: '<%=request.getContextPath()%>/order/downloadOrder',
-            dataType: 'json',
-            data: {
-                "data": JSON.stringify(getFormJson("#orderForm"))
-            },
-            success: function (data) {
-                layer.closeAll("loading");
-                if (data.code == 0) {
-                    layer.msg(data.msg, {icon: 1, time: 1000});
-                    reloadTable(index)
-                } else {
-                    layer.msg(data.msg, {icon: 2, time: 1000});
-                }
-            },
-            error: function (data) {
-                layer.closeAll("loading");
-                layer.msg(data.msg, {icon: 2, time: 1000});
-            }
-        });
-    }
-    /*打开订单详情页*/
-    function toDetail(amazonOrderId) {
-        var index = layer.open({
-            type: 2,
-            title: '订单详情',
-            content: 'order-Detail.jsp?amazonOrderId=' + amazonOrderId,
-            end: function () {
-                /*location.reload();*/
-            }
-        });
-        layer.full(index);
-    }
-
-    function delOrder(amazonOrderId) {
-        layer.confirm('您确定要删除订单吗？', function (i) {
-            $.ajax({
-                type: 'POST',
-                url: '<%=request.getContextPath()%>/order/delOrder',
-                dataType: 'json',
-                data: {
-                    "amazonOrderId": amazonOrderId
-                },
-                success: function (data) {
-                    layer.closeAll("loading");
-                    if (data.code == 0) {
-                        layer.msg(data.msg, {icon: 1, time: 1000});
-                        reloadTable(index)
-                    } else {
-                        layer.msg(data.msg, {icon: 2, time: 1000});
-                    }
-                },
-                error: function (data) {
-                    layer.msg(data.msg, {icon: 2, time: 1000});
-                }
-            });
-        });
-    }
-    function cloneOrder(amazonOrderId) {
-        layer.confirm('您确定要克隆订单吗？', function (i) {
-            $.ajax({
-                type: 'POST',
-                url: '<%=request.getContextPath()%>/order/cloneOrder',
-                dataType: 'json',
-                data: {
-                    "amazonOrderId": amazonOrderId
-                },
-                success: function (data) {
-                    layer.closeAll("loading");
-                    if (data.code == 0) {
-                        layer.msg(data.msg, {icon: 1, time: 1000});
-                        reloadTable(index)
-                    } else {
-                        layer.msg(data.msg, {icon: 2, time: 1000});
-                    }
-                },
-                error: function (data) {
-                    layer.msg(data.msg, {icon: 2, time: 1000});
-                }
-            });
-        });
-    }
-    function getCommission(amazonOrderId, merchantId, marketplaceId) {
-        layer.confirm('您确定要获取佣金吗？', function (i) {
-            layer.load();
-            $.ajax({
-                type: 'POST',
-                url: '<%=request.getContextPath()%>/order/getCommission',
-                dataType: 'json',
-                data: {
-                    "amazonOrderId": amazonOrderId,
-                    "merchantId": merchantId,
-                    "marketplaceId": marketplaceId
-                },
-                success: function (data) {
-                    layer.closeAll("loading");
-                    if (data.code == 0) {
-                        layer.msg(data.msg, {icon: 1, time: 1000});
-                        reloadTable(index)
-                    } else {
-                        layer.msg(data.msg, {icon: 2, time: 1000});
-                    }
-                },
-                error: function (data) {
-                    layer.msg(data.msg, {icon: 2, time: 1000});
-                }
-            });
-        });
     }
     var x = 10;
     var y = -300;
@@ -837,6 +474,18 @@
             "top": (e.pageY + y) + "px",
             "left": (e.pageX + x) + "px"
         });
+    }
+    /*打开订单详情页*/
+    function toDetail(mergedId) {
+        var index = layer.open({
+            type: 2,
+            title: '订单详情',
+            content: 'order-Detail.jsp?amazonOrderId=' + mergedId,
+            end: function () {
+                /*location.reload();*/
+            }
+        });
+        layer.full(index);
     }
 </script>
 </body>

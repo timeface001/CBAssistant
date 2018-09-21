@@ -36,7 +36,7 @@ public interface OrderManageDao {
 
     public int insertAddress(AddressInfo addressInfo);
 
-    public List<Map<String, Object>> selectAddress(String amazonOrderId);
+    public List<Map<String, Object>> selectAddress(@Param("amazonOrderId") String amazonOrderId);
 
     public List<Map<String, Object>> selectFees(Map<String, Object> map);
 
@@ -46,13 +46,25 @@ public interface OrderManageDao {
 
     public int updateOrderItemCommission(Map<String, Object> map);
 
-    public int cloneOrder(@Param("amazonOrderId")String amazonOrderId, @Param("date")String date);
+    public int cloneOrder(@Param("amazonOrderId") String amazonOrderId, @Param("date") String date);
 
-    public int cloneOrderItem(@Param("amazonOrderId")String amazonOrderId, @Param("date")String date);
+    public int cloneOrderItem(@Param("amazonOrderId") String amazonOrderId, @Param("date") String date);
 
-    public int cloneAddress(@Param("amazonOrderId")String amazonOrderId, @Param("date")String date);
+    public int cloneAddress(@Param("amazonOrderId") String amazonOrderId, @Param("date") String date);
 
     public int delOrderItem(String amazonOrderId);
 
     public int delAddress(String amazonOrderId);
+
+    public List<Map<String, Object>> selectLocalMergeOrder(Map<String, Object> map);
+
+    public int updateOrderMergeId(Map<String, Object> map);
+
+    public int insertMergedOrder(Map<String, Object> map);
+
+    public List<Map<String, Object>> selectMergedOrder(Map<String, Object> map);
+
+    public Map<String, Object> selectAmazonOrderId(String mergedId);
+
+    public Map<String, Object> selectSmallImage(String mergedId);
 }

@@ -10,7 +10,6 @@ import com.crossborder.utils.GeneralUtils;
 import com.crossborder.utils.PublishStatusEnum;
 import org.apache.http.client.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -33,7 +32,7 @@ public class QuartBathUpload {
     @Autowired
     private ProductUploadLogDao productUploadLogDao;
 
-    @Scheduled(cron = "0 */25 * * * ?")
+   /* @Scheduled(cron = "0 *//*25 * * * ?")*/
     public void upload() {
         System.out.println("定时批量发布开始...." + DateUtils.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
 

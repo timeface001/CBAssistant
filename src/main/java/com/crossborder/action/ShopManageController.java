@@ -53,6 +53,8 @@ public class ShopManageController {
                 List<Map<String, Object>> list = commonService.selectCountryByCode(paramMap.get("countryCode").toString());
                 paramMap.put("marketPlaceId", list.get(0).get("MARKETPLACEID").toString());
                 paramMap.put("endPoint", list.get(0).get("ENDPOINT").toString());
+                paramMap.put("accesskeyId", list.get(0).get("AWSACCESSKEYID").toString());
+                paramMap.put("secretKey", list.get(0).get("SECRETKEY").toString());
                 if (validateShop(paramMap)) {
                     for (int i = 0; i < list.size(); i++) {
                         paramMap.put("countryCode", list.get(i).get("ID").toString());
@@ -112,7 +114,27 @@ public class ShopManageController {
         }
         return false;
     }
-
+    /**
+     * 查询站点信息
+     *
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "getDevelopInfo", produces = "text/plain;charset=UTF-8")
+    public String getDevelopInfo( String countryCode) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            Map<String, Object> developInfp = shopManageService.getDevelopInfo(countryCode);
+            map.put("data", developInfp);
+            map.put("code", "0");
+            map.put("msg", "查询成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("code", "-10");
+            map.put("msg", "查询失败");
+        }
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
+    }
     /**
      * 查询店铺
      *

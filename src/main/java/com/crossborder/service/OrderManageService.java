@@ -90,15 +90,46 @@ public class OrderManageService {
         return orderManageDao.updateOrderItemCommission(map);
     }
 
-    public int cloneOrder(String amazonOrderId,String date) {
-        return orderManageDao.cloneOrder(amazonOrderId,date);
+    public int cloneOrder(String amazonOrderId, String date) {
+        return orderManageDao.cloneOrder(amazonOrderId, date);
     }
 
-    public int cloneOrderItem(String amazonOrderId,String date) {
-        return orderManageDao.cloneOrderItem(amazonOrderId,date);
+    public int cloneOrderItem(String amazonOrderId, String date) {
+        return orderManageDao.cloneOrderItem(amazonOrderId, date);
     }
 
-    public int cloneAddress(String amazonOrderId,String date) {
-        return orderManageDao.cloneAddress(amazonOrderId,date);
+    public int cloneAddress(String amazonOrderId, String date) {
+        return orderManageDao.cloneAddress(amazonOrderId, date);
+    }
+
+    public List<Map<String, Object>> selectLocalMergeOrder(Map<String, Object> map) {
+        return orderManageDao.selectLocalMergeOrder(map);
+    }
+
+    public int updateOrderMergeId(Map<String, Object> map) {
+        return orderManageDao.updateOrderMergeId(map);
+    }
+
+    public int insertMergedOrder(Map<String, Object> map) {
+        return orderManageDao.insertMergedOrder(map);
+    }
+
+    public List<Map<String, Object>> selectMergedOrder(Map<String, Object> map) {
+        List<Map<String, Object>> list = orderManageDao.selectMergedOrder(map);
+        for (int i = 0; i < list.size(); i++) {
+            Map<String, Object> idMap = orderManageDao.selectAmazonOrderId(list.get(i).get("MERGEDID").toString());
+            Map<String, Object> imageMap = orderManageDao.selectSmallImage(list.get(i).get("MERGEDID").toString());
+            if (imageMap != null) {
+                list.get(i).put("SMALLIMAGE", imageMap.get("SMALLIMAGE"));
+            } else {
+                list.get(i).put("SMALLIMAGE", null);
+            }
+            if (idMap != null) {
+                list.get(i).put("AMAZONORDERID", idMap.get("AMAZONORDERID"));
+            } else {
+                list.get(i).put("AMAZONORDERID", null);
+            }
+        }
+        return list;
     }
 }

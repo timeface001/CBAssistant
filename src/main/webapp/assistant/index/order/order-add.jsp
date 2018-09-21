@@ -431,7 +431,7 @@
             layer.msg('渠道不能为空', {icon: 2, time: 2000});
             return false;
         }
-        if (orderData.orderCountry == null || orderData.orderCountry == '' || orderData.orderCountry == undefined) {
+        if (orderData.marketPlaceId == null || orderData.marketPlaceId == '' || orderData.marketPlaceId == undefined) {
             layer.msg('站点国家不能为空', {icon: 2, time: 2000});
             return false;
         }

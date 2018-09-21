@@ -62,4 +62,8 @@ public class ShopManageService {
     public String getExrate(String currencyCode) {
         return shopManageDao.getExrate(currencyCode);
     }
+
+    public Map<String, Object> getDevelopInfo(String countryCode) {
+        return shopManageDao.getDevelopInfo(countryCode);
+    }
 }

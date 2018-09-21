@@ -50,9 +50,17 @@
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>授权国家：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <select id="countryCode" name="countryCode" class="select" style="height: 32px">
+                <select id="countryCode" name="countryCode" class="select" style="height: 32px"
+                        onchange="loadInfo(this.value)">
                     <option value="">请选择</option>
                 </select>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3"></label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <label id="developId" class="form-label" style="float: left">站点ID：</label>
+                <label id="developName" class="form-label" style="float: left;margin-left: 30px;">站点名称：</label>
             </div>
         </div>
         <div class="row cl">
@@ -63,13 +71,13 @@
             </div>
         </div>
         <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>AWS Access Key ID：</label>
+            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>MWSAuthToken：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="" placeholder="" id="accesskeyId" name="accesskeyId"
+                <input type="text" class="input-text" value="" placeholder="" id="authToken" name="authToken"
                        onkeyup="this.value=this.value.replace(/(^\s+)|(\s+$)/g,'')">
             </div>
         </div>
-        <div class="row cl">
+        <div class="row cl" style="display: none;">
             <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>Secret Key：</label>
             <div class="formControls col-xs-8 col-sm-9">
                 <input type="text" class="input-text" value="" placeholder="" id="secretKey" name="secretKey"
@@ -149,6 +157,28 @@
             }
         });
     });
+    function loadInfo(code) {
+        $.ajax({
+            type: 'POST',
+            url: '<%=request.getContextPath()%>/shop/getDevelopInfo',
+            dataType: 'json',
+            data: {
+                "countryCode": code
+            },
+            success: function (data) {
+                if (data.code == 0) {
+                    var data = data.data;
+                    $("#developId").text("站点ID：" + data.DEVELOP_ID);
+                    $("#developName").text("站点名称：" + data.DEVELOP_NAME);
+                } else {
+                    layer.msg(data.msg, {icon: 6, time: 1000});
+                }
+            },
+            error: function (data) {
+                layer.msg(data.msg, {icon: 5, time: 1000});
+            }
+        });
+    }
     function initShopInfo() {
         if (id != null && id != "" && id != "null" && id != undefined) {
             $.ajax({
@@ -166,10 +196,10 @@
                         $("#countryCode").val(data.COUNTRY_CODE);
                         $("#merchantId").val(data.MERCHANT_ID);
                         $("#merchantId").attr("readOnly", true);
-                        $("#accesskeyId").val(data.ACCESSKEY_ID);
-                        $("#accesskeyId").attr("readOnly", true);
-                        $("#secretKey").val(data.SECRET_KEY);
-                        $("#secretKey").attr("readOnly", true);
+                        $("#authToken").val(data.MWSAUTHTOKEN);
+                        $("#authToken").attr("readOnly", true);
+                        /* $("#secretKey").val(data.SECRET_KEY);
+                         $("#secretKey").attr("readOnly", true);*/
                         $("#state").val(data.SHOP_STATE);
                     } else {
                         layer.msg(data.msg, {icon: 6, time: 1000});

@@ -28,6 +28,7 @@ import com.crossborder.entity.LocalOrderItem;
 import com.crossborder.service.OrderManageService;
 import com.crossborder.service.ShopManageService;
 import com.crossborder.utils.MD5;
+import com.crossborder.utils.PropertyUtil;
 import com.crossborder.utils.Tools;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -80,7 +81,7 @@ public class OrderManageController {
                 MarketplaceWebServiceOrdersClient client = new MarketplaceWebServiceOrdersClient(shop.get("ACCESSKEY_ID").toString(), shop.get("SECRET_KEY").toString(), config);
                 ListOrdersRequest request = new ListOrdersRequest();
                 request.setSellerId(shop.get("MERCHANT_ID").toString());
-                request.setMWSAuthToken("");
+                request.setMWSAuthToken(shop.get("MWSAUTHTOKEN").toString());
                 GregorianCalendar cal = new GregorianCalendar();
                 XMLGregorianCalendar createdAfter = null;
                 XMLGregorianCalendar createdBefore = null;
@@ -122,26 +123,35 @@ public class OrderManageController {
         }
     }
 
-    private List<Order> getNextTokenOrders(String nextToken, MarketplaceWebServiceOrders client, List<Order> orderList, String sellerId) {
+    private List<Order> getNextTokenOrders(String nextToken,
+                                           MarketplaceWebServiceOrders client,
+                                           List<Order> orderList,
+                                           String sellerId,
+                                           String mWSAuthToken) {
         ListOrdersByNextTokenRequest nextTokenRequest = new ListOrdersByNextTokenRequest();
         nextTokenRequest.setSellerId(sellerId);
+        nextTokenRequest.setMWSAuthToken(mWSAuthToken);
         nextTokenRequest.setNextToken(nextToken);
         ListOrdersByNextTokenResponse nextTokenResponse = client.listOrdersByNextToken(nextTokenRequest);
         orderList.addAll(nextTokenResponse.getListOrdersByNextTokenResult().getOrders());
         if (StringUtils.isNotBlank(nextTokenResponse.getListOrdersByNextTokenResult().getNextToken())) {
-            getNextTokenOrders(nextTokenResponse.getListOrdersByNextTokenResult().getNextToken(), client, orderList, sellerId);
+            getNextTokenOrders(nextTokenResponse.getListOrdersByNextTokenResult().getNextToken(), client, orderList, sellerId, mWSAuthToken);
         }
         return orderList;
     }
 
     public String getListOrders(MarketplaceWebServiceOrders client,
-                                ListOrdersRequest request, Map<String, Object> user, Map<String, Object> shop, List<Map<String, Object>> marketplaceIds) {
+                                ListOrdersRequest request,
+                                Map<String, Object> user,
+                                Map<String, Object> shop,
+                                List<Map<String, Object>> marketplaceIds) {
         Map<String, Object> map = new HashMap<>();
         try {
             ListOrdersResponse response = client.listOrders(request);
             List<Order> orderList = response.getListOrdersResult().getOrders();
             if (StringUtils.isNotBlank(response.getListOrdersResult().getNextToken())) {
-                orderList = getNextTokenOrders(response.getListOrdersResult().getNextToken(), client, orderList, request.getSellerId());
+                orderList = getNextTokenOrders(response.getListOrdersResult().getNextToken(),
+                        client, orderList, request.getSellerId(), request.getMWSAuthToken());
             }
             //修改亚马逊订单状态
             if (orderList.size() > 0) {
@@ -331,14 +341,15 @@ public class OrderManageController {
                             "</Message>";
                 }
             }
+            String path = PropertyUtil.getProperty("updateOrderStatusPath");
             String end = "</AmazonEnvelope>";
             StringBuffer stringBuffer = new StringBuffer();
             String fulfillmentXml = stringBuffer.append(header).append(message).append(end).toString();
-            FileWriter writer = new FileWriter("/home/amz/updateStatus.txt");
+            FileWriter writer = new FileWriter(path);
             writer.write(fulfillmentXml);
             writer.flush();
             writer.close();
-            FileInputStream fis = new FileInputStream(new File("/home/amz/updateStatus.txt"));
+            FileInputStream fis = new FileInputStream(new File(path));
             MarketplaceWebServiceConfig config = new MarketplaceWebServiceConfig();
             config.setServiceURL(shop.get("ENDPOINT").toString());
             MarketplaceWebService service = new MarketplaceWebServiceClient(shop.get("ACCESSKEY_ID").toString(), shop.get("SECRET_KEY").toString(), "", "", config);
@@ -353,6 +364,7 @@ public class OrderManageController {
             request.setMerchant(shop.get("MERCHANT_ID").toString());
             request.setFeedContent(fis);
             request.setFeedType(Order_Fulfillment_Fee);
+            request.setMWSAuthToken(shop.get("MWSAUTHTOKEN").toString());
             request.setContentMD5(MD5.computeContentMD5HeaderValue(fis));
             SubmitFeedResponse response = service.submitFeed(request);
             if (response.isSetSubmitFeedResult()) {
@@ -450,6 +462,7 @@ public class OrderManageController {
         ListFinancialEventsRequest request = new ListFinancialEventsRequest();
         request.setSellerId(shop.get("MERCHANT_ID").toString());
         request.setAmazonOrderId(amazonOrderId);
+        request.setMWSAuthToken(shop.get("MWSAUTHTOKEN").toString());
         FinancialEvents financialEvents = client.listFinancialEvents(request).getListFinancialEventsResult().getFinancialEvents();
         if (financialEvents.getShipmentEventList() != null && financialEvents.getShipmentEventList().size() > 0) {
             return financialEvents.getShipmentEventList().get(0).getShipmentItemList();
@@ -464,7 +477,7 @@ public class OrderManageController {
         MarketplaceWebServiceOrdersClient client = new MarketplaceWebServiceOrdersClient(shop.get("ACCESSKEY_ID").toString(), shop.get("SECRET_KEY").toString(), config);
         ListOrderItemsRequest request = new ListOrderItemsRequest();
         request.setSellerId(shop.get("MERCHANT_ID").toString());
-        request.setMWSAuthToken("");
+        request.setMWSAuthToken(shop.get("MWSAUTHTOKEN").toString());
         request.setAmazonOrderId(amazonOrderId);
         ListOrderItemsResponse response = client.listOrderItems(request);
         return response.getListOrderItemsResult().getOrderItems();
@@ -477,7 +490,7 @@ public class OrderManageController {
             MarketplaceWebServiceProductsClient client = new MarketplaceWebServiceProductsClient(shop.get("ACCESSKEY_ID").toString(), shop.get("SECRET_KEY").toString(), config);
             GetMatchingProductForIdRequest request = new GetMatchingProductForIdRequest();
             request.setSellerId(shop.get("MERCHANT_ID").toString());
-            request.setMWSAuthToken("");
+            request.setMWSAuthToken(shop.get("MWSAUTHTOKEN").toString());
             request.setMarketplaceId(marketplaceId);
             request.setIdType("ASIN");
             IdListType idList = new IdListType();
@@ -579,6 +592,137 @@ public class OrderManageController {
     }
 
     /**
+     * 查询待合并订单
+     *
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "selectLocalMergeOrder", produces = "text/plain;charset=UTF-8")
+    public String selectLocalMergeOrder(HttpSession session, String data, Integer draw, Integer start, Integer length) {
+        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> paramMap = JSON.parseObject(data, Map.class);
+        Map<String, Object> user = (Map<String, Object>) session.getAttribute("user");
+        if (user.get("ROLE_ID").toString().equals("600")) {
+            paramMap.put("salesMan", user.get("USER_ID"));
+        } else if (user.get("ROLE_ID").toString().equals("500")) {
+            paramMap.put("salesCompany", user.get("USER_COMPANY"));
+        }
+        List<Map<String, Object>> localOrderList = new ArrayList<>();
+        paramMap.put("logmin", paramMap.get("logmin").toString() + " 00:00:00");
+        paramMap.put("logmax", paramMap.get("logmax").toString() + " 23:59:59");
+        try {
+            PageHelper.startPage(start == null ? 1 : (start / length + 1), length);
+            localOrderList = orderManageService.selectLocalMergeOrder(paramMap);
+            PageInfo<Map<String, Object>> pageInfo = new PageInfo<Map<String, Object>>(localOrderList);
+            map.put("data", localOrderList);
+            map.put("draw", draw);
+            map.put("recordsTotal", pageInfo.getTotal());
+            map.put("recordsFiltered", pageInfo.getTotal());
+            map.put("code", "0");
+            map.put("msg", "查询成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("code", "-10");
+            map.put("msg", "查询失败");
+        }
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
+    }
+
+    /**
+     * 查询已合并订单
+     *
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "selectMergedOrder", produces = "text/plain;charset=UTF-8")
+    public String selectMergedOrder(HttpSession session, String data, Integer draw, Integer start, Integer length) {
+        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> paramMap = JSON.parseObject(data, Map.class);
+        Map<String, Object> user = (Map<String, Object>) session.getAttribute("user");
+        if (user.get("ROLE_ID").toString().equals("600")) {
+            paramMap.put("salesMan", user.get("USER_ID"));
+        } else if (user.get("ROLE_ID").toString().equals("500")) {
+            paramMap.put("salesCompany", user.get("USER_COMPANY"));
+        }
+        List<Map<String, Object>> localOrderList = new ArrayList<>();
+        paramMap.put("logmin", paramMap.get("logmin").toString() + " 00:00:00");
+        paramMap.put("logmax", paramMap.get("logmax").toString() + " 23:59:59");
+        try {
+            PageHelper.startPage(start == null ? 1 : (start / length + 1), length);
+            localOrderList = orderManageService.selectMergedOrder(paramMap);
+            PageInfo<Map<String, Object>> pageInfo = new PageInfo<Map<String, Object>>(localOrderList);
+            map.put("data", localOrderList);
+            map.put("draw", draw);
+            map.put("recordsTotal", pageInfo.getTotal());
+            map.put("recordsFiltered", pageInfo.getTotal());
+            map.put("code", "0");
+            map.put("msg", "查询成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("code", "-10");
+            map.put("msg", "查询失败");
+        }
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
+    }
+
+    /**
+     * 合并订单
+     *
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "mergeOrder", produces = "text/plain;charset=UTF-8")
+    public String mergeOrder(HttpSession session, String ids) {
+        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> paramMap = new HashMap<>();
+        Map<String, Object> user = (Map<String, Object>) session.getAttribute("user");
+        ids = ids.substring(0, ids.length() - 1);
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyMMddHHmmss");
+            String date = sdf.format(new Date());
+            String[] idsArray = ids.split(",");
+            if (idsArray.length > 2) {
+                if (isEquals(idsArray)) {
+                    for (int i = 0; i < idsArray.length; i++) {
+                        paramMap.put("id", idsArray[i]);
+                        paramMap.put("mergedId", "merged-" + date);
+                        paramMap.put("createUser", user.get("USER_ID"));
+                        orderManageService.updateOrderMergeId(paramMap);
+                    }
+                    orderManageService.insertMergedOrder(paramMap);
+                    map.put("code", "0");
+                    map.put("msg", "合并成功");
+                } else {
+                    map.put("code", "-10");
+                    map.put("msg", "请选择相同收件人信息合并");
+                }
+            } else {
+                map.put("code", "-10");
+                map.put("msg", "请至少选择两个订单合并");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("code", "-10");
+            map.put("msg", "合并失败");
+        }
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
+    }
+
+    private boolean isEquals(String[] idsArray) {
+        if (idsArray != null) {
+            String firstId = idsArray[0];
+            for (String id : idsArray) {
+                if (!id.equals(firstId)) {
+                    return false;
+                }
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * 查询订单item
      *
      * @return
@@ -661,7 +805,16 @@ public class OrderManageController {
      */
     @ResponseBody
     @RequestMapping(value = "updateOrderInfo", produces = "text/plain;charset=UTF-8")
-    public String updateOrderInfo(String amazonOrderId, String preStatus, String status, String orderItemId, String cost, String refundment, String trackNum, String purchaseNum, String shippingPrice, HttpSession session) {
+    public String updateOrderInfo(String amazonOrderId,
+                                  String preStatus,
+                                  String status,
+                                  String orderItemId,
+                                  String cost,
+                                  String refundment,
+                                  String trackNum,
+                                  String purchaseNum,
+                                  String shippingPrice,
+                                  HttpSession session) {
         Map<String, Object> map = new HashMap<>();
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("status", status);
@@ -765,7 +918,7 @@ public class OrderManageController {
     public String cloneOrder(String amazonOrderId) {
         Map<String, Object> map = new HashMap<>();
         try {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+            SimpleDateFormat sdf = new SimpleDateFormat("HHmmss");
             String date = sdf.format(new Date());
             orderManageService.cloneOrder(amazonOrderId, date);
             orderManageService.cloneOrderItem(amazonOrderId, date);

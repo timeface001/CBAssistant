@@ -63,13 +63,17 @@
             <div class=" col-xs-2 col-sm-2">
                 <input type="text" id="company" placeholder=" "
                        class="input-text" readonly></div>
-            <label class=" col-xs-2 col-sm-2 text-r">电话：</label>
+            <label class=" col-xs-2 col-sm-2 text-r">邮箱：</label>
             <div class=" col-xs-2 col-sm-2">
-                <input type="text" id="phone" placeholder=" "
+                <input type="text" id="email" placeholder=" "
                        class="input-text" readonly></div>
         </div>
         <div class="row cl mt-10">
-            <label class=" col-xs-1 col-sm-1 text-r">国家：</label>
+            <label class=" col-xs-1 col-sm-1 text-r">电话：</label>
+            <div class=" col-xs-2 col-sm-2">
+                <input type="text" id="phone" placeholder=" "
+                       class="input-text" readonly></div>
+            <label class=" col-xs-2 col-sm-2 text-r">国家：</label>
             <div class=" col-xs-2 col-sm-2">
                 <input type="text" id="countryCode" placeholder=" "
                        class="input-text" readonly></div>
@@ -169,9 +173,13 @@
                     <option value="">请选择</option>
                 </select>
             </div>
-            <label class=" col-xs-2 col-sm-2 text-r"><span class="c-red">*</span>客户单号：</label>
-            <div class=" col-xs-2 col-sm-2">
+            <label id="custLabel" class=" col-xs-2 col-sm-2 text-r"><span class="c-red">*</span>客户单号：</label>
+            <div id="custDiv" class=" col-xs-2 col-sm-2">
                 <input type="text" id="amazonId" placeholder=" "
+                       class="input-text"></div>
+            <label id="trackLabel" class=" col-xs-2 col-sm-2 text-r" style="display: none"><span class="c-red">*</span>跟踪号：</label>
+            <div id="trackDiv" class=" col-xs-2 col-sm-2" style="display: none">
+                <input type="text" id="trackNumber" placeholder=" "
                        class="input-text"></div>
             <input type="hidden" id="orderCode">
         </div>
@@ -325,9 +333,10 @@
         $("#remark").val(localOrder.REMARK);
         $("#marketplaceId").val(localOrder.MARKETPLACEID);
         $("#merchantId").val(localOrder.MERCHANT_ID);
+        $("#email").val(localOrder.BUYEREMAIL);
         var customsDiv = document.getElementById("customsDiv");
         if (roleId == 100 || roleId == 400) {
-            if (localOrder.LOCALSTATUS == 2) {
+            if (localOrder.LOCALSTATUS == 2 || localOrder.LOCALSTATUS == 11) {
                 customsDiv.style.display = '';
             } else {
                 customsDiv.style.display = 'none';
@@ -371,6 +380,10 @@
                                 return "<div>妥投</div>"
                             } else if (data == 8) {
                                 return "<div>代发</div>"
+                            } else if (data == 11) {
+                                return "<div style='color: red'>加急</div>";
+                            } else if (data == 12) {
+                                return "<div>拦截</div>";
                             }
                         }
                     }
@@ -491,6 +504,10 @@
                             return "<div>妥投</div>"
                         } else if (data == 8) {
                             return "<div>代发</div>"
+                        } else if (data == 11) {
+                            return "<div style='color: red'>加急</div>";
+                        } else if (data == 12) {
+                            return "<div>拦截</div>";
                         }
                     }
                 },
@@ -502,13 +519,17 @@
                             if (roleId == 300) {
                                 return "";
                             } else {
-                                return "<a style='text-decoration:none' title='备货'  onClick=\"updateOrder(2,'" + full.ORDERITEMID + "')\"'>备货</a>" +
+                                return "<a style='text-decoration:none' title='备货'  onClick=\"updateOrder(2,'" + full.ORDERITEMID + "','" + full.AMAZONORDERID + "')\"'>备货</a>" +
                                         "&nbsp;&nbsp;&nbsp;&nbsp;" +
-                                        "<a style='text-decoration:none' title='缺货'  onClick=\"updateOrder(3,'" + full.ORDERITEMID + "')\"'>缺货</a>" +
+                                        "<a style='text-decoration:none' title='缺货'  onClick=\"updateOrder(3,'" + full.ORDERITEMID + "','" + full.AMAZONORDERID + "')\"'>缺货</a>" +
                                         "&nbsp;&nbsp;&nbsp;&nbsp;" +
-                                        "<a style='text-decoration:none' title='退款'  onClick=\"updateOrder(6,'" + full.ORDERITEMID + "')\"'>退款</a>" +
+                                        "<a style='text-decoration:none' title='加急'  onClick=\"updateOrder(11,'" + full.ORDERITEMID + "','" + full.AMAZONORDERID + "')\"'>加急</a>" +
                                         "&nbsp;&nbsp;&nbsp;&nbsp;" +
-                                        "<a style='text-decoration:none' title='问题'  onClick=\"updateOrder(5,'" + full.ORDERITEMID + "')\"'>问题</a>" +
+                                        "<a style='text-decoration:none' title='拦截'  onClick=\"updateOrder(12,'" + full.ORDERITEMID + "','" + full.AMAZONORDERID + "')\"'>拦截</a>" +
+                                        "&nbsp;&nbsp;&nbsp;&nbsp;" +
+                                        "<a style='text-decoration:none' title='退款'  onClick=\"updateOrder(6,'" + full.ORDERITEMID + "','" + full.AMAZONORDERID + "')\"'>退款</a>" +
+                                        "&nbsp;&nbsp;&nbsp;&nbsp;" +
+                                        "<a style='text-decoration:none' title='问题'  onClick=\"updateOrder(5,'" + full.ORDERITEMID + "','" + full.AMAZONORDERID + "')\"'>问题</a>" +
                                         "&nbsp;&nbsp;&nbsp;&nbsp;";
                             }
                         } else if (data == 2) {
@@ -517,29 +538,41 @@
                             } else if (roleId == 400) {
                                 return "";
                             } else if (roleId == 500) {
-                                return "<a style='text-decoration:none' title='缺货'  onClick=\"updateOrder(3,'" + full.ORDERITEMID + "')\"'>缺货</a>" +
+                                return "<a style='text-decoration:none' title='缺货'  onClick=\"updateOrder(3,'" + full.ORDERITEMID + "','" + full.AMAZONORDERID + "')\"'>缺货</a>" +
                                         "&nbsp;&nbsp;&nbsp;&nbsp;" +
-                                        "<a style='text-decoration:none' title='退款'  onClick=\"updateOrder(6,'" + full.ORDERITEMID + "')\"'>退款</a>" +
+                                        "<a style='text-decoration:none' title='退款'  onClick=\"updateOrder(6,'" + full.ORDERITEMID + "','" + full.AMAZONORDERID + "')\"'>退款</a>" +
                                         "&nbsp;&nbsp;&nbsp;&nbsp;" +
-                                        "<a style='text-decoration:none' title='问题'  onClick=\"updateOrder(5,'" + full.ORDERITEMID + "')\"'>问题</a>" +
+                                        "<a style='text-decoration:none' title='加急'  onClick=\"updateOrder(11,'" + full.ORDERITEMID + "','" + full.AMAZONORDERID + "')\"'>加急</a>" +
+                                        "&nbsp;&nbsp;&nbsp;&nbsp;" +
+                                        "<a style='text-decoration:none' title='拦截'  onClick=\"updateOrder(12,'" + full.ORDERITEMID + "','" + full.AMAZONORDERID + "')\"'>拦截</a>" +
+                                        "&nbsp;&nbsp;&nbsp;&nbsp;" +
+                                        "<a style='text-decoration:none' title='问题'  onClick=\"updateOrder(5,'" + full.ORDERITEMID + "','" + full.AMAZONORDERID + "')\"'>问题</a>" +
                                         "&nbsp;&nbsp;&nbsp;&nbsp;";
                             } else {
-                                return "<a style='text-decoration:none' title='备货'  onClick=\"updateOrder(2,'" + full.ORDERITEMID + "')\"'>备货</a>" +
+                                return "<a style='text-decoration:none' title='备货'  onClick=\"updateOrder(2,'" + full.ORDERITEMID + "','" + full.AMAZONORDERID + "')\"'>备货</a>" +
                                         "&nbsp;&nbsp;&nbsp;&nbsp;" +
-                                        "<a style='text-decoration:none' title='缺货'  onClick=\"updateOrder(3,'" + full.ORDERITEMID + "')\"'>缺货</a>" +
+                                        "<a style='text-decoration:none' title='缺货'  onClick=\"updateOrder(3,'" + full.ORDERITEMID + "','" + full.AMAZONORDERID + "')\"'>缺货</a>" +
                                         "&nbsp;&nbsp;&nbsp;&nbsp;" +
-                                        "<a style='text-decoration:none' title='退款'  onClick=\"updateOrder(6,'" + full.ORDERITEMID + "')\"'>退款</a>" +
+                                        "<a style='text-decoration:none' title='加急'  onClick=\"updateOrder(11,'" + full.ORDERITEMID + "','" + full.AMAZONORDERID + "')\"'>加急</a>" +
                                         "&nbsp;&nbsp;&nbsp;&nbsp;" +
-                                        "<a style='text-decoration:none' title='问题'  onClick=\"updateOrder(5,'" + full.ORDERITEMID + "')\"'>问题</a>" +
+                                        "<a style='text-decoration:none' title='拦截'  onClick=\"updateOrder(12,'" + full.ORDERITEMID + "','" + full.AMAZONORDERID + "')\"'>拦截</a>" +
+                                        "&nbsp;&nbsp;&nbsp;&nbsp;" +
+                                        "<a style='text-decoration:none' title='退款'  onClick=\"updateOrder(6,'" + full.ORDERITEMID + "','" + full.AMAZONORDERID + "')\"'>退款</a>" +
+                                        "&nbsp;&nbsp;&nbsp;&nbsp;" +
+                                        "<a style='text-decoration:none' title='问题'  onClick=\"updateOrder(5,'" + full.ORDERITEMID + "','" + full.AMAZONORDERID + "')\"'>问题</a>" +
                                         "&nbsp;&nbsp;&nbsp;&nbsp;";
                             }
                         } else if (data == 4) {
-                            if (roleId == 400 || roleId == 300) {
+                            if (roleId == 200 || roleId == 300) {
                                 return "";
                             } else {
                                 return "<a style='text-decoration:none' title='退款'  onClick=\"updateOrder(6,'" + full.ORDERITEMID + "')\"'>退款</a>" +
                                         "&nbsp;&nbsp;&nbsp;&nbsp;" +
                                         "<a style='text-decoration:none' title='妥投'  onClick=\"updateOrder(7,'" + full.ORDERITEMID + "')\"'>妥投</a>" +
+                                        "&nbsp;&nbsp;&nbsp;&nbsp;" +
+                                        "<a style='text-decoration:none' title='加急'  onClick=\"updateOrder(11,'" + full.ORDERITEMID + "','" + full.AMAZONORDERID + "')\"'>加急</a>" +
+                                        "&nbsp;&nbsp;&nbsp;&nbsp;" +
+                                        "<a style='text-decoration:none' title='拦截'  onClick=\"updateOrder(12,'" + full.ORDERITEMID + "','" + full.AMAZONORDERID + "')\"'>拦截</a>" +
                                         "&nbsp;&nbsp;&nbsp;&nbsp;" +
                                         "<a style='text-decoration:none' title='打印'  onClick=\"printByOrderId('" + full.ORDERITEMID + "')\"'>打印</a>" +
                                         "&nbsp;&nbsp;&nbsp;&nbsp;";
@@ -551,6 +584,36 @@
                                 return "<a style='text-decoration:none' title='退款'  onClick=\"updateOrder(6,'" + full.ORDERITEMID + "')\"'>退款</a>" +
                                         "&nbsp;&nbsp;&nbsp;&nbsp;" +
                                         "<a style='text-decoration:none' title='问题'  onClick=\"updateOrder(5,'" + full.ORDERITEMID + "')\"'>问题</a>" +
+                                        "&nbsp;&nbsp;&nbsp;&nbsp;" +
+                                        "<a style='text-decoration:none' title='加急'  onClick=\"updateOrder(11,'" + full.ORDERITEMID + "','" + full.AMAZONORDERID + "')\"'>加急</a>" +
+                                        "&nbsp;&nbsp;&nbsp;&nbsp;" +
+                                        "<a style='text-decoration:none' title='拦截'  onClick=\"updateOrder(12,'" + full.ORDERITEMID + "','" + full.AMAZONORDERID + "')\"'>拦截</a>" +
+                                        "&nbsp;&nbsp;&nbsp;&nbsp;" +
+                                        "<a style='text-decoration:none' title='妥投'  onClick=\"updateOrder(7,'" + full.ORDERITEMID + "')\"'>妥投</a>" +
+                                        "&nbsp;&nbsp;&nbsp;&nbsp;";
+                            }
+                        } else if (data == 11) {
+                            if (roleId == 300) {
+                                return "";
+                            } else {
+                                return "<a style='text-decoration:none' title='退款'  onClick=\"updateOrder(6,'" + full.ORDERITEMID + "')\"'>退款</a>" +
+                                        "&nbsp;&nbsp;&nbsp;&nbsp;" +
+                                        "<a style='text-decoration:none' title='问题'  onClick=\"updateOrder(5,'" + full.ORDERITEMID + "')\"'>问题</a>" +
+                                        "&nbsp;&nbsp;&nbsp;&nbsp;" +
+                                        "<a style='text-decoration:none' title='拦截'  onClick=\"updateOrder(12,'" + full.ORDERITEMID + "','" + full.AMAZONORDERID + "')\"'>拦截</a>" +
+                                        "&nbsp;&nbsp;&nbsp;&nbsp;" +
+                                        "<a style='text-decoration:none' title='妥投'  onClick=\"updateOrder(7,'" + full.ORDERITEMID + "')\"'>妥投</a>" +
+                                        "&nbsp;&nbsp;&nbsp;&nbsp;";
+                            }
+                        } else if (data == 12) {
+                            if (roleId == 300) {
+                                return "";
+                            } else {
+                                return "<a style='text-decoration:none' title='退款'  onClick=\"updateOrder(6,'" + full.ORDERITEMID + "')\"'>退款</a>" +
+                                        "&nbsp;&nbsp;&nbsp;&nbsp;" +
+                                        "<a style='text-decoration:none' title='问题'  onClick=\"updateOrder(5,'" + full.ORDERITEMID + "')\"'>问题</a>" +
+                                        "&nbsp;&nbsp;&nbsp;&nbsp;" +
+                                        "<a style='text-decoration:none' title='加急'  onClick=\"updateOrder(11,'" + full.ORDERITEMID + "','" + full.AMAZONORDERID + "')\"'>加急</a>" +
                                         "&nbsp;&nbsp;&nbsp;&nbsp;" +
                                         "<a style='text-decoration:none' title='妥投'  onClick=\"updateOrder(7,'" + full.ORDERITEMID + "')\"'>妥投</a>" +
                                         "&nbsp;&nbsp;&nbsp;&nbsp;";
@@ -661,7 +724,7 @@
                     "targets": [4],
                     "data": "PRICE",
                     "render": function (data, type, full) {
-                        return "<input type='text' value='6'  class='input-text' name='price'/>";
+                        return "<input type='text' value='7'  class='input-text' name='price'/>";
                     }
                 },
                 {
@@ -774,6 +837,17 @@
         });
     }
     function loadShips(value) {
+        if (value.indexOf("QT") != -1) {
+            $("#custLabel").css("display", "none");
+            $("#custDiv").css("display", "none");
+            $("#trackLabel").css("display", "");
+            $("#trackDiv").css("display", "");
+        } else {
+            $("#custLabel").css("display", "");
+            $("#custDiv").css("display", "");
+            $("#trackLabel").css("display", "none");
+            $("#trackDiv").css("display", "none");
+        }
         $.ajax({
             type: 'POST',
             url: '<%=request.getContextPath()%>/common/getShipTypes',
@@ -797,7 +871,7 @@
             }
         });
     }
-    function updateOrder(status, orderItemId) {
+    function updateOrder(status, orderItemId, amazonOrderId) {
         if (status == 2) {
             layer_show("备货", "<%=request.getContextPath()%>/assistant/index/order/stocking.jsp?amazonOrderId=" + amazonOrderId + "&orderItemId=" + orderItemId + "&preStatus=" + preStatus, 400, 300);
         } else if (status == 3) {
@@ -818,6 +892,14 @@
             });
         } else if (status == 8) {
             layer_show("修改运费", "<%=request.getContextPath()%>/assistant/index/order/stocking.jsp?amazonOrderId=" + amazonOrderId + "&sku=" + sku + "&preStatus=" + preStatus, 400, 300);
+        } else if (status == 11) {
+            layer.confirm('您确定要加急吗？', function (index) {
+                confirm(11, orderItemId);
+            });
+        } else if (status == 12) {
+            layer.confirm('您确定要拦截吗？', function (index) {
+                confirm(12, orderItemId);
+            });
         }
     }
     function confirm(status, orderItemId) {
@@ -870,6 +952,7 @@
     }
     /*发货*/
     function delivery() {
+        var transportCompany = $("#transportCompany").val();
         if ($("#amazonId").val() == null || $("#amazonId").val() == '' || $("#amazonId").val() == undefined) {
             layer.msg('客户单号不能为空', {icon: 2, time: 2000});
             return false;
@@ -908,6 +991,7 @@
         ShippingInfo.ShippingAddress1 = $("#addressLine2").val();
         ShippingInfo.ShippingAddress2 = $("#addressLine3").val();
         ShippingInfo.ShippingCity = $("#city").val();
+        ShippingInfo.ShippingMail = $("#email").val();
         if ($("#stateOrRegion").val() == "" || $("#stateOrRegion").val() == null) {
             ShippingInfo.ShippingState = $("#city").val();
         } else {
@@ -916,69 +1000,71 @@
         ShippingInfo.ShippingZip = $("#postalCode").val();
         ShippingInfo.ShippingPhone = $("#phone").val();
         wayBill.ShippingInfo = ShippingInfo;
-        var tableData = getFormJson("#tableForm");
-        if (count > 1) {
-            for (var i = 0; i < tableData.enName.length; i++) {
-                if (tableData.chnName[i] == null || tableData.chnName[i] == '' || tableData.chnName[i] == undefined) {
+        if (transportCompany.indexOf("QT") == -1) {
+            var tableData = getFormJson("#tableForm");
+            if (count > 1) {
+                for (var i = 0; i < tableData.enName.length; i++) {
+                    if (tableData.chnName[i] == null || tableData.chnName[i] == '' || tableData.chnName[i] == undefined) {
+                        layer.msg('中文品名不能为空', {icon: 2, time: 2000});
+                        return false;
+                    }
+                    if (tableData.enName[i] == null || tableData.enName[i] == '' || tableData.enName[i] == undefined) {
+                        layer.msg('英文品名不能为空', {icon: 2, time: 2000});
+                        return false;
+                    }
+                    if (tableData.count[i] == null || tableData.count[i] == '' || tableData.count[i] == undefined) {
+                        layer.msg('数量不能为空', {icon: 2, time: 2000});
+                        return false;
+                    }
+                    if (tableData.price[i] == null || tableData.price[i] == '' || tableData.price[i] == undefined) {
+                        layer.msg('单价不能为空', {icon: 2, time: 2000});
+                        return false;
+                    }
+                    if (tableData.weight[i] == null || tableData.weight[i] == '' || tableData.weight[i] == undefined) {
+                        layer.msg('重量不能为空', {icon: 2, time: 2000});
+                        return false;
+                    }
+                    var applicationInfo = new Object();
+                    applicationInfo.PickingName = tableData.chnName[i];
+                    applicationInfo.ApplicationName = tableData.enName[i];
+                    applicationInfo.Qty = tableData.count[i];
+                    applicationInfo.UnitPrice = tableData.price[i];
+                    applicationInfo.UnitWeight = tableData.weight[i];
+                    applicationInfo.SKU = tableData.sku[i];
+                    ApplicationInfos.push(applicationInfo);
+                }
+            } else {
+                if (tableData.chnName == null || tableData.chnName == '' || tableData.chnName == undefined) {
                     layer.msg('中文品名不能为空', {icon: 2, time: 2000});
                     return false;
                 }
-                if (tableData.enName[i] == null || tableData.enName[i] == '' || tableData.enName[i] == undefined) {
+                if (tableData.enName == null || tableData.enName == '' || tableData.enName == undefined) {
                     layer.msg('英文品名不能为空', {icon: 2, time: 2000});
                     return false;
                 }
-                if (tableData.count[i] == null || tableData.count[i] == '' || tableData.count[i] == undefined) {
+                if (tableData.count == null || tableData.count == '' || tableData.count == undefined) {
                     layer.msg('数量不能为空', {icon: 2, time: 2000});
                     return false;
                 }
-                if (tableData.price[i] == null || tableData.price[i] == '' || tableData.price[i] == undefined) {
+                if (tableData.price == null || tableData.price == '' || tableData.price == undefined) {
                     layer.msg('单价不能为空', {icon: 2, time: 2000});
                     return false;
                 }
-                if (tableData.weight[i] == null || tableData.weight[i] == '' || tableData.weight[i] == undefined) {
+                if (tableData.weight == null || tableData.weight == '' || tableData.weight == undefined) {
                     layer.msg('重量不能为空', {icon: 2, time: 2000});
                     return false;
                 }
                 var applicationInfo = new Object();
-                applicationInfo.PickingName = tableData.chnName[i];
-                applicationInfo.ApplicationName = tableData.enName[i];
-                applicationInfo.Qty = tableData.count[i];
-                applicationInfo.UnitPrice = tableData.price[i];
-                applicationInfo.UnitWeight = tableData.weight[i];
-                applicationInfo.SKU = tableData.sku[i];
+                applicationInfo.PickingName = tableData.chnName;
+                applicationInfo.ApplicationName = tableData.enName;
+                applicationInfo.Qty = tableData.count;
+                applicationInfo.UnitPrice = tableData.price;
+                applicationInfo.UnitWeight = tableData.weight;
+                applicationInfo.SKU = tableData.sku;
                 ApplicationInfos.push(applicationInfo);
             }
-        } else {
-            if (tableData.chnName == null || tableData.chnName == '' || tableData.chnName == undefined) {
-                layer.msg('中文品名不能为空', {icon: 2, time: 2000});
-                return false;
-            }
-            if (tableData.enName == null || tableData.enName == '' || tableData.enName == undefined) {
-                layer.msg('英文品名不能为空', {icon: 2, time: 2000});
-                return false;
-            }
-            if (tableData.count == null || tableData.count == '' || tableData.count == undefined) {
-                layer.msg('数量不能为空', {icon: 2, time: 2000});
-                return false;
-            }
-            if (tableData.price == null || tableData.price == '' || tableData.price == undefined) {
-                layer.msg('单价不能为空', {icon: 2, time: 2000});
-                return false;
-            }
-            if (tableData.weight == null || tableData.weight == '' || tableData.weight == undefined) {
-                layer.msg('重量不能为空', {icon: 2, time: 2000});
-                return false;
-            }
-            var applicationInfo = new Object();
-            applicationInfo.PickingName = tableData.chnName;
-            applicationInfo.ApplicationName = tableData.enName;
-            applicationInfo.Qty = tableData.count;
-            applicationInfo.UnitPrice = tableData.price;
-            applicationInfo.UnitWeight = tableData.weight;
-            applicationInfo.SKU = tableData.sku;
-            ApplicationInfos.push(applicationInfo);
+            wayBill.ApplicationInfos = ApplicationInfos;
         }
-        wayBill.ApplicationInfos = ApplicationInfos;
         wayBills.push(wayBill);
         layer.load();
         $.ajax({
@@ -992,13 +1078,15 @@
                 "salesCompany": $("#salesCompanyId").val(),
                 "companyId": document.getElementById("transportCompany").value,
                 "marketplaceId": $("#marketplaceId").val(),
-                "merchantId": $("#merchantId").val()
+                "merchantId": $("#merchantId").val(),
+                "trackNumber": $("#trackNumber").val()
             },
             success: function (data) {
                 layer.closeAll("loading");
                 if (data.code == 0) {
                     $("#orderCode").val(data.data);
-                    layer.msg('发货成功!', {icon: 1, time: 1000});
+                    layer.msg('发货成功!', {icon: 1, time: 2000});
+                    document.getElementById("delivery").disabled = false;
                 } else {
                     layer.msg(data.msg, {icon: 1, time: 2000});
                 }

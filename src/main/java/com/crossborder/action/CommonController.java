@@ -275,13 +275,37 @@ public class CommonController {
     public String getShipTypes(String countryCode, String companyId, String weight) {
         if (companyId.contains("SFC")) {
             return getSFCShipTypes(countryCode, weight);
-        } else if (companyId.contains("YT")) {
+        } else if (companyId.contains("Yun")) {
             return getYTShipTypes(countryCode);
         } else if (companyId.contains("Equick")) {
             return getEquickShipTypes(countryCode);
         } else {
-            return getYTShipTypes(countryCode);
+            return getQTShipTypes(countryCode,companyId);
         }
+    }
+
+    private String getQTShipTypes(String countryCode,String companyId) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            Map<String, String> paramMap = new HashMap<>();
+            paramMap.put("companyId", companyId);
+            List<Map<String, String>> list = commonService.getShipTypes(paramMap);
+            List<Map<String, String>> ships = new ArrayList<>();
+            for (int i = 0; i < list.size(); i++) {
+                Map<String, String> ship = new HashMap<>();
+                ship.put("name", list.get(i).get("DISPLAYNAME"));
+                ship.put("code", list.get(i).get("ID"));
+                ships.add(ship);
+            }
+            map.put("data", ships);
+            map.put("code", "0");
+            map.put("msg", "查询成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("code", "-10");
+            map.put("msg", "查询失败");
+        }
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
     private String getEquickShipTypes(String countryCode) {
@@ -349,8 +373,8 @@ public class CommonController {
 
     private HeaderRequest createRequest() {
         HeaderRequest _headerRequest = new HeaderRequest();
-        _headerRequest.setAppKey("MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCk0t7KGseCOy771g1PHYbIlzEYrckFVRZUn+SCEVm1q2nmcF0Rp3ukJSEWUIm4sQPMoT2V6YMvbT8O5uDgJxVLwp02ahrXBTHCV13KoLPqS/Y3usI/rpmxlMnp4hMNUJq/ezaTi7Wwzku1sZoAZLlqUmkwBGcFnUNFaRT6PVPSRQIDAQAB");
-        _headerRequest.setToken("MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCvFLVKZrw4+mFJ+gpCQDcWT9JMiEtBSvP2R8Q1b7D5LXNod0VVAtXcYgayb+uPlu9m1yu3WAyBR9sQpysJzsBBc8e3l7iVxxkLLGIX15ZDkh7hHVVUgl+k51mlLkEQobyULkfx1Ur61gtttW74yQNspdN2CRHS+zdXcFIhvT2q3QIDAQAB");
+        _headerRequest.setAppKey("MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDruSdGAwUaZw312WbVU0/I9OL+BY/JX7ZWMy9V1qcWb0gg3owbsBU/jXRXaAMXtYkPGZPNu0eOeFxyM7YtN+PM4nc60tViSIl9RMPGhM9uaDTv7aZPdqGB0WD9Bsd1pokI5T02zV33qPcRiwk1WAaTUJqzOpSCk16gmoAy5j7EoQIDAQAB");
+        _headerRequest.setToken("MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC3fBzI3qAAglMEkRLJisUEXwe1Tu07HgLR5AqRHNvLkYTmu3refHSl3JIc95o4fiuROHRyTuB90QjCE+MkaDf39dILevI6v29Wi2o5gByXYePELy1N+Z4GW9Nv5FAlvpYcYfflY8Ok5AK0gyEbMWT/S5dg7Ki//r2LMQW/OO5uPwIDAQAB");
         _headerRequest.setUserId("V8226");
         return _headerRequest;
     }
@@ -392,7 +416,16 @@ public class CommonController {
 
     @ResponseBody
     @RequestMapping(value = "confirmOrder", produces = "text/plain;charset=UTF-8")
-    public String confirmOrder(String amazonOrderId, String json, String companyId, String salesMan, String salesCompany, String marketplaceId, String merchantId, String alikeOrderId, HttpSession session) {
+    public String confirmOrder(String amazonOrderId,
+                               String json,
+                               String companyId,
+                               String salesMan,
+                               String salesCompany,
+                               String marketplaceId,
+                               String merchantId,
+                               String alikeOrderId,
+                               String trackNumber,
+                               HttpSession session) {
         if (companyId.contains("SFC")) {
             return addSFCOrder(session, json, amazonOrderId, salesMan, salesCompany, companyId, marketplaceId, merchantId, alikeOrderId);
         } else if (companyId.contains("Yun")) {
@@ -400,8 +433,36 @@ public class CommonController {
         } else if (companyId.contains("Equick")) {
             return addEquickOrder(session, json, amazonOrderId, salesMan, salesCompany, companyId, marketplaceId, merchantId, alikeOrderId);
         } else {
-            return addYTOrder(session, json, amazonOrderId, salesMan, salesCompany, companyId, marketplaceId, merchantId, alikeOrderId);
+            return addQTOrder(session, json, amazonOrderId, salesMan, salesCompany, companyId, marketplaceId, merchantId, alikeOrderId, trackNumber);
         }
+    }
+
+    public String addQTOrder(HttpSession session,
+                             String json,
+                             String amazonOrderId,
+                             String salesMan,
+                             String salesCompany,
+                             String companyId,
+                             String marketplaceId,
+                             String merchantId,
+                             String alikeOrderId,
+                             String trackNumber) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            Map<String, Object> user = (Map<String, Object>) session.getAttribute("user");
+            JSONObject jsonObject = JSONObject.parseArray(json).getJSONObject(0);
+            JSONObject shippingObject = jsonObject.getJSONObject("ShippingInfo");
+            updateLocalOrderStatus(amazonOrderId, shippingObject, jsonObject, trackNumber, salesMan, salesCompany, user);
+            updateAmazonOrderStatus(amazonOrderId, companyId, trackNumber, marketplaceId, merchantId);
+            map.put("data", trackNumber);
+            map.put("code", "0");
+            map.put("msg", "发货成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("code", "-10");
+            map.put("msg", e.getMessage());
+        }
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
     private String addEquickOrder(HttpSession session,
@@ -433,6 +494,7 @@ public class CommonController {
             bookingShipment.setToCustZipCode(shippingObject.getString("ShippingZip"));
             bookingShipment.setToCustAddress(shippingObject.getString("ShippingAddress") + "\n \n \n");
             bookingShipment.setToCustTel(shippingObject.getString("ShippingPhone"));
+            bookingShipment.setToCustMail(shippingObject.getString("ShippingMail"));
             bookingShipment.setWHTFactWHT(Float.valueOf(jsonObject.getString("Weight")));
             bookingShipment.setWHTHeight(Float.valueOf(jsonObject.getString("Height")));
             bookingShipment.setWHTLength(Float.valueOf(jsonObject.getString("Length")));
@@ -447,6 +509,7 @@ public class CommonController {
                 enName = enName + good.getString("ApplicationName") + " AND ";
                 cnName = cnName + good.getString("PickingName") + " AND ";
                 bookingShipment.setGoodsDesc(good.getString("ApplicationName"));
+                bookingShipment.setHSCodeNo(good.getString("SKU"));
                 sku = sku + good.getString("SKU") + " AND ";
                 count += Integer.parseInt(good.getString("Qty"));
                 declareWorth = declareWorth + Float.valueOf(good.getString("Qty")) * Float.valueOf(good.getString("UnitPrice"));
@@ -514,7 +577,7 @@ public class CommonController {
             _addOrdersRequestInfo.setRecipientCountry(shippingObject.getString("CountryCode"));
             _addOrdersRequestInfo.setRecipientCity(shippingObject.getString("ShippingCity"));
             _addOrdersRequestInfo.setRecipientState(shippingObject.getString("ShippingState"));
-            _addOrdersRequestInfo.setRecipientEmail("");
+            _addOrdersRequestInfo.setRecipientEmail(shippingObject.getString("ShippingMail"));
             _addOrdersRequestInfo.setRecipientPhone(shippingObject.getString("ShippingPhone"));
             _addOrdersRequestInfo.setRecipientZipCode(shippingObject.getString("ShippingZip"));
             _addOrdersRequestInfo.setRecipientAddress(shippingObject.getString("ShippingAddress"));
@@ -727,10 +790,12 @@ public class CommonController {
         shipMap.put("status", "0");
         commonService.insertShipMent(shipMap);
         JSONArray jsonArray = jsonObject.getJSONArray("ApplicationInfos");
-        for (int i = 0; i < jsonArray.size(); i++) {
-            Map<String, Object> customsInfo = jsonArray.getJSONObject(i);
-            customsInfo.put("custId", jsonObject.getString("OrderNumber"));
-            commonService.insertCustomsInfo(customsInfo);
+        if (jsonArray != null) {
+            for (int i = 0; i < jsonArray.size(); i++) {
+                Map<String, Object> customsInfo = jsonArray.getJSONObject(i);
+                customsInfo.put("custId", jsonObject.getString("OrderNumber"));
+                commonService.insertCustomsInfo(customsInfo);
+            }
         }
     }
 
