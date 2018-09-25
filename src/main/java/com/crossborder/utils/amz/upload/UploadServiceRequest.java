@@ -90,7 +90,7 @@ public class UploadServiceRequest {
         String merchantId = shop.get("MERCHANT_ID").toString();
         String language = shop.get("LANGUAGE").toString();
         String rate = (shop.get("EXRATE").toString());
-        String authToken = shop.get("MWSAUTHTOKEN").toString();
+        String authToken = shop.get("MWSAUTHTOKEN")==null?null:shop.get("MWSAUTHTOKEN").toString();
 
 
         result.setAccessKey(accessKeyId);
