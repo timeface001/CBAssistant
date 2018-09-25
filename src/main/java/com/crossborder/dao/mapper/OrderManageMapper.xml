@@ -170,7 +170,7 @@
         t1.AMAZONORDERID || '-clone-' || #{date,jdbcType=VARCHAR},
         t1.SELLERORDERID,
         t1.ORDERSTATUS,
-        t1.PURCHASEDATE,
+        CURRENT_DATE ,
         t1.LASTUPDATEDATE,
         t1.FULFILLMENTCHANNEL,
         t1.ORDERTOTAL,
@@ -185,7 +185,7 @@
         t1.SALESCOMPANY,
         t1.SALESSOURCE,
         t1.BUYERCOUNTRY,
-        t1.TRANSPORTCOMPANY,
+        '',
         '',
         t1.CURRENCYCODE,
         '1',
@@ -877,7 +877,7 @@
         WHERE AMAZONORDERID = #{amazonOrderId,jdbcType=VARCHAR}
     </delete>
     <select id="selectLocalMergeOrder" parameterType="java.util.Map" resultType="java.util.Map">
-        SELECT t1.id,
+        SELECT * FROM (SELECT t1.id,
         t1.amazonorderid,
         t2.smallimage,
         t1.buyeremail,
@@ -914,9 +914,14 @@
         on t6.merchant_id = t1.salessource
         left join t_user_info t7
         on t7.user_id= t1.salesman
-        WHERE  t1.buyeremail in
-        (select buyeremail from t_order where localstatus = '1' or localstatus = '2'  group by buyeremail having count (buyeremail) > 2)
-        ORDER BY t1.buyeremail, t5.addressline1, t5.addressline2,t5.addressline3
+        WHERE t1.buyeremail in
+        (select buyeremail from t_order where localstatus = '1' or localstatus = '2' group by buyeremail having count
+        (buyeremail) > 2)
+        ORDER BY t1.buyeremail, t5.addressline1, t5.addressline2,t5.addressline3)
+        WHERE 1=1
+        <if test="id !=null and id !=''">
+            AND id = #{id,jdbcType=VARCHAR}
+        </if>
     </select>
     <insert id="insertMergedOrder" parameterType="java.util.Map">
         INSERT INTO T_MERGED_ORDER
@@ -940,7 +945,7 @@
         LEFT JOIN (SELECT DISTINCT buyeremail,mergedid FROM T_ORDER) t2
         ON t2.mergedid = t1.mergedid
         LEFT JOIN t_user_info t3
-        on t3.user_id= t1.create_user
+        ON t3.user_id= t1.create_user
     </select>
     <select id="selectAmazonOrderId" parameterType="java.lang.String" resultType="java.util.Map">
         SELECT wm_concat(amazonorderid) amazonorderid from t_order
@@ -948,6 +953,11 @@
     </select>
     <select id="selectSmallImage" parameterType="java.lang.String" resultType="java.util.Map">
         SELECT wm_concat(smallimage) smallimage from t_order_item
+        where amazonorderid in (SELECT amazonorderid from t_order
+        WHERE mergedid = #{mergedId,jdbcType=VARCHAR})
+    </select>
+    <select id="selectAddressLine" parameterType="java.lang.String" resultType="java.util.Map">
+        SELECT DISTINCT addressline1, addressline2,addressline3 from t_address
         where amazonorderid in (SELECT amazonorderid from t_order
         WHERE mergedid = #{mergedId,jdbcType=VARCHAR})
     </select>

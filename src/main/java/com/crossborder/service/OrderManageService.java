@@ -119,6 +119,7 @@ public class OrderManageService {
         for (int i = 0; i < list.size(); i++) {
             Map<String, Object> idMap = orderManageDao.selectAmazonOrderId(list.get(i).get("MERGEDID").toString());
             Map<String, Object> imageMap = orderManageDao.selectSmallImage(list.get(i).get("MERGEDID").toString());
+            Map<String, Object> addressLineMap = orderManageDao.selectAddressLine(list.get(i).get("MERGEDID").toString()).get(0);
             if (imageMap != null) {
                 list.get(i).put("SMALLIMAGE", imageMap.get("SMALLIMAGE"));
             } else {
@@ -128,6 +129,15 @@ public class OrderManageService {
                 list.get(i).put("AMAZONORDERID", idMap.get("AMAZONORDERID"));
             } else {
                 list.get(i).put("AMAZONORDERID", null);
+            }
+            if (addressLineMap != null) {
+                list.get(i).put("ADDRESSLINE1", addressLineMap.get("ADDRESSLINE1"));
+                list.get(i).put("ADDRESSLINE2", addressLineMap.get("ADDRESSLINE2"));
+                list.get(i).put("ADDRESSLINE3", addressLineMap.get("ADDRESSLINE3"));
+            } else {
+                list.get(i).put("ADDRESSLINE1", null);
+                list.get(i).put("ADDRESSLINE2", null);
+                list.get(i).put("ADDRESSLINE3", null);
             }
         }
         return list;

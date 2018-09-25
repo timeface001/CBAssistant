@@ -680,11 +680,40 @@ public class OrderManageController {
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyMMddHHmmss");
             String date = sdf.format(new Date());
-            String[] idsArray = ids.split(",");
-            if (idsArray.length > 2) {
-                if (isEquals(idsArray)) {
-                    for (int i = 0; i < idsArray.length; i++) {
-                        paramMap.put("id", idsArray[i]);
+            String[] idArray = ids.split(",");
+            String[] emailArray = new String[idArray.length];
+            String[] addressLine1Array = new String[idArray.length];
+            String[] addressLine2Array = new String[idArray.length];
+            String[] addressLine3Array = new String[idArray.length];
+            if (idArray.length > 2) {
+                for (int i = 0; i < idArray.length; i++) {
+                    Map<String, Object> idMap = new HashMap<>();
+                    idMap.put("id", idArray[i]);
+                    Map<String, Object> localOrder = orderManageService.selectLocalMergeOrder(idMap).get(0);
+                    if (localOrder.get("BUYEREMAIL") != null) {
+                        emailArray[i] = localOrder.get("BUYEREMAIL").toString();
+                    } else {
+                        emailArray[i] = "";
+                    }
+                    if (localOrder.get("ADDRESSLINE1") != null) {
+                        addressLine1Array[i] = localOrder.get("ADDRESSLINE1").toString();
+                    } else {
+                        addressLine1Array[i] = "";
+                    }
+                    if (localOrder.get("ADDRESSLINE2") != null) {
+                        addressLine2Array[i] = localOrder.get("ADDRESSLINE2").toString();
+                    } else {
+                        addressLine2Array[i] = "";
+                    }
+                    if (localOrder.get("ADDRESSLINE3") != null) {
+                        addressLine3Array[i] = localOrder.get("ADDRESSLINE3").toString();
+                    } else {
+                        addressLine3Array[i] = "";
+                    }
+                }
+                if (isEquals(emailArray) && isEquals(addressLine1Array) && isEquals(addressLine2Array) && isEquals(addressLine3Array)) {
+                    for (int i = 0; i < idArray.length; i++) {
+                        paramMap.put("id", idArray[i]);
                         paramMap.put("mergedId", "merged-" + date);
                         paramMap.put("createUser", user.get("USER_ID"));
                         orderManageService.updateOrderMergeId(paramMap);

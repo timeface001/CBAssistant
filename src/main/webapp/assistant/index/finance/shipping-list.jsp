@@ -121,6 +121,7 @@
             <thead>
             <tr class="text-c">
                 <th width="25"><input type="checkbox" value="" name=""></th>
+                <th width="100">图片</th>
                 <th width="100">订单号</th>
                 <th width="100">客户单号</th>
                 <th width="100">国际跟踪号</th>
@@ -180,7 +181,7 @@
                 if (data.code == 0) {
                     var data = data.data;
                     for (var i = 0; i < data.length; i++) {
-                        $("#transportCompany").append($('<option value=' + data[i].ID + '>' + data[i].NAME + '</option>'));
+                        $("#transportCompany").append($("<option value=\"" + data[i].ID + "\">" + data[i].NAME + "</option>"));
                     }
                 }
             },
@@ -278,6 +279,7 @@
             },
             "columns": [
                 {"data": "ORDER_ID"},
+                {"data": "SMALLIMAGE"},
                 {"data": "ORDER_ID"},
                 {"data": "CUST_ORDER_ID"},
                 {"data": "TRACKNUMBER"},
@@ -301,12 +303,23 @@
                     }
                 },
                 {
-                    "targets": [9],
+                    "targets": [1],
+                    "data": "SMALLIMAGE",
+                    "render": function (data, type, full) {
+                        if (data != null) {
+                            return "<img id='" + full.ID + "' onmousemove=\"moveBig()\" onmouseout=\"hiddenBig()\" onmouseover=\"showBig('" + full.ID + "','" + data.split(",")[0] + "')\"src='" + data.split(",")[0] + "'/>";
+                        } else {
+                            return "<img  src='" + data + "'/>";
+                        }
+                    }
+                },
+                {
+                    "targets": [10],
                     "data": "TRANS_COMPANY_ID",
                     "visible": false
                 },
                 {
-                    "targets": [10],
+                    "targets": [11],
                     "data": "STATUS",
                     "render": function (data, type, full) {
                         if (data == 0) {
@@ -319,14 +332,14 @@
                     }
                 },
                 {
-                    "targets": [12],
+                    "targets": [13],
                     "data": "CREATE_TIME",
                     "render": function (data, type, full) {
                         return "<div>" + getMyDate(data) + "</div>"
                     }
                 },
                 {
-                    "targets": [13],
+                    "targets": [14],
                     "data": "STATUS",
                     "render": function (data, type, full) {
                         if (data == 0) {
@@ -497,6 +510,28 @@
             error: function (data) {
                 layer.msg("获取总费用请求错误！", {icon: 2, time: 1000});
             }
+        });
+    }
+    var x = 10;
+    var y = -300;
+    function showBig(id, url, e) {
+        e = window.event || e;
+        url = url.replace("SL75");
+        var bigDiv = "<div id='bigDiv' style='position: absolute;width: 300px;height: 300px'><img src='" + url + "' width='300px' height='300px' /></div>";
+        $("body").append(bigDiv);
+        $("#bigDiv").css({
+            "top": (e.pageY + y) + "px",
+            "left": (e.pageX + x) + "px"
+        }).show("fast");
+    }
+    function hiddenBig() {
+        $("#bigDiv").remove();
+    }
+    function moveBig(e) {
+        e = window.event || e;
+        $("#bigDiv").css({
+            "top": (e.pageY + y) + "px",
+            "left": (e.pageX + x) + "px"
         });
     }
 </script>
