@@ -23,6 +23,8 @@
           href="<%=request.getContextPath()%>/assistant/static/h-ui.admin/skin/default/skin.css" id="skin"/>
     <link rel="stylesheet" type="text/css"
           href="<%=request.getContextPath()%>/assistant/static/h-ui.admin/css/style.css"/>
+    <link rel="stylesheet" type="text/css"
+          href="<%=request.getContextPath()%>/assistant/static/layui/css/layui.css"/>
     <!--[if IE 6]>
     <script type="text/javascript"
             src="<%=request.getContextPath()%>/assistant/lib/DD_belatedPNG_0.0.8a-min.js"></script>
@@ -97,10 +99,11 @@
             <a href="javascript:;" onclick="reloadTable(2)" class="btn btn-default radius">已认领</a>
         </div>--%>
         <div class="cl pd-5 bg-1 bk-gray" id="count-div"><span class="l">
-            <a href="javascript:;"
-               onclick="claimProduct(null)"
-               class="btn  btn-primary radius"><i class="Hui-iconfont">
-                &#xe619;</i>批量发布</a>
+            <button class="layui-btn  layui-btn-sm" onclick="claimProduct(0)">批量发布</button>
+            <button class="layui-btn  layui-btn-xs" onclick="claimProduct(1)">同步价格</button>
+            <button class="layui-btn  layui-btn-xs" onclick="claimProduct(2)">同步库存</button>
+            <button class="layui-btn  layui-btn-xs" onclick="claimProduct(3)">同步关系</button>
+            <button class="layui-btn  layui-btn-xs" onclick="claimProduct(4)">同步图片</button>
             </span><span style="color: orange;float: left;margin-left: 10px;margin-top: 5px;">注意:同一个店铺一次最多可以发布五个国家，等发布成功后再点击发布剩余的国家产品。</span>
         </div>
         <table id="productTable" class="table table-border table-bordered table-bg table-hover mt-10">
@@ -137,6 +140,7 @@
     var productTable = null;
     var roleId = $("#roleId").val();
     var companyId = $("#companyId").val();
+    pids=[];
     $(function () {
         if (roleId == 100 || roleId == 200) {
             initSalesSelect("all");
@@ -159,8 +163,6 @@
     $("#search").click(function () {
         productTable.ajax.reload();
     });
-
-    var pids=[];
 
     $(function () {
         /*layui.use('form', function () {
@@ -325,17 +327,44 @@
                 },
                 {
                     "data": function (val) {
+                        var desc = "";
+                        var pc=val.publishContent;
+                        console.log(pc);
+                        if (pc == null || pc.indexOf("0")>-1) {
+                            desc = "【全部】"
+                        } else {
+                            desc = "【";
+
+                                if (pc.indexOf("1")>-1) {
+                                    desc += "价格|";
+                                }
+
+                                if (pc.indexOf("2")>-1) {
+                                    desc += "库存|";
+                                }
+
+                                if (pc.indexOf("3")>-1) {
+                                    desc += "关系|";
+                                }
+
+                                if (pc.indexOf("4")>-1) {
+                                    desc += "图片|";
+                                }
+
+                           desc= desc.substring(0,desc.length-1)+"】";
+                        }
+
                         if (val.publishStatus == "0") {
-                            return "预发布";
+                            return desc+"预发布";
                         }
                         if (val.publishStatus == "1") {
-                            return "<p style='text-align: left'>发布失败：</p><p title='" + val.uploadDesc + "' style='color: #ff515b'>" + (typeof(val.uploadDesc) == 'undefined' ? '' : getUploadDesc(val.uploadDesc)) + "</p>";
+                            return "<p style='text-align: left'>"+desc+"发布失败：</p><p title='" + val.uploadDesc + "' style='color: #ff515b'>" + (typeof(val.uploadDesc) == 'undefined' ? '' : getUploadDesc(val.uploadDesc)) + "</p>";
                         }
                         if (val.publishStatus == "2") {
-                            return "发布成功";
+                            return desc+"发布成功";
                         }
                         if (val.publishStatus == "3") {
-                            return "发布中";
+                            return desc+"发布中";
                         }
                     }
                 },
@@ -392,7 +421,7 @@
 
         //监听一下上一页下一页的点击事件
         $(".dataTables_paginate").on("click", "a", function() {
-            pids.concat(getIdsArr());
+            pids=pids.concat(getIdsArr());
         });
         return table;
     }
@@ -458,10 +487,10 @@
 
 
     /**
-     * 发布操作
+     * 批量发布操作
      * @param ids
      */
-    function claimProduct(ids) {
+    function claimProduct(ptype) {
         var ids =getIDs();
 
 
@@ -475,7 +504,8 @@
             url: '<%=request.getContextPath()%>/product/publish/batch',
             dataType: 'json',
             data: {
-                "ids": ids
+                "ids": ids,
+                "pType": ptype
             },
             success: function (data) {
                 if (data.success) {
@@ -522,7 +552,7 @@
 
     function getIDs() {
 
-        return getIdsArr().join(",");
+        return pids.concat(getIdsArr()).join(",");
     }
 
     function getIdsArr() {

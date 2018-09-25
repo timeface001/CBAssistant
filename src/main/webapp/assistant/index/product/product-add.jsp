@@ -52,7 +52,7 @@
                 <input type="text" class="input-text" value="" placeholder="" id="sourceType" name="sourceType" required>
             </div>
         </div>
-        <div class="row cl">
+       <%-- <div class="row cl">
             <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>产品主图：</label>
             <div class="formControls col-xs-8 col-sm-9">
                 <input name="mainPath" type="hidden" lay-verify="required"/>
@@ -66,16 +66,16 @@
             <div class="formControls col-xs-8 col-sm-9" id="mainPathSrc">
 
             </div>
-        </div>
+        </div>--%>
 
         <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>产品附图：</label>
+            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>产品图片：</label>
             <div class="formControls col-xs-8 col-sm-9">
                 <input name="imagePath" type="hidden" lay-verify="required"/>
                 <button type="button" class="layui-btn" id="imagePath">
                     <i class="layui-icon">&#xe67c;</i>上传图片
                 </button>
-                <span style="font-size: 10px;">(最多8张)</span>
+                <span style="font-size: 10px;">(最多9张，第一张为主图)</span>
             </div>
         </div>
         <div class="row cl">
@@ -309,7 +309,7 @@
                 acceptMime: "image/*",
                 elem: '#imagePath', //绑定元素
                 multiple: true
-                , number: 8
+                , number: 9
                 , url: '<%=request.getContextPath()%>/upload/image' //上传接口
                 , done: function (res) {
                     $("#imagePathSrc").append("<img width='100px' height='90px' style='margin-left:2px;margin-top:2px' src=<%=session.getAttribute("productPath")%>" + res.data + " val='" + res.data + "' />")
@@ -352,13 +352,13 @@
                         $("#pName").val(data.NAME);
                         $("#mainPathSrc").html("<img width='100px' height='90px' src=<%=session.getAttribute("productPath")%>" + data.MAIN_PATH + " />")
                         $("input[name='mainPath']").val(data.MAIN_PATH);
-                        $("input[name='imagePath']").val(data.IMAGE_PATH);
+                        $("input[name='imagePath']").val(data.MAIN_PATH+","+data.IMAGE_PATH);
                         $("#pSource").val(data.SOURCE);
                         if (data.IMAGE_PATH != null) {
-                            var ims = data.IMAGE_PATH.split(",");
+                            var ims = (data.MAIN_PATH+","+data.IMAGE_PATH).split(",");
                             if (ims.length > 0) {
                                 for (var i = 0; i < ims.length; i++) {
-                                    $("#imagePathSrc").append("<img width='100px' style='margin-left:2px;margin-top:2px' height='90px' src=<%=session.getAttribute("productPath")%>" + ims[i] + " val='" + ims[i] + "' />")
+                                     $("#imagePathSrc").append("<img width='100px' style='margin-left:2px;margin-top:2px' height='90px' src=<%=session.getAttribute("productPath")%>" + ims[i] + " val='" + ims[i] + "' />")
                                 }
                             }
                         }

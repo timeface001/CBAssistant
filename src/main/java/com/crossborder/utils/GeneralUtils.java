@@ -1,5 +1,7 @@
 package com.crossborder.utils;
 
+import com.alibaba.fastjson.JSON;
+import com.crossborder.action.ProductClaimController;
 import com.crossborder.entity.ClaimProduct;
 import com.crossborder.entity.ProductItemVar;
 import org.apache.commons.lang3.StringUtils;
@@ -54,6 +56,7 @@ public class GeneralUtils {
     }
 
     public static String getUserId(){
+        //return "libing";
         return  ((Map<String, Object>) ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest().getSession().getAttribute("user")).get("USER_ID").toString();
     }
 
@@ -178,9 +181,17 @@ public class GeneralUtils {
         return m.replaceAll("");
     }
 
+
+
+
     public static void main(String[] args) {
-        System.out.println(removeAttr("<table><td width=\"261\"></table>"));
+        Map<String,String> map=new HashMap<>();
+        map.put("1","2");
+        map.put("3","4");
+        String ss="{\"MaterialType\":\"1\",\"OuterMaterialType\":\"2\",\"StyleName\":\"3\",\"ClosureType\":\"4\"}";
+        System.out.println((JSON.parseObject(ss,Map.class).size()));
     }
+
 
     public static String removeAttr(String str) {
         if (StringUtils.isBlank(str)) {

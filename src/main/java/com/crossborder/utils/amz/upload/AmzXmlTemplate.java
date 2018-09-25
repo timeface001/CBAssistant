@@ -1,5 +1,6 @@
 package com.crossborder.utils.amz.upload;
 
+import com.alibaba.fastjson.JSON;
 import com.crossborder.entity.ProductAmzUpload;
 import com.crossborder.entity.ProductItemVar;
 import com.crossborder.utils.GeneralUtils;
@@ -7,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 import static java.math.BigDecimal.ROUND_DOWN;
 
@@ -14,9 +16,13 @@ public class AmzXmlTemplate {
 
     private static String getByProductType(ProductAmzUpload product) {
         String str = "<ProductType>SportingGoods</ProductType>";
-        if (StringUtils.isNotBlank(product.getProductTypeName())) {
-            str = "<ProductType>" + product.getProductType() + "</ProductType>";
+        /*if (StringUtils.isNotBlank(product.getProductTypeName())) {
+            str = "<ProductType>" + product.getProductTypeName() + "</ProductType>";
+        }*/
+        if (product.getProductTypeName().equals("Shoes")) {
+            str = getExtInfo(product);
         }
+
         return str;
     }
 
@@ -158,9 +164,48 @@ public class AmzXmlTemplate {
                 "<PurgeAndReplace>false</PurgeAndReplace>" + str + "</AmazonEnvelope>";
     }
 
+    public static String getClassificationData(String values) {
+        String result = "";
+        try {
+            if (StringUtils.isNotBlank(values)) {
+                Map<String, String> map = JSON.parseObject(values, Map.class);
+                for (Map.Entry<String, String> entry : map.entrySet()) {
+                    result += "<" + entry.getKey() + ">" + entry.getValue() + "</" + entry.getKey() + ">";
+                }
+                return "<ClassificationData>" + result + "</ClassificationData>";
+
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    public static String getExtInfo(ProductAmzUpload product) {
+        String result = "";
+        if (product.getProductTypeName().equals("Shoes")) {
+
+            return "<ClothingType>Shoes</ClothingType>";
+
+        }
+
+        return result;
+    }
+
     public static String getUploadProductStr(ProductAmzUpload product, ProductItemVar var, boolean isSingle) {
         boolean isParent = StringUtils.isBlank(var.getVariationType());
-        String productTypeName = StringUtils.isNotBlank(product.getProductTypeName()) ? product.getProductTypeName() : "Sports";
+        String productTypeName = StringUtils.isNotBlank(product.getProductType())&& StringUtils.isNotBlank(product.getProductTypeName()) ? product.getProductTypeName() : "Sports";
+        String productData = "<ProductData>" +
+                "<" + productTypeName + ">" + getByProductType(product) +
+                (isSingle ? "" : ("<VariationData>" +
+                        "<Parentage>" + (isParent ? "parent" : "child") + "</Parentage>" +
+                        (isParent ? variationTheme(product.getVariationTheme()) : (variationData(var))) +
+                        "</VariationData>")) + getClassificationData(product.getProductType()) +
+
+                "</" + productTypeName + ">" +
+                "</ProductData>";
+
         String text =
                 "<Message>" +
                 "<MessageID>"+product.getId()+"0"+var.getId()+"</MessageID>" +
@@ -189,20 +234,10 @@ public class AmzXmlTemplate {
                 "<IsGiftWrapAvailable>false</IsGiftWrapAvailable>" +
                         "<IsGiftMessageAvailable>false</IsGiftMessageAvailable>" +
                 (StringUtils.isNotBlank(product.getProductTypeId()) ? ("<RecommendedBrowseNode>" + product.getProductTypeId() + "</RecommendedBrowseNode>") : "") +
-                "</DescriptionData>" +
-                "<ProductData>" +
-                        "<" + productTypeName + ">" + getByProductType(product) +
-                (isSingle ? "" : ("<VariationData>" +
-                        "<Parentage>" + (isParent ? "parent" : "child") + "</Parentage>\n" +
-                        (isParent ? variationTheme(product.getVariationTheme()) : (variationData(var))) +
-                        "</VariationData>")) +
-
-                        "</" + productTypeName + ">" +
-                "</ProductData>" +
+                        "</DescriptionData>" + productData +
                 "</Product>" +
                 "</Message>";
 
-        //System.out.println(text);
 
         return text;
     }

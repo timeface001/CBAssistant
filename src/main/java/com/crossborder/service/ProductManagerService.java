@@ -8,6 +8,7 @@ import com.crossborder.utils.GeneralUtils;
 import com.crossborder.utils.ProductStateEnum;
 import com.crossborder.utils.PublishStatusEnum;
 import com.crossborder.utils.amz.upload.AmzUpload;
+import com.crossborder.utils.amz.upload.PublishTypeEnum;
 import com.crossborder.utils.util.ChineseAndEnglish;
 import com.google.cloud.translate.Translate;
 import com.google.cloud.translate.TranslateOptions;
@@ -49,6 +50,9 @@ public class ProductManagerService {
 
     public boolean save(Map<String, Object> product) {
         product.put("createTime", new Date());
+        String images = (String) product.get("imagePath");
+        product.put("mainPath", images.substring(0, images.indexOf(",")));
+        product.put("imagePath", images.substring(images.indexOf(",") + 1));
         if (product.get("id") != null && StringUtils.isNotBlank(product.get("id").toString())) {
             return productManagerDao.updateProduct(product) == 1;
         } else {
@@ -484,23 +488,39 @@ public class ProductManagerService {
         return productAmzUploadDao.selectByPrimaryKey(id);
     }
 
-    public void batchPublish(List<String> ids) {
+    public void batchPublish(List<String> ids, Integer type) {
         for (String id : ids) {
             if (StringUtils.isBlank(id)) {
                 continue;
             }
             ProductAmzUpload product = productAmzUploadDao.selectByPrimaryKey(id);
-            product.setPublishStatus(PublishStatusEnum.NOT.getVal());
             product.setUpdateDelete("update");
             product.setPublishTime(new Date());
 
+            if (product.getPublishStatus().equals("2")) {
+                product.setPublishContent("");
+            }
+
+            product.setPublishStatus(PublishStatusEnum.NOT.getVal());
             //产品魔板暂时都为空
             product.setProductTypeName("  ");
+            String uploadContent = product.getPublishContent();
+            if (StringUtils.isNotBlank(uploadContent)) {
+                if (uploadContent.contains(PublishTypeEnum.MAIN.getValStr()) || type.compareTo(PublishTypeEnum.MAIN.getVal()) == 0) {
+                    product.setPublishContent(PublishTypeEnum.MAIN.getValStr());
+                } else if (!uploadContent.contains(String.valueOf(type))) {
+                    product.setPublishContent(product.getPublishContent() + "," + String.valueOf(type));
+
+                }
+            } else {
+                product.setPublishContent(String.valueOf(type));
+            }
 
             updateClaimProduct(PublishStatusEnum.NOT, product.getProductAmzId());
             productAmzUploadDao.updateByPrimaryKeySelective(product);
         }
     }
+
 
     public void uploadProduct(ProductAmzUpload product) {
 
@@ -532,7 +552,7 @@ public class ProductManagerService {
         product.setPublishTime(new Date());
 
         //产品魔板暂时都为空
-        product.setProductTypeName("  ");
+        //product.setProductTypeName();
 
         updateClaimProduct(PublishStatusEnum.NOT, product.getProductAmzId());
         productAmzUploadDao.updateByPrimaryKeySelective(product);
@@ -718,5 +738,9 @@ public class ProductManagerService {
     public void getProductId(Integer type,String userId){
         //Map<String,Object>
         productIdGenDao.selectProductIdForUseOne(null, userId);
+    }
+
+    public boolean isExistSku(String sku) {
+        return StringUtils.isNotBlank(sku) && claimProductExtMapper.countBySku(sku) > 0L;
     }
 }

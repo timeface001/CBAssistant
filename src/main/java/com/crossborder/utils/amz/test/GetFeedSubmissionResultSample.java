@@ -48,8 +48,8 @@ public class GetFeedSubmissionResultSample {
          * Access Key ID and Secret Access Key ID, obtained from:
          * http://aws.amazon.com
          ***********************************************************************/
-        final String accessKeyId = "AKIAJYOHHDMS3SD5C7MQ";
-        final String secretAccessKey = "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";
+        final String accessKeyId = "AKIAIRTMKJ3L3DNCORYQ";
+        final String secretAccessKey = "iGJnwW57XAoCmrYmlYzGliDJ74FK6KNW3EC4X0H+";
 
         final String appName = "<Your Application or Company Name>";
         final String appVersion = "<Your Application Version or Build Number or Release Date>";
@@ -60,7 +60,7 @@ public class GetFeedSubmissionResultSample {
          * Uncomment to set the appropriate MWS endpoint.
          ************************************************************************/
         // US
-         config.setServiceURL("https://mws-eu.amazonservices.com");
+         //config.setServiceURL("https://mws-eu.amazonservices.com");
         // UK
         // config.setServiceURL("https://mws.amazonservices.co.uk/");
         // Germany
@@ -68,7 +68,7 @@ public class GetFeedSubmissionResultSample {
         // France
         // config.setServiceURL("https://mws.amazonservices.fr/");
         // Italy
-        // config.setServiceURL("https://mws.amazonservices.it/");
+         config.setServiceURL("https://mws.amazonservices.it/");
         // Japan
         // config.setServiceURL("https://mws.amazonservices.jp/");
         // China
@@ -103,14 +103,14 @@ public class GetFeedSubmissionResultSample {
          * Marketplace and Merchant IDs are required parameters for all 
          * Marketplace Web Service calls.
          ***********************************************************************/
-        final String merchantId = "APC8KTCSFWL6Q";
+        final String merchantId = "A21WK1ZAUBHF10";
         final String sellerDevAuthToken = "<Merchant Developer MWS Auth Token>";
 
         GetFeedSubmissionResultRequest request = new GetFeedSubmissionResultRequest();
         request.setMerchant( merchantId );
         //request.setMWSAuthToken(sellerDevAuthToken);
         
-        request.setFeedSubmissionId( "53471017704" );
+        request.setFeedSubmissionId( "51779017788" );
 
         // Note that depending on the size of the feed sent in, and the number of errors and warnings,
         // the result can reach sizes greater than 1GB. For this reason we recommend that you _always_ 

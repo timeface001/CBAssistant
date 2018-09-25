@@ -139,4 +139,22 @@ public class ProductManagerController extends BaseController {
 
         return JSON.toJSONString(result);
     }
+
+    @RequestMapping(value = "/product/skuValid", produces = "text/plain;charset=UTF-8")
+    @ResponseBody
+    public String isExists(String sku) {
+        Map<String, Object> result = new HashMap<>();
+        try {
+            result.put("success", productManagerService.isExistSku(sku));
+            result.put("msg", "操作成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.put("success", false);
+            result.put("msg", "操作失败");
+        }
+
+        return JSON.toJSONString(result);
+    }
+
+
 }

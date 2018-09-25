@@ -10,6 +10,7 @@ import com.crossborder.utils.GeneralUtils;
 import com.crossborder.utils.PublishStatusEnum;
 import org.apache.http.client.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -32,10 +33,9 @@ public class QuartBathUpload {
     @Autowired
     private ProductUploadLogDao productUploadLogDao;
 
-   /* @Scheduled(cron = "0 *//*25 * * * ?")*/
+    @Scheduled(cron = "0 0/24 * * * ?")
     public void upload() {
         System.out.println("定时批量发布开始...." + DateUtils.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
-
 
         //List<ProductAmzUpload> list = list();
         List<ProductAmzUpload> list = productAmzUploadDao.selectList(GeneralUtils.genMap("pStatus", PublishStatusEnum.NOT.getVal()));
@@ -82,7 +82,7 @@ public class QuartBathUpload {
 
     private List<ProductAmzUpload> list() {
         List<ProductAmzUpload> list = new ArrayList<>();
-        String[] arr = {"22985","22990","22995","22635"};
+        String[] arr = {"184554"};
 
         for (String id : arr) {
             ProductAmzUpload pp = productAmzUploadDao.selectByPrimaryKey(id);

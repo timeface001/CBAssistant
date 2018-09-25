@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crossborder.dao.mapper.ext.UploadLogMapper">
+  <resultMap id="BaseResultMap" type="com.crossborder.entity.UploadLog">
+    <id column="a_ID" jdbcType="DECIMAL" property="id" />
+    <result column="a_PRODUCT_ID" jdbcType="VARCHAR" property="productId" />
+    <result column="a_UPLOAD_MSG" jdbcType="VARCHAR" property="uploadMsg" />
+    <result column="a_STATUS" jdbcType="DECIMAL" property="status" />
+    <result column="a_STATUS_DESC" jdbcType="VARCHAR" property="statusDesc" />
+    <result column="a_CTIME" jdbcType="TIMESTAMP" property="ctime" />
+    <result column="a_UTIME" jdbcType="TIMESTAMP" property="utime" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.crossborder.entity.UploadLog">
+    <result column="a_FAILD_MSG" jdbcType="CLOB" property="faildMsg" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    a.ID as a_ID, a.PRODUCT_ID as a_PRODUCT_ID, a.UPLOAD_MSG as a_UPLOAD_MSG, a.STATUS as a_STATUS, 
+    a.STATUS_DESC as a_STATUS_DESC, a.CTIME as a_CTIME, a.UTIME as a_UTIME
+  </sql>
+  <sql id="Blob_Column_List">
+    a.FAILD_MSG as a_FAILD_MSG
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from T_UPLOAD_LOG a
+    where a.ID = #{id,jdbcType=DECIMAL}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from T_UPLOAD_LOG
+    where ID = #{id,jdbcType=DECIMAL}
+  </delete>
+  <insert id="insert" parameterType="com.crossborder.entity.UploadLog">
+    insert into T_UPLOAD_LOG (ID, PRODUCT_ID, UPLOAD_MSG, 
+      STATUS, STATUS_DESC, CTIME, 
+      UTIME, FAILD_MSG)
+    values (#{id,jdbcType=DECIMAL}, #{productId,jdbcType=VARCHAR}, #{uploadMsg,jdbcType=VARCHAR}, 
+      #{status,jdbcType=DECIMAL}, #{statusDesc,jdbcType=VARCHAR}, #{ctime,jdbcType=TIMESTAMP}, 
+      #{utime,jdbcType=TIMESTAMP}, #{faildMsg,jdbcType=CLOB})
+  </insert>
+  <insert id="insertSelective" parameterType="com.crossborder.entity.UploadLog">
+    insert into T_UPLOAD_LOG
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="productId != null">
+        PRODUCT_ID,
+      </if>
+      <if test="uploadMsg != null">
+        UPLOAD_MSG,
+      </if>
+      <if test="status != null">
+        STATUS,
+      </if>
+      <if test="statusDesc != null">
+        STATUS_DESC,
+      </if>
+      <if test="ctime != null">
+        CTIME,
+      </if>
+      <if test="utime != null">
+        UTIME,
+      </if>
+      <if test="faildMsg != null">
+        FAILD_MSG,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=DECIMAL},
+      </if>
+      <if test="productId != null">
+        #{productId,jdbcType=VARCHAR},
+      </if>
+      <if test="uploadMsg != null">
+        #{uploadMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=DECIMAL},
+      </if>
+      <if test="statusDesc != null">
+        #{statusDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="ctime != null">
+        #{ctime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="utime != null">
+        #{utime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="faildMsg != null">
+        #{faildMsg,jdbcType=CLOB},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.crossborder.entity.UploadLog">
+    update T_UPLOAD_LOG
+    <set>
+      <if test="productId != null">
+        PRODUCT_ID = #{productId,jdbcType=VARCHAR},
+      </if>
+      <if test="uploadMsg != null">
+        UPLOAD_MSG = #{uploadMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        STATUS = #{status,jdbcType=DECIMAL},
+      </if>
+      <if test="statusDesc != null">
+        STATUS_DESC = #{statusDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="ctime != null">
+        CTIME = #{ctime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="utime != null">
+        UTIME = #{utime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="faildMsg != null">
+        FAILD_MSG = #{faildMsg,jdbcType=CLOB},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.crossborder.entity.UploadLog">
+    update T_UPLOAD_LOG
+    set PRODUCT_ID = #{productId,jdbcType=VARCHAR},
+      UPLOAD_MSG = #{uploadMsg,jdbcType=VARCHAR},
+      STATUS = #{status,jdbcType=DECIMAL},
+      STATUS_DESC = #{statusDesc,jdbcType=VARCHAR},
+      CTIME = #{ctime,jdbcType=TIMESTAMP},
+      UTIME = #{utime,jdbcType=TIMESTAMP},
+      FAILD_MSG = #{faildMsg,jdbcType=CLOB}
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.crossborder.entity.UploadLog">
+    update T_UPLOAD_LOG
+    set PRODUCT_ID = #{productId,jdbcType=VARCHAR},
+      UPLOAD_MSG = #{uploadMsg,jdbcType=VARCHAR},
+      STATUS = #{status,jdbcType=DECIMAL},
+      STATUS_DESC = #{statusDesc,jdbcType=VARCHAR},
+      CTIME = #{ctime,jdbcType=TIMESTAMP},
+      UTIME = #{utime,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+</mapper>

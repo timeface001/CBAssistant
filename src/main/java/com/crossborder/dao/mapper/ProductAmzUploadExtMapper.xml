@@ -54,7 +54,7 @@
         <if test="companyId != null and companyId !=''">
             AND a.create_user in (SELECT user_id from t_user_info where user_company = #{companyId})
         </if>
-        ORDER BY a.PUBLISH_TIME DESC
+        ORDER BY a.PUBLISH_TIME DESC nulls last
     </select>
 
     <update id="deleteByAmzId" parameterType="java.util.Map">
@@ -170,6 +170,7 @@
         <result column="a_PRODUCT_TYPE" jdbcType="VARCHAR" property="productType"/>
         <result column="a_ITEM_TYPE" jdbcType="VARCHAR" property="itemType"/>
         <result column="a_PRODUCT_TYPE_NAME" jdbcType="VARCHAR" property="productTypeName"/>
+        <result column="a_PUBLISH_CONTENT" jdbcType="VARCHAR" property="publishContent"/>
     </resultMap>
     <sql id="Base_Column_List">
         a.ID as a_ID, a.LANGUAGE_ID as a_LANGUAGE_ID, a.TEMPLATETYPE as a_TEMPLATETYPE, a.ITEM_SKU as a_ITEM_SKU,
@@ -196,6 +197,7 @@
         a.ATTACH_PATH as a_ATTACH_PATH, a.WEBSITE_TYPE as a_WEBSITE_TYPE, a.EXTERNAL_PRODUCT_ID_TYPE as a_EXTERNAL_PRODUCT_ID_TYPE,
         a.AMZ_SKU as a_AMZ_SKU, a.UPLOAD_DESC as a_UPLOAD_DESC,b.SHOP_NAME as b_SHOP_NAME,c.NAME as c_NAME,d.USER_NAME as d_USER_NAME,
         a.PRODUCT_TYPE_ID as a_PRODUCT_TYPE_ID,a.PRODUCT_TYPE as a_PRODUCT_TYPE,a.ITEM_TYPE as a_ITEM_TYPE,a.PRODUCT_TYPE_NAME as a_PRODUCT_TYPE_NAME
+        ,a.PUBLISH_CONTENT as a_PUBLISH_CONTENT
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
         select
@@ -883,6 +885,10 @@
 
             <if test="productTypeName != null">
                 PRODUCT_TYPE_NAME=#{productTypeName,jdbcType=VARCHAR},
+            </if>
+
+            <if test="publishContent != null">
+                PUBLISH_CONTENT=#{publishContent,jdbcType=VARCHAR},
             </if>
 
 

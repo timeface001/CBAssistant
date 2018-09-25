@@ -2,18 +2,23 @@ package com.crossborder.action;
 
 import com.alibaba.fastjson.JSON;
 import com.crossborder.dao.ProductAmzUploadDao;
+import com.crossborder.dao.ProductValuesDao;
 import com.crossborder.entity.ClaimProduct;
 import com.crossborder.entity.ProductAmzUpload;
 import com.crossborder.entity.ProductUploadCategory;
+import com.crossborder.entity.ProductUploadValues;
 import com.crossborder.service.ProductManagerService;
 import com.crossborder.service.ShopManageService;
 import com.crossborder.utils.GeneralUtils;
 import com.crossborder.utils.ResponseDto;
 import com.crossborder.utils.ResponseGen;
+import com.crossborder.utils.amz.upload.ProductTypeExt;
+import com.crossborder.utils.amz.upload.PublishTypeEnum;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -84,7 +89,7 @@ public class ProductPublishController extends BaseController {
     }
 
     /**
-     * 产品详情
+     * 发布产品
      *
      * @return
      */
@@ -92,9 +97,7 @@ public class ProductPublishController extends BaseController {
     public ModelAndView detail(HttpSession session, String id, HttpServletRequest request) {
         ModelAndView view = new ModelAndView("forward:/assistant/index/product/product_upload_edit.jsp");
         ProductAmzUpload product = null;//productManagerService.selectAmzUploadProduct(id);
-        //request.setAttribute("product", product);
-        //ProductAmzUpload product = productManagerService.selectAmzUploadProduct(id);
-        //request.setAttribute("product", product);
+
         String type = request.getParameter("type");
         if (type.equals("1")) {
             product = productManagerService.selectAmzUploadProduct(id);
@@ -123,6 +126,21 @@ public class ProductPublishController extends BaseController {
         generateShopSelectResponse(session, request);
         request.setAttribute("product", product);
         request.setAttribute("id", id);
+        List<ProductUploadValues> varTypes = dao.selectList();
+        request.setAttribute("values", varTypes);
+        Map<String, List<String>> valuePropMap = new HashMap<>();
+        for (ProductUploadValues vv : varTypes) {
+            if (StringUtils.isNotBlank(vv.getNecValues())) {
+                valuePropMap.put(vv.getDisplayName(), Arrays.asList(vv.getNecValues().split(",")));
+            }
+        }
+        request.setAttribute("valueMap", JSON.toJSONString(ProductTypeExt.list));
+        request.setAttribute("valuePropMap", JSON.toJSONString(valuePropMap));
+        if (StringUtils.isNotBlank(product.getProductType())) {
+            request.setAttribute("valueTypeMap", (product.getProductType()));
+        } else {
+            request.setAttribute("valueTypeMap", "{}");
+        }
         return view;
     }
 
@@ -171,8 +189,8 @@ public class ProductPublishController extends BaseController {
 
     @RequestMapping(value = "/product/publish/batch", produces = "text/plain;charset=UTF-8")
     @ResponseBody
-    public String batchPublish(String ids) {
-        productManagerService.batchPublish(new ArrayList<String>(Arrays.asList(ids.split(","))));
+    public String batchPublish(String ids,Integer pType) {
+        productManagerService.batchPublish(new ArrayList<String>(Arrays.asList(ids.split(","))),pType);
         return JSON.toJSONString(ResponseGen.genSuccess());
     }
 
@@ -224,6 +242,7 @@ public class ProductPublishController extends BaseController {
         try {
             if (type.equals("1")) {
                 if (StringUtils.isNotBlank(product.getShopId())) {
+                    product.setPublishContent(PublishTypeEnum.MAIN.getValStr());
                     productAmzUploadDao.updateByPrimaryKeySelective(product);
                     product = productAmzUploadDao.selectByPrimaryKey(product.getId());
                     //product.setItemName(translate(product.getItemName(),));
@@ -245,6 +264,7 @@ public class ProductPublishController extends BaseController {
                 product.setId(id);
                 //product.setAmzSku(product1.getAmzSku());
 
+                product.setPublishContent(PublishTypeEnum.MAIN.getValStr());
                 productAmzUploadDao.updateByPrimaryKeySelective(product);
                 product = productAmzUploadDao.selectByPrimaryKey(product.getId());
                 productManagerService.uploadProduct(product);
@@ -291,6 +311,16 @@ public class ProductPublishController extends BaseController {
             map.put("msg", "查询失败");
         }
         return JSON.toJSONString(map);
+    }
+
+    @Autowired
+    private ProductValuesDao dao;
+
+    @RequestMapping("/values")
+    @ResponseBody
+    public String values() {
+
+        return JSON.toJSONString(dao.selectList());
     }
 
 }

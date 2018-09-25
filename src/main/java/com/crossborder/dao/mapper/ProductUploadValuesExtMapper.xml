@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crossborder.dao.ProductValuesDao">
+
+
+    <select id="selectList" resultMap="BaseResultMap" parameterType="java.util.Map">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM T_PRODUCT_UPLOAD_VALUES a where a.STATUS=0
+    </select>
+
+    <resultMap id="BaseResultMap" type="com.crossborder.entity.ProductUploadValues">
+        <id column="a_ID" jdbcType="VARCHAR" property="id" />
+        <result column="a_TYPE_VALUE" jdbcType="VARCHAR" property="typeValue" />
+        <result column="a_DISPLAY_NAME" jdbcType="VARCHAR" property="displayName" />
+        <result column="a_STATUS" jdbcType="DECIMAL" property="status" />
+        <result column="a_CTIME" jdbcType="DATE" property="ctime" />
+        <result column="a_NEC_VALUES" jdbcType="VARCHAR" property="necValues" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        a.ID as a_ID, a.TYPE_VALUE as a_TYPE_VALUE, a.DISPLAY_NAME as a_DISPLAY_NAME, a.STATUS as a_STATUS,
+        a.CTIME as a_CTIME, a.NEC_VALUES as a_NEC_VALUES
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from T_PRODUCT_UPLOAD_VALUES a
+        where a.ID = #{id,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from T_PRODUCT_UPLOAD_VALUES
+        where ID = #{id,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.crossborder.entity.ProductUploadValues">
+        insert into T_PRODUCT_UPLOAD_VALUES (ID, TYPE_VALUE, DISPLAY_NAME,
+        STATUS, CTIME, NEC_VALUES
+        )
+        values (#{id,jdbcType=VARCHAR}, #{typeValue,jdbcType=VARCHAR}, #{displayName,jdbcType=VARCHAR},
+        #{status,jdbcType=DECIMAL}, #{ctime,jdbcType=DATE}, #{necValues,jdbcType=VARCHAR}
+        )
+    </insert>
+    <insert id="insertSelective" parameterType="com.crossborder.entity.ProductUploadValues">
+        insert into T_PRODUCT_UPLOAD_VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                ID,
+            </if>
+            <if test="typeValue != null">
+                TYPE_VALUE,
+            </if>
+            <if test="displayName != null">
+                DISPLAY_NAME,
+            </if>
+            <if test="status != null">
+                STATUS,
+            </if>
+            <if test="ctime != null">
+                CTIME,
+            </if>
+            <if test="necValues != null">
+                NEC_VALUES,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="typeValue != null">
+                #{typeValue,jdbcType=VARCHAR},
+            </if>
+            <if test="displayName != null">
+                #{displayName,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=DECIMAL},
+            </if>
+            <if test="ctime != null">
+                #{ctime,jdbcType=DATE},
+            </if>
+            <if test="necValues != null">
+                #{necValues,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.crossborder.entity.ProductUploadValues">
+        update T_PRODUCT_UPLOAD_VALUES
+        <set>
+            <if test="typeValue != null">
+                TYPE_VALUE = #{typeValue,jdbcType=VARCHAR},
+            </if>
+            <if test="displayName != null">
+                DISPLAY_NAME = #{displayName,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                STATUS = #{status,jdbcType=DECIMAL},
+            </if>
+            <if test="ctime != null">
+                CTIME = #{ctime,jdbcType=DATE},
+            </if>
+            <if test="necValues != null">
+                NEC_VALUES = #{necValues,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where ID = #{id,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.crossborder.entity.ProductUploadValues">
+    update T_PRODUCT_UPLOAD_VALUES
+    set TYPE_VALUE = #{typeValue,jdbcType=VARCHAR},
+      DISPLAY_NAME = #{displayName,jdbcType=VARCHAR},
+      STATUS = #{status,jdbcType=DECIMAL},
+      CTIME = #{ctime,jdbcType=DATE},
+      NEC_VALUES = #{necValues,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

@@ -974,7 +974,22 @@
             });
 
             form.on('submit', function (data) {
-                var skuTypeA = data.field.skuType;
+                var skuTypeA = data.field.skuType,skuValue=data.field.sku;
+                var isExs=false;
+                $.ajax({url:"<%=request.getContextPath()%>/product/skuValid",dataType: 'json',data:{sku:skuValue},async:false,success:function(data) {
+                   if(data.success){
+                       isExs=true;
+                   }
+                }});
+
+                if(isExs&&skuValue!='${product.sku}'){
+                    layer.msg("sku已存在，请重新修改！", {icon: 5, time: 1000});
+                    setTimeout(function () {
+
+                    },1500);
+                    return false;
+                }
+
                 //详细描述
                 data.field["productDescriptionUk"] = layedit.getContent(ukedit);
                 data.field["productDescriptionFr"] = layedit.getContent(fredit);

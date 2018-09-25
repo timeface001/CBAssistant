@@ -187,12 +187,6 @@ public class AmzUpload {
                     //if (mid.isSuccess()) {
                     System.out.println("商品主题上传结束。。。");
 
-                    System.out.println("开始上传图片信息:");
-                    System.out.println("图片xml:" + item.getImageStrHead());
-                    FileInputStream imageIs = new FileInputStream(FileUtils.byte2File(item.getImageStrHead().getBytes(), commonSet.getAmzUploadProductPath(), UUID.randomUUID() + "image_fee.txt"));
-                    new UploadTask(getService(sr.getShop()), getSubmitFeedRequest(imageIs, sr, AmzFeeType.PRODUCT_IMAGES_FEED), AmzFeeType.PRODUCT_IMAGES_FEED).run();
-                    i++;
-
                     System.out.println("上传价格信息:");
                   /*  for (Map.Entry<String, UploadServiceRequest.SplitRequest> entry : sr.getExrateList().entrySet()) {
                         String priceStr = "";
@@ -231,6 +225,12 @@ public class AmzUpload {
                             new UploadTask(getService(sr.getShop()), getSubmitFeedRequest(relationIs, sr, item1.getShop().getMarketIds(), AmzFeeType.RELATIONSHIPS_FEED), AmzFeeType.RELATIONSHIPS_FEED).run();
                         }
                     }
+
+                    System.out.println("开始上传图片信息:");
+                    System.out.println("图片xml:" + item.getImageStrHead());
+                    FileInputStream imageIs = new FileInputStream(FileUtils.byte2File(item.getImageStrHead().getBytes(), commonSet.getAmzUploadProductPath(), UUID.randomUUID() + "image_fee.txt"));
+                    new UploadTask(getService(sr.getShop()), getSubmitFeedRequest(imageIs, sr, AmzFeeType.PRODUCT_IMAGES_FEED), AmzFeeType.PRODUCT_IMAGES_FEED).run();
+                    i++;
 
                     request.setSubmitIds(submitIds);
                     getFeedSubResult(request);
@@ -294,7 +294,7 @@ public class AmzUpload {
     private SubmitFeedRequest getRequest(UploadServiceRequest.ShopReq shop, AmzFeeType feeType) {
         SubmitFeedRequest request = new SubmitFeedRequest();
         request.setMerchant(shop.getMerchantId());
-
+        request.setMWSAuthToken(shop.getAuthToken());
         request.setFeedType(feeType.getVal());
         return request;
     }
@@ -305,17 +305,19 @@ public class AmzUpload {
 
 
         try {
-            Thread.sleep(160000);
+            Thread.sleep(180000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
         ResponseDto<String> dto = new ResponseDto();
+        long wait = 30000;
         try {
             List<String> submitIds = req.getSubmitIds();
             GetFeedSubmissionListRequest request = new GetFeedSubmissionListRequest();
             request.setMerchant(req.getShop().getMerchantId());
             request.setFeedSubmissionIdList(new IdList(submitIds));
+            request.setMWSAuthToken(req.getShop().getAuthToken());
             int i = 0;
             boolean isDone;
             do {
@@ -323,8 +325,9 @@ public class AmzUpload {
                 isDone = getFeedResult(response);
                 i++;
                 try {
-                    Thread.sleep(30000);
+                    Thread.sleep(wait);
                     System.out.println("GetFeedSubmissionListRequest:第" + i + "个30秒");
+                    wait = wait + 30000;
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -340,7 +343,7 @@ public class AmzUpload {
                     Map<String, ProductAmzUpload> errorMap = new HashMap<>();
                     GetFeedSubmissionResultRequest resultRequest = new GetFeedSubmissionResultRequest();
                     resultRequest.setMerchant(req.getShop().getMerchantId());
-
+                    resultRequest.setMWSAuthToken(req.getShop().getAuthToken());
                     resultRequest.setFeedSubmissionId(submitId);
 
                     OutputStream processingResult = null;
@@ -420,7 +423,17 @@ public class AmzUpload {
                 }
 
 
-
+            } else {
+                for (String submitId : submitIds) {
+                    for (ProductAmzUpload id : req.getSubmitProducts().get(submitId)) {
+                        ProductAmzUpload update = new ProductAmzUpload();
+                        update.setPublishStatus(PublishStatusEnum.FAILED.getVal());
+                        update.setUploadDesc("超长时间请求亚马逊返回结果失败");
+                        update.setId(id.getId());
+                        productAmzUploadDao.updateByPrimaryKeySelective(update);
+                        productManagerService.updateClaimProduct(PublishStatusEnum.FAILED, id.getProductAmzId());
+                    }
+                }
             }
 
 

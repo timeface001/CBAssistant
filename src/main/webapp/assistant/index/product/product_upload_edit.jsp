@@ -88,49 +88,36 @@
         </c:if>
 
         <div class="layui-form-item">
-            <label class="layui-form-label">产品分类</label>
-            <div class="layui-inline" style="width: 50%">
-                <input type="text" name="browseNodes" value="${product.browseNodes}" id="browseNodes"
-                       lay-filter="productType"
-                       placeholder="" autocomplete="off" class="layui-input ">
-                <input type="hidden" name="productTypeId" id="typeId" value="${product.productTypeId}">
-
-                <input type="hidden" name="productType" id="productType" value="${product.productTypeId}"/>
-                <input type="hidden" name="productTypeName" id="productTypeName" value="${product.productTypeId}"/>
-                <input type="hidden" name="itemType" id="itemType" value="${product.productTypeId}"/>
-            </div>
-            <div class="layui-inline">
-                <label class="layui-form-label">分类类型</label>
-                <div class="layui-input-inline" style="width: 100px;">
-                    <input type="text" name="externalProductId" value="" id="type"
-                           placeholder="" autocomplete="off" class="layui-input ">
-                </div>
+            <label class="layui-form-label">分类ID</label>
+            <div class="layui-input-block">
+                <input type="text" name="productTypeId" value="${product.productTypeId}" id="productTypeId"
+                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
             </div>
         </div>
 
-        <%--<div class="layui-form-item">
-            <label class="layui-form-label">产品ID</label>
-            <div class="layui-inline">
-                <input type="text" name="externalProductId" value="${product.externalProductId}" id="externalProductId"
-                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input ">
-            </div>
-            <div class="layui-inline">
-                <select name="externalProductIdType" lay-verify="required" lay id="externalProductIdType">
-                    <option value="">--</option>
-                    <option value="ISBN">ISBN</option>
-                    <option value="UPC">UPC</option>
-                    <option value="EAN">EAN</option>
-                    <option value="ASIN">ASIN</option>
-                    <option value="GTIN">GTIN</option>
-                    <option value="GCID">GCID</option>
-                    <option value="PZN">PZN</option>
+        <div class="layui-form-item">
+            <label class="layui-form-label">分类模板</label>
+            <div class="layui-input-block">
+                <select required name="productTypeName" id="productTypeName" lay-filter="productTypeName">
+                    <option>选择模板</option>
+                    <c:forEach var="va" items="${values}">
+                        <option value="${va.displayName}" val="${va.necValues}">${va.typeValue}</option>
+                    </c:forEach>
                 </select>
             </div>
+        </div>
 
-            <div class="layui-inline">
-                <button class="layui-btn" type="button" id="genPid">一键生成</button>
+        <div class="layui-form-item" id="valueProp">
+            <label class="layui-form-label">必要属性</label>
+        </div>
+
+        <div class="layui-form-item" id="itemTypeShow" style="display: none;">
+            <label class="layui-form-label">ITEM_TYPE</label>
+            <div class="layui-input-block">
+                <input type="text" name="itemType" value="${product.itemType}" id="itemType"
+                       placeholder="" autocomplete="off" class="layui-input ">
             </div>
-        </div>--%>
+        </div>
 
         <div class="layui-form-item">
             <label class="layui-form-label">品牌</label>
@@ -148,39 +135,12 @@
             </div>
         </div>
 
-        <%--<div class="layui-form-item">
-            <label class="layui-form-label">商品重量</label>
-            <div class="layui-input-block">
-                <input type="text" name="itemWeight" value="${product.itemWeight}" id="itemWeight"
-                       lay-verify="number" placeholder="" autocomplete="off" class="layui-input ">
-            </div>
-        </div>
-
-        <div class="layui-form-item">
-            <label class="layui-form-label">运输重量</label>
-            <div class="layui-input-block">
-                <input type="text" name="websiteShippingWeight" value="${product.websiteShippingWeight}"
-                       id="websiteShippingWeight"
-                       lay-verify="required" placeholder="" autocomplete="off" class="layui-input ">
-            </div>
-        </div>--%>
-
 
         <div class="layui-form-item">
             <label class="layui-form-label">运输方式</label>
             <div class="layui-input-block">
                 <input type="radio" name="websiteType" value="FBM" title="FBM" checked>
                 <input type="radio" name="websiteType" value="FBA" title="FBA">
-            </div>
-        </div>
-
-        <div class="layui-form-item">
-            <label class="layui-form-label">分类必填参数</label>
-            <div class="layui-input-block">
-                <select name="">
-                    <option value="">请选择</option>
-                    <option value="shoes">鞋子</option>
-                </select>
             </div>
         </div>
 
@@ -191,115 +151,7 @@
             </div>
         </div>
     </form>
-    <div id="modal-demo" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog" style="min-width: 1000px">
-            <div class="modal-content radius">
-                <div class="modal-header">
-                    <h3 class="modal-title">选择分类</h3>
-                    <a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:">×</a>
-                </div>
-                <div class="modal-body" style="height: 330px;overflow-x: auto">
-                    <div class="row cl">
-                        <label class="col-xs-1 col-sm-1">分类ID：</label>
-                        <div class="col-xs-2 col-sm-2">
-                            <input type="text" class="input-text" id="categoryId" value="${product.productTypeId}"
-                                   onkeyup="this.value=this.value.replace(/[^\d]/g,'')"/>
-                        </div>
-                        <label class="col-xs-1 col-sm-1">分类类型：</label>
-                        <div class="col-xs-2 col-sm-2">
-                            <input type="text" class="input-text" id="categoryType" value="${product.productType}"/>
-                        </div>
-                        <label class="col-xs-1 col-sm-1">分类模版：</label>
-                        <div class="col-xs-2 col-sm-2">
-                            <input type="text" class="input-text" id="categoryModel"
-                                   value="${product.productTypeName}"/>
-                        </div>
-                        <label id="itemLabel" class="col-xs-1 col-sm-1" style="display: none">产品模版：</label>
-                        <div id="itemDiv" class="col-xs-2 col-sm-2" style="display: none">
-                            <input type="text" class="input-text" placeholder="itemType" id="cateType"
-                                   value="${product.itemType}"/>
-                        </div>
-                    </div>
-                    <div id="content-div">
-                        <div id="div1"
-                             style="display: block;width: 240px;height: 300px; float: left;border: 1px solid #ddd;border-radius: 4px;padding: 5px 5px 5px 5px;margin-right: 10px;">
-                            <select id="level-1" name="level-1" class="select" style="height: 32px;"
-                                    onchange="loadTypes(this.value,2)">
-                                <option value="">请选择</option>
-                            </select>
-                        </div>
-                        <div id="div2"
-                             style="display: none;width: 240px;height: 300px; float: left;border: 1px solid #ddd;border-radius: 4px;padding: 5px 5px 5px 5px;margin-right: 10px;">
-                            <select id="level-2" name="level-2" class="select" style="height: 32px"
-                                    onchange="loadTypes(this.value,3)">
-                                <option value="">请选择</option>
-                            </select>
-                        </div>
-                        <div id="div3"
-                             style="display: none;width: 240px;height: 300px; float: left;border: 1px solid #ddd;border-radius: 4px;padding: 5px 5px 5px 5px;margin-right: 10px;">
-                            <select id="level-3" name="level-3" class="select" style="height: 32px"
-                                    onchange="loadTypes(this.value,4)">
-                                <option value="">请选择</option>
-                            </select>
-                        </div>
-                        <div id="div4"
-                             style="display: none;width: 240px;height: 300px; float: left;border: 1px solid #ddd;border-radius: 4px;padding: 5px 5px 5px 5px;margin-right: 10px;">
-                            <select id="level-4" name="level-4" class="select" style="height: 32px"
-                                    onchange="loadTypes(this.value,5)">
-                                <option value="">请选择</option>
-                            </select>
-                        </div>
-                        <div id="div5"
-                             style="display: none;width: 240px;height: 300px; float: left;border: 1px solid #ddd;border-radius: 4px;padding: 5px 5px 5px 5px;margin-right: 10px;">
-                            <select id="level-5" name="level-5" class="select" style="height: 32px"
-                                    onchange="loadTypes(this.value,6)">
-                                <option value="">请选择</option>
-                            </select>
-                        </div>
-                        <div id="div6"
-                             style="display: none;width: 240px;height: 300px; float: left;border: 1px solid #ddd;border-radius: 4px;padding: 5px 5px 5px 5px;margin-right: 10px;">
-                            <select id="level-6" name="level-6" class="select" style="height: 32px"
-                                    onchange="loadTypes(this.value,7)">
-                                <option value="">请选择</option>
-                            </select>
-                        </div>
-                        <div id="div7"
-                             style="display: none;width: 240px;height: 300px; float: left;border: 1px solid #ddd;border-radius: 4px;padding: 5px 5px 5px 5px;margin-right: 10px;">
-                            <select id="level-7" name="level-7" class="select" style="height: 32px"
-                                    onchange="loadTypes(this.value,8)">
-                                <option value="">请选择</option>
-                            </select>
-                        </div>
-                        <div id="div8"
-                             style="display: none;width: 240px;height: 300px; float: left;border: 1px solid #ddd;border-radius: 4px;padding: 5px 5px 5px 5px;margin-right: 10px;">
-                            <select id="level-8" name="level-8" class="select" style="height: 32px"
-                                    onchange="loadTypes(this.value,9)">
-                                <option value="">请选择</option>
-                            </select>
-                        </div>
-                        <div id="div9"
-                             style="display: none;width: 240px;height: 300px; float: left;border: 1px solid #ddd;border-radius: 4px;padding: 5px 5px 5px 5px;margin-right: 10px;">
-                            <select id="level-9" name="level-9" class="select" style="height: 32px"
-                                    onchange="loadTypes(this.value,10)">
-                                <option value="">请选择</option>
-                            </select>
-                        </div>
-                        <div id="div10"
-                             style="display: none;width: 240px;height: 300px; float: left;border: 1px solid #ddd;border-radius: 4px;padding: 5px 5px 5px 5px;margin-right: 10px;">
-                            <select id="level-10" name="level-10" class="select" style="height: 32px">
-                                <option value="">请选择</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-success radius" onclick="chooseType()">确定</button>
-                    <button class="btn radius" data-dismiss="modal" aria-hidden="true">关闭</button>
-                </div>
-            </div>
-        </div>
-    </div>
+
 </article>
 
 <!--_footer 作为公共模版分离出去-->
@@ -354,6 +206,9 @@
 
 
         $("#shopId").val('${product.shopId}');
+        $("#productTypeName").val('${product.productTypeName}');
+        var valuePropMap = eval("(" + '${valuePropMap}' + ")");
+        var valueTypeMap=eval("(" + '${valueTypeMap}' + ")");
 
         $("input[name='websiteType']").each(function (i, val) {
             if ($(val).val() == '${product.websiteType}') {
@@ -383,15 +238,23 @@
                     return false;
                 }
 
+                var valueMap={};
+                $("#valueProp input").each(function (i,val) {
 
+                     valueMap[$(val).attr('name')]=$(val).val();
+                });
+
+                var str=JSON.stringify(valueMap);
+                if(str=="{}"){
+                    str="";
+                }
+
+                data.field['productType']=str;
                 data.field['type'] = '${type}';
                 //data.field['ids'] = '${id}';
                 //data.field['type'] = '${type}';
                 layer.load();
                 if(type=="2"){//批量预发布
-
-
-
                     $.ajax({
                         type: 'POST',
                         url: '<%=request.getContextPath()%>/product/publish/batch/pre',
@@ -441,6 +304,11 @@
                 }
             });
 
+            valueShow('${product.productTypeName}',true);
+            form.on('select(productTypeName)', function (data) {
+                valueShow(data.value,false);
+            });
+
             form.on('select(shop)', function (data) {
                 $.ajax({
                     type: 'POST',
@@ -480,6 +348,12 @@
                                         translte = data.itemCn;
                                     }
 
+                                    if (countryCode == "US") {
+                                        $("#itemTypeShow").css("display", "");
+                                    } else {
+                                        $("#itemTypeShow").css("display", "none");
+                                    }
+
                                     $("#itemName").val(translte);
                                 }
 
@@ -497,7 +371,44 @@
             });
 
         });
+
+        function valueShow(dataValue,isDis) {
+            $("#valueProp").html("<label class=\"layui-form-label\">必要属性</label>");
+            var isHas=false;
+            for (var k in valuePropMap) {
+                if (k == dataValue) {
+                    isHas=true;
+                    for (var i = 0; i < valuePropMap[k].length; i++) {
+                        var vvv='';
+                        if(isDis){
+                            vvv=valueTypeMap[valuePropMap[k][i]];
+                        }
+
+                        $("#valueProp").append("<div class=\"layui-inline\">\n" +
+                            "<label style='float: left;\n" +
+                            "    display: block;\n" +
+                            "    padding: 9px 15px;\n" +
+                            "    font-weight: 400;\n" +
+                            "    text-align: right;'>" + valuePropMap[k][i] + "</label>\n" +
+                            " <div class=\"layui-input-inline\" style=\"width: 100px;\">\n" +
+                            "<input type=\"text\" name="+valuePropMap[k][i]+" value="+vvv+" id=\"\"\n" +
+                            "  placeholder=\"\" lay-verify=\"required\" autocomplete=\"off\"  lay-v class=\"layui-input \">\n" +
+                            "                </div>\n" +
+                            "            </div>");
+                    }
+                    break;
+                }
+            }
+
+            if(isHas){
+                $("#valueProp").css("display","");
+            }else{
+                $("#valueProp").css("display","none");
+            }
+        }
     });
+
+
     $("#genPid").click(function () {
         $.ajax({
             type: 'POST',

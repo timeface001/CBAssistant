@@ -146,6 +146,16 @@ public class ProductAmzUpload implements Cloneable{
 
     private String itemType;
 
+    private String publishContent;
+
+    public String getPublishContent() {
+        return publishContent;
+    }
+
+    public void setPublishContent(String publishContent) {
+        this.publishContent = publishContent;
+    }
+
     public String getProductTypeId() {
         return productTypeId;
     }
