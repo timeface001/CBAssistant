@@ -51,8 +51,12 @@ public class ProductManagerService {
     public boolean save(Map<String, Object> product) {
         product.put("createTime", new Date());
         String images = (String) product.get("imagePath");
-        product.put("mainPath", images.substring(0, images.indexOf(",")));
-        product.put("imagePath", images.substring(images.indexOf(",") + 1));
+        if(StringUtils.isNotBlank(images)&&images.contains(",")){
+            product.put("mainPath", images.substring(0, images.indexOf(",")));
+            product.put("imagePath", images.substring(images.indexOf(",") + 1));
+        }else{
+            product.put("mainPath", images);
+        }
         if (product.get("id") != null && StringUtils.isNotBlank(product.get("id").toString())) {
             return productManagerDao.updateProduct(product) == 1;
         } else {
