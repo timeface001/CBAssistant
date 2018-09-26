@@ -82,7 +82,7 @@ public class ShopManageController {
             MarketplaceWebServiceOrdersClient client = new MarketplaceWebServiceOrdersClient(shop.get("accesskeyId").toString(), shop.get("secretKey").toString(), config);
             ListOrdersRequest request = new ListOrdersRequest();
             request.setSellerId(shop.get("merchantId").toString());
-            request.setMWSAuthToken("");
+            request.setMWSAuthToken(shop.get("authToken").toString());
             GregorianCalendar cal = new GregorianCalendar();
             XMLGregorianCalendar createdAfter = null;
             XMLGregorianCalendar createdBefore = null;

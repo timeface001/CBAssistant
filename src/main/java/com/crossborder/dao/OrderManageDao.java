@@ -67,4 +67,7 @@ public interface OrderManageDao {
     public Map<String, Object> selectAmazonOrderId(String mergedId);
 
     public Map<String, Object> selectSmallImage(String mergedId);
+
+    public List<Map<String, Object>> selectAddressLine(String mergedId);
+
 }

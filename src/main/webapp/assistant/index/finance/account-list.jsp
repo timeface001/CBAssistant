@@ -128,7 +128,7 @@
                 if (data.code == 0) {
                     var data = data.data;
                     for (var i = 0; i < data.length; i++) {
-                        $("#shipCompany").append($('<option value=' + data[i].ID + '>' + data[i].NAME + '</option>'));
+                        $("#shipCompany").append($("<option value=\"" + data[i].ID + "\">" + data[i].NAME + "</option>"));
                     }
                 }
             },

@@ -43,7 +43,7 @@ public class FinanceManageController {
     private AccountManageService accountManageService;
 
     /**
-     * 查询店铺
+     * 查询运费
      *
      * @return
      */
@@ -73,6 +73,15 @@ public class FinanceManageController {
         return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
+    /**
+     * 获取运费
+     *
+     * @param session
+     * @param companyId
+     * @param orderId
+     * @param custId
+     * @return
+     */
     @ResponseBody
     @RequestMapping(value = "getShippingPrice", produces = "text/plain;charset=UTF-8")
     public String getShippingPrice(HttpSession session, String companyId, String orderId, String custId) {
@@ -86,6 +95,13 @@ public class FinanceManageController {
         }
     }
 
+    /**
+     * 更新运费
+     *
+     * @param session
+     * @param data
+     * @return
+     */
     @ResponseBody
     @RequestMapping(value = "updateShipping", produces = "text/plain;charset=UTF-8")
     public String updateShipping(HttpSession session, String data) {
@@ -307,8 +323,8 @@ public class FinanceManageController {
 
     private HeaderRequest createRequest() {
         HeaderRequest _headerRequest = new HeaderRequest();
-        _headerRequest.setAppKey("MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCk0t7KGseCOy771g1PHYbIlzEYrckFVRZUn+SCEVm1q2nmcF0Rp3ukJSEWUIm4sQPMoT2V6YMvbT8O5uDgJxVLwp02ahrXBTHCV13KoLPqS/Y3usI/rpmxlMnp4hMNUJq/ezaTi7Wwzku1sZoAZLlqUmkwBGcFnUNFaRT6PVPSRQIDAQAB");
-        _headerRequest.setToken("MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCvFLVKZrw4+mFJ+gpCQDcWT9JMiEtBSvP2R8Q1b7D5LXNod0VVAtXcYgayb+uPlu9m1yu3WAyBR9sQpysJzsBBc8e3l7iVxxkLLGIX15ZDkh7hHVVUgl+k51mlLkEQobyULkfx1Ur61gtttW74yQNspdN2CRHS+zdXcFIhvT2q3QIDAQAB");
+        _headerRequest.setAppKey("MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDruSdGAwUaZw312WbVU0/I9OL+BY/JX7ZWMy9V1qcWb0gg3owbsBU/jXRXaAMXtYkPGZPNu0eOeFxyM7YtN+PM4nc60tViSIl9RMPGhM9uaDTv7aZPdqGB0WD9Bsd1pokI5T02zV33qPcRiwk1WAaTUJqzOpSCk16gmoAy5j7EoQIDAQAB");
+        _headerRequest.setToken("MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC3fBzI3qAAglMEkRLJisUEXwe1Tu07HgLR5AqRHNvLkYTmu3refHSl3JIc95o4fiuROHRyTuB90QjCE+MkaDf39dILevI6v29Wi2o5gByXYePELy1N+Z4GW9Nv5FAlvpYcYfflY8Ok5AK0gyEbMWT/S5dg7Ki//r2LMQW/OO5uPwIDAQAB");
         _headerRequest.setUserId("V8226");
         return _headerRequest;
     }

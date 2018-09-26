@@ -280,11 +280,11 @@ public class CommonController {
         } else if (companyId.contains("Equick")) {
             return getEquickShipTypes(countryCode);
         } else {
-            return getQTShipTypes(countryCode,companyId);
+            return getQTShipTypes(countryCode, companyId);
         }
     }
 
-    private String getQTShipTypes(String countryCode,String companyId) {
+    private String getQTShipTypes(String countryCode, String companyId) {
         Map<String, Object> map = new HashMap<>();
         try {
             Map<String, String> paramMap = new HashMap<>();
@@ -705,13 +705,14 @@ public class CommonController {
                     "</OrderFulfillment>" +
                     "</Message>";
             String end = "</AmazonEnvelope>";
+            String path = PropertyUtil.getProperty("updateOrderStatusPath");
             StringBuffer stringBuffer = new StringBuffer();
             String fulfillmentXml = stringBuffer.append(header).append(message).append(end).toString();
-            FileWriter writer = new FileWriter("/home/amz/updateStatus.txt");
+            FileWriter writer = new FileWriter(new File(path));
             writer.write(fulfillmentXml);
             writer.flush();
             writer.close();
-            FileInputStream fis = new FileInputStream(new File("/home/amz/updateStatus.txt"));
+            FileInputStream fis = new FileInputStream(new File(path));
             Map<String, Object> shopMap = new HashMap<>();
             shopMap.put("merchantId", merchantId);
             shopMap.put("marketplaceId", marketplaceId);
@@ -726,6 +727,7 @@ public class CommonController {
             idList.setId(ids);
             request.setMarketplaceIdList(idList);
             request.setMerchant(shop.get("MERCHANT_ID").toString());
+            request.setMWSAuthToken(shop.get("MWSAUTHTOKEN").toString());
             request.setFeedContent(fis);
             request.setFeedType(Order_Fulfillment_Fee);
             request.setContentMD5(MD5.computeContentMD5HeaderValue(fis));
@@ -805,7 +807,7 @@ public class CommonController {
         Map<String, Object> map = new HashMap<>();
         try {
             if (companyId.contains("SFC")) {
-                String url = "http://www.sendfromchina.com/api/label?orderCodeList=" + orderCode + "&printType=1&print_type=pdf&printSize=3&printSort=1";
+                String url = "http://www.sendfromchina.com/api/label?orderCodeList=" + orderCode + "&printType=1&print_type=pdf&printSize=1&printSort=1";
                 map.put("data", url);
                 map.put("code", "0");
                 map.put("msg", "打印成功");
@@ -856,7 +858,7 @@ public class CommonController {
             String orderCode = shipMent.get("ORDER_CODE").toString();
             String[] custOrderIds = {shipMent.get("CUST_ORDER_ID").toString()};
             if (companyId.contains("SFC")) {
-                String url = "http://www.sendfromchina.com/api/label?orderCodeList=" + orderCode + "&printType=1&print_type=pdf&printSize=3&printSort=1";
+                String url = "http://www.sendfromchina.com/api/label?orderCodeList=" + orderCode + "&printType=1&print_type=pdf&printSize=1&printSort=1";
                 map.put("data", url);
                 map.put("code", "0");
                 map.put("msg", "打印成功");

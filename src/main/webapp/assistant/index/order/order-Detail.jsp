@@ -581,7 +581,9 @@
                             if (roleId == 300) {
                                 return "";
                             } else {
-                                return "<a style='text-decoration:none' title='退款'  onClick=\"updateOrder(6,'" + full.ORDERITEMID + "')\"'>退款</a>" +
+                                return "<a style='text-decoration:none' title='备货'  onClick=\"updateOrder(2,'" + full.ORDERITEMID + "','" + full.AMAZONORDERID + "')\"'>备货</a>" +
+                                        "&nbsp;&nbsp;&nbsp;&nbsp;" +
+                                        "<a style='text-decoration:none' title='退款'  onClick=\"updateOrder(6,'" + full.ORDERITEMID + "')\"'>退款</a>" +
                                         "&nbsp;&nbsp;&nbsp;&nbsp;" +
                                         "<a style='text-decoration:none' title='问题'  onClick=\"updateOrder(5,'" + full.ORDERITEMID + "')\"'>问题</a>" +
                                         "&nbsp;&nbsp;&nbsp;&nbsp;" +
@@ -724,7 +726,7 @@
                     "targets": [4],
                     "data": "PRICE",
                     "render": function (data, type, full) {
-                        return "<input type='text' value='7'  class='input-text' name='price'/>";
+                        return "<input type='text' value='15'  class='input-text' name='price'/>";
                     }
                 },
                 {
