@@ -523,22 +523,21 @@
     /*产品-删除*/
     function deleteProduct(id) {
 
-        alert("删除等等");
-        return
-        ;
+
         if (id == null || id == "") {
             id = getIDs();
         }
         layer.confirm('产品删除须谨慎，确认要删除吗？', function (index) {
             $.ajax({
                 type: 'POST',
-                url: '<%=request.getContextPath()%>/product/delete',
+                url: '<%=request.getContextPath()%>/public/delete',
                 dataType: 'json',
-                data: {"data": id},
+                data: {"id": id},
                 success: function (data) {
                     if (data.success) {
                         setTimeout(layer.msg(data.msg, {icon: 6, time: 1000}), 1000);
                         document.getElementById("refresh").click();
+                        productTable.ajax.reload();
                     } else {
                         layer.msg('删除失败!', {icon: 5, time: 1000});
                     }

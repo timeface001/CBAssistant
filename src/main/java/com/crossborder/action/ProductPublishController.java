@@ -284,6 +284,14 @@ public class ProductPublishController extends BaseController {
         return "success";
     }
 
+    @RequestMapping("public/delete")
+    @ResponseBody
+    public String delete(String id) {
+        productManagerService.deletePublish(id);
+        return ResponseGen.genSuccessData(null);
+    }
+
+
 
     @RequestMapping("publish/category")
     @ResponseBody

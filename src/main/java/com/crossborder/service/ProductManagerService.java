@@ -747,4 +747,8 @@ public class ProductManagerService {
     public boolean isExistSku(String sku) {
         return StringUtils.isNotBlank(sku) && claimProductExtMapper.countBySku(sku) > 0L;
     }
+
+    public void deletePublish(String id) {
+        productAmzUploadDao.deleteByPrimaryKey(id);
+    }
 }
