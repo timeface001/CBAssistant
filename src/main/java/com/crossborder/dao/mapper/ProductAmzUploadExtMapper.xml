@@ -29,7 +29,7 @@
         ON a.language_id = c.id
         LEFT JOIN T_USER_INFO d
         ON a.create_user = d.user_id
-        WHERE a.P_STATE=1 AND a.PARENT_CHILD='parent'
+        WHERE a.P_STATE=1 AND a.PARENT_CHILD='parent' AND b.id is not NULL
         <if test="pStatus!=null and pStatus!=''">
             AND a.PUBLISH_STATUS=#{pStatus}
         </if>
