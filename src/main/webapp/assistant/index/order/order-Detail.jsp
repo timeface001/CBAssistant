@@ -1089,6 +1089,7 @@
                     $("#orderCode").val(data.data);
                     layer.msg('发货成功!', {icon: 1, time: 2000});
                     document.getElementById("delivery").disabled = false;
+                    print();
                 } else {
                     layer.msg(data.msg, {icon: 1, time: 2000});
                 }

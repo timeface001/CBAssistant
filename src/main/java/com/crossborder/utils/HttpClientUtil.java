@@ -27,7 +27,7 @@ public class HttpClientUtil {
     public static String doGetRequest(String url) throws ClientProtocolException, IOException {
         HttpClient client = new DefaultHttpClient();
         HttpGet httpGet = new HttpGet(url);
-        httpGet.setHeader("Accept", "text/json");
+        httpGet.setHeader("Accept", "application/json");
         httpGet.setHeader("Accept-Language", "zh-cn");
         String token = "C98031&HHTGPrA8drI=";
         httpGet.setHeader("Authorization", "Basic " + Base64.encode(token.getBytes()));
@@ -47,7 +47,7 @@ public class HttpClientUtil {
     public static String doPostRequest(String url, String json) throws ClientProtocolException, IOException {
         HttpClient client = new DefaultHttpClient();
         HttpPost httpPost = new HttpPost(url);
-        httpPost.setHeader("Accept", "text/json");
+        httpPost.setHeader("Accept", "application/json");
         httpPost.setHeader("Accept-Language", "zh-cn");
         String token = "C98031&HHTGPrA8drI=";
         httpPost.setHeader("Authorization", "Basic " + Base64.encode(token.getBytes()));

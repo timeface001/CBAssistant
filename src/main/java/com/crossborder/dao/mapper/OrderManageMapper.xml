@@ -170,7 +170,7 @@
         t1.AMAZONORDERID || '-clone-' || #{date,jdbcType=VARCHAR},
         t1.SELLERORDERID,
         t1.ORDERSTATUS,
-        CURRENT_DATE ,
+        to_char(sysdate,'yyyy-mm-dd hh24:mi:ss'),
         t1.LASTUPDATEDATE,
         t1.FULFILLMENTCHANNEL,
         t1.ORDERTOTAL,
