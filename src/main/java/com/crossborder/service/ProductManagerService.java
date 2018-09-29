@@ -123,62 +123,15 @@ public class ProductManagerService {
 
                 //标题翻译
                 String name = GeneralUtils.nullToEmpty(product.get("NAME"));
-                Map<String, Object> translationMap = systemManageService.selectTranslations(new HashMap<String, Object>()).get(0);
-                String key = translationMap.get("SECRET_KEY").toString();//"AIzaSyAN1tQ7mgCZ7fVPtc6PCKMw69P-TbZv-5w";
-                Translate translate = TranslateOptions.newBuilder().setApiKey(key).build().getService();
-                Translation translation = null;
-                String cn = "";
+
+                String cn = name;
                 String uk = "";
                 String jp = "";
                 String de = "";
                 String fr = "";
                 String es = "";
                 String it = "";
-                try {
-                    if (ChineseAndEnglish.isChinese(name)) {
-                        cn = name;
-                        translation =
-                                translate.translate(
-                                        name,
-                                        Translate.TranslateOption.targetLanguage("en"));
-                        uk = translation.getTranslatedText();
-                    } else {
-                        translation =
-                                translate.translate(
-                                        name,
-                                        Translate.TranslateOption.targetLanguage("zh-CN"));
-                        cn = translation.getTranslatedText();
-                        uk = name;
-                    }
-                    translation =
-                            translate.translate(
-                                    name,
-                                    Translate.TranslateOption.targetLanguage("ja"));
-                    jp = translation.getTranslatedText();
-                    translation =
-                            translate.translate(
-                                    name,
-                                    Translate.TranslateOption.targetLanguage("de"));
-                    de = translation.getTranslatedText();
-                    translation =
-                            translate.translate(
-                                    name,
-                                    Translate.TranslateOption.targetLanguage("fr"));
-                    fr = translation.getTranslatedText();
-                    translation =
-                            translate.translate(
-                                    name,
-                                    Translate.TranslateOption.targetLanguage("es"));
-                    es = translation.getTranslatedText();
-                    translation =
-                            translate.translate(
-                                    name,
-                                    Translate.TranslateOption.targetLanguage("it"));
-                    it = translation.getTranslatedText();
-                } catch (Exception e) {
-                    System.out.println("翻译挂了");
-                    e.printStackTrace();
-                }
+
                 claimProduct.setItemCn(cn);
                 claimProduct.setItemDe(de);
                 claimProduct.setItemEs(es);
