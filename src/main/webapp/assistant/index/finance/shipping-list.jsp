@@ -307,7 +307,7 @@
                     "data": "SMALLIMAGE",
                     "render": function (data, type, full) {
                         if (data != null) {
-                            return "<img id='" + full.ID + "' onmousemove=\"moveBig()\" onmouseout=\"hiddenBig()\" onmouseover=\"showBig('" + full.ID + "','" + data.split(",")[0] + "')\"src='" + data.split(",")[0] + "'/>";
+                            return "<img id='" + full.ORDER_ID + "' onmousemove=\"moveBig()\" onmouseout=\"hiddenBig()\" onmouseover=\"showBig('" + full.ID + "','" + data.split(",")[0] + "')\"src='" + data.split(",")[0] + "'/>";
                         } else {
                             return "<img  src='" + data + "'/>";
                         }
