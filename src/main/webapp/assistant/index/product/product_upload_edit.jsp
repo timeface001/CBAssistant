@@ -320,38 +320,39 @@
                     success: function (data) {
                         if (data.code == 0) {
                             countryCode = data.data[0].COUNTRY_CODE;
+                            if (countryCode == "US") {
+                                $("#itemTypeShow").css("display", "");
+                            } else {
+                                $("#itemTypeShow").css("display", "none");
+                            }
                             $.ajax({
                                 url: "<%=request.getContextPath()%>/product/claim/single",
                                 dataType: "json",
                                 data: {id: '${product.id}'},
                                 success: function (data) {
                                     var translte = "";
-                                    if (countryCode == "ES" || countryCode == 'MX') {
-                                        translte = data.itemEs;
-                                    }
-                                    if (countryCode == "US" || countryCode == "CA" || countryCode == "AU" || countryCode == "GB") {
-                                        translte = data.itemUk;
-                                    }
-                                    if (countryCode == "JP") {
-                                        translte = data.itemJp;
-                                    }
-                                    if (countryCode == "FR") {
-                                        translte = data.itemFr;
-                                    }
-                                    if (countryCode == "IT") {
-                                        translte = data.itemIt;
-                                    }
-                                    if (countryCode == "DE") {
-                                        translte = data.itemDe;
-                                    }
-                                    if (countryCode == "CN") {
-                                        translte = data.itemCn;
-                                    }
-
-                                    if (countryCode == "US") {
-                                        $("#itemTypeShow").css("display", "");
-                                    } else {
-                                        $("#itemTypeShow").css("display", "none");
+                                    if(data!=null){
+                                        if (countryCode == "ES" || countryCode == 'MX') {
+                                            translte = data.itemEs;
+                                        }
+                                        if (countryCode == "US" || countryCode == "CA" || countryCode == "AU" || countryCode == "GB") {
+                                            translte = data.itemUk;
+                                        }
+                                        if (countryCode == "JP") {
+                                            translte = data.itemJp;
+                                        }
+                                        if (countryCode == "FR") {
+                                            translte = data.itemFr;
+                                        }
+                                        if (countryCode == "IT") {
+                                            translte = data.itemIt;
+                                        }
+                                        if (countryCode == "DE") {
+                                            translte = data.itemDe;
+                                        }
+                                        if (countryCode == "CN") {
+                                            translte = data.itemCn;
+                                        }
                                     }
 
                                     $("#itemName").val(translte);
