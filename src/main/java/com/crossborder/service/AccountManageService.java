@@ -37,4 +37,16 @@ public class AccountManageService {
         }
         return accountManageDao.addAccount(map);
     }
+
+    public List<Map<String,Object>> selectRecharges(Map<String, Object> map) {
+        return accountManageDao.selectRecharges(map);
+    }
+
+    public int recharge(Map<String, Object> map) {
+        return accountManageDao.recharge(map);
+    }
+
+    public int auditRecharge(Map<String, Object> map) {
+        return accountManageDao.auditRecharge(map);
+    }
 }

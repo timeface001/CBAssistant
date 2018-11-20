@@ -258,7 +258,8 @@
         TYPE,
         STATE,
         CREATE_USER,
-        CREATE_TIME
+        CREATE_TIME,
+        SORT
         )
         VALUES (
         seq_translation_id.nextval,
@@ -267,20 +268,25 @@
         #{type,jdbcType=VARCHAR},
         #{state,jdbcType=VARCHAR},
         #{createUser,jdbcType=VARCHAR},
-        CURRENT_DATE
+        CURRENT_DATE,
+        #{sort,jdbcType=INTEGER}
         )
     </insert>
     <select id="selectTranslations" parameterType="java.util.Map" resultType="java.util.Map">
         SELECT t1.*,t2.USER_NAME FROM T_TRANSLATION t1
         LEFT JOIN T_USER_INFO t2
         ON t1.CREATE_USER = t2.USER_ID
-        WHERE 1=1
+        WHERE t1.STATE = '1'
         <if test="account !=null and account !=''">
             AND ACCOUNT = #{account,jdbcType=VARCHAR}
         </if>
         <if test="id !=null and id !=''">
             AND ID = #{id,jdbcType=VARCHAR}
         </if>
+        <if test="type != null and type != ''">
+            AND TYPE = #{type,jdbcType=VARCHAR}
+        </if>
+        ORDER BY SORT
     </select>
     <delete id="deleteTranslation" parameterType="java.lang.String">
         DELETE FROM T_TRANSLATION
@@ -299,7 +305,8 @@
         STATE =  #{state,jdbcType=VARCHAR},
         ACCOUNT =  #{account,jdbcType=VARCHAR},
         SECRET_KEY =  #{secretKey,jdbcType=VARCHAR},
-        TYPE =  #{type,jdbcType=VARCHAR}
+        TYPE =  #{type,jdbcType=VARCHAR},
+        SORT = #{sort,jdbcType=INTEGER}
         WHERE
         ID = #{id,jdbcType=VARCHAR}
     </update>

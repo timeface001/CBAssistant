@@ -37,10 +37,11 @@
         class="Hui-iconfont">&#xe68f;</i></a></nav>
 <div class="page-container">
     <form id="accountForm" class="form form-horizontal">
+        <input id="roleId" type="hidden" value="${sessionScope.user.ROLE_ID}">
         <div class="row cl">
             <label class="form-label col-xs-2 col-sm-2">用户公司：</label>
             <div class="formControls col-xs-2 col-sm-2">
-                <select id="userCompany" name="userCompany" class="select" style="height: 32px">
+                <select id="companyId" name="companyId" class="select" style="height: 32px">
                     <option value="">请选择</option>
                 </select>
             </div>
@@ -77,15 +78,11 @@
         <table id="accountTable" class="table table-border table-bordered table-bg table-hover">
             <thead>
             <tr class="text-c">
-                <th width="100">流水号</th>
                 <th width="100">用户公司</th>
+                <th width="100">累计运费</th>
+                <th width="100">累计充值</th>
                 <th width="100">账户余额</th>
-                <th width="100">类型</th>
-                <th width="100">金额</th>
-                <th width="100">运输公司</th>
-                <th width="100">国际跟踪号</th>
-                <th width="100">备注</th>
-                <th width="100">创建时间</th>
+                <th width="100">账户可用金额</th>
             </tr>
             </thead>
         </table>
@@ -105,6 +102,7 @@
 <script type="text/javascript" src="<%=request.getContextPath()%>/assistant/lib/laypage/1.2/laypage.js"></script>
 <script type="text/javascript">
     var accountTable = null;
+    var roleId = $("#roleId").val();
     $(function () {
         initSelect();
         var sd = new Date();
@@ -136,33 +134,39 @@
                 layer.msg(data.msg, {icon: 2, time: 1000});
             }
         });
-        $.ajax({
-            type: 'POST',
-            url: '<%=request.getContextPath()%>/common/getList',
-            dataType: 'json',
-            data: {
-                "code": "companies"
-            },
-            success: function (data) {
-                if (data.code == 0) {
-                    var data = data.data;
-                    for (var i = 0; i < data.length; i++) {
-                        $("#userCompany").append($('<option value=' + data[i].COMPANY_ID + '>' + data[i].COMPANY_NAME + '</option>'));
+        if (roleId != 100) {
+            $("#companyId").empty();
+            $("#companyId").append($("<option value='${sessionScope.user.USER_COMPANY}'>${sessionScope.user.COMPANY_NAME}</option>"));
+        } else {
+            $.ajax({
+                type: 'POST',
+                url: '<%=request.getContextPath()%>/common/getList',
+                dataType: 'json',
+                data: {
+                    "code": "companies"
+                },
+                success: function (data) {
+                    if (data.code == 0) {
+                        var data = data.data;
+                        for (var i = 0; i < data.length; i++) {
+                            $("#companyId").append($('<option value=' + data[i].COMPANY_ID + '>' + data[i].COMPANY_NAME + '</option>'));
+                        }
                     }
+                },
+                error: function (data) {
+                    layer.msg(data.msg, {icon: 2, time: 1000});
                 }
-            },
-            error: function (data) {
-                layer.msg(data.msg, {icon: 2, time: 1000});
-            }
-        });
+            });
+        }
     }
     function addAccount(title, url, w) {
         layer_show(title, url, w);
     }
     /*查询财务*/
     function reloadTable(id) {
-        layer.load();
-        accountTable.ajax.reload();
+        accountTable.ajax.reload(function (data) {
+
+        }, false);
         var btnDiv = document.getElementById("btn-div");
         var btns = btnDiv.getElementsByTagName("a");
         for (var i = 0; i < btns.length; i++) {
@@ -197,45 +201,13 @@
                 }
             },
             "columns": [
-                {"data": "ACC_ID"},
-                {"data": "USERCOMPANY"},
-                {"data": "ACC_BALANCE"},
-                {"data": "FEE_TYPE"},
+                {"data": "COMPANY_NAME"},
+                {"data": "FREIGHT"},
                 {"data": "AMOUNT"},
-                {"data": "SHIPCOMPANY"},
-                {"data": "TRACKING_NO"},
-                {"data": "T_DESC"},
-                {"data": "CREATE_TIME"}
+                {"data": "BALANCE"},
+                {"data": "ABALANCE"}
             ],
-            "columnDefs": [
-                /*{
-                 "targets": [0],
-                 "data": "ID",
-                 "render": function (data, type, full) {
-                 return "<a class='maincolor' href='javascript:;' onClick=\"toDetail('" + full.AMAZONaccountID + "')\"'>" + data + "</a>";
-                 }
-                 },*/
-                {
-                    "targets": [3],
-                    "data": "LOCALSTATUS",
-                    "render": function (data, type, full) {
-                        if (data == 1) {
-                            return "<div>充值</div>";
-                        } else if (data == 2) {
-                            return "<div>物流扣费</div>";
-                        } else if (data == 3) {
-                            return "<div>抽成</div>";
-                        }
-                    }
-                },
-                {
-                    "targets": [8],
-                    "data": "CREATE_TIME",
-                    "render": function (data, type, full) {
-                        return "<div>" + getMyDate(data) + "</div>"
-                    }
-                },
-            ],
+            "columnDefs": [],
             "rowCallback": function (row, data, displayIndex) {
                 $(row).attr("class", "text-c");
             },

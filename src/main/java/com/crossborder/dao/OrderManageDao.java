@@ -70,4 +70,7 @@ public interface OrderManageDao {
 
     public List<Map<String, Object>> selectAddressLine(String mergedId);
 
+    public List<Map<String, Object>> selectCommissionOrder(Map<String, Object> map);
+
+    public int updateOrderIsCommission(Map<String, Object> map);
 }

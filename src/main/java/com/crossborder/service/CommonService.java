@@ -4,6 +4,8 @@ import com.crossborder.dao.CommonDao;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -52,7 +54,17 @@ public class CommonService {
     }
 
     public List<Map<String, String>> getShipTypes(Map<String, String> map) {
-        return commonDao.getShipTypes(map);
+        List<Map<String, String>> ships = new ArrayList<>();
+        List<Map<String, String>> list = commonDao.getShipTypes(map);
+        if (list != null && list.size() > 0) {
+            for (int i = 0; i < list.size(); i++) {
+                Map<String, String> ship = new HashMap<>();
+                ship.put("name", list.get(i).get("DISPLAYNAME"));
+                ship.put("code", list.get(i).get("ID"));
+                ships.add(ship);
+            }
+        }
+        return ships;
     }
 
     public int insertShipMent(Map<String, Object> map) {
@@ -69,5 +81,9 @@ public class CommonService {
 
     public List<Map<String, Object>> selectShipMent(Map<String, Object> map) {
         return commonDao.selectShipMent(map);
+    }
+
+    public List<Map<String, Object>> getTransportCompanies(String countryCode) {
+        return commonDao.getTransportCompanies(countryCode);
     }
 }

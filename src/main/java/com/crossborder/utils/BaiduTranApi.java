@@ -1,8 +1,12 @@
 package com.crossborder.utils;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.crossborder.service.SystemManageService;
 import org.springframework.util.StringUtils;
 
+import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,6 +18,8 @@ public class BaiduTranApi {
 
     private String appid;
     private String securityKey;
+    @Resource
+    private static SystemManageService systemManageService;
 
     private BaiduTranApi() {
 
@@ -21,14 +27,12 @@ public class BaiduTranApi {
 
     private static BaiduTranApi api = null;
 
-    public static BaiduTranApi getInstance() {
-
+    public static BaiduTranApi getInstance(String appid, String securityKey) {
         if (api == null) {
             api = new BaiduTranApi();
-            api.appid = "20180421000148711";
-            api.securityKey = "Vw0k9SYUoqNAA_2VJRXx";
+            api.appid = appid;
+            api.securityKey = securityKey;
         }
-
         return api;
     }
 
@@ -37,7 +41,13 @@ public class BaiduTranApi {
             return query;
         }
         Map<String, String> params = buildParams(query, from, to);
-        return JSON.parseObject(HttpGet.get(TRANS_API_HOST, params)).getJSONArray("trans_result").getJSONObject(0).getString("dst");
+        JSONObject jsonObject = JSON.parseObject(HttpGet.getBaidu(TRANS_API_HOST, params));
+        if (jsonObject.getString("error_code")!=null && jsonObject.getString("error_code").equals("54004")) {
+            return jsonObject.getString("error_code");
+        } else {
+            JSONArray jsonArray = jsonObject.getJSONArray("trans_result");
+            return jsonArray.getJSONObject(0).getString("dst");
+        }
     }
 
     private Map<String, String> buildParams(String query, String from, String to) {
@@ -45,7 +55,6 @@ public class BaiduTranApi {
         params.put("q", query);
         params.put("from", from);
         params.put("to", to);
-
         params.put("appid", appid);
 
         // 随机数
@@ -67,12 +76,52 @@ public class BaiduTranApi {
         return getTransResult(str, "en", "zh");
     }
 
+    public String uk2Jp(String str) {
+        return getTransResult(str, "en", "jp");
+    }
+
+    public String uk2Fr(String str) {
+        return getTransResult(str, "en", "fra");
+    }
+
+    public String uk2De(String str) {
+        return getTransResult(str, "en", "de");
+    }
+
+    public String uk2Es(String str) {
+        return getTransResult(str, "en", "spa");
+    }
+
+    public String uk2It(String str) {
+        return getTransResult(str, "en", "it");
+    }
+
     public String zh2Jp(String str) {
         return getTransResult(str, "zh", "jp");
     }
 
     public String jp2Zh(String str) {
         return getTransResult(str, "jp", "zh");
+    }
+
+    public String jp2Uk(String str) {
+        return getTransResult(str, "jp", "en");
+    }
+
+    public String jp2De(String str) {
+        return getTransResult(str, "jp", "de");
+    }
+
+    public String jp2Fr(String str) {
+        return getTransResult(str, "jp", "fra");
+    }
+
+    public String jp2Es(String str) {
+        return getTransResult(str, "jp", "spa");
+    }
+
+    public String jp2It(String str) {
+        return getTransResult(str, "jp", "it");
     }
 
     public String zh2Fr(String str) {
@@ -83,12 +132,52 @@ public class BaiduTranApi {
         return getTransResult(str, "fra", "zh");
     }
 
+    public String fr2Uk(String str) {
+        return getTransResult(str, "fra", "en");
+    }
+
+    public String fr2Jp(String str) {
+        return getTransResult(str, "fra", "jp");
+    }
+
+    public String fr2It(String str) {
+        return getTransResult(str, "fra", "it");
+    }
+
+    public String fr2De(String str) {
+        return getTransResult(str, "fra", "de");
+    }
+
+    public String fr2Es(String str) {
+        return getTransResult(str, "fra", "es");
+    }
+
     public String zh2De(String str) {
         return getTransResult(str, "zh", "de");
     }
 
     public String de2Zh(String str) {
         return getTransResult(str, "de", "zh");
+    }
+
+    public String de2Uk(String str) {
+        return getTransResult(str, "de", "en");
+    }
+
+    public String de2Jp(String str) {
+        return getTransResult(str, "de", "jp");
+    }
+
+    public String de2Fr(String str) {
+        return getTransResult(str, "de", "fra");
+    }
+
+    public String de2Es(String str) {
+        return getTransResult(str, "de", "spa");
+    }
+
+    public String de2It(String str) {
+        return getTransResult(str, "de", "it");
     }
 
     public String zh2Es(String str) {
@@ -99,6 +188,26 @@ public class BaiduTranApi {
         return getTransResult(str, "spa", "zh");
     }
 
+    public String es2Uk(String str) {
+        return getTransResult(str, "es", "en");
+    }
+
+    public String es2Jp(String str) {
+        return getTransResult(str, "es", "jp");
+    }
+
+    public String es2Fr(String str) {
+        return getTransResult(str, "es", "fra");
+    }
+
+    public String es2De(String str) {
+        return getTransResult(str, "es", "de");
+    }
+
+    public String es2It(String str) {
+        return getTransResult(str, "es", "it");
+    }
+
     public String zh2It(String str) {
         return getTransResult(str, "zh", "it");
     }
@@ -107,14 +216,28 @@ public class BaiduTranApi {
         return getTransResult(str, "it", "zh");
     }
 
+    public String it2Uk(String str) {
+        return getTransResult(str, "it", "en");
+    }
+
+    public String it2Jp(String str) {
+        return getTransResult(str, "it", "jp");
+    }
+
+    public String it2Fr(String str) {
+        return getTransResult(str, "it", "fra");
+    }
+
+    public String it2De(String str) {
+        return getTransResult(str, "it", "de");
+    }
+
+    public String it2Es(String str) {
+        return getTransResult(str, "it", "es");
+    }
+
     public static void main(String[] args) {
-        System.out.println(BaiduTranApi.getInstance().zh2De("你好"));
-        System.out.println(BaiduTranApi.getInstance().zh2It("你好"));
-        System.out.println(BaiduTranApi.getInstance().zh2Uk("你好"));
-        System.out.println(BaiduTranApi.getInstance().zh2Jp("你好"));
-
-
-        System.out.println(BaiduTranApi.getInstance().zh2Es("你好"));
+        System.out.println(BaiduTranApi.getInstance("20181014000219221", "uJHjCs2ImD37KCYdeqtA").uk2Zh("hello"));
     }
 
 

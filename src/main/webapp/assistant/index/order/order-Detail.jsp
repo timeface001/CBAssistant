@@ -192,6 +192,10 @@
             <div class=" col-xs-2 col-sm-2">
                 <input type="text" id="count" placeholder=" "
                        class="input-text" value="1"></div>
+            <label class=" col-xs-2 col-sm-2 text-r"><span class="c-red">*</span>箱子数：</label>
+            <div class=" col-xs-2 col-sm-2">
+                <input type="text" id="pieceNumber" placeholder=" "
+                       class="input-text" value="1"></div>
         </div>
         <div class="row cl">
             <label class=" col-xs-1 col-sm-1 text-r">长(cm)：</label>
@@ -318,7 +322,6 @@
         initOrderItem();
         initOperationLog();
         initCustomsTable();
-        initSelect();
     });
     function initBusiness(localOrder) {
         preStatus = localOrder.LOCALSTATUS;
@@ -420,6 +423,7 @@
             $("#addressLine2").attr("readOnly", false);
             $("#addressLine3").attr("readOnly", false);
         }
+        initSelect();
     }
     var itemTable;
     function initOrderItem() {
@@ -566,7 +570,7 @@
                             if (roleId == 200 || roleId == 300) {
                                 return "";
                             } else {
-                                return "<a style='text-decoration:none' title='退款'  onClick=\"updateOrder(6,'" + full.ORDERITEMID + "')\"'>退款</a>" +
+                                return "<a style='text-decoration:none' title='退款'  onClick=\"updateOrder(6,'" + full.ORDERITEMID + "','" + full.AMAZONORDERID + "')\"'>退款</a>" +
                                         "&nbsp;&nbsp;&nbsp;&nbsp;" +
                                         "<a style='text-decoration:none' title='妥投'  onClick=\"updateOrder(7,'" + full.ORDERITEMID + "')\"'>妥投</a>" +
                                         "&nbsp;&nbsp;&nbsp;&nbsp;" +
@@ -583,7 +587,7 @@
                             } else {
                                 return "<a style='text-decoration:none' title='备货'  onClick=\"updateOrder(2,'" + full.ORDERITEMID + "','" + full.AMAZONORDERID + "')\"'>备货</a>" +
                                         "&nbsp;&nbsp;&nbsp;&nbsp;" +
-                                        "<a style='text-decoration:none' title='退款'  onClick=\"updateOrder(6,'" + full.ORDERITEMID + "')\"'>退款</a>" +
+                                        "<a style='text-decoration:none' title='退款'  onClick=\"updateOrder(6,'" + full.ORDERITEMID + "','" + full.AMAZONORDERID + "')\"'>退款</a>" +
                                         "&nbsp;&nbsp;&nbsp;&nbsp;" +
                                         "<a style='text-decoration:none' title='问题'  onClick=\"updateOrder(5,'" + full.ORDERITEMID + "')\"'>问题</a>" +
                                         "&nbsp;&nbsp;&nbsp;&nbsp;" +
@@ -598,7 +602,7 @@
                             if (roleId == 300) {
                                 return "";
                             } else {
-                                return "<a style='text-decoration:none' title='退款'  onClick=\"updateOrder(6,'" + full.ORDERITEMID + "')\"'>退款</a>" +
+                                return "<a style='text-decoration:none' title='退款'  onClick=\"updateOrder(6,'" + full.ORDERITEMID + "','" + full.AMAZONORDERID + "')\"'>退款</a>" +
                                         "&nbsp;&nbsp;&nbsp;&nbsp;" +
                                         "<a style='text-decoration:none' title='问题'  onClick=\"updateOrder(5,'" + full.ORDERITEMID + "')\"'>问题</a>" +
                                         "&nbsp;&nbsp;&nbsp;&nbsp;" +
@@ -611,7 +615,7 @@
                             if (roleId == 300) {
                                 return "";
                             } else {
-                                return "<a style='text-decoration:none' title='退款'  onClick=\"updateOrder(6,'" + full.ORDERITEMID + "')\"'>退款</a>" +
+                                return "<a style='text-decoration:none' title='退款'  onClick=\"updateOrder(6,'" + full.ORDERITEMID + "','" + full.AMAZONORDERID + "')\"'>退款</a>" +
                                         "&nbsp;&nbsp;&nbsp;&nbsp;" +
                                         "<a style='text-decoration:none' title='问题'  onClick=\"updateOrder(5,'" + full.ORDERITEMID + "')\"'>问题</a>" +
                                         "&nbsp;&nbsp;&nbsp;&nbsp;" +
@@ -820,17 +824,19 @@
     function initSelect() {
         $.ajax({
             type: 'POST',
-            url: '<%=request.getContextPath()%>/common/getList',
+            url: '<%=request.getContextPath()%>/common/getTransportCompanies',
             dataType: 'json',
             data: {
-                "code": "transportCompanies"
+                "countryCode": $("#countryCode").val()
             },
             success: function (data) {
                 if (data.code == 0) {
                     var data = data.data;
+                    $("#transportCompany").empty();
                     for (var i = 0; i < data.length; i++) {
                         $("#transportCompany").append($("<option value=\"" + data[i].ID + "\">" + data[i].NAME + "</option>"));
                     }
+                    loadShips(data[0].ID);
                 }
             },
             error: function (data) {
@@ -983,6 +989,7 @@
         wayBill.Width = $("#width").val();
         wayBill.Height = $("#height").val();
         wayBill.PackageNumber = $("#count").val();
+        wayBill.PieceNumber = $("#pieceNumber").val();
         wayBill.Weight = $("#weight").val();
         wayBill.trackNum = trackNum;
         ShippingInfo.CountryCode = $("#countryCode").val();

@@ -50,6 +50,7 @@
             <th width="100">翻译账号</th>
             <th width="200">秘钥</th>
             <th width="100">翻译方式</th>
+            <th width="100">级别</th>
             <th width="100">状态</th>
             <th width="100">创建人</th>
             <th width="100">创建时间</th>
@@ -89,6 +90,7 @@
                             {"data": "ACCOUNT"},
                             {"data": "SECRET_KEY"},
                             {"data": "TYPE"},
+                            {"data": "SORT"},
                             {"data": "STATE"},
                             {"data": "USER_NAME"},
                             {"data": "CREATE_TIME"},
@@ -114,7 +116,7 @@
                                 }
                             },
                             {
-                                "targets": [4],
+                                "targets": [5],
                                 "data": "STATE",
                                 "render": function (data, type, full) {
                                     if (data == 1) {
@@ -125,14 +127,14 @@
                                 }
                             },
                             {
-                                "targets": [6],
+                                "targets": [7],
                                 "data": "CREATE_TIME",
                                 "render": function (data, type, full) {
                                     return "<div>" + getMyDate(data) + "</div>"
                                 }
                             },
                             {
-                                "targets": [7],
+                                "targets": [8],
                                 "data": "STATE",
                                 "render": function (data, type, full) {
                                     if (data == 1) {

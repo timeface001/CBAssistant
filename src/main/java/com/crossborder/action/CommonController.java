@@ -270,32 +270,60 @@ public class CommonController {
         return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
+    /**
+     * 根据订单国家查询快递公司
+     *
+     * @param countryCode
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "getTransportCompanies", produces = "text/plain;charset=UTF-8")
+    public String getTransportCompanies(String countryCode) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            List<Map<String, Object>> list = commonService.getTransportCompanies(countryCode);
+            if (list == null || list.size() == 0) {
+                Map<String, Object> sqlMap = commonService.getSql("transportCompanies");
+                list = commonService.getList(sqlMap.get("SQL_TEXT").toString());
+            }
+            map.put("data", list);
+            map.put("code", "0");
+            map.put("msg", "查询成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("code", "-10");
+            map.put("msg", "查询失败");
+        }
+        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
+    }
+
+    /**
+     * 查询发货方式
+     *
+     * @param countryCode
+     * @param companyId
+     * @param weight
+     * @return
+     */
     @ResponseBody
     @RequestMapping(value = "getShipTypes", produces = "text/plain;charset=UTF-8")
     public String getShipTypes(String countryCode, String companyId, String weight) {
-        if (companyId.contains("SFC")) {
-            return getSFCShipTypes(countryCode, weight);
-        } else if (companyId.contains("Yun")) {
-            return getYTShipTypes(countryCode);
-        } else if (companyId.contains("Equick")) {
-            return getEquickShipTypes(countryCode);
-        } else {
-            return getQTShipTypes(countryCode, companyId);
-        }
-    }
-
-    private String getQTShipTypes(String countryCode, String companyId) {
         Map<String, Object> map = new HashMap<>();
         try {
             Map<String, String> paramMap = new HashMap<>();
             paramMap.put("companyId", companyId);
-            List<Map<String, String>> list = commonService.getShipTypes(paramMap);
-            List<Map<String, String>> ships = new ArrayList<>();
-            for (int i = 0; i < list.size(); i++) {
-                Map<String, String> ship = new HashMap<>();
-                ship.put("name", list.get(i).get("DISPLAYNAME"));
-                ship.put("code", list.get(i).get("ID"));
-                ships.add(ship);
+            paramMap.put("countryCode", countryCode);
+            List<Map<String, String>> ships = commonService.getShipTypes(paramMap);
+            if (ships == null || ships.size() == 0) {
+                if (companyId.contains("SFC")) {
+                    ships = getSFCShipTypes(countryCode, weight);
+                } else if (companyId.contains("Yun")) {
+                    ships = getYTShipTypes(countryCode);
+                } else if (companyId.contains("Equick")) {
+                    ships = getEquickShipTypes(countryCode);
+                } else {
+                    ships = getQTShipTypes(countryCode, companyId);
+                }
             }
             map.put("data", ships);
             map.put("code", "0");
@@ -308,11 +336,43 @@ public class CommonController {
         return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
     }
 
-    private String getEquickShipTypes(String countryCode) {
-        Map<String, Object> map = new HashMap<>();
+    public List<Map<String, String>> getSFCShipTypes(String countryCode, String weight) {
+        List<Map<String, String>> ships = new ArrayList<>();
+        try {
+            ShipRate port = createShipRate();
+            HeaderRequest _headerRequest = createRequest();
+            GetRatesRequestInfo getRatesRequestInfo = new GetRatesRequestInfo();
+            getRatesRequestInfo.setCountry(countryCode);
+            getRatesRequestInfo.setWeight(Float.valueOf(weight));
+            List<Rate> rates = port.getRates(_headerRequest, getRatesRequestInfo);
+            for (int i = 0; i < rates.size(); i++) {
+                Map<String, String> shipMap = new HashMap<>();
+                shipMap.put("code", rates.get(i).getShiptypecode());
+                shipMap.put("name", rates.get(i).getShiptypecnname());
+                ships.add(shipMap);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ships;
+    }
+
+    private List<Map<String, String>> getQTShipTypes(String countryCode, String companyId) {
+        List<Map<String, String>> ships = new ArrayList<>();
+        try {
+            Map<String, String> paramMap = new HashMap<>();
+            paramMap.put("companyId", companyId);
+            ships = commonService.getShipTypes(paramMap);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ships;
+    }
+
+    private List<Map<String, String>> getEquickShipTypes(String countryCode) {
+        List<Map<String, String>> ships = new ArrayList<>();
         try {
             BookingQuickTypeDataSetResponseBookingQuickTypeDataSetResult result = EOCWebServicesWS.BookingQuickTypeDataSet();
-            List<Map<String, String>> ships = new ArrayList<>();
             for (Object obj : result.get_any()) {
                 Node nd = (Node) obj;
                 for (int m = 0; m < nd.getChildNodes().getLength(); m++) {
@@ -336,39 +396,28 @@ public class CommonController {
                     }
                 }
             }
-            map.put("data", ships);
-            map.put("code", "0");
-            map.put("msg", "查询成功");
         } catch (Exception e) {
             e.printStackTrace();
-            map.put("code", "-10");
-            map.put("msg", "查询失败");
         }
-        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
+        return ships;
     }
 
-    public String getYTShipTypes(String countryCode) {
-        Map<String, Object> map = new HashMap<>();
+    public List<Map<String, String>> getYTShipTypes(String countryCode) {
+        List<Map<String, String>> ships = new ArrayList<>();
         try {
             String result = HttpClientUtil.doGetRequest("http://api.yunexpress.com/LMS.API/api/lms/Get?countryCode=" + countryCode);
             JSONObject jsonObject = JSONObject.parseObject(result);
             JSONArray jsonArray = jsonObject.getJSONArray("Item");
-            List<Map<String, String>> ships = new ArrayList<>();
             for (int i = 0; i < jsonArray.size(); i++) {
                 Map<String, String> shipMap = new HashMap<>();
                 shipMap.put("code", jsonArray.getJSONObject(i).getString("Code"));
                 shipMap.put("name", jsonArray.getJSONObject(i).getString("FullName"));
                 ships.add(shipMap);
             }
-            map.put("data", ships);
-            map.put("code", "0");
-            map.put("msg", "查询成功");
         } catch (Exception e) {
             e.printStackTrace();
-            map.put("code", "-10");
-            map.put("msg", "查询失败");
         }
-        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
+        return ships;
     }
 
     private HeaderRequest createRequest() {
@@ -387,32 +436,6 @@ public class CommonController {
         return port;
     }
 
-    public String getSFCShipTypes(String countryCode, String weight) {
-        Map<String, Object> map = new HashMap<>();
-        try {
-            ShipRate port = createShipRate();
-            HeaderRequest _headerRequest = createRequest();
-            GetRatesRequestInfo getRatesRequestInfo = new GetRatesRequestInfo();
-            getRatesRequestInfo.setCountry(countryCode);
-            getRatesRequestInfo.setWeight(Float.valueOf(weight));
-            List<Rate> rates = port.getRates(_headerRequest, getRatesRequestInfo);
-            List<Map<String, String>> ships = new ArrayList<>();
-            for (int i = 0; i < rates.size(); i++) {
-                Map<String, String> shipMap = new HashMap<>();
-                shipMap.put("code", rates.get(i).getShiptypecode());
-                shipMap.put("name", rates.get(i).getShiptypecnname());
-                ships.add(shipMap);
-            }
-            map.put("data", ships);
-            map.put("code", "0");
-            map.put("msg", "查询成功");
-        } catch (Exception e) {
-            e.printStackTrace();
-            map.put("code", "-10");
-            map.put("msg", "查询失败");
-        }
-        return JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
-    }
 
     @ResponseBody
     @RequestMapping(value = "confirmOrder", produces = "text/plain;charset=UTF-8")
@@ -588,6 +611,8 @@ public class CommonController {
             _addOrdersRequestInfo.setGoodsWidth(Float.valueOf(jsonObject.getString("Width")));
             _addOrdersRequestInfo.setGoodsDescription(applicationInfos.getJSONObject(0).getString("ApplicationName"));
             _addOrdersRequestInfo.setIsRemoteConfirm("0");
+            _addOrdersRequestInfo.setPieceNumber(jsonObject.getString("PieceNumber"));
+            _addOrdersRequestInfo.setShipperCity("Shenzhen");
             //拼商品信息
             double declareWorth = 0;
             for (int i = 0; i < applicationInfos.size(); i++) {

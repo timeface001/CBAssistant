@@ -83,7 +83,7 @@
             url: "<%=request.getContextPath()%>/order/updateOrderInfo",//请求的action路径
             error: function () {//请求失败处理函数
                 layer.closeAll("loading");
-                layer.msg('退款失败!', {icon: 2, time: 1000});
+                layer.msg('退款失败!', {icon: 2, time: 2000});
             },
             success: function (data) { //请求成功后处理函数。
                 layer.closeAll("loading");
@@ -91,7 +91,7 @@
                     var index = parent.layer.getFrameIndex(window.name);
                     parent.layer.close(index);
                 } else {
-                    layer.msg('退款失败!', {icon: 2, time: 1000});
+                    layer.msg('退款失败!', {icon: 2, time: 2000});
                 }
             }
         });

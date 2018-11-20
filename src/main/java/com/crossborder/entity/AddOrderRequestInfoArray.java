@@ -1,18 +1,18 @@
-
 package com.crossborder.entity;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
-
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * <p>addOrderRequestInfoArray complex type的 Java 类。
- * 
- * <p>以下模式片段指定包含在此类中的预期内容。
- * 
+ * <p/>
+ * addOrderRequestInfoArray complex type的 Java 类。
+ * <p/>
+ * <p/>
+ * 以下模式片段指定包含在此类中的预期内容。
+ * <p/>
  * <pre>
  * &lt;complexType name="addOrderRequestInfoArray">
  *   &lt;complexContent>
@@ -67,56 +67,21 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "addOrderRequestInfoArray", propOrder = {
-    "customerOrderNo",
-    "shipperAddressType",
-    "shipperName",
-    "shipperEmail",
-    "shipperAddress",
-    "shipperPhone",
-    "shipperZipCode",
-    "shipperCompanyName",
-    "shippingMethod",
-    "recipientCountry",
-    "recipientName",
-    "recipientState",
-    "recipientCity",
-    "recipientAddress",
-    "recipientZipCode",
-    "recipientOrganization",
-    "recipientPhone",
-    "recipientEmail",
-    "goodsDescription",
-    "goodsQuantity",
-    "goodsDeclareWorth",
-    "goodsWeight",
-    "goodsLength",
-    "goodsWidth",
-    "goodsHeight",
-    "goodsDetails",
-    "opDivision",
-    "orderStatus",
-    "ebayIdentify",
-    "printSortId",
-    "areaCode",
-    "notifyUrl",
-    "evaluate",
-    "invNo",
-    "taxesNumber",
-    "taxType",
-    "isRemoteConfirm",
-    "isReturn",
-    "withBattery",
-    "shippingWorth",
-    "smallLangAddress",
-    "doorplate",
-    "isGetArea",
-    "matchProduct"
-})
+@XmlType(name = "addOrderRequestInfoArray", propOrder = {"customerOrderNo",
+        "shipperAddressType", "shipperName", "shipperEmail", "shipperAddress",
+        "shipperPhone", "shipperZipCode", "shipperCompanyName",
+        "shippingMethod", "recipientCountry", "recipientName",
+        "recipientState", "recipientCity", "recipientAddress",
+        "recipientZipCode", "recipientOrganization", "recipientPhone",
+        "recipientEmail", "goodsDescription", "goodsQuantity",
+        "goodsDeclareWorth", "goodsWeight", "goodsLength", "goodsWidth",
+        "goodsHeight", "goodsDetails", "opDivision", "orderStatus",
+        "ebayIdentify", "printSortId", "areaCode", "notifyUrl", "evaluate",
+        "invNo", "taxesNumber", "taxType", "isRemoteConfirm", "isReturn",
+        "withBattery", "shippingWorth", "smallLangAddress", "doorplate",
+        "isGetArea", "matchProduct", "pieceNumber", "shipperCity"})
 public class AddOrderRequestInfoArray {
 
     protected String customerOrderNo;
@@ -163,14 +128,13 @@ public class AddOrderRequestInfoArray {
     protected String doorplate;
     protected String isGetArea;
     protected String matchProduct;
+    protected String pieceNumber;
+    protected String shipperCity;
 
     /**
      * 获取customerOrderNo属性的值。
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is {@link String }
      */
     public String getCustomerOrderNo() {
         return customerOrderNo;
@@ -178,11 +142,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 设置customerOrderNo属性的值。
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is {@link String }
      */
     public void setCustomerOrderNo(String value) {
         this.customerOrderNo = value;
@@ -190,11 +151,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 获取shipperAddressType属性的值。
-     * 
-     * @return
-     *     possible object is
-     *     {@link Integer }
-     *     
+     *
+     * @return possible object is {@link Integer }
      */
     public Integer getShipperAddressType() {
         return shipperAddressType;
@@ -202,11 +160,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 设置shipperAddressType属性的值。
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Integer }
-     *     
+     *
+     * @param value allowed object is {@link Integer }
      */
     public void setShipperAddressType(Integer value) {
         this.shipperAddressType = value;
@@ -214,11 +169,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 获取shipperName属性的值。
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is {@link String }
      */
     public String getShipperName() {
         return shipperName;
@@ -226,11 +178,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 设置shipperName属性的值。
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is {@link String }
      */
     public void setShipperName(String value) {
         this.shipperName = value;
@@ -238,11 +187,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 获取shipperEmail属性的值。
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is {@link String }
      */
     public String getShipperEmail() {
         return shipperEmail;
@@ -250,11 +196,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 设置shipperEmail属性的值。
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is {@link String }
      */
     public void setShipperEmail(String value) {
         this.shipperEmail = value;
@@ -262,11 +205,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 获取shipperAddress属性的值。
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is {@link String }
      */
     public String getShipperAddress() {
         return shipperAddress;
@@ -274,11 +214,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 设置shipperAddress属性的值。
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is {@link String }
      */
     public void setShipperAddress(String value) {
         this.shipperAddress = value;
@@ -286,11 +223,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 获取shipperPhone属性的值。
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is {@link String }
      */
     public String getShipperPhone() {
         return shipperPhone;
@@ -298,11 +232,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 设置shipperPhone属性的值。
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is {@link String }
      */
     public void setShipperPhone(String value) {
         this.shipperPhone = value;
@@ -310,11 +241,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 获取shipperZipCode属性的值。
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is {@link String }
      */
     public String getShipperZipCode() {
         return shipperZipCode;
@@ -322,11 +250,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 设置shipperZipCode属性的值。
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is {@link String }
      */
     public void setShipperZipCode(String value) {
         this.shipperZipCode = value;
@@ -334,11 +259,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 获取shipperCompanyName属性的值。
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is {@link String }
      */
     public String getShipperCompanyName() {
         return shipperCompanyName;
@@ -346,11 +268,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 设置shipperCompanyName属性的值。
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is {@link String }
      */
     public void setShipperCompanyName(String value) {
         this.shipperCompanyName = value;
@@ -358,11 +277,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 获取shippingMethod属性的值。
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is {@link String }
      */
     public String getShippingMethod() {
         return shippingMethod;
@@ -370,11 +286,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 设置shippingMethod属性的值。
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is {@link String }
      */
     public void setShippingMethod(String value) {
         this.shippingMethod = value;
@@ -382,11 +295,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 获取recipientCountry属性的值。
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is {@link String }
      */
     public String getRecipientCountry() {
         return recipientCountry;
@@ -394,11 +304,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 设置recipientCountry属性的值。
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is {@link String }
      */
     public void setRecipientCountry(String value) {
         this.recipientCountry = value;
@@ -406,11 +313,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 获取recipientName属性的值。
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is {@link String }
      */
     public String getRecipientName() {
         return recipientName;
@@ -418,11 +322,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 设置recipientName属性的值。
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is {@link String }
      */
     public void setRecipientName(String value) {
         this.recipientName = value;
@@ -430,11 +331,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 获取recipientState属性的值。
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is {@link String }
      */
     public String getRecipientState() {
         return recipientState;
@@ -442,11 +340,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 设置recipientState属性的值。
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is {@link String }
      */
     public void setRecipientState(String value) {
         this.recipientState = value;
@@ -454,11 +349,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 获取recipientCity属性的值。
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is {@link String }
      */
     public String getRecipientCity() {
         return recipientCity;
@@ -466,11 +358,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 设置recipientCity属性的值。
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is {@link String }
      */
     public void setRecipientCity(String value) {
         this.recipientCity = value;
@@ -478,11 +367,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 获取recipientAddress属性的值。
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is {@link String }
      */
     public String getRecipientAddress() {
         return recipientAddress;
@@ -490,11 +376,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 设置recipientAddress属性的值。
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is {@link String }
      */
     public void setRecipientAddress(String value) {
         this.recipientAddress = value;
@@ -502,11 +385,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 获取recipientZipCode属性的值。
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is {@link String }
      */
     public String getRecipientZipCode() {
         return recipientZipCode;
@@ -514,11 +394,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 设置recipientZipCode属性的值。
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is {@link String }
      */
     public void setRecipientZipCode(String value) {
         this.recipientZipCode = value;
@@ -526,11 +403,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 获取recipientOrganization属性的值。
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is {@link String }
      */
     public String getRecipientOrganization() {
         return recipientOrganization;
@@ -538,11 +412,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 设置recipientOrganization属性的值。
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is {@link String }
      */
     public void setRecipientOrganization(String value) {
         this.recipientOrganization = value;
@@ -550,11 +421,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 获取recipientPhone属性的值。
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is {@link String }
      */
     public String getRecipientPhone() {
         return recipientPhone;
@@ -562,11 +430,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 设置recipientPhone属性的值。
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is {@link String }
      */
     public void setRecipientPhone(String value) {
         this.recipientPhone = value;
@@ -574,11 +439,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 获取recipientEmail属性的值。
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is {@link String }
      */
     public String getRecipientEmail() {
         return recipientEmail;
@@ -586,11 +448,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 设置recipientEmail属性的值。
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is {@link String }
      */
     public void setRecipientEmail(String value) {
         this.recipientEmail = value;
@@ -598,11 +457,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 获取goodsDescription属性的值。
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is {@link String }
      */
     public String getGoodsDescription() {
         return goodsDescription;
@@ -610,11 +466,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 设置goodsDescription属性的值。
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is {@link String }
      */
     public void setGoodsDescription(String value) {
         this.goodsDescription = value;
@@ -622,11 +475,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 获取goodsQuantity属性的值。
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is {@link String }
      */
     public String getGoodsQuantity() {
         return goodsQuantity;
@@ -634,11 +484,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 设置goodsQuantity属性的值。
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is {@link String }
      */
     public void setGoodsQuantity(String value) {
         this.goodsQuantity = value;
@@ -646,11 +493,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 获取goodsDeclareWorth属性的值。
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is {@link String }
      */
     public String getGoodsDeclareWorth() {
         return goodsDeclareWorth;
@@ -658,11 +502,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 设置goodsDeclareWorth属性的值。
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is {@link String }
      */
     public void setGoodsDeclareWorth(String value) {
         this.goodsDeclareWorth = value;
@@ -670,11 +511,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 获取goodsWeight属性的值。
-     * 
-     * @return
-     *     possible object is
-     *     {@link Float }
-     *     
+     *
+     * @return possible object is {@link Float }
      */
     public Float getGoodsWeight() {
         return goodsWeight;
@@ -682,11 +520,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 设置goodsWeight属性的值。
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Float }
-     *     
+     *
+     * @param value allowed object is {@link Float }
      */
     public void setGoodsWeight(Float value) {
         this.goodsWeight = value;
@@ -694,11 +529,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 获取goodsLength属性的值。
-     * 
-     * @return
-     *     possible object is
-     *     {@link Float }
-     *     
+     *
+     * @return possible object is {@link Float }
      */
     public Float getGoodsLength() {
         return goodsLength;
@@ -706,11 +538,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 设置goodsLength属性的值。
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Float }
-     *     
+     *
+     * @param value allowed object is {@link Float }
      */
     public void setGoodsLength(Float value) {
         this.goodsLength = value;
@@ -718,11 +547,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 获取goodsWidth属性的值。
-     * 
-     * @return
-     *     possible object is
-     *     {@link Float }
-     *     
+     *
+     * @return possible object is {@link Float }
      */
     public Float getGoodsWidth() {
         return goodsWidth;
@@ -730,11 +556,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 设置goodsWidth属性的值。
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Float }
-     *     
+     *
+     * @param value allowed object is {@link Float }
      */
     public void setGoodsWidth(Float value) {
         this.goodsWidth = value;
@@ -742,11 +565,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 获取goodsHeight属性的值。
-     * 
-     * @return
-     *     possible object is
-     *     {@link Float }
-     *     
+     *
+     * @return possible object is {@link Float }
      */
     public Float getGoodsHeight() {
         return goodsHeight;
@@ -754,11 +574,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 设置goodsHeight属性的值。
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Float }
-     *     
+     *
+     * @param value allowed object is {@link Float }
      */
     public void setGoodsHeight(Float value) {
         this.goodsHeight = value;
@@ -766,25 +583,24 @@ public class AddOrderRequestInfoArray {
 
     /**
      * Gets the value of the goodsDetails property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the goodsDetails property.
-     * 
-     * <p>
+     * <p/>
+     * <p/>
+     * This accessor method returns a reference to the live list, not a
+     * snapshot. Therefore any modification you make to the returned list will
+     * be present inside the JAXB object. This is why there is not a
+     * <CODE>set</CODE> method for the goodsDetails property.
+     * <p/>
+     * <p/>
      * For example, to add a new item, do as follows:
+     * <p/>
      * <pre>
-     *    getGoodsDetails().add(newItem);
+     * getGoodsDetails().add(newItem);
      * </pre>
-     * 
-     * 
-     * <p>
+     * <p/>
+     * <p/>
+     * <p/>
      * Objects of the following type(s) are allowed in the list
      * {@link GoodsDetailsArray }
-     * 
-     * 
      */
     public List<GoodsDetailsArray> getGoodsDetails() {
         if (goodsDetails == null) {
@@ -795,11 +611,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 获取opDivision属性的值。
-     * 
-     * @return
-     *     possible object is
-     *     {@link Integer }
-     *     
+     *
+     * @return possible object is {@link Integer }
      */
     public Integer getOpDivision() {
         return opDivision;
@@ -807,11 +620,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 设置opDivision属性的值。
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Integer }
-     *     
+     *
+     * @param value allowed object is {@link Integer }
      */
     public void setOpDivision(Integer value) {
         this.opDivision = value;
@@ -819,11 +629,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 获取orderStatus属性的值。
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is {@link String }
      */
     public String getOrderStatus() {
         return orderStatus;
@@ -831,11 +638,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 设置orderStatus属性的值。
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is {@link String }
      */
     public void setOrderStatus(String value) {
         this.orderStatus = value;
@@ -843,11 +647,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 获取ebayIdentify属性的值。
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is {@link String }
      */
     public String getEbayIdentify() {
         return ebayIdentify;
@@ -855,11 +656,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 设置ebayIdentify属性的值。
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is {@link String }
      */
     public void setEbayIdentify(String value) {
         this.ebayIdentify = value;
@@ -867,11 +665,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 获取printSortId属性的值。
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is {@link String }
      */
     public String getPrintSortId() {
         return printSortId;
@@ -879,11 +674,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 设置printSortId属性的值。
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is {@link String }
      */
     public void setPrintSortId(String value) {
         this.printSortId = value;
@@ -891,11 +683,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 获取areaCode属性的值。
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is {@link String }
      */
     public String getAreaCode() {
         return areaCode;
@@ -903,11 +692,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 设置areaCode属性的值。
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is {@link String }
      */
     public void setAreaCode(String value) {
         this.areaCode = value;
@@ -915,11 +701,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 获取notifyUrl属性的值。
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is {@link String }
      */
     public String getNotifyUrl() {
         return notifyUrl;
@@ -927,11 +710,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 设置notifyUrl属性的值。
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is {@link String }
      */
     public void setNotifyUrl(String value) {
         this.notifyUrl = value;
@@ -939,11 +719,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 获取evaluate属性的值。
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is {@link String }
      */
     public String getEvaluate() {
         return evaluate;
@@ -951,11 +728,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 设置evaluate属性的值。
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is {@link String }
      */
     public void setEvaluate(String value) {
         this.evaluate = value;
@@ -963,11 +737,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 获取invNo属性的值。
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is {@link String }
      */
     public String getInvNo() {
         return invNo;
@@ -975,11 +746,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 设置invNo属性的值。
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is {@link String }
      */
     public void setInvNo(String value) {
         this.invNo = value;
@@ -987,11 +755,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 获取taxesNumber属性的值。
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is {@link String }
      */
     public String getTaxesNumber() {
         return taxesNumber;
@@ -999,11 +764,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 设置taxesNumber属性的值。
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is {@link String }
      */
     public void setTaxesNumber(String value) {
         this.taxesNumber = value;
@@ -1011,11 +773,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 获取taxType属性的值。
-     * 
-     * @return
-     *     possible object is
-     *     {@link Integer }
-     *     
+     *
+     * @return possible object is {@link Integer }
      */
     public Integer getTaxType() {
         return taxType;
@@ -1023,11 +782,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 设置taxType属性的值。
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Integer }
-     *     
+     *
+     * @param value allowed object is {@link Integer }
      */
     public void setTaxType(Integer value) {
         this.taxType = value;
@@ -1035,11 +791,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 获取isRemoteConfirm属性的值。
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is {@link String }
      */
     public String getIsRemoteConfirm() {
         return isRemoteConfirm;
@@ -1047,11 +800,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 设置isRemoteConfirm属性的值。
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is {@link String }
      */
     public void setIsRemoteConfirm(String value) {
         this.isRemoteConfirm = value;
@@ -1059,11 +809,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 获取isReturn属性的值。
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is {@link String }
      */
     public String getIsReturn() {
         return isReturn;
@@ -1071,11 +818,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 设置isReturn属性的值。
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is {@link String }
      */
     public void setIsReturn(String value) {
         this.isReturn = value;
@@ -1083,11 +827,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 获取withBattery属性的值。
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is {@link String }
      */
     public String getWithBattery() {
         return withBattery;
@@ -1095,11 +836,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 设置withBattery属性的值。
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is {@link String }
      */
     public void setWithBattery(String value) {
         this.withBattery = value;
@@ -1107,11 +845,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 获取shippingWorth属性的值。
-     * 
-     * @return
-     *     possible object is
-     *     {@link Float }
-     *     
+     *
+     * @return possible object is {@link Float }
      */
     public Float getShippingWorth() {
         return shippingWorth;
@@ -1119,11 +854,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 设置shippingWorth属性的值。
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Float }
-     *     
+     *
+     * @param value allowed object is {@link Float }
      */
     public void setShippingWorth(Float value) {
         this.shippingWorth = value;
@@ -1131,11 +863,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 获取smallLangAddress属性的值。
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is {@link String }
      */
     public String getSmallLangAddress() {
         return smallLangAddress;
@@ -1143,11 +872,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 设置smallLangAddress属性的值。
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is {@link String }
      */
     public void setSmallLangAddress(String value) {
         this.smallLangAddress = value;
@@ -1155,11 +881,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 获取doorplate属性的值。
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is {@link String }
      */
     public String getDoorplate() {
         return doorplate;
@@ -1167,11 +890,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 设置doorplate属性的值。
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is {@link String }
      */
     public void setDoorplate(String value) {
         this.doorplate = value;
@@ -1179,11 +899,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 获取isGetArea属性的值。
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is {@link String }
      */
     public String getIsGetArea() {
         return isGetArea;
@@ -1191,11 +908,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 设置isGetArea属性的值。
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is {@link String }
      */
     public void setIsGetArea(String value) {
         this.isGetArea = value;
@@ -1203,11 +917,8 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 获取matchProduct属性的值。
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is {@link String }
      */
     public String getMatchProduct() {
         return matchProduct;
@@ -1215,14 +926,26 @@ public class AddOrderRequestInfoArray {
 
     /**
      * 设置matchProduct属性的值。
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is {@link String }
      */
     public void setMatchProduct(String value) {
         this.matchProduct = value;
     }
 
+    public String getPieceNumber() {
+        return pieceNumber;
+    }
+
+    public void setPieceNumber(String pieceNumber) {
+        this.pieceNumber = pieceNumber;
+    }
+
+    public String getShipperCity() {
+        return shipperCity;
+    }
+
+    public void setShipperCity(String shipperCity) {
+        this.shipperCity = shipperCity;
+    }
 }

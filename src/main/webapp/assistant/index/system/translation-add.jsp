@@ -53,6 +53,7 @@
             <div class="formControls col-xs-8 col-sm-9">
                 <select id="type" name="type" class="select" style="height: 32px">
                     <option value="1" selected>Google</option>
+                    <option value="2" selected>百度</option>
                 </select>
             </div>
         </div>
@@ -63,6 +64,12 @@
                     <option value="1" selected>启用</option>
                     <option value="0">停用</option>
                 </select>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3">级别：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="number" class="input-text" value="" placeholder="" id="sort" name="sort">
             </div>
         </div>
         <div class="row cl">
@@ -108,6 +115,7 @@
                         $("#secretKey").val(data.SECRET_KEY);
                         $("#state").val(data.STATE);
                         $("#type").val(data.TYPE);
+                        $("#sort").val(data.SORT);
                     } else {
                         layer.msg(data.msg, {icon: 2, time: 1000});
                     }

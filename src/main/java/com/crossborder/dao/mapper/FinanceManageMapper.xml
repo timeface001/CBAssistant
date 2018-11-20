@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.crossborder.dao.FinanceManageDao">
+
     <select id="selectShippings" parameterType="java.util.Map" resultType="java.util.Map">
         SELECT t1.*,t2.company_name,t3.user_name salesman_name,t4.user_name operation_name,t5.name
         trans_company_name,t6.smallimage

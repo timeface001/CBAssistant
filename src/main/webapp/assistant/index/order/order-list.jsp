@@ -470,7 +470,9 @@
         } else {
             $("#localStatus").val(id + 1);
         }
-        orderTable.ajax.reload();
+        orderTable.ajax.reload(function (data) {
+
+        }, false);
         selectFees();
         var btnDiv = document.getElementById("btn-div");
         var btns = btnDiv.getElementsByTagName("a");
@@ -638,14 +640,14 @@
                 // 核心实现：不能放到initComplete方法里，因为表格重载后跳转功能会消失
                 $("#orderTable_info").append('<div class="jump-page" style="float: right;margin-left: 50px">跳到 <input type="number" style="width: 50px" id="jump_page" min="1"> 页</div>');
                 var oTable = $("#orderTable").dataTable();
-                $('#jump_page').keyup(function(e){
-                    if(e.keyCode==13){
-                        if($(this).val() && $(this).val()>0){
-                            var redirectpage = $(this).val()-1;
-                        }else{
+                $('#jump_page').keyup(function (e) {
+                    if (e.keyCode == 13) {
+                        if ($(this).val() && $(this).val() > 0) {
+                            var redirectpage = $(this).val() - 1;
+                        } else {
                             var redirectpage = 0;
                         }
-                        oTable.fnPageChange( redirectpage );
+                        oTable.fnPageChange(redirectpage);
                     }
                 });
             },
@@ -805,7 +807,7 @@
                     layer.closeAll("loading");
                     if (data.code == 0) {
                         layer.msg(data.msg, {icon: 1, time: 1000});
-                        reloadTable(index)
+                        reloadTable(index);
                     } else {
                         layer.msg(data.msg, {icon: 2, time: 1000});
                     }

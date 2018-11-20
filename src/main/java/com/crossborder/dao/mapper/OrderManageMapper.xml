@@ -602,7 +602,6 @@
         </if>
         <if test="salesMan !=null and salesMan !=''">
             AND p.SALESMAN = #{salesMan,jdbcType=VARCHAR}
-            AND p.CREATE_USER = #{salesMan,jdbcType=VARCHAR}
         </if>
         <if test="salesCompany !=null and salesCompany !=''">
             AND p.SALESCOMPANY = #{salesCompany,jdbcType=VARCHAR}
@@ -730,6 +729,11 @@
         WHERE AMAZONORDERID = #{amazonOrderId,jdbcType=VARCHAR}
         AND ORDERITEMID = #{orderItemId,jdbcType=VARCHAR}
     </update>
+    <update id="updateOrderIsCommission" parameterType="java.util.Map">
+        UPDATE T_ORDER
+        set ISCOMMISSION = '1'
+        WHERE AMAZONORDERID = #{amazonOrderId,jdbcType=VARCHAR}
+    </update>
     <update id="updateOrderItem" parameterType="java.util.Map">
         UPDATE T_ORDER_ITEM
         set STATUS = #{status,jdbcType=VARCHAR}
@@ -800,13 +804,13 @@
         from t_order_item
         group by amazonorderid) t2
         on t2.amazonorderid = t1.amazonorderid
+        WHERE 1=1
         <if test="sku !=null and sku != ''">
             AND t2.SKU LIKE '%'||#{sku}||'%'
         </if>
         <if test="trackNum !=null and trackNum != ''">
             AND t2.TRACKNUM LIKE '%${trackNum}%'
         </if>
-        WHERE 1=1
         <if test="amazonOrderId !=null and amazonOrderId !=''">
             AND t1.AMAZONORDERID LIKE '%${amazonOrderId}%'
         </if>
@@ -960,5 +964,21 @@
         SELECT DISTINCT addressline1, addressline2,addressline3 from t_address
         where amazonorderid in (SELECT amazonorderid from t_order
         WHERE mergedid = #{mergedId,jdbcType=VARCHAR})
+    </select>
+    <select id="selectCommissionOrder" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        distinct t1.amazonorderid,
+        t2.merchant_id,
+        t2.secret_key,
+        t2.accesskey_id,
+        t2.mwsauthtoken,
+        t3.endpoint,
+        t3.exrate,
+        t3.marketplaceid from T_ORDER t1
+        left join t_shop t2
+        on t2.merchant_id = t1.salessource
+        left join T_COUNTRY t3
+        on t3.marketplaceid = t1.marketplaceid
+        WHERE ISCOMMISSION IS NULL
     </select>
 </mapper>

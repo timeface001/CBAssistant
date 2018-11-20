@@ -241,7 +241,9 @@
         }
         index = id;
         $("#status").val(id);
-        shippingTable.ajax.reload();
+        shippingTable.ajax.reload(function (data) {
+
+        }, false);
         var btnDiv = document.getElementById("btn-div");
         var btns = btnDiv.getElementsByTagName("a");
         for (var i = 0; i < btns.length; i++) {

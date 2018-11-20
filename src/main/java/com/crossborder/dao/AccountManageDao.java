@@ -15,4 +15,10 @@ public interface AccountManageDao {
     public int addAccount(Map<String, Object> map);
 
     public List<Map<String, Object>> getAccountByCompany(String userCompany);
+
+    public List<Map<String,Object>> selectRecharges(Map<String, Object> map);
+
+    public int recharge(Map<String, Object> map);
+
+    public int auditRecharge(Map<String, Object> map);
 }

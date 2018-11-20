@@ -89,7 +89,9 @@ public class OrderManageService {
     public int updateOrderItemCommission(Map<String, Object> map) {
         return orderManageDao.updateOrderItemCommission(map);
     }
-
+    public int updateOrderIsCommission(Map<String, Object> map) {
+        return orderManageDao.updateOrderIsCommission(map);
+    }
     public int cloneOrder(String amazonOrderId, String date) {
         return orderManageDao.cloneOrder(amazonOrderId, date);
     }
@@ -104,6 +106,10 @@ public class OrderManageService {
 
     public List<Map<String, Object>> selectLocalMergeOrder(Map<String, Object> map) {
         return orderManageDao.selectLocalMergeOrder(map);
+    }
+
+    public List<Map<String, Object>> selectCommissionOrder(Map<String, Object> map) {
+        return orderManageDao.selectCommissionOrder(map);
     }
 
     public int updateOrderMergeId(Map<String, Object> map) {

@@ -48,7 +48,13 @@
     <select id="getList" parameterType="java.lang.String" resultType="java.util.Map">
         <![CDATA[
 
+
+
+
 			${sqlText}
+
+
+
 
         ]]>
     </select>
@@ -56,7 +62,13 @@
         <![CDATA[
 
 
+
+
+
 			${sqlText}
+
+
+
 
 
         ]]>
@@ -101,6 +113,10 @@
         SELECT * FROM T_TRANSPORT_TYPE
         WHERE
         COMPANY_ID = #{companyId,jdbcType=VARCHAR}
+        <if test="countryCode !=null and countryCode !=''">
+            AND COUNTRY_ID = #{countryCode,jdbcType=VARCHAR}
+        </if>
+        ORDER BY STATE
     </select>
     <insert id="insertShipMent" parameterType="java.util.Map">
         INSERT INTO T_ORDER_SHIPMENT (
@@ -174,6 +190,15 @@
         WHERE 1=1
         <if test="orderId !=null and orderId !=''">
             AND ORDER_ID = #{orderId,jdbcType=VARCHAR}
+        </if>
+    </select>
+    <select id="getTransportCompanies" parameterType="java.lang.String" resultType="java.util.Map">
+        SELECT DISTINCT t1.company_id,t2.* FROM T_TRANSPORT_TYPE t1
+        LEFT JOIN T_TRANSPORT_COMPANY t2
+        ON t2.id = t1.company_id
+        WHERE 1=1
+        <if test="countryCode !=null and countryCode !=''">
+            AND COUNTRY_ID = #{countryCode,jdbcType=VARCHAR}
         </if>
     </select>
 </mapper>

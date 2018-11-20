@@ -1,26 +1,43 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.crossborder.dao.AccountManageDao">
+    <!-- <select id="getAccounts" parameterType="java.util.Map" resultType="java.util.Map">
+         SELECT t1.* ,t2.NAME SHIPCOMPANY,T3.COMPANY_NAME USERCOMPANY FROM T_ACCOUNT_FLOW_INFO t1
+         LEFT JOIN T_TRANSPORT_COMPANY t2
+         ON t1.SHIP_COMPANY = t2.ID
+         LEFT JOIN T_USER_COMPANY t3
+         ON t1.USER_COMPANY = t3.COMPANY_ID
+         WHERE 1=1
+         <if test="userCompany !=null and userCompany !=''">
+             AND t1.USER_COMPANY = #{userCompany,jdbcType=VARCHAR}
+         </if>
+         <if test="shipCompany !=null and shipCompany !=''">
+             AND SHIP_COMPANY = #{shipCompany,jdbcType=VARCHAR}
+         </if>
+         <if test="logmin != null and logmin != ''">
+             AND to_char(t1.CREATE_TIME,'yyyy-MM-dd hh24:mi:ss')  <![CDATA[>=]]> #{logmin,jdbcType=VARCHAR}
+         </if>
+         <if test="logmax != null and logmax != ''">
+             AND to_char(t1.CREATE_TIME,'yyyy-MM-dd hh24:mi:ss')  <![CDATA[<=]]> #{logmax,jdbcType=VARCHAR}
+         </if>
+         ORDER BY t1.CREATE_TIME DESC
+     </select>-->
     <select id="getAccounts" parameterType="java.util.Map" resultType="java.util.Map">
-        SELECT t1.* ,t2.NAME SHIPCOMPANY,T3.COMPANY_NAME USERCOMPANY FROM T_ACCOUNT_FLOW_INFO t1
-        LEFT JOIN T_TRANSPORT_COMPANY t2
-        ON t1.SHIP_COMPANY = t2.ID
-        LEFT JOIN T_USER_COMPANY t3
-        ON t1.USER_COMPANY = t3.COMPANY_ID
+        select b.*,(b.amount-b.freight) balance,(b.amount-b.freight) abalance
+        from( SELECT t.*,
+        case when t2.freight != 0 then t2.freight else 0 end freight,
+        case when t3.amount !=0 then t3.amount else 0 end amount
+        from T_USER_COMPANY t
+        left join ( select salescompany,sum(freight) freight from t_order_shipment where status = '2' group by
+        salescompany) t2
+        on t.company_id = t2.salescompany
+        left join ( select company,sum(RECHARGE_AMOUNT) amount from t_order_recharge where status = '2'group by company)
+        t3
+        on t.company_id = t3.company) b
         WHERE 1=1
-        <if test="userCompany !=null and userCompany !=''">
-            AND t1.USER_COMPANY = #{userCompany,jdbcType=VARCHAR}
+        <if test="companyId != null and companyId != ''">
+            AND b.company_id = #{companyId,jdbcType=VARCHAR}
         </if>
-        <if test="shipCompany !=null and shipCompany !=''">
-            AND SHIP_COMPANY = #{shipCompany,jdbcType=VARCHAR}
-        </if>
-        <if test="logmin != null and logmin != ''">
-            AND to_char(t1.CREATE_TIME,'yyyy-MM-dd hh24:mi:ss')  <![CDATA[>=]]> #{logmin,jdbcType=VARCHAR}
-        </if>
-        <if test="logmax != null and logmax != ''">
-            AND to_char(t1.CREATE_TIME,'yyyy-MM-dd hh24:mi:ss')  <![CDATA[<=]]> #{logmax,jdbcType=VARCHAR}
-        </if>
-        ORDER BY t1.CREATE_TIME DESC
     </select>
     <insert id="addAccount" parameterType="java.util.Map">
         INSERT INTO
@@ -51,4 +68,65 @@
         WHERE t.USER_COMPANY =  #{userCompany,jdbcType=VARCHAR}
         ORDER BY t.CREATE_TIME DESC
     </select>
+    <select id="selectRecharges" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT t1.*,t2.company_name,t3.user_name
+        FROM t_order_recharge t1
+        LEFT JOIN T_USER_COMPANY t2
+        ON t1.company = t2.company_id
+        LEFT JOIN T_USER_INFO t3
+        ON t1.REMITTANCE_USER = t3.user_id
+        WHERE 1=1
+        <if test="status !=null and status !=''">
+            AND t1.STATUS = #{status,jdbcType=VARCHAR}
+        </if>
+        <if test="companyId !=null and companyId !=''">
+            AND t1.COMPANY = #{companyId,jdbcType=VARCHAR}
+        </if>
+        <if test="logmin !=null and logmin != ''">
+            AND t1.REMITTANCE_DATE <![CDATA[>=]]> to_date(#{logmin,jdbcType=VARCHAR},'yyyy-MM-dd')
+        </if>
+        <if test="logmax !=null and logmax != ''">
+            AND t1.REMITTANCE_DATE  <![CDATA[<=]]> to_date(#{logmax,jdbcType=VARCHAR},'yyyy-MM-dd')
+        </if>
+        ORDER BY REMITTANCE_DATE DESC
+    </select>
+    <insert id="recharge" parameterType="java.util.Map">
+        INSERT INTO
+        T_ORDER_RECHARGE(
+        ID,
+        COMPANY,
+        BALANCE,
+        AVAILABLE_BALANCE,
+        REMITTANCE_MODE,
+        RECEIVABLE_ACCOUNT,
+        RECHARGE_AMOUNT,
+        VOUCHER,
+        REMARK,
+        REMITTANCE_DATE,
+        REMITTANCE_USER,
+        STATUS)
+        VALUES (
+        #{id,jdbcType=VARCHAR},
+        #{companyId,jdbcType=VARCHAR},
+        #{balance,jdbcType=VARCHAR},
+        #{aBalance,jdbcType=DOUBLE},
+        #{mode,jdbcType=VARCHAR},
+        #{account,jdbcType=VARCHAR},
+        #{amount,jdbcType=DOUBLE},
+        #{voucher,jdbcType=VARCHAR},
+        #{remark,jdbcType=VARCHAR},
+        to_date(#{createTime,jdbcType=VARCHAR},'yyyy-mm-dd'),
+        #{createUser,jdbcType=VARCHAR},
+        '1'
+        )
+    </insert>
+    <update id="auditRecharge" parameterType="java.util.Map">
+        UPDATE T_ORDER_RECHARGE
+        SET STATUS = #{status,jdbcType=VARCHAR}
+        <if test="status == 2">
+            ,BALANCE = BALANCE + RECHARGE_AMOUNT
+            ,AVAILABLE_BALANCE = BALANCE + RECHARGE_AMOUNT
+        </if>
+        WHERE id = #{id,jdbcType=VARCHAR}
+    </update>
 </mapper>
