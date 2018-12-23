@@ -19,6 +19,7 @@ public interface OrderManageDao {
     public int insertOrderItem(LocalOrderItem localOrderItem);
 
     public List<Map<String, Object>> selectLocalOrder(Map<String, Object> map);
+    public List<Map<String, Object>> selectLocalOrderById(Map<String, Object> map);
 
     public List<Map<String, Object>> selectLocalOrderItem(Map<String, Object> map);
 

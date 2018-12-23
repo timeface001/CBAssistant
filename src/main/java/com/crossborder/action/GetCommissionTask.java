@@ -24,7 +24,7 @@ public class GetCommissionTask {
     @Resource
     private OrderManageService orderManageService;
 
-    @Scheduled(cron = "0 0/2 9 ? * *")
+    @Scheduled(cron = "0 0/2 22 ? * *")
     public void startTask() {
 
         Map<String, Object> paramMap = new HashMap<>();

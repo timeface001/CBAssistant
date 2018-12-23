@@ -704,67 +704,68 @@ public class CommonController {
                                         String marketplaceId,
                                         String merchantId) {
         try {
-            GregorianCalendar cal = new GregorianCalendar();
-            cal.setTime(new Date());
-            String header = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
-                    "<AmazonEnvelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"amznenvelope.xsd\">" +
-                    "<Header>" +
-                    "<DocumentVersion>1.01</DocumentVersion>" +
-                    "<MerchantIdentifier>" + merchantId + "</MerchantIdentifier>" +
-                    "</Header>" +
-                    "<MessageType>OrderFulfillment</MessageType>";
-            String message = "<Message>" +
-                    "<MessageID>1</MessageID>" +
-                    "<OrderFulfillment>" +
-                    "<AmazonOrderID>" + amazonOrderId + "</AmazonOrderID>" +
-                    "<FulfillmentDate>" + DatatypeFactory.newInstance().newXMLGregorianCalendar(cal) + "</FulfillmentDate>" +
-                    "<FulfillmentData>" +
-                    "<CarrierName>" + companyId + "</CarrierName>" +
-                    "<ShippingMethod>Standard</ShippingMethod>" +
-                    "<ShipperTrackingNumber>" + trackingNumber + "</ShipperTrackingNumber>" +
-                    "</FulfillmentData>" +
-            /*        "<Item>" +
-                    "<AmazonOrderItemCode>06743192371019</AmazonOrderItemCode>" +
-                    "<Quantity>1</Quantity>" +
-                    "</Item>" +*/
-                    "</OrderFulfillment>" +
-                    "</Message>";
-            String end = "</AmazonEnvelope>";
-            String path = PropertyUtil.getProperty("updateOrderStatusPath");
-            StringBuffer stringBuffer = new StringBuffer();
-            String fulfillmentXml = stringBuffer.append(header).append(message).append(end).toString();
-            FileWriter writer = new FileWriter(new File(path));
-            writer.write(fulfillmentXml);
-            writer.flush();
-            writer.close();
-            FileInputStream fis = new FileInputStream(new File(path));
-            Map<String, Object> shopMap = new HashMap<>();
-            shopMap.put("merchantId", merchantId);
-            shopMap.put("marketplaceId", marketplaceId);
-            Map<String, Object> shop = shopManageService.selectShopByCountry(shopMap).get(0);
-            MarketplaceWebServiceConfig config = new MarketplaceWebServiceConfig();
-            config.setServiceURL(shop.get("ENDPOINT").toString());
-            MarketplaceWebService service = new MarketplaceWebServiceClient(shop.get("ACCESSKEY_ID").toString(), shop.get("SECRET_KEY").toString(), "", "", config);
-            SubmitFeedRequest request = new SubmitFeedRequest();
-            IdList idList = new IdList();
-            List<String> ids = new ArrayList<>();
-            ids.add(marketplaceId);
-            idList.setId(ids);
-            request.setMarketplaceIdList(idList);
-            request.setMerchant(shop.get("MERCHANT_ID").toString());
-            request.setMWSAuthToken(shop.get("MWSAUTHTOKEN").toString());
-            request.setFeedContent(fis);
-            request.setFeedType(Order_Fulfillment_Fee);
-            request.setContentMD5(MD5.computeContentMD5HeaderValue(fis));
-            SubmitFeedResponse response = service.submitFeed(request);
-            if (response.isSetSubmitFeedResult()) {
-                SubmitFeedResult submitFeedResult = response
-                        .getSubmitFeedResult();
-                if (submitFeedResult.isSetFeedSubmissionInfo()) {
-                    FeedSubmissionInfo feedSubmissionInfo = submitFeedResult
-                            .getFeedSubmissionInfo();
-                    if (feedSubmissionInfo.isSetFeedSubmissionId()) {
+            Map<String, Object> params = new HashMap<>();
+            params.put("amazonOrderId", amazonOrderId);
+            List<Map<String, Object>> list = orderManageService.selectLocalOrderById(params);
+            for (int j = 0; j < list.size(); j++) {
+                GregorianCalendar cal = new GregorianCalendar();
+                cal.setTime(new Date());
+                String header = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+                        "<AmazonEnvelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"amznenvelope.xsd\">" +
+                        "<Header>" +
+                        "<DocumentVersion>1.01</DocumentVersion>" +
+                        "<MerchantIdentifier>" + merchantId + "</MerchantIdentifier>" +
+                        "</Header>" +
+                        "<MessageType>OrderFulfillment</MessageType>";
+                String message = "<Message>" +
+                        "<MessageID>1</MessageID>" +
+                        "<OrderFulfillment>" +
+                        "<AmazonOrderID>" + list.get(j).get("AMAZONORDERID") + "</AmazonOrderID>" +
+                        "<FulfillmentDate>" + DatatypeFactory.newInstance().newXMLGregorianCalendar(cal) + "</FulfillmentDate>" +
+                        "<FulfillmentData>" +
+                        "<CarrierName>" + companyId + "</CarrierName>" +
+                        "<ShippingMethod>Standard</ShippingMethod>" +
+                        "<ShipperTrackingNumber>" + trackingNumber + "</ShipperTrackingNumber>" +
+                        "</FulfillmentData>" +
+                        "</OrderFulfillment>" +
+                        "</Message>";
+                String end = "</AmazonEnvelope>";
+                String path = PropertyUtil.getProperty("updateOrderStatusPath");
+                StringBuffer stringBuffer = new StringBuffer();
+                String fulfillmentXml = stringBuffer.append(header).append(message).append(end).toString();
+                FileWriter writer = new FileWriter(new File(path));
+                writer.write(fulfillmentXml);
+                writer.flush();
+                writer.close();
+                FileInputStream fis = new FileInputStream(new File(path));
+                Map<String, Object> shopMap = new HashMap<>();
+                shopMap.put("merchantId", merchantId);
+                shopMap.put("marketplaceId", marketplaceId);
+                Map<String, Object> shop = shopManageService.selectShopByCountry(shopMap).get(0);
+                MarketplaceWebServiceConfig config = new MarketplaceWebServiceConfig();
+                config.setServiceURL(shop.get("ENDPOINT").toString());
+                MarketplaceWebService service = new MarketplaceWebServiceClient(shop.get("ACCESSKEY_ID").toString(), shop.get("SECRET_KEY").toString(), "", "", config);
+                SubmitFeedRequest request = new SubmitFeedRequest();
+                IdList idList = new IdList();
+                List<String> ids = new ArrayList<>();
+                ids.add(marketplaceId);
+                idList.setId(ids);
+                request.setMarketplaceIdList(idList);
+                request.setMerchant(shop.get("MERCHANT_ID").toString());
+                request.setMWSAuthToken(shop.get("MWSAUTHTOKEN").toString());
+                request.setFeedContent(fis);
+                request.setFeedType(Order_Fulfillment_Fee);
+                request.setContentMD5(MD5.computeContentMD5HeaderValue(fis));
+                SubmitFeedResponse response = service.submitFeed(request);
+                if (response.isSetSubmitFeedResult()) {
+                    SubmitFeedResult submitFeedResult = response
+                            .getSubmitFeedResult();
+                    if (submitFeedResult.isSetFeedSubmissionInfo()) {
+                        FeedSubmissionInfo feedSubmissionInfo = submitFeedResult
+                                .getFeedSubmissionInfo();
+                        if (feedSubmissionInfo.isSetFeedSubmissionId()) {
 
+                        }
                     }
                 }
             }
@@ -788,40 +789,45 @@ public class CommonController {
     private void updateLocalOrderStatus(String amazonOrderId, JSONObject shippingObject,
                                         JSONObject jsonObject, String intlTrackNum,
                                         String salesMan, String salesCompany, Map<String, Object> user) {
-        Map<String, Object> shippingMap = shippingObject;
-        shippingMap.put("amazonOrderId", amazonOrderId);
-        commonService.updateAddress(shippingMap);
-        Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("amazonOrderId", amazonOrderId);
-        paramMap.put("status", "4");
-        paramMap.put("intlTrackNum", intlTrackNum);
-        paramMap.put("updateTime", simpleDateFormat.format(new Date()));
-        paramMap.put("transportCompany", jsonObject.getString("transportCompany"));
-        orderManageService.updateOrder(paramMap);
-        orderManageService.updateOrderItem(paramMap);
-        insertOperationLog(amazonOrderId, "2", "4", user.get("USER_ID").toString(), "");
-        Map<String, Object> shipMap = new HashMap<>();
-        shipMap.put("amazonOrderId", amazonOrderId);
-        shipMap.put("companyId", jsonObject.getString("transportCompany"));
-        shipMap.put("typeId", jsonObject.getString("ShippingMethodCode"));
-        shipMap.put("custId", jsonObject.getString("OrderNumber"));
-        shipMap.put("length", jsonObject.getString("Length"));
-        shipMap.put("width", jsonObject.getString("Width"));
-        shipMap.put("height", jsonObject.getString("Height"));
-        shipMap.put("packages", jsonObject.getString("PackageNumber"));
-        shipMap.put("weight", jsonObject.getString("Weight"));
-        shipMap.put("trackNum", intlTrackNum);
-        shipMap.put("orderCode", intlTrackNum);
-        shipMap.put("salesMan", salesMan);
-        shipMap.put("salesCompany", salesCompany);
-        shipMap.put("status", "0");
-        commonService.insertShipMent(shipMap);
-        JSONArray jsonArray = jsonObject.getJSONArray("ApplicationInfos");
-        if (jsonArray != null) {
-            for (int i = 0; i < jsonArray.size(); i++) {
-                Map<String, Object> customsInfo = jsonArray.getJSONObject(i);
-                customsInfo.put("custId", jsonObject.getString("OrderNumber"));
-                commonService.insertCustomsInfo(customsInfo);
+        Map<String, Object> params = new HashMap<>();
+        params.put("amazonOrderId", amazonOrderId);
+        List<Map<String, Object>> list = orderManageService.selectLocalOrderById(params);
+        for (int j = 0; j < list.size(); j++) {
+            Map<String, Object> shippingMap = shippingObject;
+            shippingMap.put("amazonOrderId", list.get(j).get("AMAZONORDERID"));
+            commonService.updateAddress(shippingMap);
+            Map<String, Object> paramMap = new HashMap<>();
+            paramMap.put("amazonOrderId", list.get(j).get("AMAZONORDERID"));
+            paramMap.put("status", "4");
+            paramMap.put("intlTrackNum", intlTrackNum);
+            paramMap.put("updateTime", simpleDateFormat.format(new Date()));
+            paramMap.put("transportCompany", jsonObject.getString("transportCompany"));
+            orderManageService.updateOrder(paramMap);
+            orderManageService.updateOrderItem(paramMap);
+            insertOperationLog(amazonOrderId, "2", "4", user.get("USER_ID").toString(), "");
+            Map<String, Object> shipMap = new HashMap<>();
+            shipMap.put("amazonOrderId", list.get(j).get("AMAZONORDERID"));
+            shipMap.put("companyId", jsonObject.getString("transportCompany"));
+            shipMap.put("typeId", jsonObject.getString("ShippingMethodCode"));
+            shipMap.put("custId", jsonObject.getString("OrderNumber"));
+            shipMap.put("length", jsonObject.getString("Length"));
+            shipMap.put("width", jsonObject.getString("Width"));
+            shipMap.put("height", jsonObject.getString("Height"));
+            shipMap.put("packages", jsonObject.getString("PackageNumber"));
+            shipMap.put("weight", jsonObject.getString("Weight"));
+            shipMap.put("trackNum", intlTrackNum);
+            shipMap.put("orderCode", intlTrackNum);
+            shipMap.put("salesMan", salesMan);
+            shipMap.put("salesCompany", salesCompany);
+            shipMap.put("status", "0");
+            commonService.insertShipMent(shipMap);
+            JSONArray jsonArray = jsonObject.getJSONArray("ApplicationInfos");
+            if (jsonArray != null) {
+                for (int i = 0; i < jsonArray.size(); i++) {
+                    Map<String, Object> customsInfo = jsonArray.getJSONObject(i);
+                    customsInfo.put("custId", jsonObject.getString("OrderNumber"));
+                    commonService.insertCustomsInfo(customsInfo);
+                }
             }
         }
     }

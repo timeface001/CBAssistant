@@ -29,7 +29,9 @@ public class OrderManageService {
     public List<Map<String, Object>> selectLocalOrder(Map<String, Object> map) {
         return orderManageDao.selectLocalOrder(map);
     }
-
+    public List<Map<String, Object>> selectLocalOrderById(Map<String, Object> map) {
+        return orderManageDao.selectLocalOrderById(map);
+    }
     public List<Map<String, Object>> selectLocalOrderItem(Map<String, Object> map) {
         return orderManageDao.selectLocalOrderItem(map);
     }

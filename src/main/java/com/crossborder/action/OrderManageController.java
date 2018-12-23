@@ -683,7 +683,7 @@ public class OrderManageController {
             String[] addressLine1Array = new String[idArray.length];
             String[] addressLine2Array = new String[idArray.length];
             String[] addressLine3Array = new String[idArray.length];
-            if (idArray.length > 2) {
+            if (idArray.length > 1) {
                 for (int i = 0; i < idArray.length; i++) {
                     Map<String, Object> idMap = new HashMap<>();
                     idMap.put("id", idArray[i]);
@@ -813,7 +813,7 @@ public class OrderManageController {
         paramMap.put("amazonOrderId", amazonOrderId);
         try {
             map.put("address", orderManageService.selectAddress(amazonOrderId).get(0));
-            map.put("localOrder", orderManageService.selectLocalOrder(paramMap).get(0));
+            map.put("localOrder", orderManageService.selectLocalOrderById(paramMap).get(0));
             map.put("code", "0");
             map.put("msg", "查询成功");
         } catch (Exception e) {
