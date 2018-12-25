@@ -322,7 +322,25 @@
         initOrderItem();
         initOperationLog();
         initCustomsTable();
+        initInput();
     });
+    function initInput(){
+        $('input').bind('input propertychange', function() {
+            var weight = $("#weight").val();
+            var result = 0;
+            if(weight==null||weight==""){
+                weight = parseInt(0);
+            }else if(isNaN(weight)){
+                $("#weight").val("");
+                weight = parseInt(0);
+            }
+            result = weight * 4.2;
+            if(result < 15){
+                result = 15;
+            }
+            $("input[name='price']").val(result);
+        });
+    }
     function initBusiness(localOrder) {
         preStatus = localOrder.LOCALSTATUS;
         trackNum = localOrder.INTLTRACKNUM;
@@ -602,13 +620,15 @@
                             if (roleId == 300) {
                                 return "";
                             } else {
-                                return "<a style='text-decoration:none' title='退款'  onClick=\"updateOrder(6,'" + full.ORDERITEMID + "','" + full.AMAZONORDERID + "')\"'>退款</a>" +
+                                return "<a style='text-decoration:none' title='备货'  onClick=\"updateOrder(2,'" + full.ORDERITEMID + "','" + full.AMAZONORDERID + "')\"'>备货</a>" +
                                         "&nbsp;&nbsp;&nbsp;&nbsp;" +
-                                        "<a style='text-decoration:none' title='问题'  onClick=\"updateOrder(5,'" + full.ORDERITEMID + "')\"'>问题</a>" +
+                                        "<a style='text-decoration:none' title='缺货'  onClick=\"updateOrder(3,'" + full.ORDERITEMID + "','" + full.AMAZONORDERID + "')\"'>缺货</a>" +
                                         "&nbsp;&nbsp;&nbsp;&nbsp;" +
                                         "<a style='text-decoration:none' title='拦截'  onClick=\"updateOrder(12,'" + full.ORDERITEMID + "','" + full.AMAZONORDERID + "')\"'>拦截</a>" +
                                         "&nbsp;&nbsp;&nbsp;&nbsp;" +
-                                        "<a style='text-decoration:none' title='妥投'  onClick=\"updateOrder(7,'" + full.ORDERITEMID + "')\"'>妥投</a>" +
+                                        "<a style='text-decoration:none' title='退款'  onClick=\"updateOrder(6,'" + full.ORDERITEMID + "','" + full.AMAZONORDERID + "')\"'>退款</a>" +
+                                        "&nbsp;&nbsp;&nbsp;&nbsp;" +
+                                        "<a style='text-decoration:none' title='问题'  onClick=\"updateOrder(5,'" + full.ORDERITEMID + "','" + full.AMAZONORDERID + "')\"'>问题</a>" +
                                         "&nbsp;&nbsp;&nbsp;&nbsp;";
                             }
                         } else if (data == 12) {

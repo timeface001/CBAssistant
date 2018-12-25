@@ -41,7 +41,7 @@
         <if test="logmax !=null and logmax != ''">
             AND t1.CREATE_TIME  <![CDATA[<=]]> to_date(#{logmax,jdbcType=VARCHAR},'yyyy-MM-dd HH24:mi:ss')
         </if>
-        ORDER BY CREATE_TIME DESC
+        ORDER BY TRACKNUMBER,CREATE_TIME DESC
     </select>
     <update id="updateShipping" parameterType="java.util.Map">
         UPDATE T_ORDER_SHIPMENT

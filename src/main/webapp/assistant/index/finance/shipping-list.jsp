@@ -284,7 +284,7 @@
                 {"data": "SMALLIMAGE"},
                 {"data": "ORDER_ID"},
                 {"data": "CUST_ORDER_ID"},
-                {"data": "TRACKNUMBER"},
+                {"data": "flag"},
                 {"data": "SALESMAN_NAME"},
                 {"data": "COMPANY_NAME"},
                 {"data": "SHIPPINGPRICE"},
@@ -312,6 +312,17 @@
                             return "<img id='" + full.ORDER_ID + "' onmousemove=\"moveBig()\" onmouseout=\"hiddenBig()\" onmouseover=\"showBig('" + full.ID + "','" + data.split(",")[0] + "')\"src='" + data.split(",")[0] + "'/>";
                         } else {
                             return "<img  src='" + data + "'/>";
+                        }
+                    }
+                },
+                {
+                    "targets": [4],
+                    "data": "flag",
+                    "render": function (data, type, full) {
+                        if (data == "1") {
+                            return "<div style='color: red'>" + full.TRACKNUMBER + "</div>";
+                        } else {
+                            return "<div>" + full.TRACKNUMBER + "</div>";
                         }
                     }
                 },

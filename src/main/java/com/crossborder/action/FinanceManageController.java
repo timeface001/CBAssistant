@@ -59,6 +59,12 @@ public class FinanceManageController {
             PageHelper.startPage(start == null ? 1 : (start / length + 1), length);
             List<Map<String, Object>> list = financeManageService.selectShippings(paramMap);
             PageInfo<Map<String, Object>> pageInfo = new PageInfo<Map<String, Object>>(list);
+            for (int i = 1; i < list.size(); i++) {
+                if (list.get(i - 1).get("TRACKNUMBER").equals(list.get(i).get("TRACKNUMBER"))) {
+                    list.get(i - 1).put("flag", "1");
+                    list.get(i).put("flag", "1");
+                }
+            }
             map.put("data", list);
             map.put("draw", draw);
             map.put("recordsTotal", pageInfo.getTotal());
@@ -112,6 +118,10 @@ public class FinanceManageController {
         paramMap.put("operationUser", user.get("USER_ID"));
         try {
             financeManageService.updateShipping(paramMap);
+            Map<String, Object> itemParams = new HashMap<>();
+            itemParams.put("amazonOrderId", paramMap.get("orderId"));
+            itemParams.put("intlTrackNum", paramMap.get("trackNum"));
+            orderManageService.updateOrder(itemParams);
             map.put("code", "0");
             map.put("msg", "修改成功");
         } catch (Exception e) {
