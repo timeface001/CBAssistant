@@ -5,7 +5,7 @@
     <properties resource="generator/generator.properties"/>
 
     <!-- 指定数据连接驱动jar地址 -->
-    <!--<classPathEntry location="${classPath}" />-->
+    <classPathEntry location="${classPath}" />
 
     <!-- 一个数据库一个context -->
     <context id="fenku">
@@ -75,13 +75,21 @@
                enableSelectByExample="false" enableUpdateByExample="false" alias="a">
         </table>-->
 
-        <table tableName="T_PRODUCT_UPLOAD_CATEGORY" domainObjectName="ProductUploadCategory" enableCountByExample="false" enableDeleteByExample="false"
+        <!--<table tableName="T_PRODUCT_UPLOAD_CATEGORY" domainObjectName="ProductUploadCategory" enableCountByExample="false" enableDeleteByExample="false"
                enableSelectByExample="false" enableUpdateByExample="false" alias="a">
-        </table>
+        </table>-->
 
         <!--<table tableName="T_PRODUCT_UPLOAD_LOG" domainObjectName="ProductUploadLog" enableCountByExample="false" enableDeleteByExample="false"
                enableSelectByExample="false" enableUpdateByExample="false" alias="a">
         </table>-->
+
+        <!--<table tableName="T_PRODUCT_UPLOAD_VALUES" domainObjectName="ProductUploadValues" enableCountByExample="false" enableDeleteByExample="false"
+            enableSelectByExample="false" enableUpdateByExample="false" alias="a">
+         </table>-->
+
+        <table tableName="T_UPLOAD_LOG" domainObjectName="UploadLog" enableCountByExample="false" enableDeleteByExample="false"
+            enableSelectByExample="false" enableUpdateByExample="false" alias="a">
+         </table>
 
 
     </context>

@@ -195,7 +195,7 @@ public class ProductClaimController extends BaseController {
                 request.setAttribute("productVar", new ProductItemVar());
             }
         } else {
-            request.setAttribute("productVars", JSON.toJSONString(vars));
+            request.setAttribute("productVars", JSON.toJSONString(vars).replaceAll("'",""));
         }
         return view;
     }

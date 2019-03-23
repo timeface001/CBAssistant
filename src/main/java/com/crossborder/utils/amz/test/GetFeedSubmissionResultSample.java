@@ -48,8 +48,8 @@ public class GetFeedSubmissionResultSample {
          * Access Key ID and Secret Access Key ID, obtained from:
          * http://aws.amazon.com
          ***********************************************************************/
-        final String accessKeyId = "AKIAIRTMKJ3L3DNCORYQ";
-        final String secretAccessKey = "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";
+        final String accessKeyId = "AKIAJIWEGLTH7K56E4SA";
+        final String secretAccessKey = "2dB2TI0LJUJcP2BB+8t5w85fblTTfq5mD10tJU1h";
 
         final String appName = "<Your Application or Company Name>";
         final String appVersion = "<Your Application Version or Build Number or Release Date>";
@@ -62,13 +62,13 @@ public class GetFeedSubmissionResultSample {
         // US
          //config.setServiceURL("https://mws-eu.amazonservices.com");
         // UK
-        // config.setServiceURL("https://mws.amazonservices.co.uk/");
+         config.setServiceURL("https://mws.amazonservices.co.uk/");
         // Germany
         // config.setServiceURL("https://mws.amazonservices.de/");
         // France
         // config.setServiceURL("https://mws.amazonservices.fr/");
         // Italy
-         config.setServiceURL("https://mws.amazonservices.it/");
+         //config.setServiceURL("https://mws.amazonservices.it/");
         // Japan
         // config.setServiceURL("https://mws.amazonservices.jp/");
         // China
@@ -104,13 +104,13 @@ public class GetFeedSubmissionResultSample {
          * Marketplace Web Service calls.
          ***********************************************************************/
         final String merchantId = "A21WK1ZAUBHF10";
-        final String sellerDevAuthToken = "<Merchant Developer MWS Auth Token>";
+        final String sellerDevAuthToken = "amzn.mws.a8b309d8-2b57-8547-fac8-ae4d0bf06e70";
 
         GetFeedSubmissionResultRequest request = new GetFeedSubmissionResultRequest();
         request.setMerchant( merchantId );
-        //request.setMWSAuthToken(sellerDevAuthToken);
+        request.setMWSAuthToken(sellerDevAuthToken);
         
-        request.setFeedSubmissionId( "51779017788" );
+        request.setFeedSubmissionId( "55041017899" );
 
         // Note that depending on the size of the feed sent in, and the number of errors and warnings,
         // the result can reach sizes greater than 1GB. For this reason we recommend that you _always_ 

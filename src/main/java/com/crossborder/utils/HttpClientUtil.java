@@ -66,6 +66,7 @@ public class HttpClientUtil {
         return buffer.toString();
     }
 
+
     /**
      * post请求(用于key-value格式的参数)
      *
@@ -112,7 +113,7 @@ public class HttpClientUtil {
         }
     }
     public static void main(String... args) throws Exception {
-        String url = "http://wthrcdn.etouch.cn/weather_mini?citykey=101100101";
+        String url = "http://api.yunexpress.com/LMS.API/api/lms/Get";
         String result = doGetRequest(url);
         System.out.print(result);
     }

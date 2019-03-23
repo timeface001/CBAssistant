@@ -33,12 +33,12 @@ public class QuartBathUpload {
     @Autowired
     private ProductUploadLogDao productUploadLogDao;
 
-    //@Scheduled(cron = "0 0/24 * * * ?")
+    @Scheduled(cron = "0/30 * * * * ?")
     public void upload() {
         System.out.println("定时批量发布开始...." + DateUtils.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
 
-        //List<ProductAmzUpload> list = list();
-        List<ProductAmzUpload> list = productAmzUploadDao.selectList(GeneralUtils.genMap("pStatus", PublishStatusEnum.NOT.getVal()));
+        List<ProductAmzUpload> list = list();
+        //List<ProductAmzUpload> list = productAmzUploadDao.selectList(GeneralUtils.genMap("pStatus", PublishStatusEnum.NOT.getVal()));
         //分组
         List<UploadServiceRequest> resultMap = new ArrayList<>();
         for (ProductAmzUpload product : list) {
@@ -82,7 +82,7 @@ public class QuartBathUpload {
 
     private List<ProductAmzUpload> list() {
         List<ProductAmzUpload> list = new ArrayList<>();
-        String[] arr = {"184554"};
+        String[] arr = {"550901"};
 
         for (String id : arr) {
             ProductAmzUpload pp = productAmzUploadDao.selectByPrimaryKey(id);

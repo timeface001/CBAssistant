@@ -344,7 +344,7 @@ public class AmzXmlTemplate {
                 "</AmazonEnvelope>";
     }
 
-    public static String getUploadPriceStr(ProductAmzUpload product, UploadServiceRequest.ShopReq shop, List<ProductItemVar> vars) {
+    public static String  getUploadPriceStr(ProductAmzUpload product, UploadServiceRequest.ShopReq shop, List<ProductItemVar> vars) {
         String varStr = "";
         int i = 1;
         BigDecimal rate=shop.getExrate();
