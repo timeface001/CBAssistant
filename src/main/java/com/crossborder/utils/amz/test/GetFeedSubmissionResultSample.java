@@ -62,9 +62,9 @@ public class GetFeedSubmissionResultSample {
         // US
          //config.setServiceURL("https://mws-eu.amazonservices.com");
         // UK
-         config.setServiceURL("https://mws.amazonservices.co.uk/");
+        // config.setServiceURL("https://mws.amazonservices.co.uk/");
         // Germany
-        // config.setServiceURL("https://mws.amazonservices.de/");
+        config.setServiceURL("https://mws.amazonservices.de/");
         // France
         // config.setServiceURL("https://mws.amazonservices.fr/");
         // Italy
@@ -103,14 +103,14 @@ public class GetFeedSubmissionResultSample {
          * Marketplace and Merchant IDs are required parameters for all 
          * Marketplace Web Service calls.
          ***********************************************************************/
-        final String merchantId = "A21WK1ZAUBHF10";
-        final String sellerDevAuthToken = "amzn.mws.a8b309d8-2b57-8547-fac8-ae4d0bf06e70";
+        final String merchantId = "APC8KTCSFWL6Q";
+        final String sellerDevAuthToken = "amzn.mws.c6b2fd2b-2dd2-619a-99db-ea662be8fe8f";
 
         GetFeedSubmissionResultRequest request = new GetFeedSubmissionResultRequest();
         request.setMerchant( merchantId );
         request.setMWSAuthToken(sellerDevAuthToken);
         
-        request.setFeedSubmissionId( "55041017899" );
+        request.setFeedSubmissionId( "64329018024" );
 
         // Note that depending on the size of the feed sent in, and the number of errors and warnings,
         // the result can reach sizes greater than 1GB. For this reason we recommend that you _always_ 

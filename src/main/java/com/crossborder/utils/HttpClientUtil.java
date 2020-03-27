@@ -1,6 +1,7 @@
 package com.crossborder.utils;
 
 
+import com.alibaba.fastjson.JSON;
 import org.apache.axis.encoding.Base64;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -18,7 +19,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 
 public class HttpClientUtil {
@@ -114,7 +118,10 @@ public class HttpClientUtil {
     }
     public static void main(String... args) throws Exception {
         String url = "http://api.yunexpress.com/LMS.API/api/lms/Get";
-        String result = doGetRequest(url);
-        System.out.print(result);
+        //String result = doGetRequest(url);
+        String token = "C98031&HHTGPrA8drI=";
+        //httpPost.setHeader("Authorization", );
+        System.out.println(JSON.toJSONString("303-3150616-0099514"));
+        System.out.println(HttpClientUtil.doPostRequest("http://api.yunexpress.com/LMS.API.Lable/Api/PrintUrl", "303-3150616-0099514"));
     }
 }

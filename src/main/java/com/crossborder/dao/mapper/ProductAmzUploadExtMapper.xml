@@ -19,6 +19,25 @@
 
         ORDER BY a.PUBLISH_TIME DESC
     </select>
+    <select id="selectListByUser" parameterType="java.util.Map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from T_PRODUCT_ITEM_AMZ_UPLOAD a
+        LEFT JOIN T_SHOP b
+        ON a.shop_id = b.shop_id
+        LEFT JOIN T_COUNTRY c
+        ON a.language_id = c.id
+        LEFT JOIN T_USER_INFO d
+        ON a.create_user = d.user_id
+        WHERE a.P_STATE=1 AND a.PARENT_CHILD='parent'
+
+            AND a.PUBLISH_STATUS=0
+
+
+            AND a.create_user=#{userId}
+
+        ORDER BY a.PUBLISH_TIME DESC nulls last
+    </select>
     <select id="selectList" parameterType="java.util.Map" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
@@ -55,6 +74,15 @@
             AND a.create_user in (SELECT user_id from t_user_info where user_company = #{companyId})
         </if>
         ORDER BY a.PUBLISH_TIME DESC nulls last
+    </select>
+
+    <select id="selectNeedPulishList" resultType="com.crossborder.entity.ProductAmzUpload">
+        select
+        <include refid="Base_Column_List"/>
+        from T_PRODUCT_ITEM_AMZ_UPLOAD a
+        WHERE a.P_STATE=1 AND a.PARENT_CHILD='parent'
+        AND (  a.PUBLISH_STATUS = 0  OR (a.PUBLISH_STATUS = 3 and PUBLISH_TIME <![CDATA[<]]> (SYSDATE-1/24)))
+
     </select>
 
     <update id="deleteByAmzId" parameterType="java.util.Map">
@@ -211,6 +239,7 @@
         ON a.create_user = d.user_id
         where a.ID = #{id,jdbcType=VARCHAR}
     </select>
+
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
         delete from T_PRODUCT_ITEM_AMZ_UPLOAD
         where ID = #{id,jdbcType=VARCHAR}

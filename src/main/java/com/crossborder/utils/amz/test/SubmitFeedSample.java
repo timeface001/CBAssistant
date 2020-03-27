@@ -69,9 +69,9 @@ public class SubmitFeedSample {
         // US
          //config.setServiceURL("https://mws-eu.amazonservices.com");
         // UK
-         config.setServiceURL("https://mws.amazonservices.co.uk/");
+         //config.setServiceURL("https://mws.amazonservices.co.uk/");
         // Germany
-         //config.setServiceURL("https://mws.amazonservices.de/");
+         config.setServiceURL("https://mws.amazonservices.de/");
         // France
         // config.setServicDEFAULTL("https://mws.amazonservices.fr/");
         // Italy
@@ -111,15 +111,15 @@ public class SubmitFeedSample {
          * Marketplace and Merchant IDs are required parameters for all
          * Marketplace Web Service calls.
          ***********************************************************************/
-        final String merchantId = "A21WK1ZAUBHF10";
-        final String sellerDevAuthToken = "amzn.mws.a8b309d8-2b57-8547-fac8-ae4d0bf06e70";
+        final String merchantId = "APC8KTCSFWL6Q";
+        final String sellerDevAuthToken = "amzn.mws.c6b2fd2b-2dd2-619a-99db-ea662be8fe8f";
         // marketplaces to which this feed will be submitted; look at the
         // API reference document on the MWS website to see which marketplaces are
         // included if you do not specify the list yourself
         List<String> ids=new ArrayList<>();
         //ids.add("A13V1IB3VIYZZH");
-        //ids.add("A1PA6795UKMFR9");
-        ids.add("APJ6JRA9NG5V4");
+        ids.add("A1PA6795UKMFR9");
+        ids.add("A13V1IB3VIYZZH");
         final IdList marketplaces = new IdList(ids);
 
         SubmitFeedRequest request = new SubmitFeedRequest();
@@ -127,18 +127,11 @@ public class SubmitFeedSample {
         request.setMWSAuthToken(sellerDevAuthToken);
         request.setMarketplaceIdList(marketplaces);
 
-        request.setFeedType(AmzFeeType.PRODUCT_IMAGES_FEED.getVal());
+        request.setFeedType(AmzFeeType.PRICING_FEED.getVal());
 
-        String text="<?xml version=\"1.0\" ?><AmazonEnvelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"amznenvelope.xsd\">\n" +
-                "<Header><DocumentVersion>1.01</DocumentVersion><MerchantIdentifier>A2RD88T826IBCC</MerchantIdentifier>\n" +
-                "</Header><MessageType>Product</MessageType>\n" +
-                "<PurgeAndReplace>false</PurgeAndReplace>" +
-                "<Message><MessageID>6111120155301</MessageID>" +
-                "<OperationType>Update</OperationType><Product><SKU>GZ-GG4W7JCT</SKU><ItemPackageQuantity>10</ItemPackageQuantity><DescriptionData>" +
-                "<Title>Walking Stick Sticks Folding Elderly Health Women Personal Care Poles Telescopic014</Title><Brand>SY</Brand> <Description>&lt;p&gt;PRODUCT NAME: ELDERLY CRUTCHES&lt;br&gt;WEIGHT: 2KG&lt;br&gt;HEIGHT: ADJUSTABLE, 60CM-98CM&lt;br&gt;BODY MATERIAL: CARBON ROD, LIGHT AND BEAUTIFUL&lt;br&gt;THICKNESS: 1.2MM&lt;br&gt;SUITABLE FOR THE CROWD: THE ELDERLY, ADULTS AND MEN CAN USE&lt;br&gt;&lt;br&gt;The lightweight aluminium telescopic walking sticks receive a hard anodised treatment that prevents damage to the attractive surface making them durable&lt;br&gt;The stylish handle is shaped to fit comfortably in either hand with a handy wrist strap allowing you to use your hand freely&lt;br&gt;The base gives you points of contact for superior balance and stability, just like the human foot,strong moisture-wicking ability,non-slip,and a warm satisfaction in winter.&lt;br&gt;Foldable,Ultra-light,and Portable: folds up in seconds,light weight,put it in the coming carrying bag&lt;br&gt;&lt;/p&gt;</Description><BulletPoint>★ Easy to fold into four sections and can easily be stored for room for manoeuvre and comfort. The pipe folds into four sections, which means that you do it in your bag, when you do not use or when you travel.</BulletPoint><BulletPoint>★ With Easy &amp; convenient for everyday use for your safety and endurance with excellent lightweight. The ergonomically fitted handle gives the user to maximise safety and comfort with high quality and sustainability.</BulletPoint><BulletPoint>★ Non-slip non marking rubber tip prevents shocks and keep them safe too. while providing the flexibility to walking, jogging and light. The stable Bracelet can be hidden and battery case to prevent accidents in use, and provide comfort, when folded and storage.</BulletPoint><BulletPoint>★ Ideal for mobile use on the go. Creases easy for storage or travel and has a comfortable arm band. Unisex element for the older men or women and fits neatly in the luggage, backpacks, posts, comfortable foam grip handle for those who suffer from arthritis. Caution to use this walking stick on wet floors, tiles and other slippery surfaces.</BulletPoint><BulletPoint>★ Folding design makes it portable tube on the market.</BulletPoint><Manufacturer>SY</Manufacturer><SearchTerms>walking stick sticks for folding women men ferrules foldable collapsible telescopic rubber ladies hurrycane crutches tips adjustable prime switch pockets unknown hurricane trekking canes</SearchTerms><IsGiftWrapAvailable>false</IsGiftWrapAvailable><IsGiftMessageAvailable>false</IsGiftMessageAvailable><RecommendedBrowseNode>2826411031</RecommendedBrowseNode></DescriptionData><ProductData><Sports><ProductType>SportingGoods</ProductType><VariationData><Parentage>parent</Parentage><VariationTheme>Color</VariationTheme></VariationData></Sports></ProductData></Product></Message>" +
-                "" +
-                "<Message><MessageID>6111120155300</MessageID><OperationType>Update</OperationType><Product><SKU>GZ-GG4W7JCT-black</SKU>" +
-                "<StandardProductID><Type>EAN</Type><Value>8156239941781</Value></StandardProductID><ItemPackageQuantity>10</ItemPackageQuantity><DescriptionData><Title>Walking Stick Sticks Folding Elderly Health Women Personal Care Poles Telescopic014,black</Title><Brand>SY</Brand> <Description>&lt;p&gt;PRODUCT NAME: ELDERLY CRUTCHES&lt;br&gt;WEIGHT: 2KG&lt;br&gt;HEIGHT: ADJUSTABLE, 60CM-98CM&lt;br&gt;BODY MATERIAL: CARBON ROD, LIGHT AND BEAUTIFUL&lt;br&gt;THICKNESS: 1.2MM&lt;br&gt;SUITABLE FOR THE CROWD: THE ELDERLY, ADULTS AND MEN CAN USE&lt;br&gt;&lt;br&gt;The lightweight aluminium telescopic walking sticks receive a hard anodised treatment that prevents damage to the attractive surface making them durable&lt;br&gt;The stylish handle is shaped to fit comfortably in either hand with a handy wrist strap allowing you to use your hand freely&lt;br&gt;The base gives you points of contact for superior balance and stability, just like the human foot,strong moisture-wicking ability,non-slip,and a warm satisfaction in winter.&lt;br&gt;Foldable,Ultra-light,and Portable: folds up in seconds,light weight,put it in the coming carrying bag&lt;br&gt;&lt;/p&gt;</Description><BulletPoint>★ Easy to fold into four sections and can easily be stored for room for manoeuvre and comfort. The pipe folds into four sections, which means that you do it in your bag, when you do not use or when you travel.</BulletPoint><BulletPoint>★ With Easy &amp; convenient for everyday use for your safety and endurance with excellent lightweight. The ergonomically fitted handle gives the user to maximise safety and comfort with high quality and sustainability.</BulletPoint><BulletPoint>★ Non-slip non marking rubber tip prevents shocks and keep them safe too. while providing the flexibility to walking, jogging and light. The stable Bracelet can be hidden and battery case to prevent accidents in use, and provide comfort, when folded and storage.</BulletPoint><BulletPoint>★ Ideal for mobile use on the go. Creases easy for storage or travel and has a comfortable arm band. Unisex element for the older men or women and fits neatly in the luggage, backpacks, posts, comfortable foam grip handle for those who suffer from arthritis. Caution to use this walking stick on wet floors, tiles and other slippery surfaces.</BulletPoint><BulletPoint>★ Folding design makes it portable tube on the market.</BulletPoint><Manufacturer>SY</Manufacturer><SearchTerms>walking stick sticks for folding women men ferrules foldable collapsible telescopic rubber ladies hurrycane crutches tips adjustable prime switch pockets unknown hurricane trekking canes</SearchTerms><IsGiftWrapAvailable>false</IsGiftWrapAvailable><IsGiftMessageAvailable>false</IsGiftMessageAvailable><RecommendedBrowseNode>2826411031</RecommendedBrowseNode></DescriptionData><ProductData><Sports><ProductType>SportingGoods</ProductType><VariationData><Parentage>child</Parentage><VariationTheme>Color</VariationTheme><Color>black</Color></VariationData></Sports></ProductData></Product></Message></AmazonEnvelope>";
+        String text="<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n" +
+                "<AmazonEnvelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"amzn- envelope.xsd\">\n" +
+                "<Header><DocumentVersion>1.01</DocumentVersion> <MerchantIdentifier>APC8KTCSFWL6Q</MerchantIdentifier> </Header><MessageType>Price</MessageType><Message><MessageID>1380</MessageID><Price><SKU>1231313www-164Q5</SKU><StandardPrice currency=\"DEFAULT\">38.99</StandardPrice></Price></Message></AmazonEnvelope>";
         FileUtils.byte2File(text.getBytes(),"/Users/fengsong/Downloads/amz/","rule_chain.txt");
 
         String s="/Users/fengsong/Downloads/amz/rule_chain.txt";

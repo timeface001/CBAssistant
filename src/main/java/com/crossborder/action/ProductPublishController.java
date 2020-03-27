@@ -218,6 +218,7 @@ public class ProductPublishController extends BaseController {
             System.out.println("publish product:" + pid + " to shop:" + productTT.getShopId());
             productTT.setProductAmzId(aid);
             productTT.setId(pid);
+            productTT.setPublishTime(new Date());
 
             productAmzUploadDao.updateByPrimaryKeySelective(productTT);
             productTT = productAmzUploadDao.selectByPrimaryKey(productTT.getId());

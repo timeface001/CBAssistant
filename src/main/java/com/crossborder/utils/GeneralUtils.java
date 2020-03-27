@@ -148,6 +148,8 @@ public class GeneralUtils {
 
     }
 
+
+
     public static String replaceHtmlSign(String str) {
         if (org.apache.commons.lang3.StringUtils.isNotBlank(str)) {
             str=str.replace("&","&amp;");

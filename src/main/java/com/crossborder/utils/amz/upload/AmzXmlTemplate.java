@@ -71,6 +71,10 @@ public class AmzXmlTemplate {
         return "";
     }
 
+    public static void main(String[] args) {
+        System.out.println(GeneralUtils.mutiHalfTwo(new BigDecimal(420).divide(new BigDecimal(8.5), 0, ROUND_DOWN)));;
+    }
+
 
 
     private static String getPriceStr(BigDecimal rate, BigDecimal price, String code) {
